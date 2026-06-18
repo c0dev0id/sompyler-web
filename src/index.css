@@ -126,11 +126,15 @@ html, body, #root {
   cursor: pointer;
 }
 
-/* Quadrants */
+/* Quadrants — clean 2x2 desktop, vertical stack on portrait. Named areas
+   so we can independently choose the placement per viewport. */
 .quadrants {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "player instruments"
+    "score  tuningroom";
   gap: 1px;
   background: #2a2a2a;
   overflow: hidden;
@@ -142,27 +146,14 @@ html, body, #root {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  min-height: 0;
+  min-width: 0;
 }
 
-.quadrant.tl {
-  grid-column: 1;
-  grid-row: 1;
-}
-
-.quadrant.tr {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-}
-
-.quadrant.bl {
-  grid-column: 1;
-  grid-row: 2 / span 2;
-}
-
-.quadrant.br {
-  grid-column: 2;
-  grid-row: 3;
-}
+.quadrant.tl { grid-area: player; }
+.quadrant.tr { grid-area: instruments; }
+.quadrant.bl { grid-area: score; }
+.quadrant.br { grid-area: tuningroom; }
 
 .transport {
   display: flex;
@@ -338,32 +329,20 @@ html, body, #root {
   cursor: pointer;
 }
 
-/* Portrait phones / narrow viewports: stack the four quadrants
-   vertically in the order Player -> Score -> Instruments -> Tuning/Room.
-   The staging rail stays on the left (collapsible as usual). */
+/* Portrait phones / narrow viewports: single column, stacked top to
+   bottom in user-preferred order — player, score, instruments,
+   tuning/room. The staging rail stays on the left, narrower. */
 @media (max-width: 768px) {
   .quadrants {
     grid-template-columns: 1fr;
-    grid-template-rows:
-      auto
-      minmax(50dvh, auto)
-      minmax(50dvh, auto)
-      minmax(50dvh, auto);
+    grid-template-rows: repeat(4, minmax(40dvh, auto));
+    grid-template-areas:
+      "player"
+      "score"
+      "instruments"
+      "tuningroom";
     overflow-y: auto;
   }
-  .quadrant.tl,
-  .quadrant.tr,
-  .quadrant.bl,
-  .quadrant.br {
-    grid-column: 1;
-  }
-  .quadrant.tl {
-    grid-row: 1;
-  }
-  .quadrant.bl { grid-row: 2; } /* score */
-  .quadrant.tr { grid-row: 3; } /* instruments */
-  .quadrant.br { grid-row: 4; } /* tuning / room */
-
   .staging:not(.collapsed) {
     width: 160px;
   }

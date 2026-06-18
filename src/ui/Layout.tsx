@@ -9,14 +9,16 @@ import type { Session } from '../session/Session'
 import { downloadWav } from '../export/wav'
 
 /**
- * R-UI: four-quadrant main area + collapsible staging rail (rendered by App
- * around this component).
+ * R-UI: four equal quadrants + collapsible staging rail.
  *
  *   ┌─────────────────────┬─────────────────────────┐
  *   │ Player / transport  │ Instrument editor (tab) │
  *   ├─────────────────────┼─────────────────────────┤
  *   │ Score editor        │ Tuning / Room editor    │
  *   └─────────────────────┴─────────────────────────┘
+ *
+ * Portrait stacks them vertically: player → score → instruments →
+ * tuning/room. The placement is driven by named CSS grid areas.
  */
 
 export interface LayoutProps {
