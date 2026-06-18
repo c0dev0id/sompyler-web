@@ -19,3 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `PositionStack` for R-ErrorCtx parse-position tracking.
 - Minimal `.spls` walker that produces a flat note stream from simple offset-keyed measures.
 - `buildDistinctNotes()` that walks a score, dedupes occurrences by `(instrumentHash, freq, stress, length, properties)`, and produces a render plan with content-addressed cache keys.
+- CodeMirror 6 editor component (`src/editor/Editor.tsx`) with YAML highlighting, line numbers, history, and a `readOnly` reconfiguration compartment driven by props.
+- Debounced autosave that persists every keystroke into the `files` object store.
+- Inline lint pipeline: YAML syntax errors plus semantic checks (unknown instrument references in `.spls`).
+- Starter `.spls` document seeded into storage and surfaced in the App shell.

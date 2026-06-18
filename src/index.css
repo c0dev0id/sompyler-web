@@ -17,3 +17,25 @@ html, body, #root {
 .shell {
   padding: 1rem;
 }
+
+.editor {
+  border: 1px solid #333;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  min-height: 240px;
+}
+
+.editor .cm-editor {
+  height: 100%;
+}
+
+.editor .cm-content {
+  caret-color: #eee;
+}
+
+.editor .cm-gutters {
+  background: #1a1a1a;
+  color: #555;
+  border-right: 1px solid #333;
+}
