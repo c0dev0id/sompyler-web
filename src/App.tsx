@@ -1,22 +1,9 @@
-import {
-  createResource,
-  createSignal,
-  onCleanup,
-  Show,
-  type Component,
-} from 'solid-js'
-import { Editor } from './editor/Editor'
-import { putFile, getFile, type StoredFile } from './storage/files'
-import { loadInstrument } from './parse/instrument'
-import { Tuner } from './parse/tuning'
-import { buildDistinctNotes } from './render/distinct'
-import { renderAll } from './render/renderAll'
-import { mixOnly } from './render/mix'
-import { createSynthWorker } from './render/workerClient'
-import { compileInstrument } from './synth/compile'
-import { Player } from './player/Player'
-import { parseScore } from './parse/score'
-import { log } from './debug'
+import { createSignal, onMount, type Component } from 'solid-js'
+import { putFile, getFile } from './storage/files'
+import { Session } from './session/Session'
+import { Layout } from './ui/Layout'
+import { StagingPane } from './ui/StagingPane'
+import { RenderModal } from './ui/RenderModal'
 
 const STARTER_SCORE = `title: Starter song
 stage:
@@ -49,108 +36,37 @@ partials:
   - { freqMult: 4, amp: 0.12 }
 `
 
-async function seedStarterFiles(): Promise<StoredFile> {
-  const score = await getFile('starter', 'spls')
-  const scoreFile =
-    score ?? (await putFile({ name: 'starter', ext: 'spls', body: STARTER_SCORE, inProject: true }))
-  const piano = await getFile('dev/piano', 'spli')
-  if (!piano) {
+async function seedStarterFiles(): Promise<void> {
+  if (!(await getFile('starter', 'spls'))) {
+    await putFile({ name: 'starter', ext: 'spls', body: STARTER_SCORE, inProject: true })
+  }
+  if (!(await getFile('dev/piano', 'spli'))) {
     await putFile({ name: 'dev/piano', ext: 'spli', body: STARTER_PIANO, inProject: true })
   }
-  return scoreFile
 }
 
 export const App: Component = () => {
-  const [file] = createResource(seedStarterFiles)
-  const [renderState, setRenderState] = createSignal<
-    'idle' | 'rendering' | 'mixing' | 'error'
-  >('idle')
-  const [progress, setProgress] = createSignal<{ done: number; total: number }>({
-    done: 0,
-    total: 0,
+  const [refreshTick, setRefreshTick] = createSignal(0)
+  const session = new Session(() => new AudioContext())
+
+  onMount(() => {
+    void (async () => {
+      await seedStarterFiles()
+      setRefreshTick((n) => n + 1)
+    })()
   })
-  const [errorMsg, setErrorMsg] = createSignal<string | null>(null)
-  const [playerState, setPlayerState] = createSignal<string>('empty')
 
-  const player = new Player(() => new AudioContext())
-  const off = player.onStateChange(setPlayerState)
-  onCleanup(off)
-
-  async function handleRender() {
-    setErrorMsg(null)
-    setRenderState('rendering')
-    setProgress({ done: 0, total: 0 })
-    try {
-      const scoreFile = await getFile('starter', 'spls')
-      if (!scoreFile) throw new Error('Starter score missing')
-      const pianoFile = await getFile('dev/piano', 'spli')
-      if (!pianoFile) throw new Error('Starter instrument missing')
-      const piano = await loadInstrument('dev/piano', pianoFile.body)
-      const instruments = new Map([[piano.name, piano]])
-      const tuner = new Tuner()
-
-      const plan = await buildDistinctNotes(scoreFile.body, { tuner, instruments })
-      await renderAll(plan, {
-        workerFactory: createSynthWorker,
-        instruments,
-        compileInstrument,
-        onProgress: (p) => setProgress({ done: p.done, total: p.total }),
-      })
-
-      setRenderState('mixing')
-      const { head } = parseScore(scoreFile.body)
-      const mix = await mixOnly(plan, head)
-      player.loadBuffer(mix)
-      setRenderState('idle')
-    } catch (e) {
-      log('session', 'error', `Render failed: ${(e as Error).message}`)
-      setErrorMsg((e as Error).message)
-      setRenderState('error')
-    }
-  }
+  const bumpRefresh = () => setRefreshTick((n) => n + 1)
 
   return (
     <main class="shell">
-      <h1>Sompyler</h1>
-      <div class="transport">
-        <button onClick={() => void handleRender()} disabled={renderState() !== 'idle' && renderState() !== 'error'}>
-          {renderState() === 'rendering'
-            ? `Rendering ${progress().done}/${progress().total}…`
-            : renderState() === 'mixing'
-              ? 'Mixing…'
-              : 'Render'}
-        </button>
-        <button onClick={() => player.play()} disabled={playerState() === 'empty' || playerState() === 'playing'}>
-          Play
-        </button>
-        <button onClick={() => player.pause()} disabled={playerState() !== 'playing'}>
-          Pause
-        </button>
-        <button onClick={() => player.stop()} disabled={playerState() === 'empty'}>
-          Stop
-        </button>
-        <label>
-          <input
-            type="checkbox"
-            checked={player.isLoopEnabled()}
-            onChange={(e) => player.setLoop(e.currentTarget.checked)}
-          />{' '}
-          Loop
-        </label>
-        <span class="state">{playerState()}</span>
-      </div>
-      <Show when={errorMsg()}>
-        {(msg) => <p class="error">{msg()}</p>}
-      </Show>
-      <Show when={file()} fallback={<p>Loading…</p>}>
-        {(f) => (
-          <Editor
-            file={f()}
-            readOnly={renderState() !== 'idle' && renderState() !== 'error'}
-            lintContext={{ instrumentNames: () => new Set(['dev/piano']) }}
-          />
-        )}
-      </Show>
+      <StagingPane
+        refreshSignal={refreshTick}
+        onChange={bumpRefresh}
+        mutationsDisabled={session.editLock()}
+      />
+      <Layout session={session} refreshSignal={refreshTick} />
+      <RenderModal session={session} />
     </main>
   )
 }

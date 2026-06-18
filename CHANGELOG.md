@@ -36,3 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Player domain (R7): `AudioContext` lifecycle, `AudioBufferSourceNode` with loop, transport (play/pause/stop/loop) and a state-change listener.
 - App shell wired end-to-end: Render → render-all → mixOnly → Player.loadBuffer, with progress, loop toggle, transport buttons, and error reporting.
 - Starter `dev/piano.spli` seeded into storage so the starter score has a working instrument out of the box.
+- `Session` coordinator (R3) owning the three cross-domain signals — `editLock`, `renderStatus`, `currentBuffer` — and routing the Render workflow end-to-end with hard cancellation.
+- `RenderModal` (R11): full-screen overlay during synthesis/mix with progress bar, last-rendered-key strip, and Cancel button.
+- `StagingPane` (R9): collapsible flat-file list with per-row Add / Remove / Rename / Delete, plus an Import file picker. Score multiplicity enforced (only one `.spls` may be in-project).
+- Four-quadrant Layout (R-UI): transport top-left, instrument editor top-right (tabbed), score editor bottom-left, tuning / room editor bottom-right (tabbed). Editors honour `editLock` via the `readOnly` prop.
