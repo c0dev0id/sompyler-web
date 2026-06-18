@@ -44,3 +44,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Download WAV button on the transport row, enabled once `currentBuffer` is non-null.
 - `seedDefaults()`: starter content seeded on first run — in-project starter score + `dev/piano.spli`, plus staged extras (`dev/flute.spli`, `tones_euro.splt`, `free-field.splr`, `alle_meine_entchen.spls`).
 - Conformance test against Sompyler's `test_examples/alle_meine_entchen.spls` (structural parity per R-Test): one voice, plan builds, distinct-notes count and length sanity.
+- GitHub Pages deployment workflow (`.github/workflows/deploy.yml`): push to `main` triggers typecheck → unit tests → build → upload + deploy. Conformance tier is opt-in via `npm run test:conformance` and not gated in CI.
+- Split test scripts: `test:unit` excludes `src/conformance/**`; `test:conformance` runs only that directory. README documents the deploy story and the one-time `Settings → Pages → Source = GitHub Actions` step.

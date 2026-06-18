@@ -8,6 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest",
+    "test:unit": "vitest --run --exclude 'src/conformance/**'",
+    "test:conformance": "vitest --run src/conformance",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
