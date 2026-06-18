@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, Show, type Component } from 'solid-js'
+import { createEffect, createSignal, For, onMount, Show, type Component } from 'solid-js'
 import {
   deleteFile,
   listFiles,
@@ -7,7 +7,10 @@ import {
   type FileExtension,
   type StoredFile,
 } from '../storage/files'
+import { getPref, setPref } from '../storage/prefs'
 import { log } from '../debug'
+
+const COLLAPSED_PREF_KEY = 'staging.collapsed'
 
 /**
  * R9: flat-file staging rail. Every file in IndexedDB is shown here; rows
@@ -48,6 +51,18 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
     props.refreshSignal()
     void refresh()
   })
+
+  onMount(() => {
+    void (async () => {
+      setCollapsed(await getPref<boolean>(COLLAPSED_PREF_KEY, false))
+    })()
+  })
+
+  function toggleCollapsed() {
+    const next = !collapsed()
+    setCollapsed(next)
+    void setPref(COLLAPSED_PREF_KEY, next)
+  }
 
   async function toggleInProject(f: StoredFile) {
     if (props.mutationsDisabled) return
@@ -101,7 +116,7 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
   return (
     <aside class={`staging ${collapsed() ? 'collapsed' : ''}`}>
       <header>
-        <button onClick={() => setCollapsed(!collapsed())} aria-label="Toggle staging">
+        <button onClick={toggleCollapsed} aria-label="Toggle staging">
           {collapsed() ? '▶' : '◀'}
         </button>
         <Show when={!collapsed()}>
