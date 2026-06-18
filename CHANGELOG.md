@@ -30,3 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Generic worker `Pool` with hard-cancellation via `terminate()` (R4); factory pattern so tests can plug in sync adapters.
 - `renderAll()` orchestrator: walks the distinct-notes plan, skips cache hits, dispatches misses to the pool, writes PCM into the `notes` store, and orphan-sweeps only on success.
 - Web Worker client (`src/render/workerClient.ts`) wiring the synth worker into the pool with id-keyed pending requests.
+- `freeFieldGains()` resolves a stage spec `'L|R distance'` to per-channel gains (subset port of `Sompyler/score/stage.py::Voice` with default space `0|1:0`).
+- `mixOnly()` sums cached per-note PCM into a stereo Float32Array buffer with offsets, panorama, and global peak-clipping. Fails fast with `MissingNoteCacheError` if any required note is uncached.
+- Lenient YAML → `InstrumentSpec` compiler (`src/synth/compile.ts`) that handles the v1 instrument shape (amp / oscillator / envelope / partials).
+- Player domain (R7): `AudioContext` lifecycle, `AudioBufferSourceNode` with loop, transport (play/pause/stop/loop) and a state-change listener.
+- App shell wired end-to-end: Render → render-all → mixOnly → Player.loadBuffer, with progress, loop toggle, transport buttons, and error reporting.
+- Starter `dev/piano.spli` seeded into storage so the starter score has a working instrument out of the box.
