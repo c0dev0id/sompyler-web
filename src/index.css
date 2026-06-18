@@ -359,10 +359,6 @@ html, body, #root {
   }
   .quadrant.tl {
     grid-row: 1;
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: #1a1a1a;
   }
   .quadrant.bl { grid-row: 2; } /* score */
   .quadrant.tr { grid-row: 3; } /* instruments */
