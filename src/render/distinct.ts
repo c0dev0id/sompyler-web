@@ -95,14 +95,17 @@ export async function buildDistinctNotes(
     const lengthSeconds = ticksToSeconds(note.lengthTicks, activeTicksPerMinute)
     activeMeasureLengthSeconds = Math.max(
       activeMeasureLengthSeconds,
-      ticksToSeconds(note.offsetTicks + note.lengthTicks, activeTicksPerMinute),
+      ticksToSeconds(note.offsetTicks + note.lengthTicks + note.damp, activeTicksPerMinute),
     )
 
     const frequencyHz = ctx.tuner.frequencyOfTone(note.pitch)
+    const dampSeconds = ticksToSeconds(note.damp, activeTicksPerMinute)
     const properties: Record<string, unknown> = {}
     // S53400 off-scale flags must split the cache: same pitch + different
     // flag = different rendered tone, once scale-aware tuning lands.
     if (note.offScale) properties.offScale = note.offScale
+    // S51a10 damp extends the envelope release; different damp ⇒ different PCM.
+    if (dampSeconds > 0) properties.dampSeconds = dampSeconds
 
     const key = await noteCacheKey({
       instrumentHash: instrument.hash,

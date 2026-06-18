@@ -1,9 +1,12 @@
 import { InstrumentError } from '../errors'
 import type { Instrument } from '../parse/instrument'
-import type { InstrumentSpec, PartialDef } from './sound_generator'
+import type { InstrumentSpec, PartialDef, RailsbackCurve } from './sound_generator'
 import { DEFAULT_ENVELOPE, type EnvelopeSpec } from './envelope'
 import type { OscillatorSpec, Waveform } from './oscillator'
+import { renderShapeString } from './shape'
 import { parseCharacterBlock, validateVariationGraph } from './variation'
+
+const RAILSBACK_KEYS = 88
 
 /**
  * Forgiving YAML → `InstrumentSpec` compiler used by `renderAll()`.
@@ -66,6 +69,25 @@ function compileEnvelope(raw: unknown): EnvelopeSpec | undefined {
   }
 }
 
+function compileRailsback(raw: unknown): RailsbackCurve | undefined {
+  if (raw == null) return undefined
+  if (!Array.isArray(raw) || raw.length !== 3) {
+    throw new InstrumentError(`railsback must be [lowHz, highHz, curveString]`)
+  }
+  const [lowRaw, highRaw, curveRaw] = raw
+  const lowHz = Number(lowRaw)
+  const highHz = Number(highRaw)
+  if (!Number.isFinite(lowHz) || !Number.isFinite(highHz) || lowHz >= highHz) {
+    throw new InstrumentError(`railsback bounds invalid: [${lowHz}, ${highHz}]`)
+  }
+  if (typeof curveRaw !== 'string') {
+    throw new InstrumentError(`railsback curve must be a Shape string`)
+  }
+  // Sompyler prefixes "1:" to force a unit x-span; mirror that.
+  const curve = renderShapeString(`1:${curveRaw}`, RAILSBACK_KEYS)
+  return { lowHz, highHz, curve }
+}
+
 function compilePartials(raw: unknown): PartialDef[] | undefined {
   if (raw == null) return undefined
   if (!Array.isArray(raw)) throw new InstrumentError(`partials must be a list`)
@@ -110,5 +132,7 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
   if (env) spec.envelope = env
   const partials = compilePartials(obj.partials)
   if (partials) spec.partials = partials
+  const railsback = compileRailsback(obj.railsback)
+  if (railsback) spec.railsback = railsback
   return spec
 }

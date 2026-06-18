@@ -15,6 +15,8 @@ export interface WorkerRequest {
   stress: number
   lengthSeconds: number
   sampleRate?: number
+  /** S51a10 damp: extra release time in seconds. */
+  dampSeconds?: number
 }
 
 export interface WorkerResponse {

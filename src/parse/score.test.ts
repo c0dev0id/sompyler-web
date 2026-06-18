@@ -60,6 +60,22 @@ describe('walkMeasures', () => {
     expect(() => [...walkMeasures(head, measures)]).toThrow(/Voice 'unknown'/)
   })
 
+  it('parses trailing damp=N tokens as a per-note attribute (S51a10)', () => {
+    const body = `
+title: damped
+stage:
+  piano: 1|1 0 dev/piano
+---
+piano:
+  0: C4 1 100 damp=2
+  1: C4 1
+`
+    const { head, measures } = parseScore(body)
+    const notes = [...walkMeasures(head, measures)]
+    expect(notes[0]).toMatchObject({ pitch: 'C4', damp: 2 })
+    expect(notes[1]).toMatchObject({ pitch: 'C4', damp: 0 })
+  })
+
   it('extracts ? / ! off-scale flags from pitch and strips them', () => {
     const body = `
 title: flags

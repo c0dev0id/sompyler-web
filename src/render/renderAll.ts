@@ -73,6 +73,10 @@ export async function renderAll(
         throw new Error(`Instrument '${note.instrumentName}' not loaded`)
       }
       const compiled = opts.compileInstrument(instrument)
+      const dampSeconds =
+        typeof note.properties.dampSeconds === 'number'
+          ? note.properties.dampSeconds
+          : undefined
       const result = await pool.submit({
         input: {
           id: note.key,
@@ -81,6 +85,7 @@ export async function renderAll(
           stress: note.stress,
           lengthSeconds: note.lengthSeconds,
           sampleRate: opts.sampleRate,
+          dampSeconds,
         },
       })
       await putNote({

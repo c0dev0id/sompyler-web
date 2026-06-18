@@ -27,15 +27,20 @@ export const DEFAULT_ENVELOPE: EnvelopeSpec = {
 /**
  * Multiply the provided buffer by an A.S.R envelope curve in place.
  * Caller specifies the total length so segment boundaries are sample-exact.
+ *
+ * `dampSeconds > 0` extends the release segment by that many seconds — the
+ * S51a10 sustain-pedal model. The buffer is assumed to already include the
+ * extra samples; the caller (renderNote) sizes the buffer accordingly.
  */
 export function applyEnvelope(
   buf: Float32Array,
   spec: EnvelopeSpec,
   sampleRate: number,
+  dampSeconds = 0,
 ): void {
   const total = buf.length
   let attackSamples = Math.round(spec.attack * sampleRate)
-  let releaseSamples = Math.round(spec.release * sampleRate)
+  let releaseSamples = Math.round((spec.release + Math.max(0, dampSeconds)) * sampleRate)
   if (attackSamples + releaseSamples > total) {
     const ratio = total / (attackSamples + releaseSamples)
     attackSamples = Math.floor(attackSamples * ratio)

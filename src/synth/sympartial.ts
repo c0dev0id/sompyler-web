@@ -27,10 +27,12 @@ export function renderSympartial(
   spec: SympartialSpec,
   fundamentalHz: number,
   sampleRate: number,
+  /** S51a10 damp: extra release-segment seconds (sustain-pedal). */
+  dampSeconds = 0,
 ): void {
   const buf = new Float32Array(out.length)
   renderOscillator(buf, spec.oscillator, fundamentalHz * spec.freqMult, sampleRate)
-  applyEnvelope(buf, spec.envelope, sampleRate)
+  applyEnvelope(buf, spec.envelope, sampleRate, dampSeconds)
   const amp = Math.max(0, spec.amp)
   for (let i = 0; i < out.length; i++) out[i] = out[i]! + buf[i]! * amp
 }

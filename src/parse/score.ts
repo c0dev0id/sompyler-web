@@ -49,6 +49,12 @@ export interface RawNote {
   offScale: '?' | '!' | null
   lengthTicks: number
   stress: number
+  /**
+   * S51a10 sustain-pedal: extra release time in ticks for this note. Sompyler
+   * parses `damp:` on chord blocks but never applies it; we wire it through
+   * to the envelope as a release extension.
+   */
+  damp: number
   measureIndex: number
   measureName: string
 }
@@ -92,20 +98,22 @@ function parseStage(stage: unknown): Record<string, StageVoice> {
   return out
 }
 
-const NOTE_RX = /^(\S+)(?:\s+(\d+(?:\.\d+)?))?(?:\s+(\d+))?(?:\s*#.*)?$/
+const NOTE_RX =
+  /^(\S+)(?:\s+(\d+(?:\.\d+)?))?(?:\s+(\d+))?((?:\s+[a-zA-Z_]\w*=\S+)*)\s*(?:#.*)?$/
 
 interface ParsedNoteShort {
   pitch: string
   offScale: '?' | '!' | null
   lengthTicks: number
   weight: number
+  damp: number
 }
 
 function parseShortNote(raw: string): ParsedNoteShort {
   const trimmed = raw.replace(/#.*$/, '').trim()
   const m = NOTE_RX.exec(trimmed)
   if (!m) throw new ScoreError(`Cannot parse note: '${raw}'`)
-  const [, pitchRaw, lenStr, weightStr] = m
+  const [, pitchRaw, lenStr, weightStr, attrStr] = m
   let pitch = pitchRaw!
   let offScale: '?' | '!' | null = null
   const tail = pitch.slice(-1)
@@ -113,11 +121,20 @@ function parseShortNote(raw: string): ParsedNoteShort {
     offScale = tail
     pitch = pitch.slice(0, -1)
   }
+  let damp = 0
+  if (attrStr) {
+    for (const tok of attrStr.trim().split(/\s+/)) {
+      if (!tok) continue
+      const [k, v] = tok.split('=')
+      if (k === 'damp' && v !== undefined) damp = parseFloat(v)
+    }
+  }
   return {
     pitch,
     offScale,
     lengthTicks: lenStr ? parseFloat(lenStr) : 1,
     weight: weightStr ? parseInt(weightStr, 10) : 1,
+    damp,
   }
 }
 
@@ -241,6 +258,7 @@ export function* walkMeasures(
                 offScale: parsed.offScale,
                 lengthTicks: parsed.lengthTicks,
                 stress: stressOf(offsetTicks) * parsed.weight,
+                damp: parsed.damp,
                 measureIndex: i,
                 measureName,
               }

@@ -56,6 +56,31 @@ partials:
     expect(() => compileInstrument(i)).not.toThrow()
   })
 
+  it('compiles a railsback curve (S32136)', async () => {
+    // Curve string mirrors the form used in lib/instruments/dev/piano.spli:68 —
+    // bezier-only control points (no length prefix); the compiler prepends
+    // "1:" before parsing, matching Sompyler's convention.
+    const i = await loadInstrument(
+      'dev/piano',
+      `oscillator: sin
+railsback:
+  - 27
+  - 4187
+  - "-8+240;0,0;1,8;2,8;13,8;14,8;15,16"
+`,
+    )
+    const spec = compileInstrument(i)
+    expect(spec.railsback).toBeTruthy()
+    expect(spec.railsback!.lowHz).toBe(27)
+    expect(spec.railsback!.highHz).toBe(4187)
+    expect(spec.railsback!.curve.length).toBe(88)
+  })
+
+  it('rejects a malformed railsback spec', async () => {
+    const i = await loadInstrument('bad', 'railsback: [100, 50, "junk"]')
+    expect(() => compileInstrument(i)).toThrow(/railsback bounds invalid/)
+  })
+
   it('rejects a character block with circular label refs (S32122)', async () => {
     const i = await loadInstrument(
       'bad',
