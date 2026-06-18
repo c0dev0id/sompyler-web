@@ -3,11 +3,13 @@ import type { Instrument } from '../parse/instrument'
 import type { InstrumentSpec, PartialDef } from './sound_generator'
 import { DEFAULT_ENVELOPE, type EnvelopeSpec } from './envelope'
 import type { OscillatorSpec, Waveform } from './oscillator'
+import { parseCharacterBlock, validateVariationGraph } from './variation'
 
 /**
- * Phase 5 minimum: a forgiving YAML → `InstrumentSpec` compiler used by
- * `renderAll()`. The full variation graph + cycle detection (S32122,
- * `Sompyler/orchestra/instrument/variation.py`) lands in a later phase.
+ * Forgiving YAML → `InstrumentSpec` compiler used by `renderAll()`.
+ * As of Phase 10 the rich Sompyler `character:` block is accepted and
+ * its variation graph is validated (cycle detection, S32122). The full
+ * per-attribute sound differentiation (S32200) lands in Phase 12.
  *
  * Supported v1 shape:
  *
@@ -18,7 +20,15 @@ import type { OscillatorSpec, Waveform } from './oscillator'
  *       - { freqMult: 1, amp: 1.0 }
  *       - { freqMult: 2, amp: 0.5 }
  *
- * Anything off the v1 shape is ignored (lenient pass-through).
+ * Sympyler-rich shape (Phase 10+):
+ *
+ *     character:
+ *       - ATTR: pitch
+ *         O: sine
+ *         labelName: { ... }      # label spec (referenced via @labelName)
+ *         27: { PROFILE: [...] }  # numeric-keyed variation
+ *
+ * Anything off these shapes is ignored (lenient pass-through).
  */
 
 const WAVEFORMS: ReadonlySet<Waveform> = new Set(['sin', 'square', 'saw', 'triangle', 'noise'])
@@ -76,6 +86,22 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
   if (!obj) {
     throw new InstrumentError(`Instrument '${instr.name}' is not a YAML mapping`)
   }
+  // S32122 — validate variation graph (cycle detection) before anything else.
+  // Throws InstrumentError with a "Circular dependencies …" message that
+  // the editor lint surfaces inline (R6).
+  try {
+    const character = parseCharacterBlock(instr.parsed)
+    validateVariationGraph(character)
+  } catch (cause) {
+    if (cause instanceof InstrumentError) {
+      throw new InstrumentError(
+        `Instrument '${instr.name}': ${cause.message}`,
+        cause,
+      )
+    }
+    throw cause
+  }
+
   const spec: InstrumentSpec = {}
   if ('amp' in obj) spec.amp = Number(obj.amp)
   const osc = compileOscillator(obj.oscillator)

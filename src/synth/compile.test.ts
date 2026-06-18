@@ -39,4 +39,33 @@ partials:
     const i = await loadInstrument('bad', '"just a string"')
     expect(() => compileInstrument(i)).toThrow(InstrumentError)
   })
+
+  it('accepts a rich character block without throwing', async () => {
+    const i = await loadInstrument(
+      'dev/piano',
+      `character:
+  - ATTR: pitch
+    O: sin
+    edb65p01:
+      A: '.24:1,91;2,97;3,100'
+    27:
+      PROFILE:
+        - "74 edb65p01"
+`,
+    )
+    expect(() => compileInstrument(i)).not.toThrow()
+  })
+
+  it('rejects a character block with circular label refs (S32122)', async () => {
+    const i = await loadInstrument(
+      'bad',
+      `character:
+  - foobar:
+      S: 'leaning on @bazqux'
+    bazqux:
+      S: 'leaning on @foobar'
+`,
+    )
+    expect(() => compileInstrument(i)).toThrow(/Circular dependencies/)
+  })
 })
