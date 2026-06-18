@@ -81,4 +81,37 @@ describe('buildDistinctNotes', () => {
     // 4 ticks at 60 bpm = 4 seconds (single measure of length 4 ticks).
     expect(plan.totalLengthSeconds).toBeCloseTo(4, 3)
   })
+
+  it('splits the cache when ? / ! off-scale flags diverge (S53400)', async () => {
+    const FLAGGED = `
+title: flag-split
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+  lower_stress_bound: 100
+  upper_stress_bound: 100
+piano:
+  0: A4 1
+  1: A4? 1
+  2: A4! 1
+`
+    const plan = await buildDistinctNotes(FLAGGED, {
+      tuner: new Tuner(),
+      instruments: new Map([[piano.name, piano]]),
+    })
+    expect(plan.notes).toHaveLength(3)
+    const keys = new Set(plan.notes.map((n) => n.key))
+    expect(keys.size).toBe(3)
+    // The two flagged variants carry the flag in properties; the unflagged
+    // one is property-less. All resolve to the same 440Hz frequency.
+    for (const n of plan.notes) {
+      expect(n.frequencyHz).toBeCloseTo(440, 6)
+    }
+    expect(plan.notes.some((n) => n.properties.offScale === '?')).toBe(true)
+    expect(plan.notes.some((n) => n.properties.offScale === '!')).toBe(true)
+    expect(plan.notes.some((n) => n.properties.offScale === undefined)).toBe(true)
+  })
 })

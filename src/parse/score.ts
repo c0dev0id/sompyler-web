@@ -45,6 +45,8 @@ export interface RawNote {
   voice: string
   offsetTicks: number
   pitch: string
+  /** S53400 off-scale flag: `?` = snap-to-nearest, `!` = force-literal. */
+  offScale: '?' | '!' | null
   lengthTicks: number
   stress: number
   measureIndex: number
@@ -94,6 +96,7 @@ const NOTE_RX = /^(\S+)(?:\s+(\d+(?:\.\d+)?))?(?:\s+(\d+))?(?:\s*#.*)?$/
 
 interface ParsedNoteShort {
   pitch: string
+  offScale: '?' | '!' | null
   lengthTicks: number
   weight: number
 }
@@ -102,9 +105,17 @@ function parseShortNote(raw: string): ParsedNoteShort {
   const trimmed = raw.replace(/#.*$/, '').trim()
   const m = NOTE_RX.exec(trimmed)
   if (!m) throw new ScoreError(`Cannot parse note: '${raw}'`)
-  const [, pitch, lenStr, weightStr] = m
+  const [, pitchRaw, lenStr, weightStr] = m
+  let pitch = pitchRaw!
+  let offScale: '?' | '!' | null = null
+  const tail = pitch.slice(-1)
+  if (tail === '?' || tail === '!') {
+    offScale = tail
+    pitch = pitch.slice(0, -1)
+  }
   return {
-    pitch: pitch!,
+    pitch,
+    offScale,
     lengthTicks: lenStr ? parseFloat(lenStr) : 1,
     weight: weightStr ? parseInt(weightStr, 10) : 1,
   }
@@ -227,6 +238,7 @@ export function* walkMeasures(
                 voice,
                 offsetTicks,
                 pitch: parsed.pitch,
+                offScale: parsed.offScale,
                 lengthTicks: parsed.lengthTicks,
                 stress: stressOf(offsetTicks) * parsed.weight,
                 measureIndex: i,

@@ -100,6 +100,9 @@ export async function buildDistinctNotes(
 
     const frequencyHz = ctx.tuner.frequencyOfTone(note.pitch)
     const properties: Record<string, unknown> = {}
+    // S53400 off-scale flags must split the cache: same pitch + different
+    // flag = different rendered tone, once scale-aware tuning lands.
+    if (note.offScale) properties.offScale = note.offScale
 
     const key = await noteCacheKey({
       instrumentHash: instrument.hash,

@@ -59,4 +59,22 @@ describe('walkMeasures', () => {
     const { head, measures } = parseScore(bad)
     expect(() => [...walkMeasures(head, measures)]).toThrow(/Voice 'unknown'/)
   })
+
+  it('extracts ? / ! off-scale flags from pitch and strips them', () => {
+    const body = `
+title: flags
+stage:
+  piano: 1|1 0 dev/piano
+---
+piano:
+  0: C4? 1
+  1: C4! 1
+  2: C4 1
+`
+    const { head, measures } = parseScore(body)
+    const notes = [...walkMeasures(head, measures)]
+    expect(notes[0]).toMatchObject({ pitch: 'C4', offScale: '?' })
+    expect(notes[1]).toMatchObject({ pitch: 'C4', offScale: '!' })
+    expect(notes[2]).toMatchObject({ pitch: 'C4', offScale: null })
+  })
 })

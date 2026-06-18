@@ -85,7 +85,8 @@ export class Tuner {
       return parseFloat(spec)
     }
 
-    // Strip off-scale flags for now; rendering will respect them later.
+    // Score-side parser strips `?`/`!` off-scale flags before reaching us.
+    // Tolerate them defensively for callers wiring raw pitch strings.
     let toneSpec = spec
     if (toneSpec.endsWith('!') || toneSpec.endsWith('?')) {
       toneSpec = toneSpec.slice(0, -1)
