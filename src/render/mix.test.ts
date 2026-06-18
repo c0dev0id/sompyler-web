@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { resetForTests } from '../storage/db'
 import { putNote } from '../storage/notes'
 import { loadInstrument } from '../parse/instrument'
+import { parseRoom } from '../parse/room'
 import { Tuner } from '../parse/tuning'
 import { buildDistinctNotes } from './distinct'
 import { mixOnly, MissingNoteCacheError } from './mix'
@@ -104,5 +105,39 @@ describe('mixOnly', () => {
     expect(result.left[atOne]).toBeGreaterThan(0)
     // The C4 note runs from t=1 to t=2 → last sample carries its value.
     expect(result.left[result.lengthSamples - 1]).toBeGreaterThan(0)
+  })
+
+  it('extends the buffer with a reverb tail when a Room is loaded', async () => {
+    const plan = await setUpPlan()
+    for (const note of plan.notes) {
+      await putNote({ key: note.key, pcm: constPCM(0.1, 44100), sampleRate: 44100 })
+    }
+    const head = (await import('../parse/score')).parseScore(SCORE).head
+    const room = parseRoom(`
+levels: 8:100;1,50;2,30;4,10;7,0
+delays: 1:0;1,1
+`)
+    const noRoom = await mixOnly(plan, head)
+    const withRoom = await mixOnly(plan, head, { room })
+    expect(withRoom.lengthSamples).toBeGreaterThan(noRoom.lengthSamples)
+  })
+
+  it('produces audibly different output when the Room changes', async () => {
+    const plan = await setUpPlan()
+    for (const note of plan.notes) {
+      await putNote({ key: note.key, pcm: constPCM(0.1, 44100), sampleRate: 44100 })
+    }
+    const head = (await import('../parse/score')).parseScore(SCORE).head
+    const smallRoom = parseRoom('levels: 4:100;1,40;3,10;4,0')
+    const bigRoom = parseRoom('levels: 16:100;2,60;8,30;16,0')
+    const a = await mixOnly(plan, head, { room: smallRoom })
+    const b = await mixOnly(plan, head, { room: bigRoom })
+    // Different rooms → different stereo energy distributions.
+    const energyDelta =
+      Math.abs(
+        a.left.reduce((s, v) => s + v * v, 0) -
+          b.left.reduce((s, v) => s + v * v, 0),
+      )
+    expect(energyDelta).toBeGreaterThan(0)
   })
 })

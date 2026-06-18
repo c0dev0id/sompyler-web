@@ -9,6 +9,7 @@ import { mixOnly, type MixResult } from '../render/mix'
 import { createSynthWorker } from '../render/workerClient'
 import { compileInstrument } from '../synth/compile'
 import { parseScore } from '../parse/score'
+import { parseRoom, type RoomBody } from '../parse/room'
 import { Player } from '../player/Player'
 
 /**
@@ -74,7 +75,7 @@ export class Session {
     })
 
     try {
-      const { scoreFile, instruments } = await loadProject()
+      const { scoreFile, instruments, room } = await loadProject()
 
       const tuner = new Tuner()
       const plan = await buildDistinctNotes(scoreFile.body, { tuner, instruments })
@@ -103,7 +104,7 @@ export class Session {
 
       this.setStatus({ ...this.renderStatus(), state: 'mixing' })
       const { head } = parseScore(scoreFile.body)
-      const mix = await mixOnly(plan, head)
+      const mix = await mixOnly(plan, head, { room })
 
       this.player.loadBuffer(mix)
       this.setBuffer(mix)
@@ -147,6 +148,7 @@ export class Session {
 interface LoadedProject {
   scoreFile: StoredFile
   instruments: Map<string, Awaited<ReturnType<typeof loadInstrument>>>
+  room: RoomBody | null
 }
 
 async function loadProject(): Promise<LoadedProject> {
@@ -161,5 +163,8 @@ async function loadProject(): Promise<LoadedProject> {
     const compiled = await loadInstrument(f.name, f.body)
     instruments.set(compiled.name, compiled)
   }
-  return { scoreFile, instruments }
+  // First in-project room file wins; absent → free-field.
+  const roomFile = projectFiles.find((f) => f.ext === 'splr')
+  const room = roomFile ? parseRoom(roomFile.body) : null
+  return { scoreFile, instruments, room }
 }

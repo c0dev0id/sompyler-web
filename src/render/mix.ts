@@ -1,21 +1,38 @@
 import { log } from '../debug'
 import { getNote } from '../storage/notes'
 import type { ScoreHead } from '../parse/score'
+import type { RoomBody } from '../parse/room'
 import type { DistinctRenderPlan } from './distinct'
-import { freeFieldGains, type ChannelGains } from './room'
+import {
+  buildRoomPositionIR,
+  freeFieldGains,
+  freeFieldIR,
+  type ChannelGains,
+  type PositionIR,
+} from './room'
 
 /**
- * Phase 5: `Render.mixOnly()` — fast path, assumes every distinct note is in
- * the cache. Returns a stereo Float32Array pair (left, right) at a single
+ * `Render.mixOnly()` — fast path; assumes every distinct note is in the
+ * cache. Returns a stereo Float32Array pair (left, right) at a single
  * sample rate.
  *
- * Reference: `Sompyler/orchestra/__init__.py:241–291` (the `samples = ...`
- * loop). We replace per-position convolution reverb with simple panorama
- * gains (R8 — Room reverb is a forward door).
+ * Reference: `Sompyler/orchestra/__init__.py:241–291` (samples loop) and
+ * `Sompyler/shapereverb.py:Room.position`.
+ *
+ * Phase 11 generalises the model: each voice position resolves to a
+ * stereo *impulse response*. Free-field is the degenerate δ-IR case
+ * (`tailSamples = 0`) — convolution collapses to multiplication, which
+ * is the existing additive-sum path. Loaded rooms produce non-trivial
+ * IRs whose tail extends the total buffer length.
  */
 
 export interface MixOptions {
   sampleRate?: number
+  /**
+   * Parsed room body. When undefined, every voice uses the free-field IR.
+   * Same room is applied to all voices for v1 (matches Sympyler).
+   */
+  room?: RoomBody | null
 }
 
 export interface MixResult {
@@ -32,20 +49,35 @@ export class MissingNoteCacheError extends Error {
   }
 }
 
+interface ResolvedVoice {
+  ir: PositionIR
+  gains: ChannelGains
+}
+
 export async function mixOnly(
   plan: DistinctRenderPlan,
   head: ScoreHead,
   opts: MixOptions = {},
 ): Promise<MixResult> {
   const sampleRate = opts.sampleRate ?? 44100
-  const gainsByVoice = new Map<string, ChannelGains>()
+  const room = opts.room ?? null
+
+  // Pre-compute one IR per voice. Same room applied to every voice; the
+  // *position* varies per voice and produces a different IR.
+  const byVoice = new Map<string, ResolvedVoice>()
   for (const [voice, spec] of Object.entries(head.stage)) {
-    // `volume` in our StageVoice is Sompyler's `distance`. See parseStageVoice.
-    gainsByVoice.set(voice, freeFieldGains(spec.channels, spec.volume))
+    let ir: PositionIR
+    if (room) {
+      ir = buildRoomPositionIR(room, spec.channels, spec.volume, sampleRate)
+    } else {
+      ir = freeFieldIR(spec.channels, spec.volume)
+    }
+    const gains = freeFieldGains(spec.channels, spec.volume)
+    byVoice.set(voice, { ir, gains })
   }
 
-  // Pre-load every note. If any is missing, fail fast — no point doing the
-  // additive work just to throw at the end.
+  // Pre-load every note. If any is missing, fail fast — no point doing
+  // the additive work just to throw at the end.
   const cachedNotes = new Map<string, Float32Array>()
   const missingKeys: string[] = []
   for (const note of plan.notes) {
@@ -57,29 +89,38 @@ export async function mixOnly(
     throw new MissingNoteCacheError(missingKeys)
   }
 
-  const lengthSamples = Math.ceil(plan.totalLengthSeconds * sampleRate)
+  // Total length includes the longest reverb tail across all voices.
+  let maxTail = 0
+  for (const v of byVoice.values()) {
+    if (v.ir.tailSamples > maxTail) maxTail = v.ir.tailSamples
+  }
+  const lengthSamples =
+    Math.ceil(plan.totalLengthSeconds * sampleRate) + maxTail
   const left = new Float32Array(lengthSamples)
   const right = new Float32Array(lengthSamples)
 
   for (const note of plan.notes) {
     const pcm = cachedNotes.get(note.key)!
     for (const occ of note.occurrences) {
-      const gains = gainsByVoice.get(occ.voice)
-      if (!gains) continue
+      const v = byVoice.get(occ.voice)
+      if (!v) continue
       const start = Math.round(occ.offsetSeconds * sampleRate)
-      const end = Math.min(start + pcm.length, lengthSamples)
-      const span = end - start
-      if (span <= 0) continue
 
-      if (gains.left !== 0) {
-        for (let i = 0; i < span; i++) {
-          left[start + i]! += pcm[i]! * gains.left
+      if (v.ir.tailSamples === 0) {
+        // FreeField δ-IR fast path: multiplication, not convolution.
+        const gL = v.ir.left[0]!
+        const gR = v.ir.right[0]!
+        const span = Math.min(pcm.length, lengthSamples - start)
+        if (span <= 0) continue
+        if (gL !== 0) {
+          for (let i = 0; i < span; i++) left[start + i]! += pcm[i]! * gL
         }
-      }
-      if (gains.right !== 0) {
-        for (let i = 0; i < span; i++) {
-          right[start + i]! += pcm[i]! * gains.right
+        if (gR !== 0) {
+          for (let i = 0; i < span; i++) right[start + i]! += pcm[i]! * gR
         }
+      } else {
+        convolveAccumulate(left, pcm, v.ir.left, start, lengthSamples)
+        convolveAccumulate(right, pcm, v.ir.right, start, lengthSamples)
       }
     }
   }
@@ -105,7 +146,34 @@ export async function mixOnly(
     lengthSamples,
     peak,
     sampleRate,
+    reverbTail: maxTail,
   })
 
   return { sampleRate, lengthSamples, left, right }
+}
+
+/**
+ * In-place: `out[start + i] += pcm[*] convolved with ir`. Sparse IRs
+ * (many zero taps) are fine — the inner conv loop is direct because the
+ * IR length is typically small (msec scale).
+ */
+function convolveAccumulate(
+  out: Float32Array,
+  pcm: Float32Array,
+  ir: Float32Array,
+  start: number,
+  total: number,
+): void {
+  const pcmLen = pcm.length
+  const irLen = ir.length
+  for (let k = 0; k < irLen; k++) {
+    const tap = ir[k]!
+    if (tap === 0) continue
+    const base = start + k
+    const end = Math.min(pcmLen, total - base)
+    if (end <= 0) continue
+    for (let i = 0; i < end; i++) {
+      out[base + i]! += pcm[i]! * tap
+    }
+  }
 }
