@@ -27,3 +27,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `renderNote()` produces a mono Float32Array from an instrument spec + frequency + stress + duration.
 - Single Web Worker (`src/synth/worker.ts`) that runs `renderNote()` off the main thread with transferable PCM buffers.
 - App shell "Preview A4 tone" button — first audible output, validates end-to-end Web Audio playback.
+- Generic worker `Pool` with hard-cancellation via `terminate()` (R4); factory pattern so tests can plug in sync adapters.
+- `renderAll()` orchestrator: walks the distinct-notes plan, skips cache hits, dispatches misses to the pool, writes PCM into the `notes` store, and orphan-sweeps only on success.
+- Web Worker client (`src/render/workerClient.ts`) wiring the synth worker into the pool with id-keyed pending requests.
