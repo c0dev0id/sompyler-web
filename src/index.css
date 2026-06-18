@@ -17,7 +17,7 @@ html, body, #root {
 .shell {
   display: grid;
   grid-template-columns: auto 1fr;
-  height: 100vh;
+  height: 100dvh;
 }
 
 /* Staging rail */
@@ -341,14 +341,14 @@ html, body, #root {
 /* Portrait phones / narrow viewports: stack the four quadrants
    vertically in the order Player -> Score -> Instruments -> Tuning/Room.
    The staging rail stays on the left (collapsible as usual). */
-@media (orientation: portrait) and (max-width: 768px) {
+@media (max-width: 768px) {
   .quadrants {
     grid-template-columns: 1fr;
     grid-template-rows:
       auto
-      minmax(50vh, auto)
-      minmax(50vh, auto)
-      minmax(50vh, auto);
+      minmax(50dvh, auto)
+      minmax(50dvh, auto)
+      minmax(50dvh, auto);
     overflow-y: auto;
   }
   .quadrant.tl,
