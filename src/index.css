@@ -337,3 +337,32 @@ html, body, #root {
   padding: 0.4rem 1rem;
   cursor: pointer;
 }
+
+/* Portrait phones / narrow viewports: stack the four quadrants
+   vertically in the order Player -> Score -> Instruments -> Tuning/Room.
+   The staging rail stays on the left (collapsible as usual). */
+@media (orientation: portrait) and (max-width: 768px) {
+  .quadrants {
+    grid-template-columns: 1fr;
+    grid-template-rows:
+      auto
+      minmax(50vh, auto)
+      minmax(50vh, auto)
+      minmax(50vh, auto);
+    overflow-y: auto;
+  }
+  .quadrant.tl,
+  .quadrant.tr,
+  .quadrant.bl,
+  .quadrant.br {
+    grid-column: 1;
+  }
+  .quadrant.tl { grid-row: 1; }
+  .quadrant.bl { grid-row: 2; } /* score */
+  .quadrant.tr { grid-row: 3; } /* instruments */
+  .quadrant.br { grid-row: 4; } /* tuning / room */
+
+  .staging:not(.collapsed) {
+    width: 160px;
+  }
+}
