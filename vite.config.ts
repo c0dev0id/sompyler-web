@@ -36,9 +36,12 @@ export default defineConfig({
       },
     }),
   ],
+  // Allow Vite/Vitest to read sibling sompyler/ conformance fixtures.
+  server: { fs: { allow: ['..'] } },
   test: {
     environment: 'jsdom',
     globals: false,
     setupFiles: ['./src/test-setup.ts'],
+    server: { deps: { inline: [/sompyler/] } },
   },
 })

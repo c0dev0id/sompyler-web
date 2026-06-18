@@ -42,3 +42,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Four-quadrant Layout (R-UI): transport top-left, instrument editor top-right (tabbed), score editor bottom-left, tuning / room editor bottom-right (tabbed). Editors honour `editLock` via the `readOnly` prop.
 - Hand-rolled 16-bit PCM WAV writer (`src/export/wav.ts`) — RIFF/WAVE/fmt/data header, sample clipping, mono + stereo. No dependencies.
 - Download WAV button on the transport row, enabled once `currentBuffer` is non-null.
+- `seedDefaults()`: starter content seeded on first run — in-project starter score + `dev/piano.spli`, plus staged extras (`dev/flute.spli`, `tones_euro.splt`, `free-field.splr`, `alle_meine_entchen.spls`).
+- Conformance test against Sompyler's `test_examples/alle_meine_entchen.spls` (structural parity per R-Test): one voice, plan builds, distinct-notes count and length sanity.
