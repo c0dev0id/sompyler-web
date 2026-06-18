@@ -73,16 +73,17 @@ function EditorPanel(props: {
 
   return (
     <div class="editor-panel">
-      <Show when={props.exts.length > 1}>
+      <Show when={files().length > 1}>
         <TabStrip files={files()} selected={selectedId()} onSelect={setSelectedId} />
       </Show>
       <Show
         when={selectedFile()}
         fallback={<p class="empty">{props.emptyMessage}</p>}
+        keyed
       >
         {(f) => (
           <Editor
-            file={f()}
+            file={f}
             readOnly={props.readOnly}
             lintContext={{ instrumentNames: props.instrumentNames }}
           />
