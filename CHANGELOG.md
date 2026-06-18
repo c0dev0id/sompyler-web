@@ -23,3 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Debounced autosave that persists every keystroke into the `files` object store.
 - Inline lint pipeline: YAML syntax errors plus semantic checks (unknown instrument references in `.spls`).
 - Starter `.spls` document seeded into storage and surfaced in the App shell.
+- Synthesis primitives: oscillators (sin/square/saw/triangle/noise), A.S.R envelope, sympartials, sound generator (sum-of-partials + master amp/clip).
+- `renderNote()` produces a mono Float32Array from an instrument spec + frequency + stress + duration.
+- Single Web Worker (`src/synth/worker.ts`) that runs `renderNote()` off the main thread with transferable PCM buffers.
+- App shell "Preview A4 tone" button — first audible output, validates end-to-end Web Audio playback.
