@@ -40,3 +40,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `RenderModal` (R11): full-screen overlay during synthesis/mix with progress bar, last-rendered-key strip, and Cancel button.
 - `StagingPane` (R9): collapsible flat-file list with per-row Add / Remove / Rename / Delete, plus an Import file picker. Score multiplicity enforced (only one `.spls` may be in-project).
 - Four-quadrant Layout (R-UI): transport top-left, instrument editor top-right (tabbed), score editor bottom-left, tuning / room editor bottom-right (tabbed). Editors honour `editLock` via the `readOnly` prop.
+- Hand-rolled 16-bit PCM WAV writer (`src/export/wav.ts`) — RIFF/WAVE/fmt/data header, sample clipping, mono + stereo. No dependencies.
+- Download WAV button on the transport row, enabled once `currentBuffer` is non-null.

@@ -6,6 +6,7 @@ import {
   type StoredFile,
 } from '../storage/files'
 import type { Session } from '../session/Session'
+import { downloadWav } from '../export/wav'
 
 /**
  * R-UI: four-quadrant main area + collapsible staging rail (rendered by App
@@ -148,6 +149,19 @@ export const Layout: Component<LayoutProps> = (props) => {
             />{' '}
             Loop
           </label>
+          <button
+            onClick={() => {
+              const buf = props.session.currentBuffer()
+              if (!buf) return
+              downloadWav(
+                { sampleRate: buf.sampleRate, channels: [buf.left, buf.right] },
+                'sompyler',
+              )
+            }}
+            disabled={!props.session.currentBuffer()}
+          >
+            Download WAV
+          </button>
           <span class="state">{playerState()}</span>
         </div>
         <Show when={props.session.renderStatus().state === 'error'}>
