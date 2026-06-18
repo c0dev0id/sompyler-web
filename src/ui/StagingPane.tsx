@@ -8,6 +8,7 @@ import {
   type StoredFile,
 } from '../storage/files'
 import { getPref, setPref } from '../storage/prefs'
+import { packZip, unpackZip } from '../storage/zip'
 import { log } from '../debug'
 
 const COLLAPSED_PREF_KEY = 'staging.collapsed'
@@ -15,10 +16,8 @@ const COLLAPSED_PREF_KEY = 'staging.collapsed'
 /**
  * R9: flat-file staging rail. Every file in IndexedDB is shown here; rows
  * have per-file Add / Remove / Rename / Delete controls. The active project
- * is the subset where `inProject = true`.
- *
- * Import/Export of .zip archives lands in Phase 7 (zip library decision was
- * deferred — for now the pane handles individual file picker imports).
+ * is the subset where `inProject = true`. Import accepts loose files or a
+ * .zip archive; Export writes a flat .zip of every staged file.
  */
 
 const VALID_EXTS: FileExtension[] = ['spls', 'spli', 'splt', 'splr']
@@ -100,6 +99,21 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
     const input = ev.currentTarget as HTMLInputElement
     if (!input.files) return
     for (const file of Array.from(input.files)) {
+      if (file.name.toLowerCase().endsWith('.zip')) {
+        const bytes = new Uint8Array(await file.arrayBuffer())
+        let unpacked: ReturnType<typeof unpackZip>
+        try {
+          unpacked = unpackZip(bytes)
+        } catch (err) {
+          log('storage', 'warn', `Failed to unpack '${file.name}'`, { error: String(err) })
+          continue
+        }
+        for (const entry of unpacked) {
+          await putFile({ name: entry.name, ext: entry.ext, body: entry.body, inProject: false })
+        }
+        log('storage', 'info', `Unpacked '${file.name}'`, { count: unpacked.length })
+        continue
+      }
       const parsed = parseFilename(file.name)
       if (!parsed) {
         log('storage', 'warn', `Skipping unrecognised file '${file.name}'`)
@@ -111,6 +125,20 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
     input.value = ''
     await refresh()
     props.onChange()
+  }
+
+  async function handleExport() {
+    const all = await listFiles()
+    if (all.length === 0) return
+    const bytes = packZip(all)
+    const blob = new Blob([bytes as BlobPart], { type: 'application/zip' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `sompyler-${new Date().toISOString().slice(0, 10)}.zip`
+    a.click()
+    URL.revokeObjectURL(url)
+    log('storage', 'info', `Exported zip`, { count: all.length })
   }
 
   return (
@@ -164,7 +192,7 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
               type="file"
               ref={fileInput}
               multiple
-              accept=".spls,.spli,.splt,.splr"
+              accept=".spls,.spli,.splt,.splr,.zip"
               onChange={(e) => void handleImport(e)}
               style={{ display: 'none' }}
             />
@@ -173,6 +201,13 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
               disabled={props.mutationsDisabled}
             >
               Import…
+            </button>
+            <button
+              onClick={() => void handleExport()}
+              disabled={files().length === 0}
+              title="Download every staged file as a .zip"
+            >
+              Export…
             </button>
           </div>
         </div>
