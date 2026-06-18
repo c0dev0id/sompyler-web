@@ -22,6 +22,7 @@ export interface AudioContextFactory {
 
 export class Player {
   private ctx: AudioContext | null = null
+  private analyser: AnalyserNode | null = null
   private buffer: AudioBuffer | null = null
   private source: AudioBufferSourceNode | null = null
   private pausedAt = 0
@@ -31,6 +32,11 @@ export class Player {
   private listeners = new Set<(s: TransportState) => void>()
 
   constructor(private readonly factory: AudioContextFactory) {}
+
+  /** Used by the visualizer. Null until an AudioContext has been built. */
+  getAnalyser(): AnalyserNode | null {
+    return this.analyser
+  }
 
   onStateChange(fn: (s: TransportState) => void): () => void {
     this.listeners.add(fn)
@@ -52,7 +58,14 @@ export class Player {
 
   /** Lazily build the AudioContext on first use (gesture-driven). */
   private ensureCtx(): AudioContext {
-    if (!this.ctx) this.ctx = this.factory()
+    if (!this.ctx) {
+      this.ctx = this.factory()
+      if (typeof this.ctx.createAnalyser === 'function') {
+        this.analyser = this.ctx.createAnalyser()
+        this.analyser.fftSize = 2048
+        this.analyser.connect(this.ctx.destination)
+      }
+    }
     return this.ctx
   }
 
@@ -117,7 +130,7 @@ export class Player {
     const node = this.ctx.createBufferSource()
     node.buffer = this.buffer
     node.loop = this.loopEnabled
-    node.connect(this.ctx.destination)
+    node.connect(this.analyser ?? this.ctx.destination)
     node.start(0, offset)
     node.onended = () => {
       if (this.source === node && !this.loopEnabled) {

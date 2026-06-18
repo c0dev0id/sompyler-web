@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, Show, type Component } from 'solid-js'
+import { createEffect, createSignal, For, onCleanup, Show, type Component } from 'solid-js'
 import { Editor } from '../editor/Editor'
 import {
   listProjectFiles,
@@ -7,6 +7,8 @@ import {
 } from '../storage/files'
 import type { Session } from '../session/Session'
 import { downloadWav } from '../export/wav'
+import { PlayerVisualizer } from './PlayerVisualizer'
+import type { TransportState } from '../player/Player'
 
 /**
  * R-UI: four equal quadrants + collapsible staging rail.
@@ -48,6 +50,7 @@ function TabStrip(props: {
 }
 
 function EditorPanel(props: {
+  title: string
   exts: FileExtension[]
   refreshSignal: () => number
   readOnly: boolean
@@ -75,6 +78,16 @@ function EditorPanel(props: {
 
   return (
     <div class="editor-panel">
+      <header class="pane-header">
+        <h3 class="pane-title">{props.title}</h3>
+        <Show when={selectedFile()} keyed>
+          {(f) => (
+            <span class="pane-filename">
+              {f.name}.{f.ext}
+            </span>
+          )}
+        </Show>
+      </header>
       <Show when={files().length > 1}>
         <TabStrip files={files()} selected={selectedId()} onSelect={setSelectedId} />
       </Show>
@@ -106,15 +119,23 @@ export const Layout: Component<LayoutProps> = (props) => {
     })()
   })
 
-  const playerState = () => props.session.player.getState()
-  const [forcePlayerRender, setForcePlayerRender] = createSignal(0)
-  // Subscribe to player state changes so the transport row updates.
-  props.session.player.onStateChange(() => setForcePlayerRender((n) => n + 1))
+  // Bridge the imperative onStateChange listener into a real Solid signal so
+  // every JSX expression that reads it reacts to transport changes (not just
+  // the one that happens to read forcePlayerRender).
+  const [playerState, setPlayerState] = createSignal<TransportState>(
+    props.session.player.getState(),
+  )
+  const unsubPlayer = props.session.player.onStateChange(setPlayerState)
+  onCleanup(unsubPlayer)
 
   return (
     <div class="quadrants">
-      {/* Top-left: transport + Render */}
-      <section class="quadrant tl">
+      {/* Top-left: transport + Render + waveform */}
+      <section class="quadrant tl player-pane">
+        <header class="pane-header">
+          <h3 class="pane-title">Player</h3>
+          <span class="pane-state">{playerState()}</span>
+        </header>
         <div class="transport">
           <button
             onClick={() => void props.session.startRender()}
@@ -124,11 +145,7 @@ export const Layout: Component<LayoutProps> = (props) => {
           </button>
           <button
             onClick={() => props.session.player.play()}
-            disabled={
-              playerState() === 'empty' ||
-              playerState() === 'playing' ||
-              (forcePlayerRender(), false)
-            }
+            disabled={playerState() === 'empty' || playerState() === 'playing'}
           >
             Play
           </button>
@@ -140,7 +157,7 @@ export const Layout: Component<LayoutProps> = (props) => {
           </button>
           <button
             onClick={() => props.session.player.stop()}
-            disabled={playerState() === 'empty'}
+            disabled={playerState() === 'empty' || playerState() === 'stopped'}
           >
             Stop
           </button>
@@ -165,7 +182,6 @@ export const Layout: Component<LayoutProps> = (props) => {
           >
             Download WAV
           </button>
-          <span class="state">{playerState()}</span>
         </div>
         <Show when={props.session.renderStatus().state === 'error'}>
           <p class="error">
@@ -173,11 +189,16 @@ export const Layout: Component<LayoutProps> = (props) => {
             <button onClick={() => props.session.clearError()}>Dismiss</button>
           </p>
         </Show>
+        <PlayerVisualizer
+          getAnalyser={() => props.session.player.getAnalyser()}
+          isPlaying={() => playerState() === 'playing'}
+        />
       </section>
 
       {/* Top-right: instruments */}
       <section class="quadrant tr">
         <EditorPanel
+          title="Instruments"
           exts={['spli']}
           refreshSignal={props.refreshSignal}
           readOnly={props.session.editLock()}
@@ -189,6 +210,7 @@ export const Layout: Component<LayoutProps> = (props) => {
       {/* Bottom-left: score */}
       <section class="quadrant bl">
         <EditorPanel
+          title="Score"
           exts={['spls']}
           refreshSignal={props.refreshSignal}
           readOnly={props.session.editLock()}
@@ -200,6 +222,7 @@ export const Layout: Component<LayoutProps> = (props) => {
       {/* Bottom-right: tuning / room */}
       <section class="quadrant br">
         <EditorPanel
+          title="Tuning / Room"
           exts={['splt', 'splr']}
           refreshSignal={props.refreshSignal}
           readOnly={props.session.editLock()}
