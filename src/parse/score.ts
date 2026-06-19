@@ -55,6 +55,18 @@ export interface RawNote {
    * to the envelope as a release extension.
    */
   damp: number
+  /**
+   * S46300 static article properties (numbers, booleans, identifiers).
+   * Folded into the cache-key `properties` so different values split the
+   * cache. Shape-typed values land in `shapeArticles` instead.
+   */
+  staticArticles: Record<string, string | number | boolean>
+  /**
+   * S32200 shape-typed article values: parsed-and-deferred. The string is
+   * preserved here; per-tick resolution happens in the synth worker in
+   * phase 16b.
+   */
+  shapeArticles: Record<string, string>
   measureIndex: number
   measureName: string
 }
@@ -107,6 +119,25 @@ interface ParsedNoteShort {
   lengthTicks: number
   weight: number
   damp: number
+  staticArticles: Record<string, string | number | boolean>
+  shapeArticles: Record<string, string>
+}
+
+/**
+ * Classify an article value. Shape literals (anything containing `:`, `;`, or
+ * `,`) are routed to `shapeArticles` for deferred per-tick evaluation in 16b.
+ * Booleans (`true|false|yes|no`) and numeric literals become typed statics;
+ * anything else is kept as a bare identifier string.
+ */
+function classifyAttrValue(raw: string):
+  | { kind: 'shape'; value: string }
+  | { kind: 'static'; value: number | boolean | string } {
+  if (raw === 'true' || raw === 'yes') return { kind: 'static', value: true }
+  if (raw === 'false' || raw === 'no') return { kind: 'static', value: false }
+  if (/[:;,]/.test(raw)) return { kind: 'shape', value: raw }
+  const n = Number(raw)
+  if (raw !== '' && !Number.isNaN(n)) return { kind: 'static', value: n }
+  return { kind: 'static', value: raw }
 }
 
 function parseShortNote(raw: string): ParsedNoteShort {
@@ -122,11 +153,23 @@ function parseShortNote(raw: string): ParsedNoteShort {
     pitch = pitch.slice(0, -1)
   }
   let damp = 0
+  const staticArticles: Record<string, string | number | boolean> = {}
+  const shapeArticles: Record<string, string> = {}
   if (attrStr) {
     for (const tok of attrStr.trim().split(/\s+/)) {
       if (!tok) continue
-      const [k, v] = tok.split('=')
-      if (k === 'damp' && v !== undefined) damp = parseFloat(v)
+      const eq = tok.indexOf('=')
+      if (eq < 0) continue
+      const k = tok.slice(0, eq)
+      const v = tok.slice(eq + 1)
+      if (k === 'damp') {
+        const n = parseFloat(v)
+        if (!Number.isNaN(n)) damp = n
+        continue
+      }
+      const cls = classifyAttrValue(v)
+      if (cls.kind === 'shape') shapeArticles[k] = cls.value
+      else staticArticles[k] = cls.value
     }
   }
   return {
@@ -135,6 +178,8 @@ function parseShortNote(raw: string): ParsedNoteShort {
     lengthTicks: lenStr ? parseFloat(lenStr) : 1,
     weight: weightStr ? parseInt(weightStr, 10) : 1,
     damp,
+    staticArticles,
+    shapeArticles,
   }
 }
 
@@ -259,6 +304,8 @@ export function* walkMeasures(
                 lengthTicks: parsed.lengthTicks,
                 stress: stressOf(offsetTicks) * parsed.weight,
                 damp: parsed.damp,
+                staticArticles: parsed.staticArticles,
+                shapeArticles: parsed.shapeArticles,
                 measureIndex: i,
                 measureName,
               }

@@ -106,6 +106,12 @@ export async function buildDistinctNotes(
     if (note.offScale) properties.offScale = note.offScale
     // S51a10 damp extends the envelope release; different damp ⇒ different PCM.
     if (dampSeconds > 0) properties.dampSeconds = dampSeconds
+    // S46300 static article properties enter the cache key directly (R1).
+    // Shape-typed articles are deferred to per-tick resolution in phase 16b
+    // and are intentionally *not* folded in here.
+    for (const [k, v] of Object.entries(note.staticArticles)) {
+      properties[k] = v
+    }
 
     const key = await noteCacheKey({
       instrumentHash: instrument.hash,

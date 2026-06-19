@@ -76,6 +76,43 @@ piano:
     expect(notes[1]).toMatchObject({ pitch: 'C4', damp: 0 })
   })
 
+  it('parses trailing key=value tokens as typed static articles (S46300)', () => {
+    const body = `
+title: articles
+stage:
+  piano: 1|1 0 dev/piano
+---
+piano:
+  0: C4 1 100 vibrato=0.4 legato=true accent=soft
+`
+    const { head, measures } = parseScore(body)
+    const notes = [...walkMeasures(head, measures)]
+    expect(notes[0]!.staticArticles).toEqual({
+      vibrato: 0.4,
+      legato: true,
+      accent: 'soft',
+    })
+    expect(notes[0]!.shapeArticles).toEqual({})
+  })
+
+  it('routes shape-literal article values (containing : ; ,) into shapeArticles', () => {
+    const body = `
+title: shaped
+stage:
+  piano: 1|1 0 dev/piano
+---
+piano:
+  0: C4 1 100 vibrato=1:0,0;1,1 swell=0,1;1,0
+`
+    const { head, measures } = parseScore(body)
+    const notes = [...walkMeasures(head, measures)]
+    expect(notes[0]!.staticArticles).toEqual({})
+    expect(notes[0]!.shapeArticles).toEqual({
+      vibrato: '1:0,0;1,1',
+      swell: '0,1;1,0',
+    })
+  })
+
   it('extracts ? / ! off-scale flags from pitch and strips them', () => {
     const body = `
 title: flags

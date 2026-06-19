@@ -82,6 +82,58 @@ describe('buildDistinctNotes', () => {
     expect(plan.totalLengthSeconds).toBeCloseTo(4, 3)
   })
 
+  it('splits the cache on static article values (Phase 15a)', async () => {
+    const ARTICULATED = `
+title: articulated
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+  lower_stress_bound: 100
+  upper_stress_bound: 100
+piano:
+  0: A4 1 100 vibrato=0.5
+  1: A4 1 100 vibrato=0.8
+  2: A4 1 100 vibrato=0.5
+`
+    const plan = await buildDistinctNotes(ARTICULATED, {
+      tuner: new Tuner(),
+      instruments: new Map([[piano.name, piano]]),
+    })
+    expect(plan.notes).toHaveLength(2)
+    const v05 = plan.notes.find((n) => n.properties.vibrato === 0.5)
+    const v08 = plan.notes.find((n) => n.properties.vibrato === 0.8)
+    expect(v05!.occurrences).toHaveLength(2)
+    expect(v08!.occurrences).toHaveLength(1)
+  })
+
+  it('does not split the cache on shape-typed article values (deferred to 16b)', async () => {
+    const SHAPED = `
+title: shaped
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+  lower_stress_bound: 100
+  upper_stress_bound: 100
+piano:
+  0: A4 1 100 vibrato=1:0,0;1,1
+  1: A4 1 100 vibrato=1:1,1;0,0
+`
+    const plan = await buildDistinctNotes(SHAPED, {
+      tuner: new Tuner(),
+      instruments: new Map([[piano.name, piano]]),
+    })
+    // Shape-typed values aren't in the cache key yet — both notes collapse
+    // into the same distinct entry. Per-tick resolution lands in phase 16b.
+    expect(plan.notes).toHaveLength(1)
+    expect(plan.notes[0]!.occurrences).toHaveLength(2)
+  })
+
   it('splits the cache when ? / ! off-scale flags diverge (S53400)', async () => {
     const FLAGGED = `
 title: flag-split
