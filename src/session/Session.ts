@@ -4,7 +4,7 @@ import { listProjectFiles, type StoredFile } from '../storage/files'
 import { loadInstrument } from '../parse/instrument'
 import { Tuner } from '../parse/tuning'
 import { buildDistinctNotes } from '../render/distinct'
-import { renderAll } from '../render/renderAll'
+import { renderAll, type RenderDiagnostic } from '../render/renderAll'
 import { mixOnly, type MixResult } from '../render/mix'
 import { createSynthWorker } from '../render/workerClient'
 import { compileInstrument } from '../synth/compile'
@@ -40,23 +40,33 @@ export class Session {
   readonly editLock: Accessor<boolean>
   readonly renderStatus: Accessor<RenderStatus>
   readonly currentBuffer: Accessor<MixResult | null>
+  /**
+   * Per-note diagnostics from the most recent render run (R6). The score
+   * editor lint reads these and renders them inline; they clear on the
+   * next successful render or when the user dismisses the error banner.
+   */
+  readonly renderDiagnostics: Accessor<RenderDiagnostic[]>
   readonly player: Player
 
   private readonly setEditLock: (v: boolean) => void
   private readonly setStatus: (v: RenderStatus) => void
   private readonly setBuffer: (v: MixResult | null) => void
+  private readonly setDiagnostics: (v: RenderDiagnostic[]) => void
   private controller: AbortController | null = null
 
   constructor(audioContextFactory: () => AudioContext) {
     const [editLock, setEditLock] = createSignal(false)
     const [status, setStatus] = createSignal<RenderStatus>(IDLE_STATUS)
     const [buffer, setBuffer] = createSignal<MixResult | null>(null)
+    const [diagnostics, setDiagnostics] = createSignal<RenderDiagnostic[]>([])
     this.editLock = editLock
     this.renderStatus = status
     this.currentBuffer = buffer
+    this.renderDiagnostics = diagnostics
     this.setEditLock = setEditLock
     this.setStatus = setStatus
     this.setBuffer = setBuffer
+    this.setDiagnostics = setDiagnostics
     this.player = new Player(audioContextFactory)
   }
 
@@ -84,7 +94,7 @@ export class Session {
         progress: { done: 0, total: plan.notes.length, cacheHits: 0 },
       })
 
-      await renderAll(plan, {
+      const renderResult = await renderAll(plan, {
         workerFactory: createSynthWorker,
         instruments,
         compileInstrument,
@@ -102,12 +112,26 @@ export class Session {
         return
       }
 
+      if (renderResult.diagnostics.length > 0) {
+        // R6: keep the previous buffer looping; surface inline diagnostics.
+        this.setDiagnostics(renderResult.diagnostics)
+        const first = renderResult.diagnostics[0]!
+        this.setStatus({
+          ...IDLE_STATUS,
+          state: 'error',
+          errorMessage: `${renderResult.diagnostics.length} note(s) failed to render — ${first.message}`,
+        })
+        log('session', 'warn', `Render produced ${renderResult.diagnostics.length} diagnostics; buffer unchanged`)
+        return
+      }
+
       this.setStatus({ ...this.renderStatus(), state: 'mixing' })
       const { head } = parseScore(scoreFile.body)
       const mix = await mixOnly(plan, head, { room })
 
       this.player.loadBuffer(mix)
       this.setBuffer(mix)
+      this.setDiagnostics([])
       this.setStatus(IDLE_STATUS)
       log('session', 'info', 'Render complete; buffer swapped')
     } catch (e) {
@@ -141,6 +165,7 @@ export class Session {
   clearError(): void {
     if (this.renderStatus().state === 'error') {
       this.setStatus(IDLE_STATUS)
+      this.setDiagnostics([])
     }
   }
 }

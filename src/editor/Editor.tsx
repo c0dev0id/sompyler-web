@@ -1,6 +1,7 @@
 import { onCleanup, onMount, createEffect } from 'solid-js'
 import { EditorState, Compartment } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
+import { forceLinting } from '@codemirror/lint'
 import type { FileExtension, StoredFile } from '../storage/files'
 import { makeAutosaver } from './autosave'
 import { extensionsFor, readOnlyExtension } from './configs'
@@ -41,6 +42,13 @@ export function Editor(props: EditorProps) {
     view.dispatch({
       effects: readOnlyCompartment.reconfigure(readOnlyExtension(props.readOnly)),
     })
+  })
+
+  // R6: when external render diagnostics change, ask CodeMirror to re-run
+  // the linter so the inline markers refresh without a doc edit.
+  createEffect(() => {
+    props.lintContext.renderDiagnostics?.()
+    if (view) forceLinting(view)
   })
 
   onCleanup(() => {

@@ -55,6 +55,7 @@ function EditorPanel(props: {
   refreshSignal: () => number
   readOnly: boolean
   instrumentNames: () => Set<string>
+  renderDiagnostics: () => ReturnType<Session['renderDiagnostics']>
   emptyMessage: string
 }) {
   const [files, setFiles] = createSignal<StoredFile[]>([])
@@ -100,7 +101,10 @@ function EditorPanel(props: {
           <Editor
             file={f}
             readOnly={props.readOnly}
-            lintContext={{ instrumentNames: props.instrumentNames }}
+            lintContext={{
+              instrumentNames: props.instrumentNames,
+              renderDiagnostics: props.renderDiagnostics,
+            }}
           />
         )}
       </Show>
@@ -203,6 +207,7 @@ export const Layout: Component<LayoutProps> = (props) => {
           refreshSignal={props.refreshSignal}
           readOnly={props.session.editLock()}
           instrumentNames={instrumentNames}
+          renderDiagnostics={props.session.renderDiagnostics}
           emptyMessage="No instrument files in project. Add a .spli from staging."
         />
       </section>
@@ -215,6 +220,7 @@ export const Layout: Component<LayoutProps> = (props) => {
           refreshSignal={props.refreshSignal}
           readOnly={props.session.editLock()}
           instrumentNames={instrumentNames}
+          renderDiagnostics={props.session.renderDiagnostics}
           emptyMessage="No score in project. Add a .spls from staging."
         />
       </section>
@@ -227,6 +233,7 @@ export const Layout: Component<LayoutProps> = (props) => {
           refreshSignal={props.refreshSignal}
           readOnly={props.session.editLock()}
           instrumentNames={instrumentNames}
+          renderDiagnostics={props.session.renderDiagnostics}
           emptyMessage="No tuning / room files in project."
         />
       </section>

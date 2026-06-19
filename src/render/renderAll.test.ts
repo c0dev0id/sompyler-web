@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { resetForTests } from '../storage/db'
 import { putNote, listNoteKeys } from '../storage/notes'
 import { renderAll } from './renderAll'
@@ -135,6 +135,37 @@ describe('renderAll', () => {
     setTimeout(() => controller.abort(), 10)
     await promise
     // 'stale' should still be present because sweep was skipped.
+    const keys = await listNoteKeys()
+    expect(keys).toContain('stale')
+  })
+
+  it('collects per-note worker errors as diagnostics without aborting (R6, Phase 15b)', async () => {
+    const piano = await loadInstrument('dev/piano', 'oscillator: sin')
+    const plan = await buildDistinctNotes(SCORE, {
+      tuner: new Tuner(),
+      instruments: new Map([[piano.name, piano]]),
+    })
+    // Synthetic worker that fails on every dispatch.
+    const failingFactory = (): WorkerHandle<RenderJob, RenderResult> => ({
+      async submit(job) {
+        throw new Error(`synthesis blew up for ${job.input.id}`)
+      },
+      terminate() {},
+    })
+    await putNote({ key: 'stale', pcm: new Float32Array(1), sampleRate: 44100 })
+
+    const result = await renderAll(plan, {
+      poolSize: 2,
+      workerFactory: failingFactory,
+      instruments: new Map([[piano.name, piano]]),
+      compileInstrument: () => ({}),
+    })
+
+    expect(result.diagnostics).toHaveLength(2)
+    expect(result.diagnostics[0]!.message).toMatch(/synthesis blew up/)
+    expect(result.diagnostics[0]!.occurrence.voice).toBe('piano')
+    // R6: render failed → buffer is not swapped → don't sweep stale entries.
+    expect(result.orphansRemoved).toBe(0)
     const keys = await listNoteKeys()
     expect(keys).toContain('stale')
   })
