@@ -2,6 +2,7 @@ import jsyaml from 'js-yaml'
 import { ScoreError } from '../errors'
 import { log } from '../debug'
 import { PositionStack } from './position'
+import { expandMultiMeasures } from './multimeasure'
 
 /**
  * Phase 1 walker for `.spls` files.
@@ -286,7 +287,7 @@ export function parseScore(body: string): { head: ScoreHead; measures: unknown[]
         ? (head.inlined_instruments as Record<string, unknown>)
         : undefined,
   }
-  return { head: result, measures: docs.slice(1) }
+  return { head: result, measures: expandMultiMeasures(docs.slice(1)) }
 }
 
 /**
