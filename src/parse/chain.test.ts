@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { expandChainString } from './chain'
 
 describe('expandChainString (S53000)', () => {
+  // ── Baseline behaviour (unchanged from Phase 24) ──────────────────────────
+
   it('"A4 B4 C4" yields three sequential notes', () => {
     const notes = expandChainString('A4 B4 C4')
     expect(notes).toHaveLength(3)
@@ -48,14 +50,86 @@ describe('expandChainString (S53000)', () => {
   })
 
   it('parallel subchains advance independently', () => {
-    // Two parallel subchains: first has A4(1)+B4(1), second has C4(2)
     const notes = expandChainString('A4 B4; C4__')
-    const a4 = notes.filter((n) => n.pitch === 'A4')
-    const b4 = notes.filter((n) => n.pitch === 'B4')
-    const c4 = notes.filter((n) => n.pitch === 'C4')
-    expect(a4[0]?.offsetTicks).toBe(0)
-    expect(b4[0]?.offsetTicks).toBe(1)
-    expect(c4[0]?.offsetTicks).toBe(0)
-    expect(c4[0]?.lengthTicks).toBe(3)
+    expect(notes.find((n) => n.pitch === 'A4')?.offsetTicks).toBe(0)
+    expect(notes.find((n) => n.pitch === 'B4')?.offsetTicks).toBe(1)
+    expect(notes.find((n) => n.pitch === 'C4')?.offsetTicks).toBe(0)
+    expect(notes.find((n) => n.pitch === 'C4')?.lengthTicks).toBe(3)
+  })
+
+  // ── Pitch-shift operators (Option A) ──────────────────────────────────────
+
+  it('"C4 + +" yields chromatic ascent: C4, C#4, D4', () => {
+    const notes = expandChainString('C4 + +')
+    expect(notes).toHaveLength(3)
+    expect(notes[0]).toMatchObject({ pitch: 'C4', offsetTicks: 0 })
+    expect(notes[1]).toMatchObject({ pitch: 'C#4', offsetTicks: 1 })
+    expect(notes[2]).toMatchObject({ pitch: 'D4', offsetTicks: 2 })
+  })
+
+  it('"E4 -2" shifts down 2 semitones: E4, D4', () => {
+    const notes = expandChainString('E4 -2')
+    expect(notes).toHaveLength(2)
+    expect(notes[0]).toMatchObject({ pitch: 'E4', offsetTicks: 0 })
+    expect(notes[1]).toMatchObject({ pitch: 'D4', offsetTicks: 1 })
+  })
+
+  it('"C4 +4 =" shifts up then resets to base', () => {
+    const notes = expandChainString('C4 +4 =')
+    expect(notes).toHaveLength(3)
+    expect(notes[0]).toMatchObject({ pitch: 'C4' })
+    expect(notes[1]).toMatchObject({ pitch: 'E4' })  // C4 + 4 semitones
+    expect(notes[2]).toMatchObject({ pitch: 'C4' })  // reset to base
+  })
+
+  it('shift wraps across octave boundaries', () => {
+    const notes = expandChainString('B4 +')
+    expect(notes[1]).toMatchObject({ pitch: 'C5' })
+  })
+
+  it('negative shift wraps downward across octave boundaries', () => {
+    const notes = expandChainString('C4 -')
+    expect(notes[1]).toMatchObject({ pitch: 'B3' })
+  })
+
+  it('shift token honours length suffix', () => {
+    // "+4__" = shift up 4 semitones (C4→E4) with 3 ticks length
+    const notes = expandChainString('C4 +4__')
+    expect(notes[1]).toMatchObject({ pitch: 'E4', lengthTicks: 3 })
+  })
+
+  it('new absolute pitch resets base and shift', () => {
+    const notes = expandChainString('C4 + + G4 -')
+    // C4, C#4(shift=1), D4(shift=2), G4(new base, shift=0), F#4(shift=-1)
+    expect(notes[0]).toMatchObject({ pitch: 'C4' })
+    expect(notes[1]).toMatchObject({ pitch: 'C#4' })
+    expect(notes[2]).toMatchObject({ pitch: 'D4' })
+    expect(notes[3]).toMatchObject({ pitch: 'G4' })
+    expect(notes[4]).toMatchObject({ pitch: 'F#4' })
+  })
+
+  // ── Rest / pause (Option A) ────────────────────────────────────────────────
+
+  it('"A4 . B4" inserts a 1-tick rest between the notes', () => {
+    const notes = expandChainString('A4 . B4')
+    expect(notes).toHaveLength(2)
+    expect(notes[0]).toMatchObject({ pitch: 'A4', offsetTicks: 0 })
+    expect(notes[1]).toMatchObject({ pitch: 'B4', offsetTicks: 2 })
+  })
+
+  it('"A4 .3 B4" inserts a 3-tick rest', () => {
+    const notes = expandChainString('A4 .3 B4')
+    expect(notes[1]).toMatchObject({ pitch: 'B4', offsetTicks: 4 })
+  })
+
+  it('rest does not break shift accumulation', () => {
+    // Shift should survive a rest between operators
+    const notes = expandChainString('C4 + . +')
+    expect(notes[0]).toMatchObject({ pitch: 'C4', offsetTicks: 0 })
+    // + → shift=1 → C#4 at tick 1
+    expect(notes[1]).toMatchObject({ pitch: 'C#4', offsetTicks: 1 })
+    // rest at tick 2
+    // + → shift=2 → D4 at tick 3
+    expect(notes[2]).toMatchObject({ pitch: 'D4', offsetTicks: 3 })
   })
 })

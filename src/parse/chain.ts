@@ -4,19 +4,22 @@ import { ScoreError } from '../errors'
  * Chain syntax (RFC §S53000) — compact note-sequence notation where offsets
  * are implied by cumulative clause lengths instead of explicit tick keys.
  *
- * A chain string consists of space-separated clauses inside a subchain.
- * Parallel subchains (same starting offset) are separated by `"; "` (the
- * semicolon must be followed by a space to distinguish it from the single-
- * letter co-pitch form, which is deferred). Within a subchain:
+ * Within a subchain (parallel subchains are separated by `"; "`):
  *
- *   - Each token is a pitch string (e.g. `A4`, `C#4`, `Bb3?`)
- *   - Optional `_`, `__`, `_N` suffix extends the length (each `_` = +1 tick,
- *     `_N` = +N ticks above the 1-tick base).
- *   - An immediately following `*N` token repeats the preceding clause N times.
+ *   - `A4`, `C#4`, `Bb3?` — absolute pitch; resets the shift counter to 0.
+ *   - `+N` / `+`  — shift up N (default 1) semitones from base; emits a note.
+ *   - `-N` / `-`  — shift down N semitones; emits a note.
+ *   - `=`         — reset shift to 0; emits a note at the base pitch.
+ *   - `.N` / `.`  — rest for N (default 1) ticks; no note emitted.
+ *   - `_` / `_N` suffix on any pitch/shift token — extend length by N extra ticks.
+ *   - `*N` token after a pitch/shift/reset — repeat that clause N times total.
  *
- * Deferred (S53000 remainder): pitch-shift operators (`+`/`-`/`=`), stress
- * adjustment (`^`), article extension stacks (`:ext`), pause (`.`),
- * comma-tail (`,N`) / semicolon-overlength (`;N`), paren clusters.
+ * Shifts are cumulative within a subchain: `C4 + +` yields C4, C#4, D4.
+ * The shift resets whenever an absolute pitch token is encountered.
+ *
+ * Deferred (S53000 remainder): stress adjustment (`^`), article extension
+ * stacks (`:ext`), comma-tail (`,N`), semicolon-overlength (`;N`), paren
+ * clusters, repeated-sign notation (`++`, `--`).
  */
 
 export interface ChainNote {
@@ -26,83 +29,137 @@ export interface ChainNote {
   lengthTicks: number
 }
 
-function parseToken(token: string): { pitch: string; offScale: '?' | '!' | null; lengthTicks: number } | null {
-  if (!token || token.startsWith('*')) return null
-  // Split on the first `_`
-  const underscoreIdx = token.indexOf('_')
-  let pitchPart: string
-  let lenPart: string
-  if (underscoreIdx === -1) {
-    pitchPart = token
-    lenPart = ''
-  } else {
-    pitchPart = token.slice(0, underscoreIdx)
-    lenPart = token.slice(underscoreIdx)
-  }
+// ── Chromatic transposition helpers ──────────────────────────────────────────
 
-  let offScale: '?' | '!' | null = null
-  if (pitchPart.endsWith('?')) {
-    offScale = '?'
-    pitchPart = pitchPart.slice(0, -1)
-  } else if (pitchPart.endsWith('!')) {
-    offScale = '!'
-    pitchPart = pitchPart.slice(0, -1)
-  }
-  if (!pitchPart) return null
+const SHARPS = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+const FLATS  = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B']
 
-  let extraTicks = 0
-  if (lenPart) {
-    const allUnderscores = /^_+$/.test(lenPart)
-    if (allUnderscores) {
-      extraTicks = lenPart.length
-    } else {
-      const numMatch = lenPart.match(/^_(\d+)$/)
-      if (!numMatch) throw new ScoreError(`Malformed chain length '${lenPart}' in token '${token}'`)
-      extraTicks = parseInt(numMatch[1]!, 10)
-    }
-  }
-
-  return { pitch: pitchPart, offScale, lengthTicks: 1 + extraTicks }
+function pitchToMidi(pitch: string): number {
+  const m = pitch.match(/^([A-Ga-g][#b]?)(\d+)$/)
+  if (!m) throw new ScoreError(`Cannot transpose chain pitch '${pitch}'`)
+  const name = m[1]!.charAt(0).toUpperCase() + m[1]!.slice(1)
+  let idx = SHARPS.indexOf(name)
+  if (idx === -1) idx = FLATS.indexOf(name)
+  if (idx === -1) throw new ScoreError(`Unknown note '${name}' in chain`)
+  return (parseInt(m[2]!, 10) + 1) * 12 + idx
 }
 
+function midiToPitch(midi: number): string {
+  const idx = ((midi % 12) + 12) % 12
+  const octave = Math.floor(midi / 12) - 1
+  return SHARPS[idx]! + octave
+}
+
+function transposePitch(base: string, semitones: number): string {
+  return semitones === 0 ? base : midiToPitch(pitchToMidi(base) + semitones)
+}
+
+// ── Token helpers ─────────────────────────────────────────────────────────────
+
+function parseLenSuffix(s: string): number {
+  if (!s) return 1
+  if (/^_+$/.test(s)) return 1 + s.length
+  const m = s.match(/^_(\d+)$/)
+  if (m) return 1 + parseInt(m[1]!, 10)
+  throw new ScoreError(`Malformed chain length suffix '${s}'`)
+}
+
+// Token patterns (checked in order).
+const REPEAT_RX  = /^\*(\d+)$/
+const REST_RX    = /^\.(\d+)?$/
+const RESET_RX   = /^=((?:_+|_\d+)?)$/
+const SHIFT_UP_RX   = /^\+(\d+)?((?:_+|_\d+)?)$/
+const SHIFT_DOWN_RX = /^-(\d+)?((?:_+|_\d+)?)$/
+const PITCH_RX   = /^([A-Ga-g][#b]?\d+)([?!])?((?:_+|_\d+)?)$/
+
+// ── Public API ────────────────────────────────────────────────────────────────
+
 /**
- * Expand a chain string into a flat list of (pitch, offsetTicks, lengthTicks)
- * tuples. Parallel subchains (separated by `"; "`) are merged — their notes
- * all start at offset 0 and advance independently.
+ * Expand a chain string into an ordered list of `ChainNote` objects.
+ * Rest tokens advance the running offset without emitting a note.
  */
 export function expandChainString(raw: string): ChainNote[] {
   const result: ChainNote[] = []
-  const subchainStrings = raw.split('; ')
 
-  for (const subStr of subchainStrings) {
+  for (const subStr of raw.split('; ')) {
     const tokens = subStr.trim().split(/\s+/).filter(Boolean)
 
+    // Internal clause: null pitch = rest.
     interface Clause {
-      pitch: string
+      pitch: string | null
       offScale: '?' | '!' | null
       lengthTicks: number
       repeat: number
     }
     const clauses: Clause[] = []
 
+    // Per-subchain pitch-shift state.
+    let basePitch: string | null = null
+    let semiShift = 0
+
     for (const token of tokens) {
-      const repeatMatch = token.match(/^\*(\d+)$/)
-      if (repeatMatch) {
-        if (clauses.length === 0) {
-          throw new ScoreError(`Repeat quantifier '${token}' has no preceding note in chain`)
-        }
-        clauses[clauses.length - 1]!.repeat = parseInt(repeatMatch[1]!, 10)
+      // *N — repeat modifier on the preceding clause.
+      const repM = token.match(REPEAT_RX)
+      if (repM) {
+        if (!clauses.length) throw new ScoreError(`Repeat '${token}' has no preceding clause in chain`)
+        clauses[clauses.length - 1]!.repeat = parseInt(repM[1]!, 10)
         continue
       }
-      const parsed = parseToken(token)
-      if (!parsed) throw new ScoreError(`Unrecognised chain token '${token}'`)
-      clauses.push({ ...parsed, repeat: 1 })
+
+      // . / .N — rest.
+      const restM = token.match(REST_RX)
+      if (restM) {
+        clauses.push({ pitch: null, offScale: null, lengthTicks: restM[1] ? parseInt(restM[1], 10) : 1, repeat: 1 })
+        continue
+      }
+
+      // = — reset shift and emit note at base.
+      const resetM = token.match(RESET_RX)
+      if (resetM) {
+        if (!basePitch) throw new ScoreError(`'=' used before any base pitch in chain`)
+        semiShift = 0
+        clauses.push({ pitch: basePitch, offScale: null, lengthTicks: parseLenSuffix(resetM[1]!), repeat: 1 })
+        continue
+      }
+
+      // + / +N — shift up and emit.
+      const upM = token.match(SHIFT_UP_RX)
+      if (upM) {
+        if (!basePitch) throw new ScoreError(`'+' used before any base pitch in chain`)
+        semiShift += upM[1] ? parseInt(upM[1], 10) : 1
+        clauses.push({ pitch: transposePitch(basePitch, semiShift), offScale: null, lengthTicks: parseLenSuffix(upM[2]!), repeat: 1 })
+        continue
+      }
+
+      // - / -N — shift down and emit.
+      const downM = token.match(SHIFT_DOWN_RX)
+      if (downM) {
+        if (!basePitch) throw new ScoreError(`'-' used before any base pitch in chain`)
+        semiShift -= downM[1] ? parseInt(downM[1], 10) : 1
+        clauses.push({ pitch: transposePitch(basePitch, semiShift), offScale: null, lengthTicks: parseLenSuffix(downM[2]!), repeat: 1 })
+        continue
+      }
+
+      // Absolute pitch name — resets base and shift.
+      const pitchM = token.match(PITCH_RX)
+      if (pitchM) {
+        basePitch = pitchM[1]!
+        semiShift = 0
+        const offScale = (pitchM[2] as '?' | '!' | undefined) ?? null
+        clauses.push({ pitch: basePitch, offScale, lengthTicks: parseLenSuffix(pitchM[3]!), repeat: 1 })
+        continue
+      }
+
+      throw new ScoreError(`Unrecognised chain token '${token}'`)
     }
 
+    // Expand clauses into timed notes.
     let offsetTicks = 0
     for (const clause of clauses) {
       for (let r = 0; r < clause.repeat; r++) {
-        result.push({ pitch: clause.pitch, offScale: clause.offScale, offsetTicks, lengthTicks: clause.lengthTicks })
+        if (clause.pitch !== null) {
+          result.push({ pitch: clause.pitch, offScale: clause.offScale, offsetTicks, lengthTicks: clause.lengthTicks })
+        }
         offsetTicks += clause.lengthTicks
       }
     }
