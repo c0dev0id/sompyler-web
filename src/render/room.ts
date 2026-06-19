@@ -16,6 +16,7 @@
  */
 import { ScoreError } from '../errors'
 import { renderDelays, renderLevels, type RoomBody } from '../parse/room'
+import { renderShape } from '../synth/shape'
 
 export interface ChannelGains {
   left: number
@@ -140,7 +141,7 @@ export function buildRoomPositionIR(
   // rendered samples (capped to >0) as a single scalar.
   let borderScalar = 1
   if (room.border) {
-    const b = renderLevels({ levels: room.border, delays: room.delays, border: null }, 16)
+    const b = renderLevels({ levels: room.border, delays: room.delays, border: null, jitter: null, deldiffs: null }, 16)
     let sum = 0
     let n = 0
     for (const v of b) {
@@ -150,8 +151,27 @@ export function buildRoomPositionIR(
     if (n > 0 && sum > 0) borderScalar = sum / n / Math.max(...b.map((v) => Math.abs(v) || 1))
   }
 
-  const left = new Float32Array(tailSamples)
-  const right = new Float32Array(tailSamples)
+  // S33500 jitter: per-tap amplitude variation rendered separately for L/R.
+  let jitterL: Float32Array | null = null
+  let jitterR: Float32Array | null = null
+  if (room.jitter) {
+    jitterL = renderShape(room.jitter.left, taps.length)
+    jitterR = renderShape(room.jitter.right, taps.length)
+  }
+
+  // S33600 deldiffs: per-tap delay offset (seconds), cycling across taps.
+  const deldiffAt = (arr: number[], i: number) => (arr.length > 0 ? (arr[i % arr.length] ?? 0) : 0)
+  const deldiffL = room.deldiffs?.left ?? null
+  const deldiffR = room.deldiffs?.right ?? null
+
+  // Determine IR length including deldiff shifts.
+  let maxExtraSeconds = 0
+  if (deldiffL) for (const v of deldiffL) if (v > maxExtraSeconds) maxExtraSeconds = v
+  if (deldiffR) for (const v of deldiffR) if (v > maxExtraSeconds) maxExtraSeconds = v
+  const extendedTailSamples = tailSamples + Math.ceil(maxExtraSeconds * sampleRate)
+
+  const left = new Float32Array(extendedTailSamples)
+  const right = new Float32Array(extendedTailSamples)
 
   // Normalise level peak to 1, so a "levels: 100:100" peak gives a unit
   // tap. The Python code uses log_to_linear; we treat it as already-
@@ -162,16 +182,28 @@ export function buildRoomPositionIR(
 
   for (let i = 0; i < taps.length; i++) {
     const tap = taps[i]!
-    const idx = Math.min(tailSamples - 1, Math.floor(tap.t * sampleRate))
     const normLevel = tap.level / peak
-    // The first tap is the direct sound; later taps are reverb tail.
     const isDirect = i === 0
-    const weight = isDirect ? directLevel : normLevel * tailBoost * borderScalar
-    left[idx] = left[idx]! + weight * gL
-    right[idx] = right[idx]! + weight * gR
+    const baseWeight = isDirect ? directLevel : normLevel * tailBoost * borderScalar
+
+    // Jitter: ±jitter[i] random amplitude deviation (applied to non-direct taps).
+    const jAmpL = jitterL && !isDirect ? (jitterL[i] ?? 0) : 0
+    const jAmpR = jitterR && !isDirect ? (jitterR[i] ?? 0) : 0
+    const weightL = baseWeight + jAmpL * (Math.random() * 2 - 1)
+    const weightR = baseWeight + jAmpR * (Math.random() * 2 - 1)
+
+    // Deldiffs: per-channel tap-time offset in seconds, cycling via modulo.
+    const ddL = deldiffL ? deldiffAt(deldiffL, i) : 0
+    const ddR = deldiffR ? deldiffAt(deldiffR, i) : 0
+
+    const idxL = Math.min(extendedTailSamples - 1, Math.max(0, Math.floor((tap.t + ddL) * sampleRate)))
+    const idxR = Math.min(extendedTailSamples - 1, Math.max(0, Math.floor((tap.t + ddR) * sampleRate)))
+
+    left[idxL] = left[idxL]! + weightL * gL
+    right[idxR] = right[idxR]! + weightR * gR
   }
 
-  return { left, right, tailSamples }
+  return { left, right, tailSamples: extendedTailSamples }
 }
 
 /**

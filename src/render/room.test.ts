@@ -98,4 +98,41 @@ border: 5:5;1,1;2,1;6,1
     }
     expect(nonzeroLater).toBeGreaterThan(0)
   })
+
+  it('jitter changes tap amplitudes relative to no-jitter baseline (S33500)', () => {
+    const jitteredRoom = parseRoom(`
+levels: 100:100;1,80;2,60
+delays: 1:0;1,1
+jitter: "2:0;1,0.5"
+`)!
+    const dry = buildRoomPositionIR(room, '1|1', 0, 44100)
+    // Over 100 jitter calls, at least one must differ from the dry IR.
+    let differ = false
+    for (let attempt = 0; attempt < 100 && !differ; attempt++) {
+      const wet = buildRoomPositionIR(jitteredRoom, '1|1', 0, 44100)
+      for (let i = 0; i < wet.left.length; i++) {
+        if (Math.abs((wet.left[i] ?? 0) - (dry.left[i] ?? 0)) > 1e-6) {
+          differ = true
+          break
+        }
+      }
+    }
+    expect(differ).toBe(true)
+  })
+
+  it('deldiffs shifts L and R taps to different positions (S33600)', () => {
+    const deldiffRoom = parseRoom(`
+levels: 100:100;1,80
+delays: 1:0;1,1
+deldiffs: "0.1,0.05|0,0"
+`)!
+    const ir = buildRoomPositionIR(deldiffRoom, '1|1', 0, 44100)
+    // The L channel has a 0.1s deldiff → energy later vs. the R channel.
+    const later = (b: Float32Array) => {
+      let s = 0
+      for (let i = Math.floor(0.05 * 44100); i < b.length; i++) s += b[i]! * b[i]!
+      return s
+    }
+    expect(later(ir.left)).toBeGreaterThan(later(ir.right))
+  })
 })
