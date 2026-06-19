@@ -78,6 +78,7 @@ export async function mixOnly(
 
   // Pre-load every note. If any is missing, fail fast — no point doing
   // the additive work just to throw at the end.
+  log('mix', 'info', `Loading ${plan.notes.length} cached notes`)
   const cachedNotes = new Map<string, Float32Array>()
   const missingKeys: string[] = []
   for (const note of plan.notes) {
@@ -99,6 +100,12 @@ export async function mixOnly(
   const left = new Float32Array(lengthSamples)
   const right = new Float32Array(lengthSamples)
 
+  const occurrenceCount = plan.notes.reduce((s, n) => s + n.occurrences.length, 0)
+  log(
+    'mix',
+    'info',
+    `Convolving ${occurrenceCount} placements across ${byVoice.size} voice IR${byVoice.size === 1 ? '' : 's'}`,
+  )
   for (const note of plan.notes) {
     const pcm = cachedNotes.get(note.key)!
     for (const occ of note.occurrences) {
@@ -126,6 +133,7 @@ export async function mixOnly(
   }
 
   // Clip to [-1, 1] to keep playback safe regardless of overlap density.
+  log('mix', 'info', `Scanning peak and clipping to [-1, 1]`)
   let peak = 0
   for (let i = 0; i < lengthSamples; i++) {
     const l = Math.abs(left[i]!)
