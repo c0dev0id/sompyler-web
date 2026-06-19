@@ -47,6 +47,10 @@ export interface MeasureMeta {
    * `ticksPerMinute` stays the fast-path default.
    */
   tempo?: string
+  /** S46170 per-tick duration multipliers (stressor format). */
+  elasticksPattern?: string
+  /** S46180 Shape string applied as exponentiation on top of elasticksPattern. */
+  elasticksShape?: string
 }
 
 export interface RawNote {
@@ -202,6 +206,15 @@ function readMeta(metaBlock: Record<string, unknown> | undefined, fallback: Meas
     next.tempo = typeof metaBlock.tempo === 'string' ? metaBlock.tempo : String(metaBlock.tempo)
   } else if ('ticks_per_minute' in metaBlock) {
     next.tempo = undefined
+  }
+  if ('elasticks_pattern' in metaBlock) {
+    next.elasticksPattern =
+      typeof metaBlock.elasticks_pattern === 'string' ? metaBlock.elasticks_pattern : undefined
+    next.elasticksShape = undefined
+  }
+  if ('elasticks_shape' in metaBlock) {
+    next.elasticksShape =
+      typeof metaBlock.elasticks_shape === 'string' ? metaBlock.elasticks_shape : undefined
   }
   return next
 }

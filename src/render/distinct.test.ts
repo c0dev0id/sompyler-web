@@ -220,6 +220,57 @@ piano:
     expect(b4!.occurrences[0]!.offsetSeconds).toBeCloseTo(3, 3)
   })
 
+  it('elasticks_pattern redistributes timing within the measure (S46170)', async () => {
+    // With elasticks "1,3" (weight-1 on even ticks, weight-3 on odd ticks),
+    // note at offset 0 is shorter and note at offset 1 is longer than the
+    // constant-TPM baseline.
+    const BASE = `
+title: elasticks-base
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+  lower_stress_bound: 100
+  upper_stress_bound: 100
+piano:
+  0: A4 1
+  1: B4 1
+`
+    const ELASTICK = `
+title: elasticks
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+  lower_stress_bound: 100
+  upper_stress_bound: 100
+  elasticks_pattern: "1,3"
+piano:
+  0: A4 1
+  1: B4 1
+`
+    const base = await buildDistinctNotes(BASE, {
+      tuner: new Tuner(),
+      instruments: new Map([[piano.name, piano]]),
+    })
+    const elastick = await buildDistinctNotes(ELASTICK, {
+      tuner: new Tuner(),
+      instruments: new Map([[piano.name, piano]]),
+    })
+    // Elasticks pattern [1,3] normalised to [0.5, 1.5] — even tick is halved,
+    // odd tick is 1.5×. The two-tick measure sums to 2 s same as baseline
+    // (total preserved), but the per-note lengths differ.
+    const baseA4 = base.notes.find((n) => Math.abs(n.frequencyHz - 440) < 1)!
+    const elastA4 = elastick.notes.find((n) => Math.abs(n.frequencyHz - 440) < 1)!
+    expect(elastA4.lengthSeconds).toBeCloseTo(baseA4.lengthSeconds * 0.5, 3)
+    // Total duration is preserved.
+    expect(elastick.totalLengthSeconds).toBeCloseTo(base.totalLengthSeconds, 3)
+  })
+
   it('splits the cache when ? / ! off-scale flags diverge (S53400)', async () => {
     const FLAGGED = `
 title: flag-split

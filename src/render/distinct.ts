@@ -86,6 +86,10 @@ export async function buildDistinctNotes(
    * interpolated by `tickRangeSeconds`. `undefined` ⇒ constant TPM.
    */
   let activeTickSeconds: Float32Array | undefined
+  /** S46170 active elasticks pattern (stressor format), if any. Inherited. */
+  let activeElasticksPattern: string | undefined
+  /** S46180 active elasticks shape string. Clears when elasticksPattern changes. */
+  let activeElasticksShape: string | undefined
   let activeMeasureIndex = -1
   let activeMeasureLengthSeconds = 0
 
@@ -134,10 +138,31 @@ export async function buildDistinctNotes(
       if (metaBlock && 'tempo' in metaBlock && typeof metaBlock.tempo === 'string') {
         activeTempoShape = metaBlock.tempo
       }
+      if (metaBlock && 'elasticks_pattern' in metaBlock) {
+        activeElasticksPattern =
+          typeof metaBlock.elasticks_pattern === 'string' ? metaBlock.elasticks_pattern : undefined
+        activeElasticksShape = undefined
+      }
+      if (metaBlock && 'elasticks_shape' in metaBlock) {
+        activeElasticksShape =
+          typeof metaBlock.elasticks_shape === 'string' ? metaBlock.elasticks_shape : undefined
+      }
       // (Re-)compute the per-tick seconds buffer for this measure.
+      const measureLen = measureTickSpan.get(note.measureIndex) ?? 0
       activeTickSeconds = activeTempoShape
-        ? buildTickSecondsArray(activeTempoShape, measureTickSpan.get(note.measureIndex) ?? 0)
+        ? buildTickSecondsArray(activeTempoShape, measureLen)
         : undefined
+      // S46170/S46180: apply elasticks on top of the tick-seconds buffer.
+      if (activeElasticksPattern) {
+        const ticks = Math.max(1, Math.ceil(measureLen))
+        if (!activeTickSeconds) {
+          activeTickSeconds = new Float32Array(ticks).fill(60 / activeTicksPerMinute)
+        }
+        const elasticks = buildElasticksArray(activeElasticksPattern, activeElasticksShape, measureLen)
+        for (let t = 0; t < Math.min(activeTickSeconds.length, elasticks.length); t++) {
+          activeTickSeconds[t]! *= elasticks[t]!
+        }
+      }
     }
 
     const offsetSeconds =
@@ -231,6 +256,47 @@ export async function buildDistinctNotes(
     totalLengthSeconds,
   })
   return plan
+}
+
+/**
+ * Build a normalised per-tick duration-multiplier array from an elasticks
+ * pattern (S46170). Format is the same as `stress_pattern` (`;`-separated
+ * groups of comma-separated weights). Values are normalised so their sum
+ * equals the array length (total measure time is preserved on average).
+ * An optional Shape string (S46180) is applied as exponentiation:
+ * `elasticks[t] = pattern[t] ^ shape[t]`.
+ */
+function buildElasticksArray(
+  pattern: string,
+  shape: string | undefined,
+  cumlen: number,
+): Float32Array {
+  const groups = pattern.split(';').map((g) => g.split(',').map(Number))
+  const flat: number[] = []
+  for (const group of groups) flat.push(...group)
+  const ticks = Math.max(1, Math.ceil(cumlen))
+  const out = new Float32Array(ticks)
+  if (flat.length === 0) {
+    out.fill(1)
+    return out
+  }
+  for (let t = 0; t < ticks; t++) out[t] = flat[t % flat.length] ?? 1
+  // Apply elasticks_shape via exponentiation (S46180).
+  if (shape) {
+    const shapeVals = evaluateShape(shape, ticks)
+    for (let t = 0; t < ticks; t++) {
+      const base = out[t] ?? 1
+      out[t] = base > 0 ? Math.pow(base, shapeVals[t] ?? 1) : 0
+    }
+  }
+  // Normalise: sum → ticks (preserves total measure duration on average).
+  let sum = 0
+  for (let t = 0; t < ticks; t++) sum += out[t]!
+  if (sum > 0) {
+    const scale = ticks / sum
+    for (let t = 0; t < ticks; t++) out[t]! *= scale
+  }
+  return out
 }
 
 /**
