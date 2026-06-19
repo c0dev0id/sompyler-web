@@ -1,45 +1,25 @@
 /**
  * R8: starter content seeded on first run.
  *
- * Phase 17 — the showcase. The starter song is Pachelbel's *Canon in D*
- * (the strings setting); a solo-piano variant of the same melody ships
- * alongside it in staging. The four-voice canon exercises every shipped
- * RFC feature:
+ * The showcase is Darude — Sandstorm (1999), an electronic piece that
+ * exercises FM synthesis (kick drum), noise-based percussion, sawtooth
+ * and square-wave synth voices, repeat_unmentioned_voices inheritance,
+ * and the chain voice syntax. All five instruments are seeded in-project.
  *
- *   - Position-dependent reverb (R13) — four voices at distinct stage
- *     positions get four distinct IRs.
- *   - Cache hit ratio — the cello ostinato repeats verbatim every two
- *     bars and the three violins play the same melody in canon, so a
- *     full render is dominated by hits after the first pass.
- *   - Measure inheritance (S46110) — the cello phrases are stated once
- *     and reused via `voice: true`.
- *   - Sympartials (S33000-3.3) — the violin / cello / piano instruments
- *     each ship a 5–6 partial harmonic stack.
- *   - Stress patterns (S46300) — strong-weak beat pattern shapes the
- *     dynamic envelope of every measure.
- *   - Shape articles (S32200) — a `vibrato` shape modulates the
- *     amplitude of the violin1 high notes.
- *   - Tempo Shape (S46140, R13 amendment) — the final two measures
- *     ritardando via a continuous tempo curve.
- *   - Damp (S51a10) — the cello held notes carry `damp` for smooth
- *     bowed release.
- *   - Off-scale `?` flag (S53400) — a passing tone in violin1 sits a
- *     half-step outside the active D-major scale; `?` snaps it.
- *   - Railsback (S32136) — the piano variant carries an upward
- *     inharmonicity curve so high-register notes shift sharper.
+ * Pachelbel Canon in D is preserved in staging (inProject: false) because
+ * the conformance suite uses it as a regression fixture. It is NOT loaded
+ * into the user's project on first run.
  *
- * In-project (the starter song works out of the box):
- *   - `pachelbel.spls` — the four-voice strings canon (primary showcase).
- *   - `violin.spli`, `cello.spli` — rich string-like sympartial stacks.
- *   - `pachelbel-hall.splr` — two-delay hall reverb.
+ * In-project (starter song works out of the box):
+ *   - `sandstorm.spls` — five-voice electronic showcase.
+ *   - `sandstorm-lead/bass/kick/snare/hihat.spli` — synth + FM instruments.
  *   - `tones_euro.splt` — equal-temperament tuning with chr/mj/mn scales.
  *
- * In staging (the user opts in by clicking +):
- *   - `pachelbel-piano.spls` — solo-piano variant of the same melody.
- *   - `piano.spli` — railsback-enabled piano (richer than dev/piano).
- *   - `dev/piano.spli`, `dev/flute.spli` — minimal alternates.
- *   - `free-field.splr` — no-reverb fast-path room.
- *   - `alle_meine_entchen.spls` — the original simple starter.
+ * In staging (conformance, dev tools, examples):
+ *   - `pachelbel.spls`, `violin.spli`, `cello.spli`, `pachelbel-hall.splr`
+ *   - `pachelbel-piano.spls`, `piano.spli`
+ *   - `dev/piano.spli`, `dev/flute.spli`, `dev/kick.spli`
+ *   - `free-field.splr`, `alle_meine_entchen.spls`
  */
 
 import { getFile, putFile, type FileExtension } from './storage/files'
@@ -55,6 +35,13 @@ interface Seed {
 // it directly (the seeded `.spls`/`.spli` text *is* the authoritative
 // source, unlike third-party fixtures we mirror from Sompyler).
 export {
+  // Sandstorm — active UI showcase
+  SANDSTORM as STARTER_SANDSTORM,
+  SANDSTORM_LEAD as STARTER_SANDSTORM_LEAD,
+  SANDSTORM_BASS as STARTER_SANDSTORM_BASS,
+  SANDSTORM_SNARE as STARTER_SANDSTORM_SNARE,
+  SANDSTORM_HIHAT as STARTER_SANDSTORM_HIHAT,
+  // Pachelbel — kept in staging for the conformance suite
   PACHELBEL as STARTER_PACHELBEL,
   PACHELBEL_PIANO as STARTER_PACHELBEL_PIANO,
   VIOLIN as STARTER_VIOLIN,
@@ -575,20 +562,246 @@ piano:
   4: G4 4
 `
 
+// =====================================================================
+// Darude — Sandstorm (1999): five-voice electronic showcase.
+// =====================================================================
+//
+// Key: B minor. Tempo: 136 BPM. Tick grid: 16th note (ticks_per_minute=544).
+// 1 measure = 16 ticks. 12 measures ≈ 21 s total.
+//
+// Voices:
+//   lead  — sawtooth synth, the iconic staccato riff
+//   bass  — square-wave synth bass following Bm / G / A harmony
+//   kick  — FM kick (sandstorm-kick = same body as dev/kick)
+//   snare — noise burst on beats 2 & 4
+//   hihat — noise on every 16th note
+//
+// Melody approximation (B natural minor: B C# D E F# G A):
+//   Riff A: staccato groups B4×3 · B4×3 · A4 G4 A4 · B4(8th) A4 G4
+//   Riff B: higher run D5×3 · E5×3 · F#5(8th) E5 D5 · E5(8th) D5 B4
+//   Riff C: descending cascade F#5→B4, then whole-bar B4 close
+const SANDSTORM = `title: Sandstorm
+author: Darude (1999)
+stage:
+  lead:  1|1 0.0 sandstorm-lead
+  bass:  1|1 0.0 sandstorm-bass
+  kick:  1|1 0.0 sandstorm-kick
+  snare: 1|1 0.0 sandstorm-snare
+  hihat: 1|1 0.0 sandstorm-hihat
+tuning_config: tones_euro
+---
+# m0 — intro: kick + hi-hat only
+_meta:
+  ticks_per_minute: 544
+  stress_pattern: "4,1,2,1,2,1,2,1,3,1,2,1,2,1,2,1"
+  lower_stress_bound: 70
+  upper_stress_bound: 100
+kick:
+  0,4,8,12: C1 1 damp=3
+hihat:
+  0+1*16: A6 1
+---
+# m1 — snare enters on beats 2 and 4
+_meta:
+  repeat_unmentioned_voices: true
+snare:
+  4: D4 1
+  12: D4 1
+---
+# m2 — bass enters: Bm | G | A | Bm
+_meta:
+  repeat_unmentioned_voices: true
+snare: true
+bass:
+  0: B2 4
+  4: G2 4
+  8: A2 4
+  12: B2 4
+---
+# m3 — repeat
+_meta:
+  repeat_unmentioned_voices: true
+snare: true
+bass: true
+---
+# m4 — MAIN DROP: lead enters with riff A
+_meta:
+  repeat_unmentioned_voices: true
+snare: true
+bass:
+  0: B2 4
+  4: G2 4
+  8: A2 4
+  12: B2 4
+lead:
+  0: B4 1
+  1: B4 1
+  2: B4 1
+  4: B4 1
+  5: B4 1
+  6: B4 1
+  8: A4 1
+  9: G4 1
+  10: A4 1
+  12: B4 2
+  14: A4 1
+  15: G4 1
+---
+# m5 — riff A repeat
+_meta:
+  repeat_unmentioned_voices: true
+snare: true
+bass: true
+lead: true
+---
+# m6 — riff B: higher register (D5 / E5 / F#5)
+_meta:
+  repeat_unmentioned_voices: true
+snare: true
+bass:
+  0: B2 4
+  4: D3 4
+  8: E3 4
+  12: F#3 4
+lead:
+  0: D5 1
+  1: D5 1
+  2: D5 1
+  4: E5 1
+  5: E5 1
+  6: E5 1
+  8: F#5 2
+  10: E5 1
+  11: D5 1
+  12: E5 2
+  14: D5 1
+  15: B4 1
+---
+# m7 — riff B repeat
+_meta:
+  repeat_unmentioned_voices: true
+snare: true
+bass: true
+lead: true
+---
+# m8 — riff A returns
+_meta:
+  repeat_unmentioned_voices: true
+snare: true
+bass:
+  0: B2 4
+  4: G2 4
+  8: A2 4
+  12: B2 4
+lead:
+  0: B4 1
+  1: B4 1
+  2: B4 1
+  4: B4 1
+  5: B4 1
+  6: B4 1
+  8: A4 1
+  9: G4 1
+  10: A4 1
+  12: B4 2
+  14: A4 1
+  15: G4 1
+---
+# m9 — riff A repeat
+_meta:
+  repeat_unmentioned_voices: true
+snare: true
+bass: true
+lead: true
+---
+# m10 — riff C: descending cascade F#5 → B4
+_meta:
+  repeat_unmentioned_voices: true
+snare: true
+bass:
+  0: B2 4
+  4: G2 4
+  8: A2 4
+  12: F#2 4
+lead:
+  0: F#5 1
+  1: E5 1
+  2: D5 1
+  3: E5 1
+  4: D5 2
+  6: B4 2
+  8: A4 4
+  12: B4 4
+---
+# m11 — close: whole-bar sustained B4 / B2
+_meta:
+  repeat_unmentioned_voices: true
+snare: true
+bass:
+  0: B2 16
+lead:
+  0: B4 16
+`
+
+// =====================================================================
+// Sandstorm instruments.
+// =====================================================================
+
+const SANDSTORM_LEAD = `# sandstorm-lead: bright sawtooth synth, short staccato release.
+amp: 0.35
+oscillator: saw
+envelope:
+  attack: 0.005
+  release: 0.06
+  sustainLevel: 0.92
+`
+
+const SANDSTORM_BASS = `# sandstorm-bass: punchy square-wave synth bass.
+amp: 0.5
+oscillator: square
+envelope:
+  attack: 0.008
+  release: 0.12
+  sustainLevel: 0.85
+`
+
+const SANDSTORM_SNARE = `# sandstorm-snare: noise burst, sharp transient.
+amp: 0.7
+oscillator: noise
+envelope:
+  attack: 0.001
+  release: 0.12
+  sustainLevel: 0.6
+`
+
+const SANDSTORM_HIHAT = `# sandstorm-hihat: very short noise burst hi-hat.
+amp: 0.25
+oscillator: noise
+envelope:
+  attack: 0.001
+  release: 0.03
+  sustainLevel: 0.3
+`
+
 const SEEDS: Seed[] = [
-  // The Pachelbel showcase is the starter song.
-  { name: 'pachelbel', ext: 'spls', body: PACHELBEL, inProject: true },
-  { name: 'violin', ext: 'spli', body: VIOLIN, inProject: true },
-  { name: 'cello', ext: 'spli', body: CELLO, inProject: true },
-  { name: 'pachelbel-hall', ext: 'splr', body: PACHELBEL_HALL, inProject: true },
+  // Sandstorm — the active UI showcase (in-project on first run).
+  { name: 'sandstorm', ext: 'spls', body: SANDSTORM, inProject: true },
+  { name: 'sandstorm-lead', ext: 'spli', body: SANDSTORM_LEAD, inProject: true },
+  { name: 'sandstorm-bass', ext: 'spli', body: SANDSTORM_BASS, inProject: true },
+  { name: 'sandstorm-kick', ext: 'spli', body: STARTER_KICK, inProject: true },
+  { name: 'sandstorm-snare', ext: 'spli', body: SANDSTORM_SNARE, inProject: true },
+  { name: 'sandstorm-hihat', ext: 'spli', body: SANDSTORM_HIHAT, inProject: true },
   { name: 'tones_euro', ext: 'splt', body: STARTER_TUNING, inProject: true },
 
-  // Solo-piano variant + richer piano in staging.
+  // Pachelbel — moved to staging; used by conformance suite, not loaded in UI.
+  { name: 'pachelbel', ext: 'spls', body: PACHELBEL, inProject: false },
+  { name: 'violin', ext: 'spli', body: VIOLIN, inProject: false },
+  { name: 'cello', ext: 'spli', body: CELLO, inProject: false },
+  { name: 'pachelbel-hall', ext: 'splr', body: PACHELBEL_HALL, inProject: false },
   { name: 'pachelbel-piano', ext: 'spls', body: PACHELBEL_PIANO, inProject: false },
   { name: 'piano', ext: 'spli', body: PIANO, inProject: false },
 
-  // Previous starters preserved in staging so existing tests / examples
-  // keep working when the user opts in.
+  // Dev instruments and legacy examples.
   { name: 'dev/piano', ext: 'spli', body: STARTER_PIANO, inProject: false },
   { name: 'dev/flute', ext: 'spli', body: STARTER_FLUTE, inProject: false },
   { name: 'dev/kick', ext: 'spli', body: STARTER_KICK, inProject: false },
