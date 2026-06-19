@@ -81,6 +81,53 @@ railsback:
     expect(() => compileInstrument(i)).toThrow(/railsback bounds invalid/)
   })
 
+  it('compiles top-level fm spec', async () => {
+    const i = await loadInstrument(
+      'dev/kick',
+      `oscillator: sin
+fm:
+  freq_hz: 1
+  depth: 3
+  init_phase: 0.25
+  depth_env: "100:1;1,0"
+`,
+    )
+    const spec = compileInstrument(i)
+    expect(spec.fm).toBeTruthy()
+    expect(spec.fm!.freqHz).toBe(1)
+    expect(spec.fm!.depth).toBe(3)
+    expect(spec.fm!.initPhase).toBe(0.25)
+    expect(spec.fm!.depthEnv).toBe('100:1;1,0')
+  })
+
+  it('compiles per-partial fm spec', async () => {
+    const i = await loadInstrument(
+      'dev/synth',
+      `partials:
+  - freqMult: 1
+    amp: 1
+    fm:
+      freq_hz: 200
+      depth: 0.5
+      waveform: sin
+      dynamic: false
+`,
+    )
+    const spec = compileInstrument(i)
+    expect(spec.partials).toHaveLength(1)
+    expect(spec.partials![0]!.fm).toMatchObject({ freqHz: 200, depth: 0.5, waveform: 'sin' })
+  })
+
+  it('rejects fm with missing freq_hz', async () => {
+    const i = await loadInstrument('bad', 'fm:\n  depth: 1')
+    expect(() => compileInstrument(i)).toThrow(/freq_hz/)
+  })
+
+  it('rejects fm with negative depth', async () => {
+    const i = await loadInstrument('bad', 'fm:\n  freq_hz: 1\n  depth: -1')
+    expect(() => compileInstrument(i)).toThrow(/depth/)
+  })
+
   it('rejects a character block with circular label refs (S32122)', async () => {
     const i = await loadInstrument(
       'bad',

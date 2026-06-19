@@ -285,6 +285,98 @@ describe('MORPH (S32135)', () => {
   })
 })
 
+describe('FM synthesis', () => {
+  const base = {
+    freqHz: 200,
+    stress: 1,
+    lengthSeconds: 0.05,
+    sampleRate: 8000,
+    instrument: { envelope: { attack: 0, release: 0, sustainLevel: 1 } },
+  }
+
+  it('fm depth=0 produces the same output as no FM', () => {
+    const noFm = renderNote({ ...base, instrument: { ...base.instrument } })
+    const zeroDepth = renderNote({
+      ...base,
+      instrument: { ...base.instrument, fm: { freqHz: 1, depth: 0 } },
+    })
+    for (let i = 0; i < noFm.length; i++) {
+      expect(zeroDepth[i]).toBeCloseTo(noFm[i]!, 5)
+    }
+  })
+
+  it('fm with positive depth produces output that differs from no FM', () => {
+    const noFm = renderNote({ ...base })
+    const withFm = renderNote({
+      ...base,
+      instrument: { ...base.instrument, fm: { freqHz: 20, depth: 2, initPhase: 0.25 } },
+    })
+    let maxDiff = 0
+    for (let i = 0; i < noFm.length; i++) {
+      maxDiff = Math.max(maxDiff, Math.abs((noFm[i] ?? 0) - (withFm[i] ?? 0)))
+    }
+    expect(maxDiff).toBeGreaterThan(0.01)
+  })
+
+  it('top-level fm inherits to the default single partial', () => {
+    const withTopLevel = renderNote({
+      ...base,
+      instrument: { ...base.instrument, fm: { freqHz: 10, depth: 1 } },
+    })
+    const withPartialLevel = renderNote({
+      ...base,
+      instrument: {
+        ...base.instrument,
+        partials: [{ freqMult: 1, amp: 1, fm: { freqHz: 10, depth: 1 } }],
+      },
+    })
+    // Both should produce identical output (same FM spec applied to same partial)
+    for (let i = 0; i < withTopLevel.length; i++) {
+      expect(withPartialLevel[i]).toBeCloseTo(withTopLevel[i]!, 5)
+    }
+  })
+
+  it('per-partial fm overrides top-level fm', () => {
+    const topLevel = renderNote({
+      ...base,
+      instrument: { ...base.instrument, fm: { freqHz: 5, depth: 2 } },
+    })
+    const perPartial = renderNote({
+      ...base,
+      instrument: {
+        ...base.instrument,
+        fm: { freqHz: 5, depth: 2 },
+        partials: [{ freqMult: 1, amp: 1, fm: { freqHz: 50, depth: 4 } }],
+      },
+    })
+    let maxDiff = 0
+    for (let i = 0; i < topLevel.length; i++) {
+      maxDiff = Math.max(maxDiff, Math.abs((topLevel[i] ?? 0) - (perPartial[i] ?? 0)))
+    }
+    expect(maxDiff).toBeGreaterThan(0.01)
+  })
+
+  it('fm depthEnv=shape string decays frequency over time', () => {
+    // Shape "1:1;1,0" = linear decay from 1 to 0.
+    // Early samples run at higher frequency than late samples.
+    const SR = 44100
+    const instrFM = {
+      ...base.instrument,
+      fm: { freqHz: 1, depth: 5, initPhase: 0.25, depthEnv: '1:1;1,0' },
+    }
+    const buf = renderNote({ ...base, freqHz: 100, lengthSeconds: 1, sampleRate: SR, instrument: instrFM })
+    const tenth = Math.floor(buf.length / 10)
+    let early = 0, late = 0
+    for (let i = 1; i < tenth; i++) {
+      if ((buf[i - 1]! >= 0) !== (buf[i]! >= 0)) early++
+    }
+    for (let i = buf.length - tenth + 1; i < buf.length; i++) {
+      if ((buf[i - 1]! >= 0) !== (buf[i]! >= 0)) late++
+    }
+    expect(early).toBeGreaterThan(late * 2)
+  })
+})
+
 describe('applyRailsback (S32136)', () => {
   it('passes through when no curve is given', () => {
     expect(applyRailsback(440, undefined)).toBe(440)

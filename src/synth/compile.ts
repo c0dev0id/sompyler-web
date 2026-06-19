@@ -1,6 +1,6 @@
 import { InstrumentError } from '../errors'
 import type { Instrument } from '../parse/instrument'
-import type { InstrumentSpec, MorphEntry, PartialDef, RailsbackCurve } from './sound_generator'
+import type { FMSpec, InstrumentSpec, MorphEntry, PartialDef, RailsbackCurve } from './sound_generator'
 import { DEFAULT_ENVELOPE, type EnvelopeSpec } from './envelope'
 import type { OscillatorSpec, Waveform } from './oscillator'
 import { parseShape, renderShapeString } from './shape'
@@ -94,12 +94,15 @@ function compilePartials(raw: unknown): PartialDef[] | undefined {
   return raw.map((p, i) => {
     const obj = asObj(p)
     if (!obj) throw new InstrumentError(`partials[${i}] must be a mapping`)
-    return {
+    const partial: PartialDef = {
       freqMult: 'freqMult' in obj ? Number(obj.freqMult) : 1,
       amp: 'amp' in obj ? Number(obj.amp) : 1,
       oscillator: compileOscillator(obj.oscillator),
       envelope: compileEnvelope(obj.envelope),
-    } satisfies PartialDef
+    }
+    const fm = compileFM(obj.fm)
+    if (fm) partial.fm = fm
+    return partial
   })
 }
 
@@ -128,6 +131,41 @@ function compileTimbre(raw: unknown): string | undefined {
   if (raw == null) return undefined
   if (typeof raw === 'string') return raw
   throw new InstrumentError(`timbre must be a "SPECTRUM_WIDTH:SHAPE" string`)
+}
+
+/**
+ * Compile fm: { freq_hz, depth, waveform?, dynamic?, init_phase?, depth_env? }
+ * into FMSpec. Snake_case keys match the YAML convention used in .spli files.
+ */
+function compileFM(raw: unknown): FMSpec | undefined {
+  if (raw == null) return undefined
+  const obj = asObj(raw)
+  if (!obj) throw new InstrumentError(`fm must be a mapping`)
+  const freqHz = Number(obj.freq_hz)
+  if (!Number.isFinite(freqHz) || freqHz <= 0) {
+    throw new InstrumentError(`fm.freq_hz must be a positive number`)
+  }
+  const depth = Number(obj.depth)
+  if (!Number.isFinite(depth) || depth < 0) {
+    throw new InstrumentError(`fm.depth must be a non-negative number`)
+  }
+  const spec: FMSpec = { freqHz, depth }
+  if (obj.waveform != null) {
+    const wf = String(obj.waveform)
+    if (!WAVEFORMS.has(wf as Waveform)) throw new InstrumentError(`fm.waveform '${wf}' is unknown`)
+    spec.waveform = wf as Waveform
+  }
+  if (obj.dynamic != null) spec.dynamic = Boolean(obj.dynamic)
+  if (obj.init_phase != null) {
+    const ip = Number(obj.init_phase)
+    if (!Number.isFinite(ip)) throw new InstrumentError(`fm.init_phase must be a number`)
+    spec.initPhase = ip
+  }
+  if (obj.depth_env != null) {
+    if (typeof obj.depth_env !== 'string') throw new InstrumentError(`fm.depth_env must be a Shape string`)
+    spec.depthEnv = obj.depth_env
+  }
+  return spec
 }
 
 const SEQNUM_RX = /^(\d+)(n(?:\+(\d+))?)?$/
@@ -202,6 +240,8 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
   if (timbre) spec.timbre = timbre
   const morph = compileMorph(root.MORPH ?? obj.morph)
   if (morph) spec.morph = morph
+  const fm = compileFM(obj.fm)
+  if (fm) spec.fm = fm
 
   return spec
 }

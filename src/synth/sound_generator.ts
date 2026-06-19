@@ -1,6 +1,6 @@
 import { DEFAULT_SAMPLE_RATE } from './constants'
 import { DEFAULT_ENVELOPE, applyEnvelope, type EnvelopeSpec } from './envelope'
-import { renderOscillator, type OscillatorSpec } from './oscillator'
+import { renderOscillator, renderOscillatorFM, type FMSpec, type OscillatorSpec } from './oscillator'
 import { evaluateShape } from './shape'
 import { renderSympartial, type SympartialSpec } from './sympartial'
 
@@ -60,7 +60,14 @@ export interface InstrumentSpec {
    * oscillator + envelope but before partial accumulation.
    */
   morph?: MorphEntry[]
+  /**
+   * Top-level FM default, inherited by partials that don't specify their own.
+   * If any partial has FM, the per-partial rendering path is always used.
+   */
+  fm?: FMSpec
 }
+
+export type { FMSpec }
 
 /**
  * Pre-rendered railsback curve. `curve[i]` is the octave shift applied
@@ -99,6 +106,8 @@ export interface PartialDef {
   amp?: number
   oscillator?: OscillatorSpec
   envelope?: EnvelopeSpec
+  /** Per-partial FM; overrides InstrumentSpec.fm if set. */
+  fm?: FMSpec
 }
 
 function resolveSympartials(spec: InstrumentSpec): SympartialSpec[] {
@@ -112,6 +121,7 @@ function resolveSympartials(spec: InstrumentSpec): SympartialSpec[] {
     envelope: p.envelope ?? defaultEnv,
     freqMult: p.freqMult ?? 1,
     amp: p.amp ?? 1,
+    fm: p.fm ?? spec.fm,
   }))
 }
 
@@ -153,7 +163,9 @@ export function renderNote(input: RenderNoteInput): Float32Array {
   const baseFreq = applyRailsback(input.freqHz, input.instrument.railsback)
 
   const { spread, timbre, morph } = input.instrument
+  const hasFM = sympartials.some((sp) => !!sp.fm)
   const hasPerPartialMods =
+    hasFM ||
     (spread && spread.length > 0) ||
     !!timbre ||
     (morph && morph.length > 0 && !!input.lengthTicks)
@@ -165,7 +177,14 @@ export function renderNote(input: RenderNoteInput): Float32Array {
       const sp = sympartials[pi]!
       const partialFreqHz = baseFreq * sp.freqMult * (spreadMults[pi] ?? 1)
       const buf = new Float32Array(totalSamples)
-      renderOscillator(buf, sp.oscillator, partialFreqHz, sampleRate)
+      if (sp.fm) {
+        const depthEnv = sp.fm.depthEnv
+          ? evaluateShape(sp.fm.depthEnv, totalSamples)
+          : null
+        renderOscillatorFM(buf, sp.oscillator, partialFreqHz, sp.fm, sampleRate, depthEnv)
+      } else {
+        renderOscillator(buf, sp.oscillator, partialFreqHz, sampleRate)
+      }
       applyEnvelope(buf, sp.envelope, sampleRate, damp)
       if (morph && morph.length > 0 && input.lengthTicks) {
         applyMorphToPartial(buf, pi + 1, morph, totalSamples, input.lengthTicks)

@@ -508,6 +508,25 @@ partials:
   - { freqMult: 3, amp: 0.05 }
 `
 
+// FM kick drum: near-DC modulator (1 Hz) starts at peak (initPhase=0.25) so
+// the carrier begins at 4× its base frequency and sweeps to base in the first
+// 10% of the note. Score notes at a low pitch (C1 = 32.7 Hz) for best thump.
+// Shape "100:1;0.1,0;1,0": depth decays 1→0 over the first 10% then stays 0.
+export const STARTER_KICK = `# dev/kick.spli — FM kick drum with pitch sweep.
+# Score at C1 (32.7 Hz). Carrier sweeps C3 → C1 in first ~50 ms of a 500 ms note.
+amp: 0.85
+oscillator: sin
+envelope:
+  attack: 0.002
+  release: 0.3
+  sustainLevel: 1.0
+fm:
+  freq_hz: 1
+  depth: 3
+  init_phase: 0.25
+  depth_env: "100:1;0.1,0;1,0"
+`
+
 // Subset port of lib/tones_euro_de+en.splt — basics block (Tuner.config) plus
 // the [scales] block (mj=major, mn=minor, chr=chromatic). RFC §S45000.
 // Additional Sompyler scale modes (hmj, mm*, ph, ly, etc.) load fine via
@@ -572,6 +591,7 @@ const SEEDS: Seed[] = [
   // keep working when the user opts in.
   { name: 'dev/piano', ext: 'spli', body: STARTER_PIANO, inProject: false },
   { name: 'dev/flute', ext: 'spli', body: STARTER_FLUTE, inProject: false },
+  { name: 'dev/kick', ext: 'spli', body: STARTER_KICK, inProject: false },
   { name: 'free-field', ext: 'splr', body: STARTER_FREE_FIELD, inProject: false },
   { name: 'alle_meine_entchen', ext: 'spls', body: ALLE_MEINE_ENTCHEN, inProject: false },
 ]
