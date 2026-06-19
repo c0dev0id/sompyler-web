@@ -2,7 +2,7 @@ import { ScoreError } from '../errors'
 import { log } from '../debug'
 import type { Instrument } from '../parse/instrument'
 import { parseScore, walkMeasures, ticksToSeconds, type RawNote } from '../parse/score'
-import type { Tuner } from '../parse/tuning'
+import type { Scale, Tuner } from '../parse/tuning'
 import { noteCacheKey } from '../storage/hash'
 
 /**
@@ -45,6 +45,12 @@ export interface DistinctBuildContext {
   /** Map of instrument-name → loaded instrument. */
   instruments: Map<string, Instrument>
   defaultTicksPerMinute?: number
+  /**
+   * S53400 active scale. When set, pitches must be in-scale (or marked `?`
+   * for snap-to-nearest, `!` for force-literal). When undefined, the tuner
+   * resolves freely (12-TET fallback behaviour).
+   */
+  scale?: Scale
 }
 
 export async function buildDistinctNotes(
@@ -98,7 +104,10 @@ export async function buildDistinctNotes(
       ticksToSeconds(note.offsetTicks + note.lengthTicks + note.damp, activeTicksPerMinute),
     )
 
-    const frequencyHz = ctx.tuner.frequencyOfTone(note.pitch)
+    const frequencyHz = ctx.tuner.frequencyOfTone(note.pitch, {
+      scale: ctx.scale,
+      offScale: note.offScale,
+    })
     const dampSeconds = ticksToSeconds(note.damp, activeTicksPerMinute)
     const properties: Record<string, unknown> = {}
     // S53400 off-scale flags must split the cache: same pitch + different

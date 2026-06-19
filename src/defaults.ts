@@ -63,15 +63,21 @@ partials:
   - { freqMult: 3, amp: 0.05 }
 `
 
-// Subset port of lib/tones_euro_de+en.splt — just the [basics] block, which is
-// what our minimal Tuner uses today. The richer interval / tone-name tables
-// land once the parser learns them.
+// Subset port of lib/tones_euro_de+en.splt — basics block (Tuner.config) plus
+// the [scales] block (mj=major, mn=minor, chr=chromatic). RFC §S45000.
+// Additional Sompyler scale modes (hmj, mm*, ph, ly, etc.) load fine via
+// parseTuning but aren't seeded by default to keep the starter tidy.
 const STARTER_TUNING = `# tones_euro: equal temperament, 12 tones per octave, A4 = 440 Hz.
 basics:
   ref_frequency: 440
   ref_octave_number: 4
   ref_octave_offset: 9
   tones_per_octave: 12
+scales:
+  chr: "1 1 1 1 1 1 1 1 1 1 1 1"
+  mj:  "2 2 1 2 2 2 1"
+  mn:  "2 1 2 2 1 2 2"
+default_scale: chr
 `
 
 const STARTER_FREE_FIELD = `# free-field.splr — no reverb. Just a panorama+intensity placeholder.
