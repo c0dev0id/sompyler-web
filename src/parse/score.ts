@@ -79,6 +79,11 @@ export interface RawNote {
    * phase 16b.
    */
   shapeArticles: Record<string, string>
+  /**
+   * S432b0 continuum article values: `START-END` linear ramp resolved at
+   * render time using the note's tick offset within the measure.
+   */
+  continuumArticles: Record<string, { start: number; end: number }>
   measureIndex: number
   measureName: string
 }
@@ -133,20 +138,28 @@ interface ParsedNoteShort {
   damp: number
   staticArticles: Record<string, string | number | boolean>
   shapeArticles: Record<string, string>
+  continuumArticles: Record<string, { start: number; end: number }>
 }
 
+const CONTINUUM_RX = /^(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)$/
+
 /**
- * Classify an article value. Shape literals (anything containing `:`, `;`, or
- * `,`) are routed to `shapeArticles` for deferred per-tick evaluation in 16b.
- * Booleans (`true|false|yes|no`) and numeric literals become typed statics;
+ * Classify an article value. Shape literals (containing `:`, `;`, or `,`)
+ * route to `shapeArticles`. Continuum `START-END` (S432b0) routes to
+ * `continuumArticles`. Booleans and numeric literals become typed statics;
  * anything else is kept as a bare identifier string.
  */
 function classifyAttrValue(raw: string):
   | { kind: 'shape'; value: string }
+  | { kind: 'continuum'; start: number; end: number }
   | { kind: 'static'; value: number | boolean | string } {
   if (raw === 'true' || raw === 'yes') return { kind: 'static', value: true }
   if (raw === 'false' || raw === 'no') return { kind: 'static', value: false }
   if (/[:;,]/.test(raw)) return { kind: 'shape', value: raw }
+  const continuumM = CONTINUUM_RX.exec(raw)
+  if (continuumM) {
+    return { kind: 'continuum', start: parseFloat(continuumM[1]!), end: parseFloat(continuumM[2]!) }
+  }
   const n = Number(raw)
   if (raw !== '' && !Number.isNaN(n)) return { kind: 'static', value: n }
   return { kind: 'static', value: raw }
@@ -167,6 +180,7 @@ function parseShortNote(raw: string): ParsedNoteShort {
   let damp = 0
   const staticArticles: Record<string, string | number | boolean> = {}
   const shapeArticles: Record<string, string> = {}
+  const continuumArticles: Record<string, { start: number; end: number }> = {}
   if (attrStr) {
     for (const tok of attrStr.trim().split(/\s+/)) {
       if (!tok) continue
@@ -181,6 +195,7 @@ function parseShortNote(raw: string): ParsedNoteShort {
       }
       const cls = classifyAttrValue(v)
       if (cls.kind === 'shape') shapeArticles[k] = cls.value
+      else if (cls.kind === 'continuum') continuumArticles[k] = { start: cls.start, end: cls.end }
       else staticArticles[k] = cls.value
     }
   }
@@ -192,6 +207,7 @@ function parseShortNote(raw: string): ParsedNoteShort {
     damp,
     staticArticles,
     shapeArticles,
+    continuumArticles,
   }
 }
 
@@ -413,6 +429,7 @@ export function* walkMeasures(
                   damp: parsed.damp,
                   staticArticles: parsed.staticArticles,
                   shapeArticles: parsed.shapeArticles,
+                  continuumArticles: parsed.continuumArticles,
                   measureIndex: i,
                   measureName,
                 }

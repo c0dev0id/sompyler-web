@@ -209,6 +209,14 @@ export async function buildDistinctNotes(
     for (const [k, v] of Object.entries(note.shapeArticles)) {
       properties[`@${k}`] = v
     }
+    // S432b0 continuum articles: resolve to a scalar at the note's tick
+    // position within the measure. Different offsets → different values
+    // → different cache entries.
+    const measureSpan = measureTickSpan.get(note.measureIndex) ?? 1
+    for (const [k, { start, end }] of Object.entries(note.continuumArticles)) {
+      const t = measureSpan > 0 ? note.offsetTicks / measureSpan : 0
+      properties[k] = start + (end - start) * t
+    }
 
     const key = await noteCacheKey({
       instrumentHash: instrument.hash,

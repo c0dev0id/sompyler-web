@@ -187,6 +187,37 @@ piano:
     expect(shapedPlan.notes[0]!.key).not.toBe(constPlan.notes[0]!.key)
   })
 
+  it('continuum article resolves linearly at the note offset (S432b0)', async () => {
+    const CONT = `
+title: continuum
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+  lower_stress_bound: 100
+  upper_stress_bound: 100
+piano:
+  0: A4 1 100 vol=80-40
+  2: A4 1 100 vol=80-40
+`
+    const plan = await buildDistinctNotes(CONT, {
+      tuner: new Tuner(),
+      instruments: new Map([[piano.name, piano]]),
+    })
+    // Two notes at different offsets → different resolved continuum values
+    // → two distinct cache entries.
+    expect(plan.notes).toHaveLength(2)
+    // Measure span: offset 2 + length 1 = 3. Values: t=0 → 80, t=2/3 → 53.3̄.
+    const note0 = plan.notes.find((n) => n.occurrences[0]!.offsetTicks === 0)
+    const note2 = plan.notes.find((n) => n.occurrences[0]!.offsetTicks === 2)
+    expect(note0).toBeDefined()
+    expect(note2).toBeDefined()
+    expect(note0!.properties.vol).toBeCloseTo(80, 4)
+    expect(note2!.properties.vol).toBeCloseTo(80 + (40 - 80) * (2 / 3), 4)
+  })
+
   it('offset_seconds inserts a silent gap before the measure (S46196)', async () => {
     const TWO_MEASURES = `
 title: offset
