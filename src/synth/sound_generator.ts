@@ -1,6 +1,6 @@
 import { DEFAULT_SAMPLE_RATE } from './constants'
-import { DEFAULT_ENVELOPE, type EnvelopeSpec } from './envelope'
-import type { OscillatorSpec } from './oscillator'
+import { DEFAULT_ENVELOPE, applyEnvelope, type EnvelopeSpec } from './envelope'
+import { renderOscillator, type OscillatorSpec } from './oscillator'
 import { evaluateShape } from './shape'
 import { renderSympartial, type SympartialSpec } from './sympartial'
 
@@ -15,6 +15,22 @@ import { renderSympartial, type SympartialSpec } from './sympartial'
  * lands once we wire in the full instrument compiler.
  */
 
+/**
+ * S32135: one entry in a MORPH list. The divisor/remainder pair addresses
+ * which partials this entry applies to (1-indexed):
+ *   divisor = 0  → exact match: only the partial at position `remainder`
+ *   divisor > 0  → modular: partials where (position % divisor) === remainder
+ *
+ * weight is pre-computed from the shape string's length field (Python:
+ * `shape.length` is the weight in `SoundMorpher.get_according_shapes()`).
+ */
+export interface MorphEntry {
+  divisor: number
+  remainder: number
+  weight: number
+  shape: string
+}
+
 export interface InstrumentSpec {
   /** Linear amplitude scaling applied after summing partials. */
   amp?: number
@@ -26,6 +42,24 @@ export interface InstrumentSpec {
   partials?: PartialDef[]
   /** S32136 railsback per-key frequency deviation curve. */
   railsback?: RailsbackCurve
+  /**
+   * S32132: incremental cent deviations per partial, applied cumulatively.
+   * spread[0] shifts partial 1 by spread[0] cents, partial 2 by
+   * spread[0]+spread[1] cents, etc. Shifts the harmonic series away from
+   * the pure integer multiples (inharmonicity).
+   */
+  spread?: number[]
+  /**
+   * S32134: "SPECTRUM_WIDTH:SHAPE" string. The shape is sampled per
+   * partial (index = harmonic position) to produce a frequency-dependent
+   * amplitude multiplier. Neutral = 1.0.
+   */
+  timbre?: string
+  /**
+   * S32135: post-render per-partial amplitude envelopes. Applied after
+   * oscillator + envelope but before partial accumulation.
+   */
+  morph?: MorphEntry[]
 }
 
 /**
@@ -117,9 +151,34 @@ export function renderNote(input: RenderNoteInput): Float32Array {
   const out = new Float32Array(totalSamples)
   const sympartials = resolveSympartials(input.instrument)
   const baseFreq = applyRailsback(input.freqHz, input.instrument.railsback)
-  for (const sp of sympartials) {
-    renderSympartial(out, sp, baseFreq, sampleRate, damp)
+
+  const { spread, timbre, morph } = input.instrument
+  const hasPerPartialMods =
+    (spread && spread.length > 0) ||
+    !!timbre ||
+    (morph && morph.length > 0 && !!input.lengthTicks)
+
+  if (hasPerPartialMods) {
+    const spreadMults = computeSpreadMults(spread, sympartials.length)
+    const timbreAmps = computeTimbreAmps(timbre, sympartials)
+    for (let pi = 0; pi < sympartials.length; pi++) {
+      const sp = sympartials[pi]!
+      const partialFreqHz = baseFreq * sp.freqMult * (spreadMults[pi] ?? 1)
+      const buf = new Float32Array(totalSamples)
+      renderOscillator(buf, sp.oscillator, partialFreqHz, sampleRate)
+      applyEnvelope(buf, sp.envelope, sampleRate, damp)
+      if (morph && morph.length > 0 && input.lengthTicks) {
+        applyMorphToPartial(buf, pi + 1, morph, totalSamples, input.lengthTicks)
+      }
+      const amp = Math.max(0, sp.amp) * (timbreAmps[pi] ?? 1)
+      for (let i = 0; i < totalSamples; i++) out[i] = out[i]! + buf[i]! * amp
+    }
+  } else {
+    for (const sp of sympartials) {
+      renderSympartial(out, sp, baseFreq, sampleRate, damp)
+    }
   }
+
   const masterAmp = (input.instrument.amp ?? 1) * input.stress
   if (masterAmp !== 1) {
     for (let i = 0; i < out.length; i++) out[i] = out[i]! * masterAmp
@@ -131,6 +190,78 @@ export function renderNote(input: RenderNoteInput): Float32Array {
     out[i] = x > 1 ? 1 : x < -1 ? -1 : x
   }
   return out
+}
+
+/**
+ * S32132: compute per-partial frequency multipliers from cumulative cent
+ * deviations. spread[i] is the incremental deviation for partial i; the
+ * cumulative sum drives the actual pitch shift via 2^(cents/1200).
+ */
+function computeSpreadMults(spread: number[] | undefined, count: number): Float32Array {
+  const mults = new Float32Array(count).fill(1)
+  if (!spread || spread.length === 0) return mults
+  let cumCents = 0
+  for (let i = 0; i < count; i++) {
+    cumCents += spread[i] ?? 0
+    mults[i] = Math.pow(2, cumCents / 1200)
+  }
+  return mults
+}
+
+/**
+ * S32134: sample the TIMBRE shape once per partial. The shape is indexed
+ * by harmonic position (partial 1 = index 0, partial N = index N-1).
+ * Values of 1.0 are neutral; <1.0 attenuates, >1.0 boosts.
+ * Out-of-range partials (beyond spectrumWidth) receive the last value.
+ */
+function computeTimbreAmps(timbre: string | undefined, sympartials: SympartialSpec[]): Float32Array {
+  const count = sympartials.length
+  const amps = new Float32Array(count).fill(1)
+  if (!timbre) return amps
+  const colon = timbre.indexOf(':')
+  if (colon === -1) return amps
+  const width = parseInt(timbre.slice(0, colon), 10)
+  if (!Number.isFinite(width) || width <= 0) return amps
+  const shape = evaluateShape(timbre, width)
+  for (let i = 0; i < count; i++) {
+    amps[i] = shape[Math.min(i, width - 1)] ?? 1
+  }
+  return amps
+}
+
+/**
+ * S32135: apply matching MORPH entries to a single partial buffer as a
+ * multiplicative amplitude envelope. Multiple matching entries are
+ * weight-averaged (weight = parsed shape length, per Python convention).
+ */
+function applyMorphToPartial(
+  buf: Float32Array,
+  partialIndex: number,
+  morph: MorphEntry[],
+  totalSamples: number,
+  lengthTicks: number,
+): void {
+  const matching = morph.filter((m) =>
+    m.divisor === 0 ? m.remainder === partialIndex : partialIndex % m.divisor === m.remainder,
+  )
+  if (matching.length === 0) return
+
+  const totalWeight = matching.reduce((s, m) => s + m.weight, 0)
+  if (totalWeight === 0) return
+
+  const precomputed = matching.map((m) => ({
+    w: m.weight / totalWeight,
+    ticks: evaluateShape(m.shape, lengthTicks),
+  }))
+
+  for (let i = 0; i < totalSamples; i++) {
+    const tickIdx = Math.min(lengthTicks - 1, Math.floor((i * lengthTicks) / totalSamples))
+    let env = 0
+    for (const { w, ticks } of precomputed) {
+      env += (ticks[tickIdx] ?? 1) * w
+    }
+    buf[i] = buf[i]! * env
+  }
 }
 
 /**

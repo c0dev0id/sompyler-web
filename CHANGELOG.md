@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- RFC synthesis properties (Phase 18): SPREAD (S32132) applies cumulative cent deviations per partial to shift the harmonic series away from pure integer multiples; TIMBRE (S32134) applies a per-harmonic amplitude curve ("resonance corpus") keyed by a `SPECTRUM_WIDTH:SHAPE` string; MORPH (S32135) applies post-render per-partial amplitude envelopes addressed by partial sequence patterns (`1`, `2n`, `3n+1`, etc.) with weight-averaged blending when multiple entries match. All three are compiled from `.spli` YAML (top-level keys or `character:` block roots) and applied in `renderNote()` via a per-partial buffer path that activates only when any of the three features are non-empty, keeping the common path allocation-free.
 - Initial Vite + Solid + TypeScript scaffold.
 - PWA shell via `vite-plugin-pwa` with web app manifest and basic service worker.
 - Structured debug logger (`src/debug.ts`) with category-based thresholds, console sink, in-memory ring buffer, and JSON dump download.

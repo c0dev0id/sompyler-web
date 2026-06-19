@@ -1,9 +1,9 @@
 import { InstrumentError } from '../errors'
 import type { Instrument } from '../parse/instrument'
-import type { InstrumentSpec, PartialDef, RailsbackCurve } from './sound_generator'
+import type { InstrumentSpec, MorphEntry, PartialDef, RailsbackCurve } from './sound_generator'
 import { DEFAULT_ENVELOPE, type EnvelopeSpec } from './envelope'
 import type { OscillatorSpec, Waveform } from './oscillator'
-import { renderShapeString } from './shape'
+import { parseShape, renderShapeString } from './shape'
 import { parseCharacterBlock, validateVariationGraph } from './variation'
 
 const RAILSBACK_KEYS = 88
@@ -103,6 +103,62 @@ function compilePartials(raw: unknown): PartialDef[] | undefined {
   })
 }
 
+/** S32132: list of incremental cent deviations, or RESOLUTION:SHAPE string. */
+function compileSpread(raw: unknown): number[] | undefined {
+  if (raw == null) return undefined
+  if (typeof raw === 'string') {
+    const colon = raw.indexOf(':')
+    if (colon === -1) throw new InstrumentError(`spread string must be "RESOLUTION:SHAPE"`)
+    const resolution = parseInt(raw.slice(0, colon), 10)
+    if (!Number.isFinite(resolution) || resolution <= 0) {
+      throw new InstrumentError(`spread resolution must be a positive integer`)
+    }
+    return Array.from(renderShapeString(raw, resolution))
+  }
+  if (!Array.isArray(raw)) throw new InstrumentError(`spread must be a list or "RESOLUTION:SHAPE" string`)
+  return raw.map((item, i) => {
+    const n = Number(item)
+    if (!Number.isFinite(n)) throw new InstrumentError(`spread[${i}] must be a number`)
+    return n
+  })
+}
+
+/** S32134: "SPECTRUM_WIDTH:SHAPE" — stored as-is; rendered per-note. */
+function compileTimbre(raw: unknown): string | undefined {
+  if (raw == null) return undefined
+  if (typeof raw === 'string') return raw
+  throw new InstrumentError(`timbre must be a "SPECTRUM_WIDTH:SHAPE" string`)
+}
+
+const SEQNUM_RX = /^(\d+)(n(?:\+(\d+))?)?$/
+
+function parseMorphEntry(s: string): MorphEntry {
+  const spaceIdx = s.indexOf(' ')
+  if (spaceIdx === -1) throw new InstrumentError(`morph entry must be "SEQNUM SHAPE"`)
+  const seqStr = s.slice(0, spaceIdx).trim()
+  const shapeStr = s.slice(spaceIdx + 1).trim()
+  const m = SEQNUM_RX.exec(seqStr)
+  if (!m) throw new InstrumentError(`Invalid morph partial seqnum '${seqStr}'`)
+  const n = parseInt(m[1]!, 10)
+  const weight = parseShape(shapeStr).length
+  if (m[2]) {
+    // "Nn" or "Nn+M" — modular pattern
+    return { divisor: n, remainder: m[3] ? parseInt(m[3], 10) : 0, weight, shape: shapeStr }
+  }
+  // Plain integer — exact partial index (1-indexed)
+  return { divisor: 0, remainder: n, weight, shape: shapeStr }
+}
+
+/** S32135: list of "SEQNUM SHAPE" strings. */
+function compileMorph(raw: unknown): MorphEntry[] | undefined {
+  if (raw == null) return undefined
+  if (!Array.isArray(raw)) throw new InstrumentError(`morph must be a list`)
+  return raw.map((item, i) => {
+    if (typeof item !== 'string') throw new InstrumentError(`morph[${i}] must be a string`)
+    return parseMorphEntry(item)
+  })
+}
+
 export function compileInstrument(instr: Instrument): InstrumentSpec {
   const obj = asObj(instr.parsed)
   if (!obj) {
@@ -111,8 +167,8 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
   // S32122 — validate variation graph (cycle detection) before anything else.
   // Throws InstrumentError with a "Circular dependencies …" message that
   // the editor lint surfaces inline (R6).
+  let character = parseCharacterBlock(instr.parsed)
   try {
-    const character = parseCharacterBlock(instr.parsed)
     validateVariationGraph(character)
   } catch (cause) {
     if (cause instanceof InstrumentError) {
@@ -124,6 +180,11 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
     throw cause
   }
 
+  // S32132/S32134/S32135: SPREAD/TIMBRE/MORPH live in character.root when
+  // expressed as character-block keys (uppercase), or at the top level in
+  // the flat instrument format (lowercase). Character block takes precedence.
+  const root = character.root
+
   const spec: InstrumentSpec = {}
   if ('amp' in obj) spec.amp = Number(obj.amp)
   const osc = compileOscillator(obj.oscillator)
@@ -134,5 +195,13 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
   if (partials) spec.partials = partials
   const railsback = compileRailsback(obj.railsback)
   if (railsback) spec.railsback = railsback
+
+  const spread = compileSpread(root.SPREAD ?? obj.spread)
+  if (spread) spec.spread = spread
+  const timbre = compileTimbre(root.TIMBRE ?? obj.timbre)
+  if (timbre) spec.timbre = timbre
+  const morph = compileMorph(root.MORPH ?? obj.morph)
+  if (morph) spec.morph = morph
+
   return spec
 }
