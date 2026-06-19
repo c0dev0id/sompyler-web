@@ -113,6 +113,128 @@ piano:
     })
   })
 
+  it('inherits a voice marked `true` from the previous measure (S46110)', () => {
+    const body = `
+title: inherit
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "2,0,1,0"
+piano:
+  0: C4 1
+  1: E4 1
+---
+piano: true
+`
+    const { head, measures } = parseScore(body)
+    const notes = [...walkMeasures(head, measures)]
+    // Measure 0: 2 notes; measure 1: same 2 notes inherited.
+    expect(notes).toHaveLength(4)
+    expect(notes[2]).toMatchObject({ voice: 'piano', measureName: '1', pitch: 'C4' })
+    expect(notes[3]).toMatchObject({ voice: 'piano', measureName: '1', pitch: 'E4' })
+  })
+
+  it('throws when a voice inherits without prior content', () => {
+    const body = `
+title: bad-inherit
+stage:
+  piano: 1|1 0 dev/piano
+---
+piano: true
+`
+    const { head, measures } = parseScore(body)
+    expect(() => [...walkMeasures(head, measures)]).toThrow(
+      /inherits from previous measure/,
+    )
+  })
+
+  it('repeats unmentioned voices when _meta.repeat_unmentioned_voices is true (S46110)', () => {
+    const body = `
+title: repeat
+stage:
+  violin: 1|1 0 dev/piano
+  cello: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+violin:
+  0: A4 1
+cello:
+  0: C3 1
+---
+_meta:
+  repeat_unmentioned_voices: true
+violin:
+  0: B4 1
+`
+    const { head, measures } = parseScore(body)
+    const notes = [...walkMeasures(head, measures)]
+    // Measure 0: violin A4 + cello C3 (2 notes).
+    // Measure 1: violin B4 (explicit override) + cello C3 (auto-inherited) → 2 more.
+    expect(notes).toHaveLength(4)
+    const m1 = notes.filter((n) => n.measureName === '1')
+    expect(m1).toHaveLength(2)
+    expect(m1.some((n) => n.voice === 'violin' && n.pitch === 'B4')).toBe(true)
+    expect(m1.some((n) => n.voice === 'cello' && n.pitch === 'C3')).toBe(true)
+  })
+
+  it('does not propagate repeat_unmentioned_voices across measures', () => {
+    const body = `
+title: nopropagate
+stage:
+  violin: 1|1 0 dev/piano
+  cello: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+violin:
+  0: A4 1
+cello:
+  0: C3 1
+---
+_meta:
+  repeat_unmentioned_voices: true
+violin:
+  0: B4 1
+---
+violin:
+  0: C5 1
+`
+    const { head, measures } = parseScore(body)
+    const notes = [...walkMeasures(head, measures)]
+    // Measure 2: only violin (cello NOT auto-inherited because flag wasn't set).
+    const m2 = notes.filter((n) => n.measureName === '2')
+    expect(m2).toHaveLength(1)
+    expect(m2[0]).toMatchObject({ voice: 'violin', pitch: 'C5' })
+  })
+
+  it('chains voice-true inheritance across three measures', () => {
+    const body = `
+title: chain
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+piano:
+  0: A4 1
+---
+piano: true
+---
+piano: true
+`
+    const { head, measures } = parseScore(body)
+    const notes = [...walkMeasures(head, measures)]
+    expect(notes).toHaveLength(3)
+    expect(notes.map((n) => n.pitch)).toEqual(['A4', 'A4', 'A4'])
+    expect(notes.map((n) => n.measureName)).toEqual(['0', '1', '2'])
+  })
+
   it('extracts ? / ! off-scale flags from pitch and strips them', () => {
     const body = `
 title: flags

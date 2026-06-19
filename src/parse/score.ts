@@ -253,6 +253,18 @@ export function parseScore(body: string): { head: ScoreHead; measures: unknown[]
  * occurrence in measure order. Stress is resolved against the active
  * stress pattern; tick durations are kept in ticks (conversion to seconds
  * happens once tempo profiles are wired up later).
+ *
+ * **S46110 measure inheritance (RFC §4.6.1.1)**. Two mechanisms, ported from
+ * `Sompyler/score/measure.py:Measure.__init__` lines 226–239:
+ *
+ * - A voice whose value is `true` (YAML scalar `true` / boolean) copies its
+ *   content from the previous measure's same voice. Explicit per-voice opt-in.
+ * - `_meta.repeat_unmentioned_voices: true` switches the copy to implicit for
+ *   *every* previous-measure voice not redefined in the current measure. The
+ *   flag itself is not inherited — it only applies to the measure that sets it.
+ *
+ * Forward-doors S47000 multimeasure constructs (`_loop`, `|`, `*n`, `%n`) and
+ * voice-level `_inherit:` shapes — neither is in v1 scope.
  */
 export function* walkMeasures(
   head: ScoreHead,
@@ -260,6 +272,7 @@ export function* walkMeasures(
   positions: PositionStack = new PositionStack(),
 ): Generator<RawNote> {
   let activeMeta: MeasureMeta = DEFAULT_META
+  const previousVoices: Map<string, Record<string, unknown>> = new Map()
   for (let i = 0; i < measures.length; i++) {
     const measure = measures[i]
     if (!measure || typeof measure !== 'object') {
@@ -273,14 +286,37 @@ export function* walkMeasures(
     const stressOf = buildStressor(activeMeta)
     positions.push({ measure: measureName })
 
+    const repeatUnmentioned = !!(meta && meta.repeat_unmentioned_voices === true)
+
+    const resolvedVoices: Record<string, Record<string, unknown>> = {}
+    for (const [voice, content] of Object.entries(m)) {
+      if (voice.startsWith('_')) continue
+      if (content === true) {
+        const prev = previousVoices.get(voice)
+        if (!prev) {
+          throw new ScoreError(
+            `Voice '${voice}' inherits from previous measure, but no prior content for it`,
+          )
+        }
+        resolvedVoices[voice] = prev
+        continue
+      }
+      if (!content || typeof content !== 'object') {
+        throw new ScoreError(`Voice '${voice}' content must be a mapping`)
+      }
+      resolvedVoices[voice] = content as Record<string, unknown>
+    }
+    if (repeatUnmentioned) {
+      for (const [voice, prev] of previousVoices) {
+        if (voice in resolvedVoices) continue
+        resolvedVoices[voice] = prev
+      }
+    }
+
     try {
-      for (const [voice, content] of Object.entries(m)) {
-        if (voice.startsWith('_')) continue
+      for (const [voice, content] of Object.entries(resolvedVoices)) {
         if (!(voice in head.stage)) {
           throw new ScoreError(`Voice '${voice}' not declared in stage`)
-        }
-        if (!content || typeof content !== 'object') {
-          throw new ScoreError(`Voice '${voice}' content must be a mapping`)
         }
         positions.push({ voice })
         try {
@@ -319,6 +355,10 @@ export function* walkMeasures(
       }
     } finally {
       positions.pop()
+    }
+
+    for (const [voice, content] of Object.entries(resolvedVoices)) {
+      previousVoices.set(voice, content)
     }
   }
 }
