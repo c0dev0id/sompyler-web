@@ -122,6 +122,10 @@ export async function buildDistinctNotes(
       const metaBlock = (measures[note.measureIndex] as Record<string, unknown>)?._meta as
         | Record<string, unknown>
         | undefined
+      // S46196: offset_seconds inserts a silent gap before this measure.
+      if (metaBlock && typeof metaBlock.offset_seconds === 'number' && metaBlock.offset_seconds > 0) {
+        cumLengthSeconds += metaBlock.offset_seconds
+      }
       if (metaBlock && 'ticks_per_minute' in metaBlock) {
         activeTicksPerMinute = Number(metaBlock.ticks_per_minute)
         // Explicit constant TPM clears any inherited Shape (matches Sompyler).

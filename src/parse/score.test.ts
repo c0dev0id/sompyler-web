@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseScore, walkMeasures } from './score'
+import { parseScore, walkMeasures, expandOffsetKey } from './score'
 
 const SIMPLE = `
 title: tiny
@@ -235,6 +235,79 @@ piano: true
     expect(notes.map((n) => n.measureName)).toEqual(['0', '1', '2'])
   })
 
+  it('skip=true produces no notes and does not advance elapsed time (S46193)', () => {
+    const body = `
+title: skip
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+piano:
+  0: A4 1
+---
+_meta:
+  skip: true
+piano:
+  0: B4 1
+---
+piano:
+  0: C4 1
+`
+    const { head, measures } = parseScore(body)
+    const notes = [...walkMeasures(head, measures)]
+    expect(notes).toHaveLength(2)
+    expect(notes.map((n) => n.pitch)).toEqual(['A4', 'C4'])
+    expect(notes.map((n) => n.measureName)).toEqual(['0', '2'])
+  })
+
+  it('is_last=true halts the generator after that measure (S46195)', () => {
+    const body = `
+title: last
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+  is_last: true
+piano:
+  0: A4 1
+---
+piano:
+  0: B4 1
+`
+    const { head, measures } = parseScore(body)
+    const notes = [...walkMeasures(head, measures)]
+    expect(notes).toHaveLength(1)
+    expect(notes[0]!.pitch).toBe('A4')
+  })
+
+  it('cut=N drops notes before tick N and shifts remaining (S46192)', () => {
+    const body = `
+title: cut
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+  cut: 4
+piano:
+  0: A4 1
+  2: B4 1
+  4: C4 1
+  6: D4 1
+`
+    const { head, measures } = parseScore(body)
+    const notes = [...walkMeasures(head, measures)]
+    // Only offsets ≥ 4 survive; they are shifted left by 4.
+    expect(notes).toHaveLength(2)
+    expect(notes[0]).toMatchObject({ pitch: 'C4', offsetTicks: 0 })
+    expect(notes[1]).toMatchObject({ pitch: 'D4', offsetTicks: 2 })
+  })
+
   it('extracts ? / ! off-scale flags from pitch and strips them', () => {
     const body = `
 title: flags
@@ -251,5 +324,28 @@ piano:
     expect(notes[0]).toMatchObject({ pitch: 'C4', offScale: '?' })
     expect(notes[1]).toMatchObject({ pitch: 'C4', offScale: '!' })
     expect(notes[2]).toMatchObject({ pitch: 'C4', offScale: null })
+  })
+})
+
+describe('expandOffsetKey (S46232)', () => {
+  it('handles a plain integer', () => {
+    expect(expandOffsetKey('0')).toEqual([0])
+    expect(expandOffsetKey('4')).toEqual([4])
+  })
+
+  it('expands a comma-separated list', () => {
+    expect(expandOffsetKey('0,4,8')).toEqual([0, 4, 8])
+  })
+
+  it('expands start+step*count', () => {
+    expect(expandOffsetKey('0+2*3')).toEqual([0, 2, 4])
+  })
+
+  it('step without count yields one value', () => {
+    expect(expandOffsetKey('0+2')).toEqual([0])
+  })
+
+  it('mixes comma list and range in one key', () => {
+    expect(expandOffsetKey('0,8+4*3')).toEqual([0, 8, 12, 16])
   })
 })

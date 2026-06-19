@@ -232,6 +232,35 @@ function buildStressor(meta: MeasureMeta): (tick: number) => number {
 }
 
 /**
+ * S46232: expand a possibly-composite offset key into one or more tick values.
+ *   "4"       → [4]
+ *   "0,4,8"   → [0, 4, 8]
+ *   "0+2*3"   → [0, 2, 4]   (start=0, step=2, count=3)
+ *   "0+2"     → [0]         (step given, count defaults to 1)
+ */
+export function expandOffsetKey(key: string): number[] {
+  const out: number[] = []
+  for (const interval of String(key).split(',')) {
+    const t = interval.trim()
+    const m = /^(\d+(?:\.\d+)?)(?:\+(\d+)(?:\*(\d+))?)?$/.exec(t)
+    if (!m) {
+      const n = Number(t)
+      if (Number.isFinite(n)) out.push(n)
+      continue
+    }
+    const start = parseFloat(m[1]!)
+    const dist = m[2] ? parseInt(m[2], 10) : 0
+    const times = m[3] ? parseInt(m[3], 10) : 1
+    if (dist === 0) {
+      out.push(start)
+    } else {
+      for (let i = 0; i < times; i++) out.push(start + i * dist)
+    }
+  }
+  return out
+}
+
+/**
  * Parse a full `.spls` body into head + measures. Multiple `---`-separated
  * documents follow YAML's standard multi-doc convention; js-yaml gives them
  * back in order.
@@ -295,6 +324,17 @@ export function* walkMeasures(
     const meta = '_meta' in m ? (m._meta as Record<string, unknown>) : undefined
     activeMeta = readMeta(meta, activeMeta)
     const measureName = '_id' in m ? String(m._id) : String(i)
+
+    // S46193: skip=true → measure produces no notes and no elapsed time.
+    if (meta?.skip === true) {
+      log('parse', 'info', `Skipping measure ${measureName} (_meta.skip)`)
+      continue
+    }
+
+    // S46192: positive cut=N → drop notes that start before tick N and
+    // shift remaining note offsets left by N.
+    const cut = typeof meta?.cut === 'number' ? meta.cut : 0
+
     const stressOf = buildStressor(activeMeta)
     positions.push({ measure: measureName })
 
@@ -333,32 +373,38 @@ export function* walkMeasures(
         positions.push({ voice })
         try {
           for (const [offsetKey, raw] of Object.entries(content as Record<string, unknown>)) {
-            const offsetTicks = Number(offsetKey)
-            if (Number.isNaN(offsetTicks)) {
-              log('parse', 'warn', `Skipping non-numeric offset '${offsetKey}' in voice ${voice}`)
+            // S46232: offset keys can be composite ("0,4,8" or "0+2*3").
+            const expandedOffsets = expandOffsetKey(offsetKey)
+            if (expandedOffsets.length === 0) {
+              log('parse', 'warn', `Skipping unrecognised offset '${offsetKey}' in voice ${voice}`)
               continue
             }
             if (typeof raw !== 'string') {
               throw new ScoreError(`Note at ${voice}:${offsetKey} must be a string in v1`)
             }
-            positions.push({ offset: offsetTicks })
-            try {
-              const parsed = parseShortNote(raw)
-              yield {
-                voice,
-                offsetTicks,
-                pitch: parsed.pitch,
-                offScale: parsed.offScale,
-                lengthTicks: parsed.lengthTicks,
-                stress: stressOf(offsetTicks) * parsed.weight,
-                damp: parsed.damp,
-                staticArticles: parsed.staticArticles,
-                shapeArticles: parsed.shapeArticles,
-                measureIndex: i,
-                measureName,
+            const parsed = parseShortNote(raw)
+            for (const rawOffset of expandedOffsets) {
+              // S46192: positive cut — drop notes before the cut point.
+              if (cut > 0 && rawOffset < cut) continue
+              const offsetTicks = cut > 0 ? rawOffset - cut : rawOffset
+              positions.push({ offset: offsetTicks })
+              try {
+                yield {
+                  voice,
+                  offsetTicks,
+                  pitch: parsed.pitch,
+                  offScale: parsed.offScale,
+                  lengthTicks: parsed.lengthTicks,
+                  stress: stressOf(offsetTicks) * parsed.weight,
+                  damp: parsed.damp,
+                  staticArticles: parsed.staticArticles,
+                  shapeArticles: parsed.shapeArticles,
+                  measureIndex: i,
+                  measureName,
+                }
+              } finally {
+                positions.pop()
               }
-            } finally {
-              positions.pop()
             }
           }
         } finally {
@@ -371,6 +417,12 @@ export function* walkMeasures(
 
     for (const [voice, content] of Object.entries(resolvedVoices)) {
       previousVoices.set(voice, content)
+    }
+
+    // S46195: is_last=true → halt after this measure; ignore subsequent ones.
+    if (meta?.is_last === true) {
+      log('parse', 'info', `Halting at measure ${measureName} (_meta.is_last)`)
+      return
     }
   }
 }

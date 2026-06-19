@@ -187,6 +187,39 @@ piano:
     expect(shapedPlan.notes[0]!.key).not.toBe(constPlan.notes[0]!.key)
   })
 
+  it('offset_seconds inserts a silent gap before the measure (S46196)', async () => {
+    const TWO_MEASURES = `
+title: offset
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+  lower_stress_bound: 100
+  upper_stress_bound: 100
+piano:
+  0: A4 1
+---
+_meta:
+  offset_seconds: 2
+piano:
+  0: B4 1
+`
+    const plan = await buildDistinctNotes(TWO_MEASURES, {
+      tuner: new Tuner(),
+      instruments: new Map([[piano.name, piano]]),
+    })
+    // Measure 0: A4 at offsetSeconds=0. Measure 1: B4 starts after 1s (m0)
+    // + 2s (offset_seconds gap) = 3s.
+    const a4 = plan.notes.find((n) => Math.abs(n.frequencyHz - 440) < 1)
+    const b4 = plan.notes.find((n) => Math.abs(n.frequencyHz - 493.88) < 1)
+    expect(a4).toBeDefined()
+    expect(b4).toBeDefined()
+    expect(a4!.occurrences[0]!.offsetSeconds).toBeCloseTo(0, 4)
+    expect(b4!.occurrences[0]!.offsetSeconds).toBeCloseTo(3, 3)
+  })
+
   it('splits the cache when ? / ! off-scale flags diverge (S53400)', async () => {
     const FLAGGED = `
 title: flag-split
