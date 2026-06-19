@@ -101,3 +101,17 @@ export function renderShape(spec: ShapeSpec, numSamples: number): Float32Array {
 export function renderShapeString(input: string, numSamples: number): Float32Array {
   return renderShape(parseShape(input), numSamples)
 }
+
+/**
+ * Canonical entry point for Phase 16b's three consumers (tempo profile,
+ * S32200 article gradual changes, future scale-snap weighting). Parses
+ * the shape string and renders it to `ticks` samples — the per-tick
+ * value array all three consumers operate on.
+ *
+ * Identical to `renderShapeString` today; the alias exists so call sites
+ * read in domain vocabulary ("evaluate this shape over N ticks") rather
+ * than DSP vocabulary ("render this shape into N samples").
+ */
+export function evaluateShape(input: string, ticks: number): Float32Array {
+  return renderShapeString(input, ticks)
+}

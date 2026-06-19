@@ -56,6 +56,53 @@ describe('renderNote', () => {
     expect(energy(high)).toBeGreaterThan(energy(low))
   })
 
+  it('applies shape articles as multiplicative amplitude envelopes (S32200)', () => {
+    const base = {
+      instrument: {
+        oscillator: { waveform: 'sin' as const },
+        envelope: { attack: 0.001, release: 0.001, sustainLevel: 1 },
+      },
+      freqHz: 440,
+      stress: 1,
+      lengthSeconds: 0.2,
+      sampleRate: 44100,
+      lengthTicks: 8,
+    }
+    const dry = renderNote(base)
+    // Linear ramp 0 → 1 across the note: peak energy lives in the second half.
+    const ramp = renderNote({ ...base, shapeArticles: { vibrato: '1:0,0;1,1' } })
+    const half = Math.floor(dry.length / 2)
+    const energy = (buf: Float32Array, from: number, to: number) => {
+      let s = 0
+      for (let i = from; i < to; i++) s += buf[i]! * buf[i]!
+      return s
+    }
+    expect(energy(ramp, 0, half)).toBeLessThan(energy(ramp, half, ramp.length))
+    // The ramp must attenuate the start (silent at t=0).
+    expect(energy(ramp, 0, half)).toBeLessThan(energy(dry, 0, half))
+  })
+
+  it('is a no-op when shapeArticles is empty or lengthTicks is missing', () => {
+    const base = {
+      instrument: {
+        oscillator: { waveform: 'sin' as const },
+        envelope: { attack: 0.001, release: 0.001, sustainLevel: 1 },
+      },
+      freqHz: 440,
+      stress: 1,
+      lengthSeconds: 0.1,
+      sampleRate: 44100,
+    }
+    const baseline = renderNote(base)
+    const empty = renderNote({ ...base, shapeArticles: {}, lengthTicks: 4 })
+    const noTicks = renderNote({ ...base, shapeArticles: { vibrato: '1:0,0;1,1' } })
+    expect(empty.length).toBe(baseline.length)
+    for (let i = 0; i < baseline.length; i++) {
+      expect(empty[i]).toBe(baseline[i])
+      expect(noTicks[i]).toBe(baseline[i])
+    }
+  })
+
   it('extends the rendered buffer by dampSeconds (S51a10)', () => {
     const base = {
       instrument: {

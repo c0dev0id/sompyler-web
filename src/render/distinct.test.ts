@@ -109,7 +109,7 @@ piano:
     expect(v08!.occurrences).toHaveLength(1)
   })
 
-  it('does not split the cache on shape-typed article values (deferred to 16b)', async () => {
+  it('splits the cache on shape-typed article values (S32200)', async () => {
     const SHAPED = `
 title: shaped
 stage:
@@ -123,15 +123,68 @@ _meta:
 piano:
   0: A4 1 100 vibrato=1:0,0;1,1
   1: A4 1 100 vibrato=1:1,1;0,0
+  2: A4 1 100 vibrato=1:0,0;1,1
 `
     const plan = await buildDistinctNotes(SHAPED, {
       tuner: new Tuner(),
       instruments: new Map([[piano.name, piano]]),
     })
-    // Shape-typed values aren't in the cache key yet — both notes collapse
-    // into the same distinct entry. Per-tick resolution lands in phase 16b.
-    expect(plan.notes).toHaveLength(1)
-    expect(plan.notes[0]!.occurrences).toHaveLength(2)
+    // Same shape source ⇒ same cache entry; different shape source ⇒ a
+    // distinct entry. The shape string folds into properties['@vibrato'].
+    expect(plan.notes).toHaveLength(2)
+    const distinctKeys = new Set(plan.notes.map((n) => n.key))
+    expect(distinctKeys.size).toBe(2)
+    for (const n of plan.notes) {
+      expect(n.shapeArticles.vibrato).toBeDefined()
+      expect(typeof n.properties['@vibrato']).toBe('string')
+    }
+    const shared = plan.notes.find((n) => n.occurrences.length === 2)
+    expect(shared).toBeDefined()
+  })
+
+  it('resolves per-note length under a tempo Shape profile (S46140, R13 amendment)', async () => {
+    // Constant TPM=60: 8 ticks @ 60tpm = 8s.
+    const CONST = `
+title: const
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+  lower_stress_bound: 100
+  upper_stress_bound: 100
+piano:
+  0: A4 8
+`
+    // Same note under a tempo Shape that runs at ~120 tpm for the whole
+    // measure: 8 ticks at ~120 tpm ≈ 4s (half the constant-60 baseline).
+    const SHAPED = `
+title: shaped
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  tempo: "8:120;8,120"
+  stress_pattern: "1"
+  lower_stress_bound: 100
+  upper_stress_bound: 100
+piano:
+  0: A4 8
+`
+    const constPlan = await buildDistinctNotes(CONST, {
+      tuner: new Tuner(),
+      instruments: new Map([[piano.name, piano]]),
+    })
+    const shapedPlan = await buildDistinctNotes(SHAPED, {
+      tuner: new Tuner(),
+      instruments: new Map([[piano.name, piano]]),
+    })
+    expect(constPlan.notes[0]!.lengthSeconds).toBeCloseTo(8, 4)
+    // Tempo Shape running hotter ⇒ shorter resolved length.
+    expect(shapedPlan.notes[0]!.lengthSeconds).toBeCloseTo(4, 1)
+    // Different resolved length ⇒ different cache key.
+    expect(shapedPlan.notes[0]!.key).not.toBe(constPlan.notes[0]!.key)
   })
 
   it('splits the cache when ? / ! off-scale flags diverge (S53400)', async () => {

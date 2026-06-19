@@ -1,6 +1,7 @@
 import { DEFAULT_SAMPLE_RATE } from './constants'
 import { DEFAULT_ENVELOPE, type EnvelopeSpec } from './envelope'
 import type { OscillatorSpec } from './oscillator'
+import { evaluateShape } from './shape'
 import { renderSympartial, type SympartialSpec } from './sympartial'
 
 /**
@@ -88,6 +89,16 @@ export interface RenderNoteInput {
   sampleRate?: number
   /** S51a10 damp: per-note release extension in seconds. */
   dampSeconds?: number
+  /**
+   * S32200 shape-typed article values, preserved verbatim from the score.
+   * Each shape is evaluated to `lengthTicks` samples and applied as a
+   * multiplicative amplitude envelope (intensity over time). Real
+   * frequency-domain vibrato is a forward door — the Shape kernel and
+   * worker plumbing are in place, only the FM oscillator hook is missing.
+   */
+  shapeArticles?: Record<string, string>
+  /** Tick count under the active tempo profile (for shape evaluation). */
+  lengthTicks?: number
 }
 
 /**
@@ -113,10 +124,39 @@ export function renderNote(input: RenderNoteInput): Float32Array {
   if (masterAmp !== 1) {
     for (let i = 0; i < out.length; i++) out[i] = out[i]! * masterAmp
   }
+  applyShapeArticles(out, input.shapeArticles, input.lengthTicks)
   // Soft clipping to keep partials sums in [-1,1].
   for (let i = 0; i < out.length; i++) {
     const x = out[i]!
     out[i] = x > 1 ? 1 : x < -1 ? -1 : x
   }
   return out
+}
+
+/**
+ * Apply S32200 shape articles as multiplicative amplitude envelopes.
+ * Each shape evaluates to `lengthTicks` per-tick samples; samples within
+ * each tick share the tick's value (nearest-neighbour stretch — cheap,
+ * deterministic, and visually faithful to the Shape's segment structure).
+ * Multiple articles compose multiplicatively. Empty maps and missing
+ * `lengthTicks` short-circuit so the common case stays free.
+ */
+function applyShapeArticles(
+  out: Float32Array,
+  articles: Record<string, string> | undefined,
+  lengthTicks: number | undefined,
+): void {
+  if (!articles || !lengthTicks || lengthTicks <= 0) return
+  const names = Object.keys(articles)
+  if (names.length === 0) return
+  const samples = out.length
+  for (const name of names) {
+    const shape = articles[name]
+    if (!shape) continue
+    const perTick = evaluateShape(shape, lengthTicks)
+    for (let i = 0; i < samples; i++) {
+      const tickIdx = Math.min(lengthTicks - 1, Math.floor((i * lengthTicks) / samples))
+      out[i] = out[i]! * (perTick[tickIdx] ?? 1)
+    }
+  }
 }

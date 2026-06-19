@@ -115,6 +115,7 @@ export async function renderAll(
           typeof note.properties.dampSeconds === 'number'
             ? note.properties.dampSeconds
             : undefined
+        const hasShapeArticles = Object.keys(note.shapeArticles).length > 0
         const result = await pool.submit({
           input: {
             id: note.key,
@@ -124,6 +125,12 @@ export async function renderAll(
             lengthSeconds: note.lengthSeconds,
             sampleRate: opts.sampleRate,
             dampSeconds,
+            ...(hasShapeArticles
+              ? {
+                  shapeArticles: note.shapeArticles,
+                  lengthTicks: note.lengthTicks,
+                }
+              : {}),
           },
         })
         await putNote({

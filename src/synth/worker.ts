@@ -17,6 +17,15 @@ export interface WorkerRequest {
   sampleRate?: number
   /** S51a10 damp: extra release time in seconds. */
   dampSeconds?: number
+  /**
+   * S32200 shape-typed article values, preserved verbatim. The worker
+   * evaluates each shape at the note's tick count when it needs the
+   * per-tick profile (currently: `vibrato` modulates the carrier
+   * frequency; other names pass through unused).
+   */
+  shapeArticles?: Record<string, string>
+  /** Tick count under the active tempo profile (for shape evaluation). */
+  lengthTicks?: number
 }
 
 export interface WorkerResponse {

@@ -39,6 +39,13 @@ export interface MeasureMeta {
   stressPattern?: string
   lowerStressBound: number
   upperStressBound: number
+  /**
+   * S32200/RFC §S46140 tempo Shape profile. When present, per-tick TPM
+   * varies over the measure; `buildDistinctNotes` integrates 60/tpm[t]
+   * to derive each note's offsetSeconds / lengthSeconds. Constant
+   * `ticksPerMinute` stays the fast-path default.
+   */
+  tempo?: string
 }
 
 export interface RawNote {
@@ -190,6 +197,11 @@ function readMeta(metaBlock: Record<string, unknown> | undefined, fallback: Meas
   if ('stress_pattern' in metaBlock) next.stressPattern = String(metaBlock.stress_pattern)
   if ('lower_stress_bound' in metaBlock) next.lowerStressBound = Number(metaBlock.lower_stress_bound)
   if ('upper_stress_bound' in metaBlock) next.upperStressBound = Number(metaBlock.upper_stress_bound)
+  if ('tempo' in metaBlock) {
+    next.tempo = typeof metaBlock.tempo === 'string' ? metaBlock.tempo : String(metaBlock.tempo)
+  } else if ('ticks_per_minute' in metaBlock) {
+    next.tempo = undefined
+  }
   return next
 }
 
