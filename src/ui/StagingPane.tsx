@@ -9,6 +9,7 @@ import {
 } from '../storage/files'
 import { getPref, setPref } from '../storage/prefs'
 import { packZip, unpackZip } from '../storage/zip'
+import { parseScore } from '../parse/score'
 import { log } from '../debug'
 
 const COLLAPSED_PREF_KEY = 'staging.collapsed'
@@ -65,11 +66,37 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
 
   async function toggleInProject(f: StoredFile) {
     if (props.mutationsDisabled) return
-    // Score multiplicity: at most one .spls may be inProject.
+    // Adding a .spls is a full project reset: unload every other in-project
+    // file, then auto-add the .spli / .splr / .splt the new score names.
+    // Referenced files missing from staging are silently skipped (editor
+    // lint surfaces them at render time per R6).
     if (f.ext === 'spls' && !f.inProject) {
-      const otherScore = files().find((g) => g.ext === 'spls' && g.inProject && g.id !== f.id)
-      if (otherScore) {
-        await setInProject(otherScore.name, otherScore.ext, false)
+      for (const g of files()) {
+        if (g.inProject && g.id !== f.id) {
+          await setInProject(g.name, g.ext, false)
+        }
+      }
+      const referenced: Record<'spli' | 'splr' | 'splt', Set<string>> = {
+        spli: new Set(),
+        splr: new Set(),
+        splt: new Set(),
+      }
+      try {
+        const { head } = parseScore(f.body)
+        for (const v of Object.values(head.stage)) referenced.spli.add(v.instrument)
+        if (head.room) referenced.splr.add(head.room)
+        if (head.tuningConfig) referenced.splt.add(head.tuningConfig)
+      } catch (err) {
+        log('storage', 'warn', `Cannot parse '${f.id}'; skipping auto-link`, {
+          error: String(err),
+        })
+      }
+      for (const g of files()) {
+        if (g.id === f.id) continue
+        const wanted = referenced[g.ext as 'spli' | 'splr' | 'splt']
+        if (wanted && wanted.has(g.name)) {
+          await setInProject(g.name, g.ext, true)
+        }
       }
     }
     await setInProject(f.name, f.ext, !f.inProject)
