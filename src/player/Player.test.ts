@@ -118,7 +118,11 @@ describe('Player', () => {
     p.loadBuffer(makeMix(200))
     expect(firstSource?.stop).toHaveBeenCalled()
     expect(p.getState()).toBe('playing')
-    expect(ctx.lastSource?.start).toHaveBeenCalledWith(0, 0)
+    // A brand-new source must be created on the second buffer (otherwise
+    // the player would simply stop dead after the swap).
+    const newSource = ctx.lastSource
+    expect(newSource).not.toBe(firstSource)
+    expect(newSource?.start).toHaveBeenCalledWith(0, 0)
   })
 
   it('clearBuffer returns to empty', () => {

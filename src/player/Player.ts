@@ -82,7 +82,10 @@ export class Player {
     this.stopSource()
     this.buffer = buf
     this.pausedAt = 0
-    this.transition(wasPlaying ? 'playing' : 'stopped')
+    // Land in 'stopped' first so the subsequent play() doesn't short-circuit
+    // on the `state === 'playing'` guard. R7: swap-while-playing restarts
+    // from offset 0 with a brand-new source.
+    this.transition('stopped')
     log('player', 'info', `Buffer loaded`, {
       sampleRate: mix.sampleRate,
       lengthSamples: mix.lengthSamples,
