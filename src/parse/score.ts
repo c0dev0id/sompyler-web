@@ -415,8 +415,12 @@ export function* walkMeasures(
             const parsed = parseShortNote(raw)
             for (const rawOffset of expandedOffsets) {
               // S46192: positive cut — drop notes before the cut point.
+              // Survivors keep their original tick positions so the full
+              // measure span (including the silent cut range) counts toward
+              // the timeline. The cumulative offset advances by the full
+              // measure duration; there is no left-shift of surviving notes.
               if (cut > 0 && rawOffset < cut) continue
-              const offsetTicks = cut > 0 ? rawOffset - cut : rawOffset
+              const offsetTicks = rawOffset
               positions.push({ offset: offsetTicks })
               try {
                 yield {

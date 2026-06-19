@@ -284,7 +284,7 @@ piano:
     expect(notes[0]!.pitch).toBe('A4')
   })
 
-  it('cut=N drops notes before tick N and shifts remaining (S46192)', () => {
+  it('cut=N drops notes before tick N; survivors keep original offsets (S46192)', () => {
     const body = `
 title: cut
 stage:
@@ -302,10 +302,10 @@ piano:
 `
     const { head, measures } = parseScore(body)
     const notes = [...walkMeasures(head, measures)]
-    // Only offsets ≥ 4 survive; they are shifted left by 4.
+    // Only offsets ≥ 4 survive; they keep their original tick positions.
     expect(notes).toHaveLength(2)
-    expect(notes[0]).toMatchObject({ pitch: 'C4', offsetTicks: 0 })
-    expect(notes[1]).toMatchObject({ pitch: 'D4', offsetTicks: 2 })
+    expect(notes[0]).toMatchObject({ pitch: 'C4', offsetTicks: 4 })
+    expect(notes[1]).toMatchObject({ pitch: 'D4', offsetTicks: 6 })
   })
 
   it('extracts ? / ! off-scale flags from pitch and strips them', () => {
