@@ -349,3 +349,57 @@ describe('expandOffsetKey (S46232)', () => {
     expect(expandOffsetKey('0,8+4*3')).toEqual([0, 8, 12, 16])
   })
 })
+
+describe('chain voice syntax (S53000)', () => {
+  it('plain string voice yields sequential notes', () => {
+    const body = `
+title: chain
+stage:
+  piano: 1|1 0 dev/piano
+---
+piano: A4 B4 C4
+`
+    const { head, measures } = parseScore(body)
+    const notes = [...walkMeasures(head, measures)]
+    expect(notes).toHaveLength(3)
+    expect(notes[0]).toMatchObject({ pitch: 'A4', offsetTicks: 0, lengthTicks: 1 })
+    expect(notes[1]).toMatchObject({ pitch: 'B4', offsetTicks: 1, lengthTicks: 1 })
+    expect(notes[2]).toMatchObject({ pitch: 'C4', offsetTicks: 2, lengthTicks: 1 })
+  })
+
+  it('chain voice produces the same distinct plan as the equivalent offset-key form', async () => {
+    const CHAIN = `
+title: chain
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+  lower_stress_bound: 100
+  upper_stress_bound: 100
+piano: A4 C4
+`
+    const EXPLICIT = `
+title: explicit
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+  lower_stress_bound: 100
+  upper_stress_bound: 100
+piano:
+  0: A4 1
+  1: C4 1
+`
+    const { head: cHead, measures: cMeasures } = parseScore(CHAIN)
+    const { head: eHead, measures: eMeasures } = parseScore(EXPLICIT)
+    const chainNotes = [...walkMeasures(cHead, cMeasures)]
+    const explNotes = [...walkMeasures(eHead, eMeasures)]
+    expect(chainNotes.map(n => ({ pitch: n.pitch, offsetTicks: n.offsetTicks, lengthTicks: n.lengthTicks }))).toEqual(
+      explNotes.map(n => ({ pitch: n.pitch, offsetTicks: n.offsetTicks, lengthTicks: n.lengthTicks })),
+    )
+  })
+})
