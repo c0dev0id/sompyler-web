@@ -1,0 +1,794 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the normalised distinct-notes snapshot (self-regression) 1`] = `
+{
+  "distinctNoteCount": 52,
+  "notes": [
+    {
+      "freq": 27.5,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "0",
+          "offsetSeconds": 3.6,
+          "offsetTicks": 6,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 30.87,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "0",
+          "offsetSeconds": 4.2,
+          "offsetTicks": 7,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 32.7,
+      "instrument": "dev/piano",
+      "length": 1.2,
+      "occurrences": [
+        {
+          "measure": "1",
+          "offsetSeconds": 4.8,
+          "offsetTicks": 0,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 36.71,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "1",
+          "offsetSeconds": 6,
+          "offsetTicks": 2,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 41.2,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "1",
+          "offsetSeconds": 6.6,
+          "offsetTicks": 3,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 43.65,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "1",
+          "offsetSeconds": 7.2,
+          "offsetTicks": 4,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 49,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "1",
+          "offsetSeconds": 7.8,
+          "offsetTicks": 5,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 55,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "1",
+          "offsetSeconds": 8.4,
+          "offsetTicks": 6,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 61.74,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "1",
+          "offsetSeconds": 9,
+          "offsetTicks": 7,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 65.41,
+      "instrument": "dev/piano",
+      "length": 1.2,
+      "occurrences": [
+        {
+          "measure": "2",
+          "offsetSeconds": 9.6,
+          "offsetTicks": 0,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 73.42,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "2",
+          "offsetSeconds": 10.8,
+          "offsetTicks": 2,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 82.41,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "2",
+          "offsetSeconds": 11.4,
+          "offsetTicks": 3,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 87.31,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "2",
+          "offsetSeconds": 12,
+          "offsetTicks": 4,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 98,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "2",
+          "offsetSeconds": 12.6,
+          "offsetTicks": 5,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 110,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "2",
+          "offsetSeconds": 13.2,
+          "offsetTicks": 6,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 123.47,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "2",
+          "offsetSeconds": 13.8,
+          "offsetTicks": 7,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 130.81,
+      "instrument": "dev/piano",
+      "length": 1.2,
+      "occurrences": [
+        {
+          "measure": "3",
+          "offsetSeconds": 14.4,
+          "offsetTicks": 0,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 146.83,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "3",
+          "offsetSeconds": 15.6,
+          "offsetTicks": 2,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 164.81,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "3",
+          "offsetSeconds": 16.2,
+          "offsetTicks": 3,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 174.61,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "3",
+          "offsetSeconds": 16.8,
+          "offsetTicks": 4,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 196,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "3",
+          "offsetSeconds": 17.4,
+          "offsetTicks": 5,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 220,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "3",
+          "offsetSeconds": 18,
+          "offsetTicks": 6,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 246.94,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "3",
+          "offsetSeconds": 18.6,
+          "offsetTicks": 7,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 261.63,
+      "instrument": "dev/piano",
+      "length": 1.2,
+      "occurrences": [
+        {
+          "measure": "4",
+          "offsetSeconds": 19.2,
+          "offsetTicks": 0,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 293.66,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "4",
+          "offsetSeconds": 20.4,
+          "offsetTicks": 2,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 329.63,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "4",
+          "offsetSeconds": 21,
+          "offsetTicks": 3,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 349.23,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "4",
+          "offsetSeconds": 21.6,
+          "offsetTicks": 4,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 392,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "4",
+          "offsetSeconds": 22.2,
+          "offsetTicks": 5,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 440,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "4",
+          "offsetSeconds": 22.8,
+          "offsetTicks": 6,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 493.88,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "4",
+          "offsetSeconds": 23.4,
+          "offsetTicks": 7,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 523.25,
+      "instrument": "dev/piano",
+      "length": 1.2,
+      "occurrences": [
+        {
+          "measure": "5",
+          "offsetSeconds": 24,
+          "offsetTicks": 0,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 587.33,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "5",
+          "offsetSeconds": 25.2,
+          "offsetTicks": 2,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 659.26,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "5",
+          "offsetSeconds": 25.8,
+          "offsetTicks": 3,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 698.46,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "5",
+          "offsetSeconds": 26.4,
+          "offsetTicks": 4,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 783.99,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "5",
+          "offsetSeconds": 27,
+          "offsetTicks": 5,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 880,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "5",
+          "offsetSeconds": 27.6,
+          "offsetTicks": 6,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 987.77,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "5",
+          "offsetSeconds": 28.2,
+          "offsetTicks": 7,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 1046.5,
+      "instrument": "dev/piano",
+      "length": 1.2,
+      "occurrences": [
+        {
+          "measure": "6",
+          "offsetSeconds": 28.8,
+          "offsetTicks": 0,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 1174.66,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "6",
+          "offsetSeconds": 30,
+          "offsetTicks": 2,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 1318.51,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "6",
+          "offsetSeconds": 30.6,
+          "offsetTicks": 3,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 1396.91,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "6",
+          "offsetSeconds": 31.2,
+          "offsetTicks": 4,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 1567.98,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "6",
+          "offsetSeconds": 31.8,
+          "offsetTicks": 5,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 1760,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "6",
+          "offsetSeconds": 32.4,
+          "offsetTicks": 6,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 1975.53,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "6",
+          "offsetSeconds": 33,
+          "offsetTicks": 7,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 2093,
+      "instrument": "dev/piano",
+      "length": 1.2,
+      "occurrences": [
+        {
+          "measure": "7",
+          "offsetSeconds": 33.6,
+          "offsetTicks": 0,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 2349.32,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "7",
+          "offsetSeconds": 34.8,
+          "offsetTicks": 2,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 2637.02,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "7",
+          "offsetSeconds": 35.4,
+          "offsetTicks": 3,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 2793.83,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "7",
+          "offsetSeconds": 36,
+          "offsetTicks": 4,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 3135.96,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "7",
+          "offsetSeconds": 36.6,
+          "offsetTicks": 5,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 3520,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "7",
+          "offsetSeconds": 37.2,
+          "offsetTicks": 6,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 3951.07,
+      "instrument": "dev/piano",
+      "length": 0.6,
+      "occurrences": [
+        {
+          "measure": "7",
+          "offsetSeconds": 37.8,
+          "offsetTicks": 7,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.97,
+    },
+    {
+      "freq": 4186.01,
+      "instrument": "dev/piano",
+      "length": 1.2,
+      "occurrences": [
+        {
+          "measure": "8",
+          "offsetSeconds": 38.4,
+          "offsetTicks": 0,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+  ],
+  "occurrenceCount": 52,
+  "totalLengthSeconds": 39.6,
+  "voices": [
+    "piano",
+  ],
+}
+`;

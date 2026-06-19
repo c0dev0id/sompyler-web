@@ -6,6 +6,7 @@ import { loadInstrument } from '../parse/instrument'
 import { Tuner } from '../parse/tuning'
 import { buildDistinctNotes } from '../render/distinct'
 import { compileInstrument } from '../synth/compile'
+import { normalizePlan } from './_normalize'
 
 /**
  * Phase 10 deliverable: instruments using bezier shapes / variations
@@ -14,6 +15,9 @@ import { compileInstrument } from '../synth/compile'
  *
  * Per R-Test (R8.1): structural parity only — voice count, distinct
  * notes count, total length > 0. Sample-accurate parity is not a goal.
+ *
+ * Phase 15d adds anchor + snapshot coverage (see alle_meine_entchen
+ * conformance test for the rationale).
  */
 
 beforeEach(async () => {
@@ -26,17 +30,30 @@ describe('conformance: slow_piano-all-keys-cmaj.spls (rich piano)', () => {
     expect(() => compileInstrument(piano)).not.toThrow()
   })
 
-  it('builds a distinct-notes plan against the rich dev/piano instrument', async () => {
+  it('matches the hand-verified Sompyler anchors', async () => {
     const piano = await loadInstrument('dev/piano', realPiano)
     const plan = await buildDistinctNotes(slowPiano, {
       tuner: new Tuner(),
       instruments: new Map([[piano.name, piano]]),
     })
+    // Anchors — Python YAML walk on `test_examples/slow_piano-all-keys-cmaj.spls`:
+    //   1 voice (piano), 9 measures, 52 distinct (pitch, length) tuples,
+    //   52 note occurrences (each tone unique), total length 66 ticks
+    //   at ticks_per_minute=100 → 39.6 seconds.
     expect(plan.voices.size).toBe(1)
     expect(plan.voices.has('piano')).toBe(true)
-    expect(plan.totalLengthSeconds).toBeGreaterThan(0)
-    // The score scans every key of a C-major glissando across many
-    // octaves — expect a healthy distinct-pitch count.
-    expect(plan.notes.length).toBeGreaterThanOrEqual(20)
+    const occurrences = plan.notes.reduce((s, n) => s + n.occurrences.length, 0)
+    expect(occurrences).toBe(52)
+    expect(plan.notes.length).toBe(52)
+    expect(plan.totalLengthSeconds).toBeCloseTo(39.6, 4)
+  })
+
+  it('matches the normalised distinct-notes snapshot (self-regression)', async () => {
+    const piano = await loadInstrument('dev/piano', realPiano)
+    const plan = await buildDistinctNotes(slowPiano, {
+      tuner: new Tuner(),
+      instruments: new Map([[piano.name, piano]]),
+    })
+    expect(normalizePlan(plan)).toMatchSnapshot()
   })
 })
