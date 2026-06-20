@@ -385,6 +385,10 @@ export function* walkMeasures(
         resolvedVoices[voice] = prev
         continue
       }
+      if (content === false) {
+        previousVoices.delete(voice)
+        continue
+      }
       // S53000 chain syntax: a plain string value triggers the chain parser.
       if (typeof content === 'string') {
         resolvedVoices[voice] = content
