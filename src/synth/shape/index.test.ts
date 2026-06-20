@@ -30,6 +30,17 @@ describe('parseShape', () => {
     const s = parseShape('0,0;1,1')
     expect(s.length).toBe(1)
   })
+
+  it('accepts a decimal y0 head value', () => {
+    const s = parseShape('1:0.12')
+    expect(s.points[0]).toMatchObject({ x: 0, y: 0.12 })
+  })
+
+  it('accepts a decimal y0 with integer length', () => {
+    const s = parseShape('4:0.5;4,0')
+    expect(s.length).toBe(4)
+    expect(s.points[0]).toMatchObject({ x: 0, y: 0.5 })
+  })
 })
 
 describe('renderShape', () => {

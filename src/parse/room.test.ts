@@ -30,6 +30,22 @@ border: 35:5+1;0,0;1,1;2,1;6,1
     expect(room!.border).toBeNull()
   })
 
+  it('parses decimal jitter value (sandstorm-plate fixture)', () => {
+    const body = `
+name: sandstorm plate
+levels: "4:100;1,55;4,2"
+delays: "4:0;4,100"
+jitter: "1:0.12"
+deldiffs: "0.008|0.014"
+`
+    const room = parseRoom(body)
+    expect(room).not.toBeNull()
+    expect(room!.jitter).not.toBeNull()
+    expect(room!.deldiffs).not.toBeNull()
+    expect(room!.deldiffs!.left).toEqual([0.008])
+    expect(room!.deldiffs!.right).toEqual([0.014])
+  })
+
   it('throws RoomError on malformed YAML', () => {
     expect(() => parseRoom('levels: [unclosed')).toThrow(RoomError)
   })

@@ -26,7 +26,7 @@ export interface ShapeSpec {
   points: ShapePoint[]
 }
 
-const HEAD_RX = /^(-?\d+)?([+-]?\d+)?(?:\*(\d+))?$/
+const HEAD_RX = /^(-?\d+(?:\.\d+)?)?([+-]?\d+(?:\.\d+)?)?(?:\*(\d+))?$/
 
 export function parseShape(input: string): ShapeSpec {
   const colon = input.indexOf(':')
@@ -59,7 +59,7 @@ export function parseShape(input: string): ShapeSpec {
   } else {
     const m = HEAD_RX.exec(head)
     if (!m) throw new Error(`Shape head '${head}' is malformed`)
-    const y = parseInt(m[2] ?? m[1] ?? '0', 10)
+    const y = parseFloat(m[2] ?? m[1] ?? '0')
     const z = m[3] ? parseInt(m[3], 10) : 1
     points.push({ x: 0, y, z })
   }
