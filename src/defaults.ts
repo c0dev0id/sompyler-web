@@ -1690,6 +1690,9 @@ envelope:
   attack: 0.005
   release: 1.0
   sustainLevel: 0.90
+vcf:
+  cutoff_hz: 4800
+  resonance: 0.30
 `
 
 // Lead 8 (GM 88) — the arpeggio channel (Ch 3, m34–m45). Near-pure sine:
@@ -1738,6 +1741,12 @@ partials:
   - { freqMult: 4, amp: 0.180 }
   - { freqMult: 5, amp: 0.090 }
   - { freqMult: 6, amp: 0.045 }
+vcf:
+  cutoff_hz: 500
+  resonance: 0.40
+  env_amount: 3500
+  env_attack: 0.012
+  env_release: 0.10
 `
 
 // GM 40 (Electric Snare) analysis: spectral centroid 1093 Hz, IQR 215–797 Hz.
@@ -1787,6 +1796,14 @@ partials:
   - { freqMult: 6, amp: 0.133 }
   - { freqMult: 7, amp: 0.073 }
   - { freqMult: 8, amp: 0.079 }
+vcf:
+  cutoff_hz: 2200
+  resonance: 0.20
+lfo:
+  rate_hz: 0.35
+  depth: 700
+  target: vcf
+  waveform: sin
 `
 
 // Bagpipe (GM 110) analysis: reed-pipe harmonic series — H3 and H5 louder
@@ -1835,6 +1852,11 @@ partials:
   - { freqMult: 0.995, amp: 0.40 }
   - { freqMult: 1.005, amp: 0.40 }
   - { freqMult: 1.000, amp: 0.10, oscillator: noise }
+lfo:
+  rate_hz: 0.22
+  depth: 0.18
+  target: amp
+  waveform: sin
 `
 
 // Tight plate reverb for Sandstorm.
