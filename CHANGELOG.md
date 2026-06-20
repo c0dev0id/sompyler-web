@@ -89,3 +89,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Sandstorm now has a sixth voice: a polysynth pad (GM 91 approximation) built from stacked detuned saw partials. Three copies near freqMult 1.0 beat at ~2 Hz, producing the characteristic slowly-wavering chorus/ensemble pad sound. Plays Em and D chords in parallel underneath the lead arpeggio.
+
+### Changed
+- Sandstorm instruments tuned to GeneralUser GS SF2 spectral analysis (render-and-compare pipeline):
+  - **sandstorm-lead** (Lead 8): sawtooth → near-pure sine (matching SF2 H2 = −26 dB), release 60 ms → 1 s
+  - **sandstorm-bass** (Lead 1 square): odd harmonics were already accurate; release 120 ms → 1 s
+  - **sandstorm-pad** (Pad 3): detuned-unison partials replaced with SF2-derived harmonic series (H1–H8), release 1.8 s → 1.2 s
+
+### Added
+- `scripts/render-note.ts` — render a single Sompyler instrument note to WAV via vite-node
+- `scripts/compare-spectra.py` — FFT-based spectral comparison of a reference WAV vs a Sompyler render; reports per-harmonic amplitude delta and suggests a matching partials list
