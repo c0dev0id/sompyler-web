@@ -152,8 +152,15 @@ export function plotBezierGradient(length: number, coords: ShapePoint[]): Float3
   filled[length - 1] = 1
 
   if (length > 2) {
-    const approx = getBezierFunc(coords)
-    scanBezier(approx, length - 1, results, filled, 0, 0.5, length - 1)
+    // A degenerate (zero-span) Bezier maps every t to x=0, causing
+    // scanBezier's right-recursion guard (`x < max`) to never clear →
+    // infinite recursion. Pre-filled endpoints are already equal; skip
+    // the bisection and let the linear-fill pass below handle the interior.
+    const coordSpan = coords[coords.length - 1]!.x - coords[0]!.x
+    if (coordSpan > 0) {
+      const approx = getBezierFunc(coords)
+      scanBezier(approx, length - 1, results, filled, 0, 0.5, length - 1)
+    }
     // Linear fill across any gaps left by the bisection.
     let i = 0
     while (i < length) {

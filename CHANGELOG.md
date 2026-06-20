@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `scanBezier` infinite recursion on zero-span Bezier shapes: a single-point shape like `"1:0.12"` (used by the sandstorm-plate jitter field) has `coordSpan = 0`, causing `getBezierFunc` to return a constant `{x: 0, ...}`. In `scanBezier` this meant `x < max` never cleared, recursing forever. Fix: skip the bisection pass entirely when `coordSpan = 0`; the pre-filled equal endpoints plus the existing linear-fill post-pass correctly output the constant value for all interior samples.
+
 - S46192 `cut`: surviving notes now retain their original tick offsets instead of being shifted left by N. The full measure span (including the silent cut range) is preserved in the timeline, which is the correct semantics per RFC §S46192 ("the cumulative offset advances as if those ticks elapsed"). The previous left-shift was causing `slow_piano-all-keys-cmaj.spls` to compute a total length of 36 s instead of 39.6 s.
 
 ### Added

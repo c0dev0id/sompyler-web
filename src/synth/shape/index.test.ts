@@ -53,4 +53,12 @@ describe('renderShape', () => {
     expect(buf[0]).toBeCloseTo(0, 6)
     expect(buf[63]).toBeCloseTo(1, 6)
   })
+
+  it('renders a single-point (zero-span) shape as a constant without infinite recursion', () => {
+    // "1:0.12" has only y0=0.12 with no control points, so coordSpan=0.
+    // scanBezier must be skipped or it recurses forever on x < max.
+    const buf = renderShapeString('1:0.12', 8)
+    expect(buf).toHaveLength(8)
+    for (let i = 0; i < 8; i++) expect(buf[i]).toBeCloseTo(0.12, 6)
+  })
 })

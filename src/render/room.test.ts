@@ -120,6 +120,20 @@ jitter: "2:0;1,0.5"
     expect(differ).toBe(true)
   })
 
+  it('builds IR with single-point jitter shape without infinite recursion (sandstorm-plate)', () => {
+    // "1:0.12" is a zero-span Bezier; scanBezier's x<max guard never cleared,
+    // causing infinite recursion before the coordSpan>0 guard was added.
+    const plateRoom = parseRoom(`
+levels: "4:100;1,55;4,2"
+delays: "4:0;4,100"
+jitter: "1:0.12"
+deldiffs: "0.008|0.014"
+`)!
+    expect(() => buildRoomPositionIR(plateRoom, '1|1', 2.5, 44100)).not.toThrow()
+    const ir = buildRoomPositionIR(plateRoom, '1|1', 2.5, 44100)
+    expect(ir.tailSamples).toBeGreaterThan(0)
+  })
+
   it('deldiffs shifts L and R taps to different positions (S33600)', () => {
     const deldiffRoom = parseRoom(`
 levels: 100:100;1,80
