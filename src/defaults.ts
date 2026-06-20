@@ -38,6 +38,8 @@ export {
   // Sandstorm — active UI showcase
   SANDSTORM as STARTER_SANDSTORM,
   SANDSTORM_LEAD as STARTER_SANDSTORM_LEAD,
+  SANDSTORM_ARP as STARTER_SANDSTORM_ARP,
+  SANDSTORM_SUBBASS as STARTER_SANDSTORM_SUBBASS,
   SANDSTORM_BASS as STARTER_SANDSTORM_BASS,
   SANDSTORM_SNARE as STARTER_SANDSTORM_SNARE,
   SANDSTORM_HIHAT as STARTER_SANDSTORM_HIHAT,
@@ -615,6 +617,9 @@ const SANDSTORM = `title: Sandstorm
 author: Darude (1999)
 stage:
   lead:    1|1 0.6 sandstorm-lead
+  lead2:   1|1 0.6 sandstorm-lead
+  arp:     1|1 0.5 sandstorm-arp
+  subbass: 1|1 0.0 sandstorm-subbass
   bass:    1|1 0.0 sandstorm-bass
   pad:     1|1 1.8 sandstorm-pad
   harmony: 1.2|0.8 1.0 sandstorm-harmony
@@ -684,6 +689,7 @@ _meta:
 _meta:
   repeat_unmentioned_voices: true
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
 ---
 # m11 — D5 phrase pickup
 _meta:
@@ -695,11 +701,19 @@ lead:
   3: B4 1
   4: B4 2
   12: D5 4
+lead2:
+  0: B3 1
+  1: B3 1
+  2: B3 1
+  3: B3 1
+  4: B3 2
+  12: D4 4
 ---
 # m12 — Em returns
 _meta:
   repeat_unmentioned_voices: true
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
 ---
 # m13
 _meta:
@@ -735,6 +749,7 @@ bass:
 pad: "A4_15; C5_15; E5_15"
 harmony: "A3_15; C4_15"
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m20
 _meta:
@@ -744,6 +759,7 @@ bass:
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
 ---
 # m21
 _meta:
@@ -763,6 +779,7 @@ bass:
 pad: "A4_15; C5_15; E5_15"
 harmony: "A3_15; C4_15"
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m24
 _meta:
@@ -772,6 +789,7 @@ bass:
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
 ---
 # m25
 _meta:
@@ -791,6 +809,7 @@ bass:
 pad: "A4_15; C5_15; E5_15"
 harmony: "A3_15; C4_15"
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m28
 _meta:
@@ -800,6 +819,7 @@ bass:
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
 ---
 # m29
 _meta:
@@ -819,6 +839,7 @@ bass:
 pad: "A4_15; C5_15; E5_15"
 harmony: "A3_15; C4_15"
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m32
 _meta:
@@ -828,6 +849,7 @@ bass:
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
 ---
 # m33
 _meta:
@@ -836,7 +858,9 @@ _meta:
 # m34 — arpeggio joins (Em)
 _meta:
   repeat_unmentioned_voices: true
-lead: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
+lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
+arp: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
 ---
 # m35
 _meta:
@@ -851,14 +875,18 @@ _meta:
   repeat_unmentioned_voices: true
 pad: "A4_15; C5_15; E5_15"
 harmony: "A3_15; C4_15"
-lead: "E5 C5 A4 C5 E5 C5 A4 C5 E5 C5 A4 C5 E5 C5 A4 C5"
+lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
+arp: "E5 C5 A4 C5 E5 C5 A4 C5 E5 C5 A4 C5 E5 C5 A4 C5"
 ---
 # m38 — arpeggio Em
 _meta:
   repeat_unmentioned_voices: true
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
-lead: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
+lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
+arp: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
 ---
 # m39
 _meta:
@@ -873,14 +901,18 @@ _meta:
   repeat_unmentioned_voices: true
 pad: "A4_15; C5_15; E5_15"
 harmony: "A3_15; C4_15"
-lead: "E5 C5 A4 C5 E5 C5 A4 C5 E5 C5 A4 C5 E5 C5 A4 C5"
+lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
+arp: "E5 C5 A4 C5 E5 C5 A4 C5 E5 C5 A4 C5 E5 C5 A4 C5"
 ---
 # m42 — arpeggio Em
 _meta:
   repeat_unmentioned_voices: true
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
-lead: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
+lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
+arp: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
 ---
 # m43
 _meta:
@@ -898,6 +930,8 @@ _meta:
 _meta:
   repeat_unmentioned_voices: true
 lead: false
+lead2: false
+arp: false
 ---
 # m47 — drums out
 _meta:
@@ -939,10 +973,11 @@ kick:
   0,4,8,12: C1 1 damp=3
 harmony: "E3_15; G3_15"
 ---
-# m55 — drums out again
+# m55 — subbass enters; drums out
 _meta:
   repeat_unmentioned_voices: true
 kick: false
+subbass: "E2 E2 E1 E2 E2 E1 E2_ E2 E2 E1 E2 E2 E1 E2_"
 ---
 # m56
 _meta:
@@ -979,6 +1014,7 @@ snare:
 hihat:
   0+1*16: A6 1
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
 ---
 # m63 — D5 phrase pickup
 _meta:
@@ -990,11 +1026,19 @@ lead:
   3: B4 1
   4: B4 2
   12: D5 4
+lead2:
+  0: B3 1
+  1: B3 1
+  2: B3 1
+  3: B3 1
+  4: B3 2
+  12: D4 4
 ---
 # m64 — build — lead continues, no bass
 _meta:
   repeat_unmentioned_voices: true
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
 ---
 # m65
 _meta:
@@ -1080,6 +1124,7 @@ bass:
 pad: "A4_15; C5_15; E5_15"
 harmony: "A3_15; C4_15"
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m84
 _meta:
@@ -1089,10 +1134,27 @@ bass:
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
+subbass:
+  0: A2 1
+  1: A2 1
+  2: A1 1
+  3: A2 1
+  4: A2 1
+  5: A1 1
+  6: A2 2
+  8: G2 1
+  9: G2 1
+  10: G1 1
+  11: G2 1
+  12: G2 1
+  13: G1 1
+  14: G2 2
 ---
 # m85
 _meta:
   repeat_unmentioned_voices: true
+subbass: "E2 E2 E1 E2 E2 E1 E2_ E2 E2 E1 E2 E2 E1 E2_"
 ---
 # m86
 _meta:
@@ -1108,6 +1170,7 @@ bass:
 pad: "A4_15; C5_15; E5_15"
 harmony: "A3_15; C4_15"
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m88
 _meta:
@@ -1117,10 +1180,27 @@ bass:
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
+subbass:
+  0: A2 1
+  1: A2 1
+  2: A1 1
+  3: A2 1
+  4: A2 1
+  5: A1 1
+  6: A2 2
+  8: G2 1
+  9: G2 1
+  10: G1 1
+  11: G2 1
+  12: G2 1
+  13: G1 1
+  14: G2 2
 ---
 # m89
 _meta:
   repeat_unmentioned_voices: true
+subbass: "E2 E2 E1 E2 E2 E1 E2_ E2 E2 E1 E2 E2 E1 E2_"
 ---
 # m90
 _meta:
@@ -1136,6 +1216,7 @@ bass:
 pad: "A4_15; C5_15; E5_15"
 harmony: "A3_15; C4_15"
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m92
 _meta:
@@ -1145,10 +1226,27 @@ bass:
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
+subbass:
+  0: A2 1
+  1: A2 1
+  2: A1 1
+  3: A2 1
+  4: A2 1
+  5: A1 1
+  6: A2 2
+  8: G2 1
+  9: G2 1
+  10: G1 1
+  11: G2 1
+  12: G2 1
+  13: G1 1
+  14: G2 2
 ---
 # m93
 _meta:
   repeat_unmentioned_voices: true
+subbass: "E2 E2 E1 E2 E2 E1 E2_ E2 E2 E1 E2 E2 E1 E2_"
 ---
 # m94
 _meta:
@@ -1164,6 +1262,7 @@ bass:
 pad: "A4_15; C5_15; E5_15"
 harmony: "A3_15; C4_15"
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m96
 _meta:
@@ -1173,10 +1272,27 @@ bass:
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
+subbass:
+  0: A2 1
+  1: A2 1
+  2: A1 1
+  3: A2 1
+  4: A2 1
+  5: A1 1
+  6: A2 2
+  8: G2 1
+  9: G2 1
+  10: G1 1
+  11: G2 1
+  12: G2 1
+  13: G1 1
+  14: G2 2
 ---
 # m97
 _meta:
   repeat_unmentioned_voices: true
+subbass: "E2 E2 E1 E2 E2 E1 E2_ E2 E2 E1 E2 E2 E1 E2_"
 ---
 # m98
 _meta:
@@ -1194,15 +1310,33 @@ _meta:
 _meta:
   repeat_unmentioned_voices: true
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m102
 _meta:
   repeat_unmentioned_voices: true
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
+subbass:
+  0: A2 1
+  1: A2 1
+  2: A1 1
+  3: A2 1
+  4: A2 1
+  5: A1 1
+  6: A2 2
+  8: G2 1
+  9: G2 1
+  10: G1 1
+  11: G2 1
+  12: G2 1
+  13: G1 1
+  14: G2 2
 ---
 # m103
 _meta:
   repeat_unmentioned_voices: true
+subbass: "E2 E2 E1 E2 E2 E1 E2_ E2 E2 E1 E2 E2 E1 E2_"
 ---
 # m104
 _meta:
@@ -1212,15 +1346,33 @@ _meta:
 _meta:
   repeat_unmentioned_voices: true
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m106
 _meta:
   repeat_unmentioned_voices: true
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
+subbass:
+  0: A2 1
+  1: A2 1
+  2: A1 1
+  3: A2 1
+  4: A2 1
+  5: A1 1
+  6: A2 2
+  8: G2 1
+  9: G2 1
+  10: G1 1
+  11: G2 1
+  12: G2 1
+  13: G1 1
+  14: G2 2
 ---
 # m107
 _meta:
   repeat_unmentioned_voices: true
+subbass: "E2 E2 E1 E2 E2 E1 E2_ E2 E2 E1 E2 E2 E1 E2_"
 ---
 # m108
 _meta:
@@ -1244,6 +1396,7 @@ bass:
 pad: "A4_15; C5_15; E5_15"
 harmony: "A3_15; C4_15"
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m112
 _meta:
@@ -1253,10 +1406,27 @@ bass:
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
+subbass:
+  0: A2 1
+  1: A2 1
+  2: A1 1
+  3: A2 1
+  4: A2 1
+  5: A1 1
+  6: A2 2
+  8: G2 1
+  9: G2 1
+  10: G1 1
+  11: G2 1
+  12: G2 1
+  13: G1 1
+  14: G2 2
 ---
 # m113
 _meta:
   repeat_unmentioned_voices: true
+subbass: "E2 E2 E1 E2 E2 E1 E2_ E2 E2 E1 E2 E2 E1 E2_"
 ---
 # m114
 _meta:
@@ -1272,6 +1442,7 @@ bass:
 pad: "A4_15; C5_15; E5_15"
 harmony: "A3_15; C4_15"
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m116
 _meta:
@@ -1281,10 +1452,27 @@ bass:
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
+subbass:
+  0: A2 1
+  1: A2 1
+  2: A1 1
+  3: A2 1
+  4: A2 1
+  5: A1 1
+  6: A2 2
+  8: G2 1
+  9: G2 1
+  10: G1 1
+  11: G2 1
+  12: G2 1
+  13: G1 1
+  14: G2 2
 ---
 # m117
 _meta:
   repeat_unmentioned_voices: true
+subbass: "E2 E2 E1 E2 E2 E1 E2_ E2 E2 E1 E2 E2 E1 E2_"
 ---
 # m118
 _meta:
@@ -1300,6 +1488,7 @@ bass:
 pad: "A4_15; C5_15; E5_15"
 harmony: "A3_15; C4_15"
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m120
 _meta:
@@ -1309,10 +1498,27 @@ bass:
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
+subbass:
+  0: A2 1
+  1: A2 1
+  2: A1 1
+  3: A2 1
+  4: A2 1
+  5: A1 1
+  6: A2 2
+  8: G2 1
+  9: G2 1
+  10: G1 1
+  11: G2 1
+  12: G2 1
+  13: G1 1
+  14: G2 2
 ---
 # m121
 _meta:
   repeat_unmentioned_voices: true
+subbass: "E2 E2 E1 E2 E2 E1 E2_ E2 E2 E1 E2 E2 E1 E2_"
 ---
 # m122
 _meta:
@@ -1328,6 +1534,7 @@ bass:
 pad: "A4_15; C5_15; E5_15"
 harmony: "A3_15; C4_15"
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m124
 _meta:
@@ -1337,10 +1544,27 @@ bass:
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
+subbass:
+  0: A2 1
+  1: A2 1
+  2: A1 1
+  3: A2 1
+  4: A2 1
+  5: A1 1
+  6: A2 2
+  8: G2 1
+  9: G2 1
+  10: G1 1
+  11: G2 1
+  12: G2 1
+  13: G1 1
+  14: G2 2
 ---
 # m125
 _meta:
   repeat_unmentioned_voices: true
+subbass: "E2 E2 E1 E2 E2 E1 E2_ E2 E2 E1 E2 E2 E1 E2_"
 ---
 # m126 — outro loop
 _meta:
@@ -1358,15 +1582,33 @@ _meta:
 _meta:
   repeat_unmentioned_voices: true
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m130
 _meta:
   repeat_unmentioned_voices: true
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
+subbass:
+  0: A2 1
+  1: A2 1
+  2: A1 1
+  3: A2 1
+  4: A2 1
+  5: A1 1
+  6: A2 2
+  8: G2 1
+  9: G2 1
+  10: G1 1
+  11: G2 1
+  12: G2 1
+  13: G1 1
+  14: G2 2
 ---
 # m131
 _meta:
   repeat_unmentioned_voices: true
+subbass: "E2 E2 E1 E2 E2 E1 E2_ E2 E2 E1 E2 E2 E1 E2_"
 ---
 # m132
 _meta:
@@ -1376,15 +1618,33 @@ _meta:
 _meta:
   repeat_unmentioned_voices: true
 lead: "E5 E5 E5 E5 E5_"
+lead2: "E4 E4 E4 E4 E4_"
 ---
 # m134
 _meta:
   repeat_unmentioned_voices: true
 lead: "B4 B4 B4 B4 B4_"
+lead2: "B3 B3 B3 B3 B3_"
+subbass:
+  0: A2 1
+  1: A2 1
+  2: A1 1
+  3: A2 1
+  4: A2 1
+  5: A1 1
+  6: A2 2
+  8: G2 1
+  9: G2 1
+  10: G1 1
+  11: G2 1
+  12: G2 1
+  13: G1 1
+  14: G2 2
 ---
 # m135
 _meta:
   repeat_unmentioned_voices: true
+subbass: "E2 E2 E1 E2 E2 E1 E2_ E2 E2 E1 E2 E2 E1 E2_"
 ---
 # m136
 _meta:
@@ -1398,8 +1658,10 @@ _meta:
 _meta:
   repeat_unmentioned_voices: true
 lead: false
+lead2: false
 bass: false
 harmony: false
+subbass: false
 ---
 # m139 — final release
 _meta:
@@ -1418,10 +1680,22 @@ _meta:
 // Sandstorm instruments.
 // =====================================================================
 
-// Lead 8 (bass+lead, GM 88) analysis: nearly pure sine (H2 = −26 dB,
-// H3 = −38 dB). Release ~1070 ms. Matched to GeneralUser GS SF2 sample.
-const SANDSTORM_LEAD = `# sandstorm-lead: Lead 8 (bass+lead) — near-pure sine, long trance release.
+// Lead 1 (square, GM 81) — the actual main melody channel (Ch 5). Odd-only
+// harmonics from the square wave match H3=−9 dB, H5=−14 dB, H7=−16 dB.
+// Release ~1010 ms. Both lead and lead2 use this instrument (octave doublings).
+const SANDSTORM_LEAD = `# sandstorm-lead: Lead 1 (square) — main melody, long trance release.
 amp: 0.65
+oscillator: square
+envelope:
+  attack: 0.005
+  release: 1.0
+  sustainLevel: 0.90
+`
+
+// Lead 8 (GM 88) — the arpeggio channel (Ch 3, m34–m45). Near-pure sine:
+// H2 = −26 dB, H3 = −38 dB. Release ~1070 ms.
+const SANDSTORM_ARP = `# sandstorm-arp: Lead 8 (bass+lead) — near-pure sine for arpeggio section.
+amp: 0.55
 oscillator: sin
 envelope:
   attack: 0.005
@@ -1433,15 +1707,37 @@ partials:
   - { freqMult: 3, amp: 0.012 }
 `
 
-// Lead 1 (square, GM 81) analysis: odd harmonics match square perfectly
-// (H3 = −9 dB, H5 = −14 dB, H7 = −16 dB). Release ~1010 ms.
-const SANDSTORM_BASS = `# sandstorm-bass: Lead 1 (square) — odd-only harmonics, long trance release.
-amp: 0.18
-oscillator: square
+// Lead 8 (GM 88) sub-bass ostinato — Ch 11, enters m55. Same sine profile as
+// arp but scored at E1/E2 register. Slightly shorter release to stay tight.
+const SANDSTORM_SUBBASS = `# sandstorm-subbass: Lead 8 sub-bass ostinato (Ch 11).
+amp: 0.22
+oscillator: sin
 envelope:
   attack: 0.005
-  release: 1.0
+  release: 0.8
   sustainLevel: 0.90
+partials:
+  - { freqMult: 1, amp: 1.000 }
+  - { freqMult: 2, amp: 0.049 }
+  - { freqMult: 3, amp: 0.012 }
+`
+
+// Jazz Guitar (GM 27) — the actual bass channel (Ch 7). Plucky attack,
+// mid-range harmonic content, shorter decay than the synth voices.
+const SANDSTORM_BASS = `# sandstorm-bass: Jazz Guitar (GM 27) — plucky bass with mid harmonics.
+amp: 0.30
+oscillator: sin
+envelope:
+  attack: 0.003
+  release: 0.25
+  sustainLevel: 0.50
+partials:
+  - { freqMult: 1, amp: 1.000 }
+  - { freqMult: 2, amp: 0.650 }
+  - { freqMult: 3, amp: 0.350 }
+  - { freqMult: 4, amp: 0.180 }
+  - { freqMult: 5, amp: 0.090 }
+  - { freqMult: 6, amp: 0.045 }
 `
 
 // GM 40 (Electric Snare) analysis: spectral centroid 1093 Hz, IQR 215–797 Hz.
@@ -1557,6 +1853,8 @@ const SEEDS: Seed[] = [
   // Sandstorm — the active UI showcase (in-project on first run).
   { name: 'sandstorm', ext: 'spls', body: SANDSTORM, inProject: true },
   { name: 'sandstorm-lead',    ext: 'spli', body: SANDSTORM_LEAD,    inProject: true },
+  { name: 'sandstorm-arp',     ext: 'spli', body: SANDSTORM_ARP,     inProject: true },
+  { name: 'sandstorm-subbass', ext: 'spli', body: SANDSTORM_SUBBASS, inProject: true },
   { name: 'sandstorm-bass',    ext: 'spli', body: SANDSTORM_BASS,    inProject: true },
   { name: 'sandstorm-kick',    ext: 'spli', body: STARTER_KICK,      inProject: true },
   { name: 'sandstorm-snare',   ext: 'spli', body: SANDSTORM_SNARE,   inProject: true },

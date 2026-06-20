@@ -6,6 +6,8 @@ import { buildDistinctNotes } from '../render/distinct'
 import {
   STARTER_SANDSTORM,
   STARTER_SANDSTORM_LEAD,
+  STARTER_SANDSTORM_ARP,
+  STARTER_SANDSTORM_SUBBASS,
   STARTER_SANDSTORM_BASS,
   STARTER_SANDSTORM_PAD,
   STARTER_SANDSTORM_HARMONY,
@@ -18,7 +20,7 @@ import { normalizePlan } from './_normalize'
 
 /**
  * Conformance for the Sandstorm starter showcase. Anchors verify the
- * seven-voice structure and total duration; the snapshot guards against
+ * eleven-voice structure and total duration; the snapshot guards against
  * drift in the score walker, cache key, or inheritance logic.
  *
  * Refresh with `vitest -u` after any intentional score change.
@@ -31,6 +33,8 @@ beforeEach(async () => {
 describe('conformance: starter Sandstorm', () => {
   async function buildPlan() {
     const lead    = await loadInstrument('sandstorm-lead',    STARTER_SANDSTORM_LEAD)
+    const arp     = await loadInstrument('sandstorm-arp',     STARTER_SANDSTORM_ARP)
+    const subbass = await loadInstrument('sandstorm-subbass', STARTER_SANDSTORM_SUBBASS)
     const bass    = await loadInstrument('sandstorm-bass',    STARTER_SANDSTORM_BASS)
     const pad     = await loadInstrument('sandstorm-pad',     STARTER_SANDSTORM_PAD)
     const harmony = await loadInstrument('sandstorm-harmony', STARTER_SANDSTORM_HARMONY)
@@ -42,6 +46,8 @@ describe('conformance: starter Sandstorm', () => {
       tuner: new Tuner(),
       instruments: new Map([
         [lead.name,    lead],
+        [arp.name,     arp],
+        [subbass.name, subbass],
         [bass.name,    bass],
         [pad.name,     pad],
         [harmony.name, harmony],
@@ -56,9 +62,12 @@ describe('conformance: starter Sandstorm', () => {
   it('matches hand-verified anchors', async () => {
     const plan = await buildPlan()
 
-    // Eight voices as declared in the stage block.
-    expect(plan.voices.size).toBe(8)
+    // Eleven voices as declared in the stage block.
+    expect(plan.voices.size).toBe(11)
     expect(plan.voices.has('lead')).toBe(true)
+    expect(plan.voices.has('lead2')).toBe(true)
+    expect(plan.voices.has('arp')).toBe(true)
+    expect(plan.voices.has('subbass')).toBe(true)
     expect(plan.voices.has('bass')).toBe(true)
     expect(plan.voices.has('pad')).toBe(true)
     expect(plan.voices.has('harmony')).toBe(true)
