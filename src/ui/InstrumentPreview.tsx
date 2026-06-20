@@ -2,6 +2,7 @@ import { createEffect, onCleanup, type Component } from 'solid-js'
 import { loadInstrument } from '../parse/instrument'
 import { compileInstrument } from '../synth/compile'
 import { renderNote } from '../synth/sound_generator'
+import { DEFAULT_ENVELOPE } from '../synth/envelope'
 
 interface InstrumentPreviewProps {
   name: () => string | null
@@ -29,18 +30,20 @@ export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
     const ctx = c.getContext('2d')
     if (!ctx) return
     ctx.clearRect(0, 0, w, h)
-    ctx.lineWidth = Math.max(1, window.devicePixelRatio || 1)
-    ctx.strokeStyle = '#4a8df0'
-    ctx.beginPath()
-    const step = w / samples.length
-    for (let i = 0; i < samples.length; i++) {
-      const v = samples[i]!
-      const x = i * step
-      const y = h / 2 + v * (h / 2) * 0.9
-      if (i === 0) ctx.moveTo(x, y)
-      else ctx.lineTo(x, y)
+    ctx.fillStyle = '#4a8df0'
+    const n = samples.length
+    const halfH = (h / 2) * 0.9
+    for (let px = 0; px < w; px++) {
+      const start = Math.floor((px * n) / w)
+      const end = Math.max(start + 1, Math.floor(((px + 1) * n) / w))
+      let peak = 0
+      for (let i = start; i < end; i++) {
+        const abs = Math.abs(samples[i]!)
+        if (abs > peak) peak = abs
+      }
+      const barH = Math.max(1, peak * halfH * 2)
+      ctx.fillRect(px, h / 2 - barH / 2, 1, barH)
     }
-    ctx.stroke()
   }
 
   function clearCanvas(): void {
@@ -68,12 +71,15 @@ export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
         const instr = await loadInstrument(name, body)
         if (run !== currentRun) return
         const spec = compileInstrument(instr)
+        const env = spec.envelope ?? DEFAULT_ENVELOPE
+        const sustainHold = Math.max(0.05, env.attack * 0.5)
+        const totalSeconds = env.attack + sustainHold + env.release
         const samples = renderNote({
           instrument: spec,
           freqHz: 440,
           stress: 1,
-          lengthSeconds: 2.5,
-          dampSeconds: 0.5,
+          lengthSeconds: totalSeconds,
+          dampSeconds: 0,
         })
         if (run !== currentRun) return
         drawWaveform(samples)
