@@ -43,7 +43,11 @@ export interface StagingPaneProps {
 export const StagingPane: Component<StagingPaneProps> = (props) => {
   const [files, setFiles] = createSignal<StoredFile[]>([])
   const [collapsed, setCollapsed] = createSignal(false)
+  const [showCreate, setShowCreate] = createSignal(false)
+  const [newName, setNewName] = createSignal('')
+  const [newExt, setNewExt] = createSignal<FileExtension>('spli')
   let fileInput: HTMLInputElement | undefined
+  let nameInput: HTMLInputElement | undefined
 
   async function refresh() {
     setFiles(await listFiles())
@@ -161,6 +165,28 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
     window.location.reload()
   }
 
+  function openCreate() {
+    setNewName('')
+    setNewExt('spli')
+    setShowCreate(true)
+    setTimeout(() => nameInput?.focus(), 0)
+  }
+
+  async function handleCreate() {
+    const name = newName().trim()
+    if (!name) return
+    const ext = newExt()
+    if (files().some((f) => f.name === name && f.ext === ext)) {
+      alert(`'${name}.${ext}' already exists.`)
+      return
+    }
+    await putFile({ name, ext, body: '', inProject: false })
+    setShowCreate(false)
+    setNewName('')
+    await refresh()
+    props.onChange()
+  }
+
   async function handleExport() {
     const all = await listFiles()
     if (all.length === 0) return
@@ -230,6 +256,42 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
               onChange={(e) => void handleImport(e)}
               style={{ display: 'none' }}
             />
+            <button
+              onClick={openCreate}
+              disabled={props.mutationsDisabled}
+            >
+              New…
+            </button>
+            <Show when={showCreate()}>
+              <div class="create-form">
+                <div class="create-form-row">
+                  <input
+                    type="text"
+                    ref={nameInput}
+                    value={newName()}
+                    onInput={(e) => setNewName(e.currentTarget.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') void handleCreate()
+                      if (e.key === 'Escape') setShowCreate(false)
+                    }}
+                    placeholder="filename"
+                  />
+                  <select
+                    value={newExt()}
+                    onChange={(e) => setNewExt(e.currentTarget.value as FileExtension)}
+                  >
+                    <option value="spli">spli</option>
+                    <option value="spls">spls</option>
+                    <option value="splt">splt</option>
+                    <option value="splr">splr</option>
+                  </select>
+                </div>
+                <div class="create-form-row">
+                  <button onClick={() => void handleCreate()}>Create</button>
+                  <button onClick={() => setShowCreate(false)}>Cancel</button>
+                </div>
+              </div>
+            </Show>
             <button
               onClick={() => fileInput?.click()}
               disabled={props.mutationsDisabled}

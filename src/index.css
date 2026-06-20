@@ -138,6 +138,51 @@ html, body, #root {
   color: #fbb;
 }
 
+.staging-footer button + button {
+  margin-top: 0.25rem;
+}
+
+.create-form {
+  margin-top: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.create-form-row {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.create-form-row input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 3px;
+  color: #eee;
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  padding: 0.25rem 0.35rem;
+}
+
+.create-form-row select {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 3px;
+  color: #eee;
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  padding: 0.25rem 0.2rem;
+  cursor: pointer;
+}
+
+.create-form-row button {
+  flex: 1;
+  margin-top: 0 !important;
+  padding: 0.25rem;
+}
+
 /* Quadrants — clean 2x2 desktop, vertical stack on portrait. Named areas
    so we can independently choose the placement per viewport. */
 .quadrants {
