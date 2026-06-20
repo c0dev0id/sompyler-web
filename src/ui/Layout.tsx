@@ -61,6 +61,11 @@ function EditorPanel(props: {
 }) {
   const [files, setFiles] = createSignal<StoredFile[]>([])
   const [selectedId, setSelectedId] = createSignal<string | null>(null)
+  // Non-reactive cache of the latest editor body per file id.
+  // Keyed Show destroys/recreates the Editor on tab switch; without this,
+  // the new Editor would mount with the stale body from the files() snapshot
+  // instead of the already-saved (but not re-fetched) IndexedDB content.
+  const liveBody = new Map<string, string>()
 
   createEffect(() => {
     props.refreshSignal()
@@ -100,12 +105,13 @@ function EditorPanel(props: {
       >
         {(f) => (
           <Editor
-            file={f}
+            file={{ ...f, body: liveBody.get(f.id) ?? f.body }}
             readOnly={props.readOnly}
             lintContext={{
               instrumentNames: props.instrumentNames,
               renderDiagnostics: props.renderDiagnostics,
             }}
+            onBodyChange={(body) => liveBody.set(f.id, body)}
           />
         )}
       </Show>
