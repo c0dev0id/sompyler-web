@@ -64,6 +64,7 @@ const ROOT_KEY_TOKENS = new Set([
   'TIMBRE',
   'MORPH',
   'VCF',
+  'LFO',
   'VOLUMES',
   'name',
   'source',

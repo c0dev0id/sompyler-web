@@ -1,6 +1,7 @@
 import { DEFAULT_SAMPLE_RATE } from './constants'
 import { DEFAULT_ENVELOPE, applyEnvelope, type EnvelopeSpec } from './envelope'
 import { applyBiquadLPF, type VCFSpec } from './filter'
+import { renderLFO, type LFOSpec } from './lfo'
 import { renderOscillator, renderOscillatorFM, type FMSpec, type OscillatorSpec } from './oscillator'
 import { evaluateShape } from './shape'
 import { renderSympartial, type SympartialSpec } from './sympartial'
@@ -68,9 +69,11 @@ export interface InstrumentSpec {
   fm?: FMSpec
   /** Resonant low-pass filter applied to the summed output. */
   vcf?: VCFSpec
+  /** One or more LFOs routed to 'vcf' cutoff or 'amp' output. */
+  lfo?: LFOSpec | LFOSpec[]
 }
 
-export type { FMSpec, VCFSpec }
+export type { FMSpec, LFOSpec, VCFSpec }
 
 /**
  * Pre-rendered railsback curve. `curve[i]` is the octave shift applied
@@ -205,8 +208,30 @@ export function renderNote(input: RenderNoteInput): Float32Array {
   if (masterAmp !== 1) {
     for (let i = 0; i < out.length; i++) out[i] = out[i]! * masterAmp
   }
+  // Accumulate LFO signals per target.
+  let vcfLFO: Float32Array | null = null
+  let ampLFO: Float32Array | null = null
+  if (input.instrument.lfo) {
+    const specs = Array.isArray(input.instrument.lfo)
+      ? input.instrument.lfo
+      : [input.instrument.lfo]
+    for (const lfoSpec of specs) {
+      const signal = renderLFO(lfoSpec, totalSamples, sampleRate)
+      const depth = lfoSpec.depth
+      if (lfoSpec.target === 'vcf') {
+        if (!vcfLFO) vcfLFO = new Float32Array(totalSamples)
+        for (let i = 0; i < totalSamples; i++) vcfLFO[i] = vcfLFO[i]! + signal[i]! * depth
+      } else {
+        if (!ampLFO) ampLFO = new Float32Array(totalSamples)
+        for (let i = 0; i < totalSamples; i++) ampLFO[i] = ampLFO[i]! + signal[i]! * depth
+      }
+    }
+  }
   if (input.instrument.vcf) {
-    applyBiquadLPF(out, input.instrument.vcf, input.lengthSeconds, damp, sampleRate)
+    applyBiquadLPF(out, input.instrument.vcf, input.lengthSeconds, damp, sampleRate, vcfLFO)
+  }
+  if (ampLFO) {
+    for (let i = 0; i < totalSamples; i++) out[i] = out[i]! * (1 + ampLFO[i]!)
   }
   applyShapeArticles(out, input.shapeArticles, input.lengthTicks)
   // Soft clipping to keep partials sums in [-1,1].

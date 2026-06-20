@@ -34,6 +34,7 @@ export function applyBiquadLPF(
   noteSeconds: number,
   dampSeconds: number,
   sampleRate: number,
+  lfoSignal?: Float32Array | null,
 ): void {
   const { cutoffHz, resonance, envAmount = 0, envAttack = 0, envRelease = 0 } = spec
   const Q = 0.5 + resonance * 9.5
@@ -58,7 +59,8 @@ export function applyBiquadLPF(
           envFrac = span > 0 ? 1 - (i - noteEnd) / span : 0
         }
       }
-      const cutoff = Math.max(20, Math.min(maxCutoff, cutoffHz + envAmount * envFrac))
+      const lfoAdj = lfoSignal ? (lfoSignal[i] ?? 0) : 0
+      const cutoff = Math.max(20, Math.min(maxCutoff, cutoffHz + envAmount * envFrac + lfoAdj))
       const w0 = (Math.PI * 2 * cutoff) / sampleRate
       const cosW0 = Math.cos(w0)
       const alpha = Math.sin(w0) / (2 * Q)

@@ -1,6 +1,6 @@
 import { InstrumentError } from '../errors'
 import type { Instrument } from '../parse/instrument'
-import type { FMSpec, InstrumentSpec, MorphEntry, PartialDef, RailsbackCurve, VCFSpec } from './sound_generator'
+import type { FMSpec, InstrumentSpec, LFOSpec, MorphEntry, PartialDef, RailsbackCurve, VCFSpec } from './sound_generator'
 import { DEFAULT_ENVELOPE, type EnvelopeSpec } from './envelope'
 import type { OscillatorSpec, Waveform } from './oscillator'
 import { parseShape, renderShapeString } from './shape'
@@ -199,6 +199,47 @@ function compileVCF(raw: unknown): VCFSpec | undefined {
   return spec
 }
 
+function compileLFOEntry(raw: unknown): LFOSpec {
+  const obj = asObj(raw)
+  if (!obj) throw new InstrumentError(`lfo entry must be a mapping`)
+  const rateHz = Number(obj.rate_hz)
+  if (!Number.isFinite(rateHz) || rateHz <= 0) {
+    throw new InstrumentError(`lfo.rate_hz must be a positive number`)
+  }
+  const depth = Number(obj.depth)
+  if (!Number.isFinite(depth)) throw new InstrumentError(`lfo.depth must be a number`)
+  const targetRaw = String(obj.target ?? 'vcf')
+  if (targetRaw !== 'vcf' && targetRaw !== 'amp') {
+    throw new InstrumentError(`lfo.target must be 'vcf' or 'amp'`)
+  }
+  const spec: LFOSpec = { rateHz, depth, target: targetRaw }
+  if (obj.waveform != null) {
+    const wf = String(obj.waveform)
+    if (!WAVEFORMS.has(wf as Waveform)) throw new InstrumentError(`lfo.waveform '${wf}' is unknown`)
+    spec.waveform = wf as Waveform
+  }
+  if (obj.phase != null) {
+    const p = Number(obj.phase)
+    if (!Number.isFinite(p)) throw new InstrumentError(`lfo.phase must be a number`)
+    spec.phase = p
+  }
+  if (obj.delay_seconds != null) {
+    const d = Number(obj.delay_seconds)
+    if (!Number.isFinite(d) || d < 0) throw new InstrumentError(`lfo.delay_seconds must be non-negative`)
+    spec.delaySeconds = d
+  }
+  return spec
+}
+
+function compileLFO(raw: unknown): LFOSpec | LFOSpec[] | undefined {
+  if (raw == null) return undefined
+  if (Array.isArray(raw)) {
+    const entries = raw.map(compileLFOEntry)
+    return entries.length === 1 ? entries[0]! : entries
+  }
+  return compileLFOEntry(raw)
+}
+
 const SEQNUM_RX = /^(\d+)(n(?:\+(\d+))?)?$/
 
 function parseMorphEntry(s: string): MorphEntry {
@@ -275,6 +316,8 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
   if (fm) spec.fm = fm
   const vcf = compileVCF(obj.vcf)
   if (vcf) spec.vcf = vcf
+  const lfo = compileLFO(obj.lfo)
+  if (lfo) spec.lfo = lfo
 
   return spec
 }
