@@ -728,21 +728,30 @@ envelope:
   sustainLevel: 0.90
 `
 
-const SANDSTORM_SNARE = `# sandstorm-snare: noise burst, sharp transient.
-amp: 0.95
-oscillator: noise
+// GM 40 (Electric Snare) analysis: spectral centroid 1093 Hz, IQR 215–797 Hz.
+// White noise alone is too bright (centroid ~11 kHz). A sine body at the scored
+// pitch D4 (294 Hz) lands squarely in the SF2's IQR and adds the "crack" tone.
+const SANDSTORM_SNARE = `# sandstorm-snare: noise burst + sine body, SF2 matched (GM 40 Electric Snare).
+amp: 0.98
 envelope:
   attack: 0.001
   release: 0.12
   sustainLevel: 0.6
+partials:
+  - { freqMult: 1, amp: 1.0, oscillator: noise }
+  - { freqMult: 1, amp: 0.25, oscillator: sin }
 `
 
-const SANDSTORM_HIHAT = `# sandstorm-hihat: very short noise burst hi-hat.
-amp: 0.36
+// GM 42 (Closed Hi-Hat) analysis: centroid 11028 Hz, IQR 8635–14126 Hz —
+// white noise is already spectrally correct. The fix is the envelope: with
+// release=0.03 most of the 110ms note is flat sustain (only 30ms decay).
+// Pushing release to 0.09 leaves just 19ms of sustain before the decay begins.
+const SANDSTORM_HIHAT = `# sandstorm-hihat: noise burst, SF2 matched (GM 42 Closed Hi-Hat).
+amp: 0.48
 oscillator: noise
 envelope:
   attack: 0.001
-  release: 0.03
+  release: 0.09
   sustainLevel: 0.3
 `
 
