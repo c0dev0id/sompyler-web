@@ -1,5 +1,6 @@
 import { DEFAULT_SAMPLE_RATE } from './constants'
 import { DEFAULT_ENVELOPE, applyEnvelope, type EnvelopeSpec } from './envelope'
+import { applyBiquadLPF, type VCFSpec } from './filter'
 import { renderOscillator, renderOscillatorFM, type FMSpec, type OscillatorSpec } from './oscillator'
 import { evaluateShape } from './shape'
 import { renderSympartial, type SympartialSpec } from './sympartial'
@@ -65,9 +66,11 @@ export interface InstrumentSpec {
    * If any partial has FM, the per-partial rendering path is always used.
    */
   fm?: FMSpec
+  /** Resonant low-pass filter applied to the summed output. */
+  vcf?: VCFSpec
 }
 
-export type { FMSpec }
+export type { FMSpec, VCFSpec }
 
 /**
  * Pre-rendered railsback curve. `curve[i]` is the octave shift applied
@@ -201,6 +204,9 @@ export function renderNote(input: RenderNoteInput): Float32Array {
   const masterAmp = (input.instrument.amp ?? 1) * input.stress
   if (masterAmp !== 1) {
     for (let i = 0; i < out.length; i++) out[i] = out[i]! * masterAmp
+  }
+  if (input.instrument.vcf) {
+    applyBiquadLPF(out, input.instrument.vcf, input.lengthSeconds, damp, sampleRate)
   }
   applyShapeArticles(out, input.shapeArticles, input.lengthTicks)
   // Soft clipping to keep partials sums in [-1,1].

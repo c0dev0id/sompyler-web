@@ -1,6 +1,6 @@
 import { InstrumentError } from '../errors'
 import type { Instrument } from '../parse/instrument'
-import type { FMSpec, InstrumentSpec, MorphEntry, PartialDef, RailsbackCurve } from './sound_generator'
+import type { FMSpec, InstrumentSpec, MorphEntry, PartialDef, RailsbackCurve, VCFSpec } from './sound_generator'
 import { DEFAULT_ENVELOPE, type EnvelopeSpec } from './envelope'
 import type { OscillatorSpec, Waveform } from './oscillator'
 import { parseShape, renderShapeString } from './shape'
@@ -168,6 +168,37 @@ function compileFM(raw: unknown): FMSpec | undefined {
   return spec
 }
 
+function compileVCF(raw: unknown): VCFSpec | undefined {
+  if (raw == null) return undefined
+  const obj = asObj(raw)
+  if (!obj) throw new InstrumentError(`vcf must be a mapping`)
+  const cutoffHz = Number(obj.cutoff_hz)
+  if (!Number.isFinite(cutoffHz) || cutoffHz <= 0) {
+    throw new InstrumentError(`vcf.cutoff_hz must be a positive number`)
+  }
+  const resonance = Number(obj.resonance)
+  if (!Number.isFinite(resonance) || resonance < 0 || resonance > 1) {
+    throw new InstrumentError(`vcf.resonance must be a number in [0, 1]`)
+  }
+  const spec: VCFSpec = { cutoffHz, resonance }
+  if (obj.env_amount != null) {
+    const v = Number(obj.env_amount)
+    if (!Number.isFinite(v)) throw new InstrumentError(`vcf.env_amount must be a number`)
+    spec.envAmount = v
+  }
+  if (obj.env_attack != null) {
+    const v = Number(obj.env_attack)
+    if (!Number.isFinite(v) || v < 0) throw new InstrumentError(`vcf.env_attack must be a non-negative number`)
+    spec.envAttack = v
+  }
+  if (obj.env_release != null) {
+    const v = Number(obj.env_release)
+    if (!Number.isFinite(v) || v < 0) throw new InstrumentError(`vcf.env_release must be a non-negative number`)
+    spec.envRelease = v
+  }
+  return spec
+}
+
 const SEQNUM_RX = /^(\d+)(n(?:\+(\d+))?)?$/
 
 function parseMorphEntry(s: string): MorphEntry {
@@ -242,6 +273,8 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
   if (morph) spec.morph = morph
   const fm = compileFM(obj.fm)
   if (fm) spec.fm = fm
+  const vcf = compileVCF(obj.vcf)
+  if (vcf) spec.vcf = vcf
 
   return spec
 }

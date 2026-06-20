@@ -63,6 +63,7 @@ const ROOT_KEY_TOKENS = new Set([
   'RAILSBACK_CURVE',
   'TIMBRE',
   'MORPH',
+  'VCF',
   'VOLUMES',
   'name',
   'source',
