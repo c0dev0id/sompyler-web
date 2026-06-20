@@ -1873,6 +1873,14 @@ jitter: "1:0.12"
 deldiffs: "0.008|0.014"
 `
 
+const OXYGENE_HALL = `# oxygene-hall.splr — long ambient hall for Oxygène-style reverb.
+name: oxygene hall
+levels: "6:90;0.5,75;2,48;4,22;6,5"
+delays: "6:0;6,100"
+jitter: "1:0.14"
+deldiffs: "0.013|0.021"
+`
+
 const OXYGENE_BASS = `# oxygene-bass: filtered synth bass — Oxygène IV walking pattern.
 amp: 0.75
 oscillator: sin
@@ -1955,13 +1963,14 @@ const OXYGENE = `title: Oxygène Pt. IV
 author: Jean-Michel Jarre (1976)
 stage:
   bass:  1|1 0.0 oxygene-bass
-  sub:   1|1 0.3 oxygene-sub
+  sub:   1|1 0.6 oxygene-sub
   pad:   1|1 1.5 oxygene-pad
-  arp:   1|1 0.2 oxygene-arp
+  arp:   1|1 1.0 oxygene-arp
   kick:  1|1 0.0 sandstorm-kick
   hihat: 1|1 0.1 sandstorm-hihat
-  snare: 1|1 0.2 sandstorm-snare
+  snare: 1|1 0.3 sandstorm-snare
 tuning_config: tones_euro
+room: oxygene-hall
 ---
 # m1 — bass + drums intro (Cm)
 _meta:
@@ -2189,6 +2198,7 @@ const SEEDS: Seed[] = [
 
   // Oxygène Pt. IV — Jarre (1976): filtered synth bass, arpeggio, chord pad.
   { name: 'oxygene',      ext: 'spls', body: OXYGENE,      inProject: true },
+  { name: 'oxygene-hall', ext: 'splr', body: OXYGENE_HALL, inProject: true },
   { name: 'oxygene-bass', ext: 'spli', body: OXYGENE_BASS, inProject: true },
   { name: 'oxygene-sub',  ext: 'spli', body: OXYGENE_SUB,  inProject: true },
   { name: 'oxygene-pad',  ext: 'spli', body: OXYGENE_PAD,  inProject: true },
