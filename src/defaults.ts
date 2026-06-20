@@ -566,20 +566,19 @@ piano:
 // Darude — Sandstorm (1999): five-voice electronic showcase.
 // =====================================================================
 //
-// Key: B minor. Tempo: 136 BPM. Tick grid: 16th note (ticks_per_minute=544).
+// Key: E minor. Tempo: 136 BPM. Tick grid: 16th note (ticks_per_minute=544).
 // 1 measure = 16 ticks. 12 measures ≈ 21 s total.
 //
 // Voices:
-//   lead  — sawtooth synth, the iconic staccato riff
-//   bass  — square-wave synth bass following Bm / G / A harmony
+//   lead  — sawtooth synth, 16th-note arpeggio (the iconic trance sound)
+//   bass  — square-wave synth bass, quarter-note root pumping
 //   kick  — FM kick (sandstorm-kick = same body as dev/kick)
 //   snare — noise burst on beats 2 & 4
 //   hihat — noise on every 16th note
 //
-// Melody approximation (B natural minor: B C# D E F# G A):
-//   Riff A: staccato groups B4×3 · B4×3 · A4 G4 A4 · B4(8th) A4 G4
-//   Riff B: higher run D5×3 · E5×3 · F#5(8th) E5 D5 · E5(8th) D5 B4
-//   Riff C: descending cascade F#5→B4, then whole-bar B4 close
+// Chord progression (from the MIDI): Em Em Em D | Em Em Em D (4-bar loop × 3)
+// Em arpeggio (down then mid): B5 G5 E5 G5 × 4 per bar
+// D  arpeggio (down then mid): A5 F#5 D5 F#5 × 4 per bar
 const SANDSTORM = `title: Sandstorm
 author: Darude (1999)
 stage:
@@ -608,139 +607,77 @@ snare:
   4: D4 1
   12: D4 1
 ---
-# m2 — bass enters: Bm | G | A | Bm
+# m2 — bass enters: Em root pumping
 _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass:
-  0: B2 4
-  4: G2 4
-  8: A2 4
-  12: B2 4
+  0,4,8,12: E2 4
 ---
-# m3 — repeat
+# m3 — bass continues
 _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass: true
 ---
-# m4 — MAIN DROP: lead enters with riff A
+# m4 — MAIN DROP: lead arpeggio enters (Em: B5 G5 E5 G5 × 4)
 _meta:
   repeat_unmentioned_voices: true
 snare: true
-bass:
-  0: B2 4
-  4: G2 4
-  8: A2 4
-  12: B2 4
-lead:
-  0: B4 1
-  1: B4 1
-  2: B4 1
-  4: B4 1
-  5: B4 1
-  6: B4 1
-  8: A4 1
-  9: G4 1
-  10: A4 1
-  12: B4 2
-  14: A4 1
-  15: G4 1
+bass: true
+lead: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
 ---
-# m5 — riff A repeat
+# m5 — Em continues
 _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass: true
 lead: true
 ---
-# m6 — riff B: higher register (D5 / E5 / F#5)
-_meta:
-  repeat_unmentioned_voices: true
-snare: true
-bass:
-  0: B2 4
-  4: D3 4
-  8: E3 4
-  12: F#3 4
-lead:
-  0: D5 1
-  1: D5 1
-  2: D5 1
-  4: E5 1
-  5: E5 1
-  6: E5 1
-  8: F#5 2
-  10: E5 1
-  11: D5 1
-  12: E5 2
-  14: D5 1
-  15: B4 1
----
-# m7 — riff B repeat
+# m6 — Em continues
 _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass: true
 lead: true
 ---
-# m8 — riff A returns
+# m7 — D bar: arpeggio shifts to D major (A5 F#5 D5 F#5 × 4)
 _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass:
-  0: B2 4
-  4: G2 4
-  8: A2 4
-  12: B2 4
-lead:
-  0: B4 1
-  1: B4 1
-  2: B4 1
-  4: B4 1
-  5: B4 1
-  6: B4 1
-  8: A4 1
-  9: G4 1
-  10: A4 1
-  12: B4 2
-  14: A4 1
-  15: G4 1
+  0,4,8,12: D2 4
+lead: "A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5"
 ---
-# m9 — riff A repeat
+# m8 — Em returns (second loop)
+_meta:
+  repeat_unmentioned_voices: true
+snare: true
+bass:
+  0,4,8,12: E2 4
+lead: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
+---
+# m9 — Em
 _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass: true
 lead: true
 ---
-# m10 — riff C: descending cascade F#5 → B4
+# m10 — Em
 _meta:
   repeat_unmentioned_voices: true
 snare: true
-bass:
-  0: B2 4
-  4: G2 4
-  8: A2 4
-  12: F#2 4
-lead:
-  0: F#5 1
-  1: E5 1
-  2: D5 1
-  3: E5 1
-  4: D5 2
-  6: B4 2
-  8: A4 4
-  12: B4 4
+bass: true
+lead: true
 ---
-# m11 — close: whole-bar sustained B4 / B2
+# m11 — D close
 _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass:
-  0: B2 16
-lead:
-  0: B4 16
+  0,4,8,12: D2 4
+lead: "A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5"
 `
 
 // =====================================================================
