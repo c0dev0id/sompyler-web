@@ -9,6 +9,7 @@ import {
 import type { Session } from '../session/Session'
 import { downloadWav } from '../export/wav'
 import { PlayerVisualizer } from './PlayerVisualizer'
+import { InstrumentPreview } from './InstrumentPreview'
 import type { TransportState } from '../player/Player'
 
 /**
@@ -58,6 +59,7 @@ function EditorPanel(props: {
   instrumentNames: () => Set<string>
   renderDiagnostics: () => ReturnType<Session['renderDiagnostics']>
   emptyMessage: string
+  onActiveInstrumentChange?: (name: string | null, body: string | null) => void
 }) {
   const [files, setFiles] = createSignal<StoredFile[]>([])
   const [selectedId, setSelectedId] = createSignal<string | null>(null)
@@ -66,6 +68,8 @@ function EditorPanel(props: {
   // the new Editor would mount with the stale body from the files() snapshot
   // instead of the already-saved (but not re-fetched) IndexedDB content.
   const liveBody = new Map<string, string>()
+  let previewTimer = 0
+  onCleanup(() => clearTimeout(previewTimer))
 
   createEffect(() => {
     props.refreshSignal()
@@ -82,6 +86,11 @@ function EditorPanel(props: {
   })
 
   const selectedFile = () => files().find((f) => f.id === selectedId()) ?? null
+
+  createEffect(() => {
+    const f = selectedFile()
+    props.onActiveInstrumentChange?.(f?.name ?? null, f ? (liveBody.get(f.id) ?? f.body) : null)
+  })
 
   return (
     <div class="editor-panel">
@@ -111,7 +120,15 @@ function EditorPanel(props: {
               instrumentNames: props.instrumentNames,
               renderDiagnostics: props.renderDiagnostics,
             }}
-            onBodyChange={(body) => liveBody.set(f.id, body)}
+            onBodyChange={(body) => {
+                liveBody.set(f.id, body)
+                clearTimeout(previewTimer)
+                previewTimer = window.setTimeout(() => {
+                  if (selectedFile()?.id === f.id) {
+                    props.onActiveInstrumentChange?.(f.name, body)
+                  }
+                }, 1000)
+              }}
           />
         )}
       </Show>
@@ -121,6 +138,8 @@ function EditorPanel(props: {
 
 export const Layout: Component<LayoutProps> = (props) => {
   const [instrumentNames, setInstrumentNames] = createSignal<Set<string>>(new Set())
+  const [previewName, setPreviewName] = createSignal<string | null>(null)
+  const [previewBody, setPreviewBody] = createSignal<string | null>(null)
 
   createEffect(() => {
     props.refreshSignal()
@@ -141,69 +160,72 @@ export const Layout: Component<LayoutProps> = (props) => {
 
   return (
     <div class="quadrants">
-      {/* Top-left: transport + Render + waveform */}
+      {/* Top-left: transport + Render + waveform + instrument preview */}
       <section class="quadrant tl player-pane">
-        <header class="pane-header">
-          <h3 class="pane-title">Player</h3>
-          <span class="pane-state">{playerState()}</span>
-        </header>
-        <div class="transport">
-          <button
-            onClick={() => void props.session.startRender()}
-            disabled={props.session.editLock()}
-          >
-            Render
-          </button>
-          <button
-            onClick={() => props.session.player.play()}
-            disabled={playerState() === 'empty' || playerState() === 'playing'}
-          >
-            Play
-          </button>
-          <button
-            onClick={() => props.session.player.pause()}
-            disabled={playerState() !== 'playing'}
-          >
-            Pause
-          </button>
-          <button
-            onClick={() => props.session.player.stop()}
-            disabled={playerState() === 'empty' || playerState() === 'stopped'}
-          >
-            Stop
-          </button>
-          <label>
-            <input
-              type="checkbox"
-              checked={props.session.player.isLoopEnabled()}
-              onChange={(e) => props.session.player.setLoop(e.currentTarget.checked)}
-            />{' '}
-            Loop
-          </label>
-          <button
-            onClick={() => {
-              const buf = props.session.currentBuffer()
-              if (!buf) return
-              downloadWav(
-                { sampleRate: buf.sampleRate, channels: [buf.left, buf.right] },
-                'sompyler',
-              )
-            }}
-            disabled={!props.session.currentBuffer()}
-          >
-            Download WAV
-          </button>
+        <div class="player-transport">
+          <header class="pane-header">
+            <h3 class="pane-title">Player</h3>
+            <span class="pane-state">{playerState()}</span>
+          </header>
+          <div class="transport">
+            <button
+              onClick={() => void props.session.startRender()}
+              disabled={props.session.editLock()}
+            >
+              Render
+            </button>
+            <button
+              onClick={() => props.session.player.play()}
+              disabled={playerState() === 'empty' || playerState() === 'playing'}
+            >
+              Play
+            </button>
+            <button
+              onClick={() => props.session.player.pause()}
+              disabled={playerState() !== 'playing'}
+            >
+              Pause
+            </button>
+            <button
+              onClick={() => props.session.player.stop()}
+              disabled={playerState() === 'empty' || playerState() === 'stopped'}
+            >
+              Stop
+            </button>
+            <label>
+              <input
+                type="checkbox"
+                checked={props.session.player.isLoopEnabled()}
+                onChange={(e) => props.session.player.setLoop(e.currentTarget.checked)}
+              />{' '}
+              Loop
+            </label>
+            <button
+              onClick={() => {
+                const buf = props.session.currentBuffer()
+                if (!buf) return
+                downloadWav(
+                  { sampleRate: buf.sampleRate, channels: [buf.left, buf.right] },
+                  'sompyler',
+                )
+              }}
+              disabled={!props.session.currentBuffer()}
+            >
+              Download WAV
+            </button>
+          </div>
+          <Show when={props.session.renderStatus().state === 'error'}>
+            <p class="error">
+              {props.session.renderStatus().errorMessage}
+              <button onClick={() => props.session.clearError()}>Dismiss</button>
+            </p>
+          </Show>
+          <PlayerVisualizer
+            getAnalyser={() => props.session.player.getAnalyser()}
+            isPlaying={() => playerState() === 'playing'}
+          />
         </div>
-        <Show when={props.session.renderStatus().state === 'error'}>
-          <p class="error">
-            {props.session.renderStatus().errorMessage}
-            <button onClick={() => props.session.clearError()}>Dismiss</button>
-          </p>
-        </Show>
-        <PlayerVisualizer
-          getAnalyser={() => props.session.player.getAnalyser()}
-          isPlaying={() => playerState() === 'playing'}
-        />
+        <InstrumentPreview name={previewName} body={previewBody} />
       </section>
 
       {/* Top-right: instruments */}
@@ -216,6 +238,10 @@ export const Layout: Component<LayoutProps> = (props) => {
           instrumentNames={instrumentNames}
           renderDiagnostics={props.session.renderDiagnostics}
           emptyMessage="No instrument files in project. Add a .spli from staging."
+          onActiveInstrumentChange={(name, body) => {
+            setPreviewName(name)
+            setPreviewBody(body)
+          }}
         />
       </section>
 
