@@ -565,33 +565,39 @@ piano:
 `
 
 // =====================================================================
-// Darude — Sandstorm (1999): five-voice electronic showcase.
+// Darude — Sandstorm (1999): seven-voice electronic showcase.
 // =====================================================================
 //
 // Key: E minor. Tempo: 136 BPM. Tick grid: 16th note (ticks_per_minute=544).
 // 1 measure = 16 ticks. 12 measures ≈ 21 s total.
 //
 // Voices:
-//   lead  — sawtooth synth, 16th-note arpeggio (the iconic trance sound)
-//   bass  — square-wave synth bass, quarter-note root pumping
-//   kick  — FM kick (sandstorm-kick = same body as dev/kick)
-//   snare — noise burst on beats 2 & 4
-//   hihat — noise on every 16th note
+//   lead    — Lead 8 (bass+lead, GM 88), 16th-note arpeggio
+//   bass    — Lead 1 (square, GM 81), quarter-note root pumping
+//   pad     — Pad 3 (polysynth, GM 91), whole-bar chord wash
+//   harmony — Bagpipe (GM 110), droning Em/D chord dyads
+//   kick    — FM kick (sandstorm-kick = same body as dev/kick)
+//   snare   — noise burst (GM 40 Electric Snare), beats 2 & 4
+//   hihat   — noise burst (GM 42 Closed Hi-Hat), every 16th note
 //
 // Chord progression (from the MIDI): Em Em Em D | Em Em Em D (4-bar loop × 3)
 // Em arpeggio (down then mid): B5 G5 E5 G5 × 4 per bar
 // D  arpeggio (down then mid): A5 F#5 D5 F#5 × 4 per bar
+//
+// Stage: drums dry at centre; lead/snare slight depth; pad most distant;
+// harmony slightly left; hihat slightly right. Room: tight plate reverb.
 const SANDSTORM = `title: Sandstorm
 author: Darude (1999)
 stage:
-  lead:    1|1 0.0 sandstorm-lead
+  lead:    1|1 0.6 sandstorm-lead
   bass:    1|1 0.0 sandstorm-bass
-  pad:     1|1 0.0 sandstorm-pad
-  harmony: 1|1 0.0 sandstorm-harmony
+  pad:     1|1 1.8 sandstorm-pad
+  harmony: 1.2|0.8 1.0 sandstorm-harmony
   kick:    1|1 0.0 sandstorm-kick
-  snare:   1|1 0.0 sandstorm-snare
-  hihat:   1|1 0.0 sandstorm-hihat
+  snare:   1|1 0.3 sandstorm-snare
+  hihat:   0.9|1.1 0.0 sandstorm-hihat
 tuning_config: tones_euro
+room: sandstorm-plate
 ---
 # m0 — intro: kick + hi-hat only
 _meta:
@@ -801,6 +807,18 @@ partials:
   - { freqMult: 10, amp: 0.120 }
 `
 
+// Tight plate reverb for Sandstorm.
+// 4 taps over 4 s: fast amplitude decay (100 → 55 → 2%) makes the
+// audible tail ~1.5 s. Jitter ±12% smooths sparse-tap comb artefacts.
+// Deldiffs offset L by 8 ms and R by 14 ms, widening the stereo image.
+const SANDSTORM_PLATE_ROOM = `# sandstorm-plate.splr — tight plate reverb for trance.
+name: sandstorm plate
+levels: "4:100;1,55;4,2"
+delays: "4:0;4,100"
+jitter: "1:0.12"
+deldiffs: "0.008|0.014"
+`
+
 const SEEDS: Seed[] = [
   // Sandstorm — the active UI showcase (in-project on first run).
   { name: 'sandstorm', ext: 'spls', body: SANDSTORM, inProject: true },
@@ -811,6 +829,7 @@ const SEEDS: Seed[] = [
   { name: 'sandstorm-hihat',   ext: 'spli', body: SANDSTORM_HIHAT,   inProject: true },
   { name: 'sandstorm-pad',     ext: 'spli', body: SANDSTORM_PAD,     inProject: true },
   { name: 'sandstorm-harmony', ext: 'spli', body: SANDSTORM_HARMONY, inProject: true },
+  { name: 'sandstorm-plate',  ext: 'splr', body: SANDSTORM_PLATE_ROOM, inProject: true },
   { name: 'tones_euro', ext: 'splt', body: STARTER_TUNING, inProject: true },
 
   // Pachelbel — moved to staging; used by conformance suite, not loaded in UI.

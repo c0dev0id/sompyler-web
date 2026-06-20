@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Sandstorm room and stereo stage: `sandstorm-plate.splr` — a tight plate reverb (4 taps over 4 s, audible tail ~1.5 s) with jitter (±12% per-tap amplitude variation to smooth comb artefacts from sparse taps) and deldiffs (L +8 ms, R +14 ms per tap for stereo width). The score stage is updated with voice-specific positions: drums dry at centre, lead at distance 0.6, snare at 0.3, harmony slightly left (1.2|0.8) at distance 1.0, pad furthest back (distance 1.8) for maximum reverb wash, hihat slightly right (0.9|1.1) and dry.
+
 - Sandstorm drum tuning towards GM SF2 (GeneralUser GS): Electric Snare (GM 40) gains a sine body partial at the scored pitch D4 (294 Hz) to approximate the SF2's mid-range spectral character (centroid 1093 Hz, IQR 215–797 Hz), which pure white noise cannot match. Closed Hi-Hat (GM 42) spectral centroid (11028 Hz) already matched white noise; the fix was the envelope: release extended 0.03 → 0.09 s to shrink the flat sustain plateau from 79 ms to 19 ms, so the note decays from near the start. Both instruments re-balanced by pattern-RMS measurement.
 
 - Sandstorm harmony voice: GM 110 (Bagpipe) from MIDI Ch 7 approximated using 10 partials matched to GeneralUser GS SF2 spectral analysis. The bagpipe's unusual harmonic profile (H5 is the dominant overtone, H3 nearly equal, with an anomalous H8 peak) is captured in `sandstorm-harmony.spli`. The voice plays E3+G3 drone for Em bars and D3+A3 for D bars, adding mid-register harmonic support at −20 dBFS.
