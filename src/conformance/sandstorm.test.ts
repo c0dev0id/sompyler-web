@@ -9,6 +9,7 @@ import {
   STARTER_SANDSTORM_BASS,
   STARTER_SANDSTORM_PAD,
   STARTER_SANDSTORM_HARMONY,
+  STARTER_SANDSTORM_ATMOS,
   STARTER_SANDSTORM_SNARE,
   STARTER_SANDSTORM_HIHAT,
   STARTER_KICK,
@@ -33,6 +34,7 @@ describe('conformance: starter Sandstorm', () => {
     const bass    = await loadInstrument('sandstorm-bass',    STARTER_SANDSTORM_BASS)
     const pad     = await loadInstrument('sandstorm-pad',     STARTER_SANDSTORM_PAD)
     const harmony = await loadInstrument('sandstorm-harmony', STARTER_SANDSTORM_HARMONY)
+    const atmos   = await loadInstrument('sandstorm-atmos',   STARTER_SANDSTORM_ATMOS)
     const kick    = await loadInstrument('sandstorm-kick',    STARTER_KICK)
     const snare   = await loadInstrument('sandstorm-snare',   STARTER_SANDSTORM_SNARE)
     const hihat   = await loadInstrument('sandstorm-hihat',   STARTER_SANDSTORM_HIHAT)
@@ -43,6 +45,7 @@ describe('conformance: starter Sandstorm', () => {
         [bass.name,    bass],
         [pad.name,     pad],
         [harmony.name, harmony],
+        [atmos.name,   atmos],
         [kick.name,    kick],
         [snare.name,   snare],
         [hihat.name,   hihat],
@@ -53,12 +56,13 @@ describe('conformance: starter Sandstorm', () => {
   it('matches hand-verified anchors', async () => {
     const plan = await buildPlan()
 
-    // Seven voices as declared in the stage block.
-    expect(plan.voices.size).toBe(7)
+    // Eight voices as declared in the stage block.
+    expect(plan.voices.size).toBe(8)
     expect(plan.voices.has('lead')).toBe(true)
     expect(plan.voices.has('bass')).toBe(true)
     expect(plan.voices.has('pad')).toBe(true)
     expect(plan.voices.has('harmony')).toBe(true)
+    expect(plan.voices.has('atmos')).toBe(true)
     expect(plan.voices.has('kick')).toBe(true)
     expect(plan.voices.has('snare')).toBe(true)
     expect(plan.voices.has('hihat')).toBe(true)

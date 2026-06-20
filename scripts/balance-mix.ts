@@ -15,6 +15,7 @@ import {
   STARTER_SANDSTORM_BASS,
   STARTER_SANDSTORM_PAD,
   STARTER_SANDSTORM_HARMONY,
+  STARTER_SANDSTORM_ATMOS,
   STARTER_SANDSTORM_SNARE,
   STARTER_SANDSTORM_HIHAT,
   STARTER_KICK,
@@ -48,6 +49,7 @@ const TARGET: Record<string, number> = {
   hihat:   0.056,   // -25 dBFS
   pad:     0.126,   // -18 dBFS
   harmony: 0.100,   // -20 dBFS
+  atmos:   0.025,   // -32 dBFS (very quiet background texture)
 }
 
 interface VoicePattern {
@@ -93,6 +95,12 @@ const VOICES: VoicePattern[] = [
       [0, 52, 16], [0, 55, 16],
       [16, 52, 16], [16, 55, 16],
     ],
+  },
+  {
+    name: 'atmos',
+    yaml: STARTER_SANDSTORM_ATMOS,
+    // Whole-measure E3 (MIDI 52), 16 ticks each, 2 bars.
+    notes: [[0, 52, 16], [16, 52, 16]] as [number, number, number][],
   },
   {
     name: 'kick',

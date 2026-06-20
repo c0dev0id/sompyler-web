@@ -43,6 +43,7 @@ export {
   SANDSTORM_HIHAT as STARTER_SANDSTORM_HIHAT,
   SANDSTORM_PAD as STARTER_SANDSTORM_PAD,
   SANDSTORM_HARMONY as STARTER_SANDSTORM_HARMONY,
+  SANDSTORM_ATMOS as STARTER_SANDSTORM_ATMOS,
   // Pachelbel — kept in staging for the conformance suite
   PACHELBEL as STARTER_PACHELBEL,
   PACHELBEL_PIANO as STARTER_PACHELBEL_PIANO,
@@ -565,7 +566,7 @@ piano:
 `
 
 // =====================================================================
-// Darude — Sandstorm (1999): seven-voice electronic showcase.
+// Darude — Sandstorm (1999): eight-voice electronic showcase.
 // =====================================================================
 //
 // Key: E minor. Tempo: 136 BPM. Tick grid: 16th note (ticks_per_minute=544).
@@ -576,6 +577,7 @@ piano:
 //   bass    — Lead 1 (square, GM 81), quarter-note root pumping
 //   pad     — Pad 3 (polysynth, GM 91), whole-bar chord wash
 //   harmony — Bagpipe (GM 110), droning Em/D chord dyads
+//   atmos   — detuned unison pad; slow beating creates wave/swell texture
 //   kick    — FM kick (sandstorm-kick = same body as dev/kick)
 //   snare   — noise burst (GM 40 Electric Snare), beats 2 & 4
 //   hihat   — noise burst (GM 42 Closed Hi-Hat), every 16th note
@@ -585,7 +587,8 @@ piano:
 // D  arpeggio (down then mid): A5 F#5 D5 F#5 × 4 per bar
 //
 // Stage: drums dry at centre; lead/snare slight depth; pad most distant;
-// harmony slightly left; hihat slightly right. Room: tight plate reverb.
+// harmony slightly left; atmos furthest back; hihat slightly right.
+// Room: tight plate reverb.
 const SANDSTORM = `title: Sandstorm
 author: Darude (1999)
 stage:
@@ -593,13 +596,14 @@ stage:
   bass:    1|1 0.0 sandstorm-bass
   pad:     1|1 1.8 sandstorm-pad
   harmony: 1.2|0.8 1.0 sandstorm-harmony
+  atmos:   1|1 2.5 sandstorm-atmos
   kick:    1|1 0.0 sandstorm-kick
   snare:   1|1 0.3 sandstorm-snare
   hihat:   0.9|1.1 0.0 sandstorm-hihat
 tuning_config: tones_euro
 room: sandstorm-plate
 ---
-# m0 — intro: kick + hi-hat only
+# m0 — intro: kick + hi-hat + atmos swell
 _meta:
   ticks_per_minute: 544
   stress_pattern: "4,1,2,1,2,1,2,1,3,1,2,1,2,1,2,1"
@@ -609,6 +613,7 @@ kick:
   0,4,8,12: C1 1 damp=3
 hihat:
   0+1*16: A6 1
+atmos: "E3_15"
 ---
 # m1 — snare enters on beats 2 and 4
 _meta:
@@ -665,6 +670,7 @@ bass:
   0,4,8,12: D2 4
 pad: "D4_15; F#4_15; A4_15"
 harmony: "D3_15; A3_15"
+atmos: "D3_15"
 lead: "A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5"
 ---
 # m8 — Em returns (second loop)
@@ -675,6 +681,7 @@ bass:
   0,4,8,12: E2 4
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
+atmos: "E3_15"
 lead: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
 ---
 # m9 — Em
@@ -701,6 +708,7 @@ bass:
   0,4,8,12: D2 4
 pad: "D4_15; F#4_15; A4_15"
 harmony: "D3_15; A3_15"
+atmos: "D3_15"
 lead: "A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5"
 `
 
@@ -807,6 +815,30 @@ partials:
   - { freqMult: 10, amp: 0.120 }
 `
 
+// Atmospheric "wave" pad: 5 detuned unison partials + quiet noise breath.
+// The ±0.002 detune creates a ~3 s amplitude-beating cycle at E3 (164.8 Hz);
+// ±0.005 adds a faster ~1.2 s undulation layered on top.
+//
+// Envelope: attack=0.3 s + release=1.2 s = 1.5 s total < 1.765 s (one measure),
+// so the note has 0.265 s of sustain and fades out within the measure.
+// Each measure produces one rise-hold-fall sweep; consecutive notes are seamless
+// (both start and end at zero amplitude), producing a slow "breathing" texture.
+const SANDSTORM_ATMOS = `# sandstorm-atmos: detuned unison atmospheric wave pad.
+amp: 0.06
+oscillator: sin
+envelope:
+  attack: 0.3
+  release: 1.2
+  sustainLevel: 0.80
+partials:
+  - { freqMult: 1.000, amp: 1.00 }
+  - { freqMult: 0.998, amp: 0.75 }
+  - { freqMult: 1.002, amp: 0.75 }
+  - { freqMult: 0.995, amp: 0.40 }
+  - { freqMult: 1.005, amp: 0.40 }
+  - { freqMult: 1.000, amp: 0.10, oscillator: noise }
+`
+
 // Tight plate reverb for Sandstorm.
 // 4 taps over 4 s: fast amplitude decay (100 → 55 → 2%) makes the
 // audible tail ~1.5 s. Jitter ±12% smooths sparse-tap comb artefacts.
@@ -829,6 +861,7 @@ const SEEDS: Seed[] = [
   { name: 'sandstorm-hihat',   ext: 'spli', body: SANDSTORM_HIHAT,   inProject: true },
   { name: 'sandstorm-pad',     ext: 'spli', body: SANDSTORM_PAD,     inProject: true },
   { name: 'sandstorm-harmony', ext: 'spli', body: SANDSTORM_HARMONY, inProject: true },
+  { name: 'sandstorm-atmos',  ext: 'spli', body: SANDSTORM_ATMOS,   inProject: true },
   { name: 'sandstorm-plate',  ext: 'splr', body: SANDSTORM_PLATE_ROOM, inProject: true },
   { name: 'tones_euro', ext: 'splt', body: STARTER_TUNING, inProject: true },
 
