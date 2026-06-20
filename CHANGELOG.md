@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- VCF (resonant low-pass filter) for instrument definitions. Add a `vcf:` block with `cutoff_hz` and `resonance` (0–1) for static filtering, plus optional `env_amount`, `env_attack`, and `env_release` for a filter envelope that sweeps the cutoff over the note duration. Enables acid bass sweeps, pad openings, and classic subtractive synthesis sounds.
+
 - Instrument preview waveform in the player pane: the bottom half of the top-left quadrant now shows a static A4 waveform rendered through the currently active instrument tab. The preview updates automatically one second after each edit and switches immediately when changing instrument tabs. No manual button required.
 
 - Sandstorm atmospheric wave voice (`sandstorm-atmos.spli`): five symmetrically detuned unison partials (±0.002 and ±0.005 freqMult offsets) create slow amplitude beating — the ±0.002 pair beats at ~0.33 Hz on E3 (~3 s cycle), the ±0.005 pair at ~0.82 Hz (~1.2 s), layered for an organic wave texture. A quiet noise partial adds breath. The envelope (attack=0.3 s, release=1.2 s) keeps the full swell within a single measure, producing one rise-hold-fall sweep per measure that chains seamlessly between repetitions. Plays E3 (Em bars) and D3 (D bars) as a whole-measure note, sitting furthest back in the stage (distance 2.5) for maximum reverb wash.
