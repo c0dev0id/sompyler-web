@@ -53,14 +53,7 @@ export {
 }
 
 // =====================================================================
-// Pachelbel's Canon in D — four-voice strings showcase.
-// =====================================================================
 //
-// 12 measures at 8 ticks/measure, ticks_per_minute=120 ⇒ 4 s / measure,
-// 48 s total. Bass ostinato (cello) plays the 8-chord progression in
-// half-notes (2 ticks each). Violins play the canon melody in eighth-
-// note ticks. Each violin enters two measures after the previous one;
-// once all are in (m7), the 3-phrase melody cycles every three measures.
 const PACHELBEL = `title: Pachelbel — Canon in D
 author: Johann Pachelbel (arr. for Sompyler)
 stage:
@@ -589,6 +582,35 @@ piano:
 // Stage: drums dry at centre; lead/snare slight depth; pad most distant;
 // harmony slightly left; atmos furthest back; hihat slightly right.
 // Room: tight plate reverb.
+// Key: E minor. Tempo: 136 BPM (ticks_per_minute=544, 16th-note grid).
+// 1 measure = 16 ticks. Full song: 141 measures ≈ 4:09.
+//
+// Voices:
+//   lead    — Lead 8 (bass+lead, GM 88), melodic line (B4/E5) + arpeggio section
+//   bass    — Lead 1 (square, GM 81), quarter-note root pumping
+//   pad     — Pad 3 (polysynth, GM 91), whole-bar chord wash
+//   harmony — Bagpipe (GM 110), droning Em/Am chord dyads
+//   atmos   — detuned unison pad; slow beating creates wave/swell texture
+//   kick    — FM kick, 4-on-the-floor
+//   snare   — noise burst (GM 40 Electric Snare), beats 2 and 4
+//   hihat   — noise burst (GM 42 Closed Hi-Hat), every 16th note
+//
+// Song structure (from MIDI):
+//   m0-1:    Intro (kick + hihat)
+//   m2-9:    Pad/bass drone (Em)
+//   m10-17:  Lead enters (B4 motif)
+//   m18-33:  Active bass + Am→G→D transitions every 4 bars
+//   m34-45:  Arpeggio section (B5-G5-E5 grid)
+//   m46-61:  Breakdown (no drums/bass)
+//   m62-81:  Rebuild (lead + drums return; bass absent)
+//   m82-97:  Full drop with Am transitions
+//   m98-127: Extended outro loop with E5 root emphasis phrases
+//   m138-140:Fade
+//
+// Chord progression: Em (main) with Am→G→D passing chords every 4 bars.
+// Stage: drums dry at centre; lead/snare slight depth; pad most distant;
+// harmony slightly left; atmos furthest back; hihat slightly right.
+// Room: tight plate reverb.
 const SANDSTORM = `title: Sandstorm
 author: Darude (1999)
 stage:
@@ -603,7 +625,7 @@ stage:
 tuning_config: tones_euro
 room: sandstorm-plate
 ---
-# m0 — intro: kick + hi-hat + atmos swell
+# m0 — intro — kick + hi-hat + atmos
 _meta:
   ticks_per_minute: 544
   stress_pattern: "4,1,2,1,2,1,2,1,3,1,2,1,2,1,2,1"
@@ -615,102 +637,782 @@ hihat:
   0+1*16: A6 1
 atmos: "E3_15"
 ---
-# m1 — snare enters on beats 2 and 4
+# m1 — snare on 2 and 4
 _meta:
   repeat_unmentioned_voices: true
 snare:
   4: D4 1
   12: D4 1
 ---
-# m2 — bass + pad + harmony enter: Em
+# m2 — bass + pad + harmony (Em)
 _meta:
   repeat_unmentioned_voices: true
-snare: true
 bass:
   0,4,8,12: E2 4
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
 ---
-# m3 — Em continues
+# m3
 _meta:
   repeat_unmentioned_voices: true
-snare: true
-bass: true
-pad: true
 ---
-# m4 — MAIN DROP: lead arpeggio enters (Em: B5 G5 E5 G5 × 4)
+# m4
 _meta:
   repeat_unmentioned_voices: true
-snare: true
-bass: true
-pad: true
-lead: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
 ---
-# m5 — Em continues
+# m5
 _meta:
   repeat_unmentioned_voices: true
-snare: true
-bass: true
-pad: true
-lead: true
 ---
-# m6 — Em continues
+# m6
 _meta:
   repeat_unmentioned_voices: true
-snare: true
-bass: true
-pad: true
-lead: true
 ---
-# m7 — D bar: arpeggio + pad shift to D major
+# m7
 _meta:
   repeat_unmentioned_voices: true
-snare: true
+---
+# m8
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m9
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m10 — lead melody enters
+_meta:
+  repeat_unmentioned_voices: true
+lead: "B4 B4 B4 B4 B4_"
+---
+# m11 — D5 phrase pickup
+_meta:
+  repeat_unmentioned_voices: true
+lead:
+  0: B4 1
+  1: B4 1
+  2: B4 1
+  3: B4 1
+  4: B4 2
+  12: D5 4
+---
+# m12 — Em returns
+_meta:
+  repeat_unmentioned_voices: true
+lead: "B4 B4 B4 B4 B4_"
+---
+# m13
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m14
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m15
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m16
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m17
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m18 — active bass pattern begins
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m19 — Am→G→D transition
+_meta:
+  repeat_unmentioned_voices: true
 bass:
-  0,4,8,12: D2 4
-pad: "D4_15; F#4_15; A4_15"
-harmony: "D3_15; A3_15"
-atmos: "D3_15"
-lead: "A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5"
+  0,4: A2 4
+  8: G2 4
+  12: D2 4
+pad: "A4_15; C5_15; E5_15"
+harmony: "A3_15; C4_15"
+lead: "E5 E5 E5 E5 E5_"
 ---
-# m8 — Em returns (second loop)
+# m20
 _meta:
   repeat_unmentioned_voices: true
-snare: true
 bass:
   0,4,8,12: E2 4
 pad: "E4_15; G4_15; B4_15"
 harmony: "E3_15; G3_15"
-atmos: "E3_15"
+lead: "B4 B4 B4 B4 B4_"
+---
+# m21
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m22
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m23 — Am→G→D transition
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4: A2 4
+  8: G2 4
+  12: D2 4
+pad: "A4_15; C5_15; E5_15"
+harmony: "A3_15; C4_15"
+lead: "E5 E5 E5 E5 E5_"
+---
+# m24
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4,8,12: E2 4
+pad: "E4_15; G4_15; B4_15"
+harmony: "E3_15; G3_15"
+lead: "B4 B4 B4 B4 B4_"
+---
+# m25
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m26
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m27 — Am→G→D transition
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4: A2 4
+  8: G2 4
+  12: D2 4
+pad: "A4_15; C5_15; E5_15"
+harmony: "A3_15; C4_15"
+lead: "E5 E5 E5 E5 E5_"
+---
+# m28
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4,8,12: E2 4
+pad: "E4_15; G4_15; B4_15"
+harmony: "E3_15; G3_15"
+lead: "B4 B4 B4 B4 B4_"
+---
+# m29
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m30
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m31 — Am→G→D transition
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4: A2 4
+  8: G2 4
+  12: D2 4
+pad: "A4_15; C5_15; E5_15"
+harmony: "A3_15; C4_15"
+lead: "E5 E5 E5 E5 E5_"
+---
+# m32
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4,8,12: E2 4
+pad: "E4_15; G4_15; B4_15"
+harmony: "E3_15; G3_15"
+lead: "B4 B4 B4 B4 B4_"
+---
+# m33
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m34 — arpeggio joins (Em)
+_meta:
+  repeat_unmentioned_voices: true
 lead: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
 ---
-# m9 — Em
+# m35
 _meta:
   repeat_unmentioned_voices: true
-snare: true
-bass: true
-pad: true
-lead: true
 ---
-# m10 — Em
+# m36
 _meta:
   repeat_unmentioned_voices: true
-snare: true
-bass: true
-pad: true
-lead: true
 ---
-# m11 — D close
+# m37 — arpeggio Am flavor
 _meta:
   repeat_unmentioned_voices: true
-snare: true
+pad: "A4_15; C5_15; E5_15"
+harmony: "A3_15; C4_15"
+lead: "E5 C5 A4 C5 E5 C5 A4 C5 E5 C5 A4 C5 E5 C5 A4 C5"
+---
+# m38 — arpeggio Em
+_meta:
+  repeat_unmentioned_voices: true
+pad: "E4_15; G4_15; B4_15"
+harmony: "E3_15; G3_15"
+lead: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
+---
+# m39
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m40
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m41 — arpeggio Am flavor
+_meta:
+  repeat_unmentioned_voices: true
+pad: "A4_15; C5_15; E5_15"
+harmony: "A3_15; C4_15"
+lead: "E5 C5 A4 C5 E5 C5 A4 C5 E5 C5 A4 C5 E5 C5 A4 C5"
+---
+# m42 — arpeggio Em
+_meta:
+  repeat_unmentioned_voices: true
+pad: "E4_15; G4_15; B4_15"
+harmony: "E3_15; G3_15"
+lead: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
+---
+# m43
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m44
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m45
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m46 — breakdown — arpeggio ends
+_meta:
+  repeat_unmentioned_voices: true
+lead: false
+---
+# m47 — drums out
+_meta:
+  repeat_unmentioned_voices: true
+kick: false
+snare: false
+hihat: false
+bass: false
+harmony: false
+---
+# m48
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m49
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m50
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m51
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m52
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m53
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m54 — brief re-entry
+_meta:
+  repeat_unmentioned_voices: true
+kick:
+  0,4,8,12: C1 1 damp=3
+harmony: "E3_15; G3_15"
+---
+# m55 — drums out again
+_meta:
+  repeat_unmentioned_voices: true
+kick: false
+---
+# m56
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m57
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m58
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m59
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m60
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m61
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m62 — lead and drums return
+_meta:
+  repeat_unmentioned_voices: true
+kick:
+  0,4,8,12: C1 1 damp=3
+snare:
+  4: D4 1
+  12: D4 1
+hihat:
+  0+1*16: A6 1
+lead: "B4 B4 B4 B4 B4_"
+---
+# m63 — D5 phrase pickup
+_meta:
+  repeat_unmentioned_voices: true
+lead:
+  0: B4 1
+  1: B4 1
+  2: B4 1
+  3: B4 1
+  4: B4 2
+  12: D5 4
+---
+# m64 — build — lead continues, no bass
+_meta:
+  repeat_unmentioned_voices: true
+lead: "B4 B4 B4 B4 B4_"
+---
+# m65
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m66
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m67
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m68
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m69
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m70
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m71
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m72
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m73
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m74
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m75
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m76
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m77
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m78
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m79
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m80
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m81
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m82 — bass returns — full drop
+_meta:
+  repeat_unmentioned_voices: true
 bass:
-  0,4,8,12: D2 4
-pad: "D4_15; F#4_15; A4_15"
-harmony: "D3_15; A3_15"
-atmos: "D3_15"
-lead: "A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5"
-`
+  0,4,8,12: E2 4
+---
+# m83 — Am→G→D transition
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4: A2 4
+  8: G2 4
+  12: D2 4
+pad: "A4_15; C5_15; E5_15"
+harmony: "A3_15; C4_15"
+lead: "E5 E5 E5 E5 E5_"
+---
+# m84
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4,8,12: E2 4
+pad: "E4_15; G4_15; B4_15"
+harmony: "E3_15; G3_15"
+lead: "B4 B4 B4 B4 B4_"
+---
+# m85
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m86
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m87 — Am→G→D transition
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4: A2 4
+  8: G2 4
+  12: D2 4
+pad: "A4_15; C5_15; E5_15"
+harmony: "A3_15; C4_15"
+lead: "E5 E5 E5 E5 E5_"
+---
+# m88
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4,8,12: E2 4
+pad: "E4_15; G4_15; B4_15"
+harmony: "E3_15; G3_15"
+lead: "B4 B4 B4 B4 B4_"
+---
+# m89
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m90
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m91 — Am→G→D transition
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4: A2 4
+  8: G2 4
+  12: D2 4
+pad: "A4_15; C5_15; E5_15"
+harmony: "A3_15; C4_15"
+lead: "E5 E5 E5 E5 E5_"
+---
+# m92
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4,8,12: E2 4
+pad: "E4_15; G4_15; B4_15"
+harmony: "E3_15; G3_15"
+lead: "B4 B4 B4 B4 B4_"
+---
+# m93
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m94
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m95 — Am→G→D transition
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4: A2 4
+  8: G2 4
+  12: D2 4
+pad: "A4_15; C5_15; E5_15"
+harmony: "A3_15; C4_15"
+lead: "E5 E5 E5 E5 E5_"
+---
+# m96
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4,8,12: E2 4
+pad: "E4_15; G4_15; B4_15"
+harmony: "E3_15; G3_15"
+lead: "B4 B4 B4 B4 B4_"
+---
+# m97
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m98
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m99
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m100
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m101 — E5 root emphasis
+_meta:
+  repeat_unmentioned_voices: true
+lead: "E5 E5 E5 E5 E5_"
+---
+# m102
+_meta:
+  repeat_unmentioned_voices: true
+lead: "B4 B4 B4 B4 B4_"
+---
+# m103
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m104
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m105 — E5 root emphasis
+_meta:
+  repeat_unmentioned_voices: true
+lead: "E5 E5 E5 E5 E5_"
+---
+# m106
+_meta:
+  repeat_unmentioned_voices: true
+lead: "B4 B4 B4 B4 B4_"
+---
+# m107
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m108
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m109
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m110
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m111 — Am→G→D transition
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4: A2 4
+  8: G2 4
+  12: D2 4
+pad: "A4_15; C5_15; E5_15"
+harmony: "A3_15; C4_15"
+lead: "E5 E5 E5 E5 E5_"
+---
+# m112
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4,8,12: E2 4
+pad: "E4_15; G4_15; B4_15"
+harmony: "E3_15; G3_15"
+lead: "B4 B4 B4 B4 B4_"
+---
+# m113
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m114
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m115 — Am→G→D transition
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4: A2 4
+  8: G2 4
+  12: D2 4
+pad: "A4_15; C5_15; E5_15"
+harmony: "A3_15; C4_15"
+lead: "E5 E5 E5 E5 E5_"
+---
+# m116
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4,8,12: E2 4
+pad: "E4_15; G4_15; B4_15"
+harmony: "E3_15; G3_15"
+lead: "B4 B4 B4 B4 B4_"
+---
+# m117
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m118
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m119 — Am→G→D transition
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4: A2 4
+  8: G2 4
+  12: D2 4
+pad: "A4_15; C5_15; E5_15"
+harmony: "A3_15; C4_15"
+lead: "E5 E5 E5 E5 E5_"
+---
+# m120
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4,8,12: E2 4
+pad: "E4_15; G4_15; B4_15"
+harmony: "E3_15; G3_15"
+lead: "B4 B4 B4 B4 B4_"
+---
+# m121
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m122
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m123 — Am→G→D transition
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4: A2 4
+  8: G2 4
+  12: D2 4
+pad: "A4_15; C5_15; E5_15"
+harmony: "A3_15; C4_15"
+lead: "E5 E5 E5 E5 E5_"
+---
+# m124
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0,4,8,12: E2 4
+pad: "E4_15; G4_15; B4_15"
+harmony: "E3_15; G3_15"
+lead: "B4 B4 B4 B4 B4_"
+---
+# m125
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m126 — outro loop
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m127
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m128
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m129 — E5 root emphasis
+_meta:
+  repeat_unmentioned_voices: true
+lead: "E5 E5 E5 E5 E5_"
+---
+# m130
+_meta:
+  repeat_unmentioned_voices: true
+lead: "B4 B4 B4 B4 B4_"
+---
+# m131
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m132
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m133 — E5 root emphasis
+_meta:
+  repeat_unmentioned_voices: true
+lead: "E5 E5 E5 E5 E5_"
+---
+# m134
+_meta:
+  repeat_unmentioned_voices: true
+lead: "B4 B4 B4 B4 B4_"
+---
+# m135
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m136
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m137
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m138 — outro fade
+_meta:
+  repeat_unmentioned_voices: true
+lead: false
+bass: false
+harmony: false
+---
+# m139 — final release
+_meta:
+  repeat_unmentioned_voices: true
+kick: false
+snare: false
+hihat: false
+pad: false
+atmos: false
+---
+# m140
+_meta:
+  repeat_unmentioned_voices: true`
 
 // =====================================================================
 // Sandstorm instruments.

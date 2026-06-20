@@ -67,9 +67,9 @@ describe('conformance: starter Sandstorm', () => {
     expect(plan.voices.has('snare')).toBe(true)
     expect(plan.voices.has('hihat')).toBe(true)
 
-    // 12 measures × 16 ticks × (60 / 544) s per tick ≈ 21.2 s.
-    expect(plan.totalLengthSeconds).toBeGreaterThan(20)
-    expect(plan.totalLengthSeconds).toBeLessThan(23)
+    // 141 measures × 16 ticks × (60 / 544) s per tick ≈ 249 s (≈ 4:09).
+    expect(plan.totalLengthSeconds).toBeGreaterThan(240)
+    expect(plan.totalLengthSeconds).toBeLessThan(260)
 
     // Repeating drums/bass yield high cache hit ratio: occurrences >> distinct.
     const occurrences = plan.notes.reduce((s, n) => s + n.occurrences.length, 0)
