@@ -9,6 +9,7 @@ import {
 } from '../storage/files'
 import { getPref, setPref } from '../storage/prefs'
 import { packZip, unpackZip } from '../storage/zip'
+import { resetDatabase } from '../storage/db'
 import { parseScore } from '../parse/score'
 import { log } from '../debug'
 
@@ -154,6 +155,12 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
     props.onChange()
   }
 
+  async function handleReset() {
+    if (!window.confirm('Delete all files and notes from IndexedDB? This cannot be undone.')) return
+    await resetDatabase()
+    window.location.reload()
+  }
+
   async function handleExport() {
     const all = await listFiles()
     if (all.length === 0) return
@@ -235,6 +242,13 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
               title="Download every staged file as a .zip"
             >
               Export…
+            </button>
+            <button
+              class="danger"
+              onClick={() => void handleReset()}
+              title="Delete all IndexedDB data and reload"
+            >
+              Reset Database
             </button>
           </div>
         </div>

@@ -54,6 +54,8 @@ export async function txStore(
   return db.transaction(storeName, mode).objectStore(storeName)
 }
 
+export const resetDatabase = resetForTests
+
 export async function resetForTests(): Promise<void> {
   if (dbPromise) {
     const db = await dbPromise

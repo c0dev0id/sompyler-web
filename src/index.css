@@ -126,6 +126,18 @@ html, body, #root {
   cursor: pointer;
 }
 
+.staging-footer button.danger {
+  margin-top: 0.25rem;
+  background: #3a0a0a;
+  color: #f88;
+  border-color: #7a2020;
+}
+
+.staging-footer button.danger:hover:not(:disabled) {
+  background: #5a1010;
+  color: #fbb;
+}
+
 /* Quadrants — clean 2x2 desktop, vertical stack on portrait. Named areas
    so we can independently choose the placement per viewport. */
 .quadrants {
