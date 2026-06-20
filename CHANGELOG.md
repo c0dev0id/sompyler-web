@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- LFO (low-frequency oscillator) for instrument definitions. Add an `lfo:` block (or list for multiple) with `rate_hz`, `depth`, and `target` (`vcf` or `amp`). Routes a slow sine/square/saw/triangle oscillator to the VCF cutoff (depth in Hz) or the output amplitude (depth 0–1). Optional `delay_seconds` fades the LFO in gradually. Applied at render time per note alongside the VCF.
+
+- Sandstorm instruments updated with VCF and LFO: the lead now has a 4.8 kHz LPF to soften the square wave; the bass has a filter envelope that opens from 500 Hz to 4 kHz on attack for a plucky character; the pad has a 2.2 kHz LPF with a slow 0.35 Hz filter LFO for movement; the atmospheric layer has a 0.22 Hz amplitude LFO for extra breathing texture.
+
 - VCF (resonant low-pass filter) for instrument definitions. Add a `vcf:` block with `cutoff_hz` and `resonance` (0–1) for static filtering, plus optional `env_amount`, `env_attack`, and `env_release` for a filter envelope that sweeps the cutoff over the note duration. Enables acid bass sweeps, pad openings, and classic subtractive synthesis sounds.
 
 - Instrument preview waveform in the player pane: the bottom half of the top-left quadrant now shows a static A4 waveform rendered through the currently active instrument tab. The preview updates automatically one second after each edit and switches immediately when changing instrument tabs. No manual button required.
