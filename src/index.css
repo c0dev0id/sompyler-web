@@ -345,6 +345,12 @@ html, body, #root {
   gap: 0.25rem;
   border-bottom: 1px solid #2a2a2a;
   margin-bottom: 0.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.editor-panel .tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .editor-panel .tab {

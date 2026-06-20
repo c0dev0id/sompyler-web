@@ -35,11 +35,21 @@ function TabStrip(props: {
   selected: string | null
   onSelect: (id: string) => void
 }) {
+  let container: HTMLDivElement | undefined
+
+  createEffect(() => {
+    const id = props.selected
+    if (!id || !container) return
+    const btn = container.querySelector<HTMLElement>(`[data-id="${id}"]`)
+    btn?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+  })
+
   return (
-    <div class="tabs">
+    <div class="tabs" ref={container}>
       <For each={props.files}>
         {(f) => (
           <button
+            data-id={f.id}
             class={props.selected === f.id ? 'tab selected' : 'tab'}
             onClick={() => props.onSelect(f.id)}
           >
