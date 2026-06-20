@@ -497,7 +497,7 @@ partials:
 // Shape "100:1;0.1,0;1,0": depth decays 1→0 over the first 10% then stays 0.
 export const STARTER_KICK = `# dev/kick.spli — FM kick drum with pitch sweep.
 # Score at C1 (32.7 Hz). Carrier sweeps C3 → C1 in first ~50 ms of a 500 ms note.
-amp: 0.73
+amp: 0.90
 oscillator: sin
 envelope:
   attack: 0.002
@@ -1421,7 +1421,7 @@ _meta:
 // Lead 8 (bass+lead, GM 88) analysis: nearly pure sine (H2 = −26 dB,
 // H3 = −38 dB). Release ~1070 ms. Matched to GeneralUser GS SF2 sample.
 const SANDSTORM_LEAD = `# sandstorm-lead: Lead 8 (bass+lead) — near-pure sine, long trance release.
-amp: 0.45
+amp: 0.65
 oscillator: sin
 envelope:
   attack: 0.005
@@ -1436,7 +1436,7 @@ partials:
 // Lead 1 (square, GM 81) analysis: odd harmonics match square perfectly
 // (H3 = −9 dB, H5 = −14 dB, H7 = −16 dB). Release ~1010 ms.
 const SANDSTORM_BASS = `# sandstorm-bass: Lead 1 (square) — odd-only harmonics, long trance release.
-amp: 0.30
+amp: 0.18
 oscillator: square
 envelope:
   attack: 0.005
@@ -1463,7 +1463,7 @@ partials:
 // release=0.03 most of the 110ms note is flat sustain (only 30ms decay).
 // Pushing release to 0.09 leaves just 19ms of sustain before the decay begins.
 const SANDSTORM_HIHAT = `# sandstorm-hihat: noise burst, SF2 matched (GM 42 Closed Hi-Hat).
-amp: 0.48
+amp: 0.70
 oscillator: noise
 envelope:
   attack: 0.001
