@@ -626,9 +626,9 @@ stage:
   pad:     1|1 1.8 sandstorm-pad
   harmony: 1.2|0.8 1.0 sandstorm-harmony
   atmos:   1|1 2.5 sandstorm-atmos
-  kick:    1|1 0.0 sandstorm-kick
-  snare:   1|1 0.3 sandstorm-snare
-  hihat:   0.9|1.1 0.0 sandstorm-hihat
+  kick:    1|1 0.0 kick
+  snare:   1|1 0.3 snare
+  hihat:   0.9|1.1 0.0 hihat
 tuning_config: tones_euro
 room: sandstorm-plate
 ---
@@ -1873,7 +1873,7 @@ jitter: "1:0.12"
 deldiffs: "0.008|0.014"
 `
 
-const OXYGENE_HALL = `# oxygene-hall.splr — long ambient hall for Oxygène-style reverb.
+const OXYGENE_HALL = `# hall.splr — long ambient hall reverb.
 name: oxygene hall
 levels: "6:90;0.5,75;2,48;4,22;6,5"
 delays: "6:0;6,100"
@@ -1881,7 +1881,7 @@ jitter: "1:0.14"
 deldiffs: "0.013|0.021"
 `
 
-const OXYGENE_BASS = `# oxygene-bass: filtered synth bass — Oxygène IV walking pattern.
+const OXYGENE_BASS = `# filtered-bass: filtered synth bass with walking pattern.
 amp: 0.75
 oscillator: sin
 envelope:
@@ -1903,7 +1903,7 @@ vcf:
   env_release: 0.08
 `
 
-const OXYGENE_SUB = `# oxygene-sub: sine sub-bass — two-measure sustained root tones.
+const OXYGENE_SUB = `# sub-bass: sine sub-bass, sustained root tones.
 amp: 0.55
 oscillator: sin
 envelope:
@@ -1915,7 +1915,7 @@ partials:
   - { freqMult: 2, amp: 0.150 }
 `
 
-const OXYGENE_PAD = `# oxygene-pad: slow-attack chord pad with VCF and LFO sweep.
+const OXYGENE_PAD = `# string-pad: slow-attack chord pad with VCF and LFO sweep.
 amp: 0.18
 oscillator: sin
 envelope:
@@ -1938,7 +1938,7 @@ lfo:
   waveform: sin
 `
 
-const OXYGENE_ARP = `# oxygene-arp: decaying bell-like arpeggio synth.
+const OXYGENE_ARP = `# bell-arp: decaying bell-like arpeggio with FM metallicity.
 amp: 0.60
 oscillator: sin
 envelope:
@@ -1962,15 +1962,15 @@ vcf:
 const OXYGENE = `title: Oxygène Pt. IV
 author: Jean-Michel Jarre (1976)
 stage:
-  bass:  1|1 0.0 oxygene-bass
-  sub:   1|1 0.6 oxygene-sub
-  pad:   1|1 1.5 oxygene-pad
-  arp:   1|1 1.0 oxygene-arp
-  kick:  1|1 0.0 sandstorm-kick
-  hihat: 1|1 0.1 sandstorm-hihat
-  snare: 1|1 0.3 sandstorm-snare
+  bass:  1|1 0.0 filtered-bass
+  sub:   1|1 0.6 sub-bass
+  pad:   1|1 1.5 string-pad
+  arp:   1|1 1.0 bell-arp
+  kick:  1|1 0.0 kick
+  hihat: 1|1 0.1 hihat
+  snare: 1|1 0.3 snare
 tuning_config: tones_euro
-room: oxygene-hall
+room: hall
 ---
 # m1 — bass + drums intro (Cm)
 _meta:
@@ -2181,28 +2181,28 @@ _meta:
 arp: false`
 
 const SEEDS: Seed[] = [
-  // Sandstorm — the active UI showcase (in-project on first run).
-  { name: 'sandstorm', ext: 'spls', body: SANDSTORM, inProject: true },
-  { name: 'sandstorm-lead',    ext: 'spli', body: SANDSTORM_LEAD,    inProject: true },
-  { name: 'sandstorm-arp',     ext: 'spli', body: SANDSTORM_ARP,     inProject: true },
-  { name: 'sandstorm-subbass', ext: 'spli', body: SANDSTORM_SUBBASS, inProject: true },
-  { name: 'sandstorm-bass',    ext: 'spli', body: SANDSTORM_BASS,    inProject: true },
-  { name: 'sandstorm-kick',    ext: 'spli', body: STARTER_KICK,      inProject: true },
-  { name: 'sandstorm-snare',   ext: 'spli', body: SANDSTORM_SNARE,   inProject: true },
-  { name: 'sandstorm-hihat',   ext: 'spli', body: SANDSTORM_HIHAT,   inProject: true },
-  { name: 'sandstorm-pad',     ext: 'spli', body: SANDSTORM_PAD,     inProject: true },
-  { name: 'sandstorm-harmony', ext: 'spli', body: SANDSTORM_HARMONY, inProject: true },
-  { name: 'sandstorm-atmos',  ext: 'spli', body: SANDSTORM_ATMOS,   inProject: true },
-  { name: 'sandstorm-plate',  ext: 'splr', body: SANDSTORM_PLATE_ROOM, inProject: true },
-  { name: 'tones_euro', ext: 'splt', body: STARTER_TUNING, inProject: true },
+  // Oxygène Pt. IV — Jarre (1976): default project on first run.
+  { name: 'oxygene',       ext: 'spls', body: OXYGENE,      inProject: true },
+  { name: 'hall',          ext: 'splr', body: OXYGENE_HALL, inProject: true },
+  { name: 'filtered-bass', ext: 'spli', body: OXYGENE_BASS, inProject: true },
+  { name: 'sub-bass',      ext: 'spli', body: OXYGENE_SUB,  inProject: true },
+  { name: 'string-pad',    ext: 'spli', body: OXYGENE_PAD,  inProject: true },
+  { name: 'bell-arp',      ext: 'spli', body: OXYGENE_ARP,  inProject: true },
+  { name: 'kick',          ext: 'spli', body: STARTER_KICK,      inProject: true },
+  { name: 'snare',         ext: 'spli', body: SANDSTORM_SNARE,   inProject: true },
+  { name: 'hihat',         ext: 'spli', body: SANDSTORM_HIHAT,   inProject: true },
+  { name: 'tones_euro',    ext: 'splt', body: STARTER_TUNING,    inProject: true },
 
-  // Oxygène Pt. IV — Jarre (1976): filtered synth bass, arpeggio, chord pad.
-  { name: 'oxygene',      ext: 'spls', body: OXYGENE,      inProject: false },
-  { name: 'oxygene-hall', ext: 'splr', body: OXYGENE_HALL, inProject: false },
-  { name: 'oxygene-bass', ext: 'spli', body: OXYGENE_BASS, inProject: false },
-  { name: 'oxygene-sub',  ext: 'spli', body: OXYGENE_SUB,  inProject: false },
-  { name: 'oxygene-pad',  ext: 'spli', body: OXYGENE_PAD,  inProject: false },
-  { name: 'oxygene-arp',  ext: 'spli', body: OXYGENE_ARP,  inProject: false },
+  // Sandstorm — in staging; load it to work on it.
+  { name: 'sandstorm',     ext: 'spls', body: SANDSTORM,         inProject: false },
+  { name: 'sandstorm-lead',    ext: 'spli', body: SANDSTORM_LEAD,    inProject: false },
+  { name: 'sandstorm-arp',     ext: 'spli', body: SANDSTORM_ARP,     inProject: false },
+  { name: 'sandstorm-subbass', ext: 'spli', body: SANDSTORM_SUBBASS, inProject: false },
+  { name: 'sandstorm-bass',    ext: 'spli', body: SANDSTORM_BASS,    inProject: false },
+  { name: 'sandstorm-pad',     ext: 'spli', body: SANDSTORM_PAD,     inProject: false },
+  { name: 'sandstorm-harmony', ext: 'spli', body: SANDSTORM_HARMONY, inProject: false },
+  { name: 'sandstorm-atmos',   ext: 'spli', body: SANDSTORM_ATMOS,   inProject: false },
+  { name: 'sandstorm-plate',   ext: 'splr', body: SANDSTORM_PLATE_ROOM, inProject: false },
 
   // Pachelbel — moved to staging; used by conformance suite, not loaded in UI.
   { name: 'pachelbel', ext: 'spls', body: PACHELBEL, inProject: false },

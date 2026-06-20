@@ -39,9 +39,9 @@ describe('conformance: starter Sandstorm', () => {
     const pad     = await loadInstrument('sandstorm-pad',     STARTER_SANDSTORM_PAD)
     const harmony = await loadInstrument('sandstorm-harmony', STARTER_SANDSTORM_HARMONY)
     const atmos   = await loadInstrument('sandstorm-atmos',   STARTER_SANDSTORM_ATMOS)
-    const kick    = await loadInstrument('sandstorm-kick',    STARTER_KICK)
-    const snare   = await loadInstrument('sandstorm-snare',   STARTER_SANDSTORM_SNARE)
-    const hihat   = await loadInstrument('sandstorm-hihat',   STARTER_SANDSTORM_HIHAT)
+    const kick    = await loadInstrument('kick',  STARTER_KICK)
+    const snare   = await loadInstrument('snare', STARTER_SANDSTORM_SNARE)
+    const hihat   = await loadInstrument('hihat', STARTER_SANDSTORM_HIHAT)
     return buildDistinctNotes(STARTER_SANDSTORM, {
       tuner: new Tuner(),
       instruments: new Map([

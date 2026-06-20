@@ -6,7 +6,7 @@ exports[`conformance: starter Sandstorm > matches the normalised distinct-notes 
   "notes": [
     {
       "freq": 32.7,
-      "instrument": "sandstorm-kick",
+      "instrument": "kick",
       "length": 0.1103,
       "occurrences": [
         {
@@ -1517,7 +1517,7 @@ exports[`conformance: starter Sandstorm > matches the normalised distinct-notes 
     },
     {
       "freq": 32.7,
-      "instrument": "sandstorm-kick",
+      "instrument": "kick",
       "length": 0.1103,
       "occurrences": [
         {
@@ -2278,7 +2278,7 @@ exports[`conformance: starter Sandstorm > matches the normalised distinct-notes 
     },
     {
       "freq": 32.7,
-      "instrument": "sandstorm-kick",
+      "instrument": "kick",
       "length": 0.1103,
       "occurrences": [
         {
@@ -17952,7 +17952,7 @@ exports[`conformance: starter Sandstorm > matches the normalised distinct-notes 
     },
     {
       "freq": 293.66,
-      "instrument": "sandstorm-snare",
+      "instrument": "snare",
       "length": 0.1103,
       "occurrences": [
         {
@@ -27240,7 +27240,7 @@ exports[`conformance: starter Sandstorm > matches the normalised distinct-notes 
     },
     {
       "freq": 1760,
-      "instrument": "sandstorm-hihat",
+      "instrument": "hihat",
       "length": 0.1103,
       "occurrences": [
         {
@@ -33201,7 +33201,7 @@ exports[`conformance: starter Sandstorm > matches the normalised distinct-notes 
     },
     {
       "freq": 1760,
-      "instrument": "sandstorm-hihat",
+      "instrument": "hihat",
       "length": 0.1103,
       "occurrences": [
         {
@@ -37674,7 +37674,7 @@ exports[`conformance: starter Sandstorm > matches the normalised distinct-notes 
     },
     {
       "freq": 1760,
-      "instrument": "sandstorm-hihat",
+      "instrument": "hihat",
       "length": 0.1103,
       "occurrences": [
         {
@@ -38427,7 +38427,7 @@ exports[`conformance: starter Sandstorm > matches the normalised distinct-notes 
     },
     {
       "freq": 1760,
-      "instrument": "sandstorm-hihat",
+      "instrument": "hihat",
       "length": 0.1103,
       "occurrences": [
         {
