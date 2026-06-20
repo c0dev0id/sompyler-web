@@ -86,3 +86,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Sandstorm score was in B minor with a staccato melody — wrong key and wrong texture. Corrected to E minor (the actual key) with 16th-note arpeggios: Em (B5-G5-E5-G5 × 4 per bar) and D major (A5-F#5-D5-F#5 × 4 per bar), chord pattern Em×3 + D repeating. Bass updated to quarter-note root pumping.
+
+### Added
+- Sandstorm now has a sixth voice: a polysynth pad (GM 91 approximation) built from stacked detuned saw partials. Three copies near freqMult 1.0 beat at ~2 Hz, producing the characteristic slowly-wavering chorus/ensemble pad sound. Plays Em and D chords in parallel underneath the lead arpeggio.
