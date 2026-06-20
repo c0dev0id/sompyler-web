@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Sandstorm harmony voice: GM 110 (Bagpipe) from MIDI Ch 7 approximated using 10 partials matched to GeneralUser GS SF2 spectral analysis. The bagpipe's unusual harmonic profile (H5 is the dominant overtone, H3 nearly equal, with an anomalous H8 peak) is captured in `sandstorm-harmony.spli`. The voice plays E3+G3 drone for Em bars and D3+A3 for D bars, adding mid-register harmonic support at −20 dBFS.
+
 ### Changed
 
 - Sandstorm mix balance: all six voices adjusted to per-role dBFS targets (lead −15, bass −16, kick −17, pad −18, snare −22, hihat −25). Amp values were derived by rendering each voice's full 2-bar repeating pattern — capturing note-overlap buildup from long releases — and scaling to reach the target. Adds `scripts/balance-mix.ts` for reproducing the measurement.
