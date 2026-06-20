@@ -2197,12 +2197,12 @@ const SEEDS: Seed[] = [
   { name: 'tones_euro', ext: 'splt', body: STARTER_TUNING, inProject: true },
 
   // Oxygène Pt. IV — Jarre (1976): filtered synth bass, arpeggio, chord pad.
-  { name: 'oxygene',      ext: 'spls', body: OXYGENE,      inProject: true },
-  { name: 'oxygene-hall', ext: 'splr', body: OXYGENE_HALL, inProject: true },
-  { name: 'oxygene-bass', ext: 'spli', body: OXYGENE_BASS, inProject: true },
-  { name: 'oxygene-sub',  ext: 'spli', body: OXYGENE_SUB,  inProject: true },
-  { name: 'oxygene-pad',  ext: 'spli', body: OXYGENE_PAD,  inProject: true },
-  { name: 'oxygene-arp',  ext: 'spli', body: OXYGENE_ARP,  inProject: true },
+  { name: 'oxygene',      ext: 'spls', body: OXYGENE,      inProject: false },
+  { name: 'oxygene-hall', ext: 'splr', body: OXYGENE_HALL, inProject: false },
+  { name: 'oxygene-bass', ext: 'spli', body: OXYGENE_BASS, inProject: false },
+  { name: 'oxygene-sub',  ext: 'spli', body: OXYGENE_SUB,  inProject: false },
+  { name: 'oxygene-pad',  ext: 'spli', body: OXYGENE_PAD,  inProject: false },
+  { name: 'oxygene-arp',  ext: 'spli', body: OXYGENE_ARP,  inProject: false },
 
   // Pachelbel — moved to staging; used by conformance suite, not loaded in UI.
   { name: 'pachelbel', ext: 'spls', body: PACHELBEL, inProject: false },
