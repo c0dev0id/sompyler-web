@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Oxygène Pt. IV (Jean-Michel Jarre, 1976) added as a seeded default song: 20-measure score at 121 BPM with four instruments (`oxygene-bass`, `oxygene-sub`, `oxygene-pad`, `oxygene-arp`) and drums reusing the sandstorm kit. The bass uses a filtered walking pattern with VCF sweep, the pad has a slow LFO filter modulation, and the arpeggio alternates every other measure to match the original's phrasing. All seeded `inProject: true`.
+
 - LFO (low-frequency oscillator) for instrument definitions. Add an `lfo:` block (or list for multiple) with `rate_hz`, `depth`, and `target` (`vcf` or `amp`). Routes a slow sine/square/saw/triangle oscillator to the VCF cutoff (depth in Hz) or the output amplitude (depth 0–1). Optional `delay_seconds` fades the LFO in gradually. Applied at render time per note alongside the VCF.
 
 - Sandstorm instruments updated with VCF and LFO: the lead now has a 4.8 kHz LPF to soften the square wave; the bass has a filter envelope that opens from 500 Hz to 4 kHz on attack for a plucky character; the pad has a 2.2 kHz LPF with a slow 0.35 Hz filter LFO for movement; the atmospheric layer has a 0.22 Hz amplitude LFO for extra breathing texture.

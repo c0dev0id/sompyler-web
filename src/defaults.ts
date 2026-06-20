@@ -14,6 +14,8 @@
  *   - `sandstorm.spls` — five-voice electronic showcase.
  *   - `sandstorm-lead/bass/kick/snare/hihat.spli` — synth + FM instruments.
  *   - `tones_euro.splt` — equal-temperament tuning with chr/mj/mn scales.
+ *   - `oxygene.spls` — Jean-Michel Jarre "Oxygène Pt. IV" (1976).
+ *   - `oxygene-bass/sub/pad/arp.spli` — filtered synth bass, sub-bass, chord pad, arpeggio.
  *
  * In staging (conformance, dev tools, examples):
  *   - `pachelbel.spls`, `violin.spli`, `cello.spli`, `pachelbel-hall.splr`
@@ -1871,6 +1873,299 @@ jitter: "1:0.12"
 deldiffs: "0.008|0.014"
 `
 
+const OXYGENE_BASS = `# oxygene-bass: filtered synth bass — Oxygène IV walking pattern.
+amp: 0.75
+oscillator: sin
+envelope:
+  attack: 0.008
+  release: 0.10
+  sustainLevel: 0.85
+partials:
+  - { freqMult: 1, amp: 1.000 }
+  - { freqMult: 2, amp: 0.550 }
+  - { freqMult: 3, amp: 0.350 }
+  - { freqMult: 4, amp: 0.200 }
+  - { freqMult: 5, amp: 0.120 }
+  - { freqMult: 6, amp: 0.070 }
+vcf:
+  cutoff_hz: 800
+  resonance: 0.45
+  env_amount: 600
+  env_attack: 0.015
+  env_release: 0.08
+`
+
+const OXYGENE_SUB = `# oxygene-sub: sine sub-bass — two-measure sustained root tones.
+amp: 0.55
+oscillator: sin
+envelope:
+  attack: 0.25
+  release: 0.60
+  sustainLevel: 0.92
+partials:
+  - { freqMult: 1, amp: 1.000 }
+  - { freqMult: 2, amp: 0.150 }
+`
+
+const OXYGENE_PAD = `# oxygene-pad: slow-attack chord pad with VCF and LFO sweep.
+amp: 0.18
+oscillator: sin
+envelope:
+  attack: 0.45
+  release: 1.40
+  sustainLevel: 0.85
+partials:
+  - { freqMult: 1, amp: 1.000 }
+  - { freqMult: 2, amp: 0.380 }
+  - { freqMult: 3, amp: 0.160 }
+  - { freqMult: 4, amp: 0.090 }
+vcf:
+  cutoff_hz: 2000
+  resonance: 0.15
+lfo:
+  rate_hz: 0.28
+  depth: 250
+  target: vcf
+  waveform: sin
+`
+
+const OXYGENE_ARP = `# oxygene-arp: decaying bell-like arpeggio synth.
+amp: 0.60
+oscillator: sin
+envelope:
+  attack: 0.006
+  release: 0.80
+  sustainLevel: 0.45
+partials:
+  - { freqMult: 1, amp: 1.000 }
+  - { freqMult: 2, amp: 0.420 }
+  - { freqMult: 3, amp: 0.180 }
+  - { freqMult: 4, amp: 0.090 }
+vcf:
+  cutoff_hz: 3500
+  resonance: 0.18
+`
+
+const OXYGENE = `title: Oxygène Pt. IV
+author: Jean-Michel Jarre (1976)
+stage:
+  bass:  1|1 0.0 oxygene-bass
+  sub:   1|1 0.3 oxygene-sub
+  pad:   1|1 1.5 oxygene-pad
+  arp:   1|1 0.2 oxygene-arp
+  kick:  1|1 0.0 sandstorm-kick
+  hihat: 1|1 0.1 sandstorm-hihat
+  snare: 1|1 0.2 sandstorm-snare
+tuning_config: tones_euro
+---
+# m1 — bass + drums intro (Cm)
+_meta:
+  ticks_per_minute: 363
+  stress_pattern: "2,0,0,1,0,0,1,0,0,1,0,0"
+  lower_stress_bound: 70
+  upper_stress_bound: 92
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+kick:
+  0,2,5,8: C1 1 damp=2
+hihat:
+  0+1*12: A6 1
+snare:
+  3,9: D4 1
+---
+# m2
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m3
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m4
+_meta:
+  repeat_unmentioned_voices: true
+---
+# m5 — sub-bass, pad, arpeggio enter (Cm)
+_meta:
+  repeat_unmentioned_voices: true
+sub:
+  0: C2 12
+pad: "G3_11; C4_11; D#4_11"
+arp:
+  0: C5 5
+  5: G4 1
+  6: D#4 2
+  8: G4 3
+  11: C4 7
+---
+# m6
+_meta:
+  repeat_unmentioned_voices: true
+arp: false
+---
+# m7
+_meta:
+  repeat_unmentioned_voices: true
+arp:
+  0: C5 5
+  5: G4 1
+  6: D#4 2
+  8: G4 3
+  11: C4 7
+---
+# m8
+_meta:
+  repeat_unmentioned_voices: true
+arp: false
+---
+# m9 — Gm chord section
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: A1 1
+  9: C2 2
+  11: A1 1
+sub:
+  0: G1 12
+pad: "A#3_11; D4_11"
+arp:
+  0: A#4 4
+  5: A4 1
+  6: G4 2
+  8: A4 2
+  11: D4 11
+---
+# m10
+_meta:
+  repeat_unmentioned_voices: true
+arp: false
+---
+# m11 — Cm returns
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+sub:
+  0: C2 12
+pad: "G3_11; C4_11; D#4_11"
+arp:
+  0: C5 5
+  5: G4 1
+  6: D#4 2
+  8: G4 3
+  11: C4 7
+---
+# m12
+_meta:
+  repeat_unmentioned_voices: true
+arp: false
+---
+# m13
+_meta:
+  repeat_unmentioned_voices: true
+arp:
+  0: C5 5
+  5: G4 1
+  6: D#4 2
+  8: G4 3
+  11: C4 7
+---
+# m14
+_meta:
+  repeat_unmentioned_voices: true
+arp: false
+---
+# m15 — Gm again
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: A1 1
+  9: C2 2
+  11: A1 1
+sub:
+  0: G1 12
+pad: "A#3_11; D4_11"
+arp:
+  0: A#4 4
+  5: A4 1
+  6: G4 2
+  8: A4 2
+  11: D4 11
+---
+# m16
+_meta:
+  repeat_unmentioned_voices: true
+arp: false
+---
+# m17 — Fm section
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+  11: C2 1
+sub:
+  0: F1 12
+pad: "A3_11; C4_11"
+arp:
+  0: A4 2
+  2: G4 1
+  3: F4 2
+  5: C4 7
+---
+# m18 — Fm arp continues (both measures active)
+_meta:
+  repeat_unmentioned_voices: true
+arp:
+  0: A4 2
+  2: G4 1
+  3: F4 2
+  5: C4 7
+---
+# m19 — Cm return
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+sub:
+  0: C2 12
+pad: "G3_11; C4_11; D#4_11"
+arp:
+  0: C5 5
+  5: G4 1
+  6: D#4 2
+  8: G4 3
+  11: C4 7
+---
+# m20 — final measure
+_meta:
+  repeat_unmentioned_voices: true
+arp: false`
+
 const SEEDS: Seed[] = [
   // Sandstorm — the active UI showcase (in-project on first run).
   { name: 'sandstorm', ext: 'spls', body: SANDSTORM, inProject: true },
@@ -1886,6 +2181,13 @@ const SEEDS: Seed[] = [
   { name: 'sandstorm-atmos',  ext: 'spli', body: SANDSTORM_ATMOS,   inProject: true },
   { name: 'sandstorm-plate',  ext: 'splr', body: SANDSTORM_PLATE_ROOM, inProject: true },
   { name: 'tones_euro', ext: 'splt', body: STARTER_TUNING, inProject: true },
+
+  // Oxygène Pt. IV — Jarre (1976): filtered synth bass, arpeggio, chord pad.
+  { name: 'oxygene',      ext: 'spls', body: OXYGENE,      inProject: true },
+  { name: 'oxygene-bass', ext: 'spli', body: OXYGENE_BASS, inProject: true },
+  { name: 'oxygene-sub',  ext: 'spli', body: OXYGENE_SUB,  inProject: true },
+  { name: 'oxygene-pad',  ext: 'spli', body: OXYGENE_PAD,  inProject: true },
+  { name: 'oxygene-arp',  ext: 'spli', body: OXYGENE_ARP,  inProject: true },
 
   // Pachelbel — moved to staging; used by conformance suite, not loaded in UI.
   { name: 'pachelbel', ext: 'spls', body: PACHELBEL, inProject: false },
