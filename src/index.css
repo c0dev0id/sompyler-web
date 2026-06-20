@@ -405,6 +405,21 @@ html, body, #root {
   cursor: pointer;
 }
 
+/* CodeMirror lint tooltips — override the browser-default white background so
+   the tooltip is readable on a dark theme. */
+.cm-tooltip {
+  background: #252525 !important;
+  border: 1px solid #444 !important;
+  color: #eee !important;
+}
+
+.cm-tooltip.cm-tooltip-lint {
+  background: #252525 !important;
+}
+
+.cm-diagnostic-warning { border-left-color: #d4b450; }
+.cm-diagnostic-error   { border-left-color: #ff6b6b; }
+
 /* Portrait phones / narrow viewports: single column, stacked top to
    bottom in user-preferred order — player, score, instruments,
    tuning/room. The staging rail stays on the left, narrower. */
