@@ -2,6 +2,7 @@ import { createEffect, createSignal, For, onCleanup, Show, type Component } from
 import { Editor } from '../editor/Editor'
 import {
   listProjectFiles,
+  listFiles,
   type FileExtension,
   type StoredFile,
 } from '../storage/files'
@@ -118,8 +119,8 @@ export const Layout: Component<LayoutProps> = (props) => {
   createEffect(() => {
     props.refreshSignal()
     void (async () => {
-      const all = await listProjectFiles('spli')
-      setInstrumentNames(new Set(all.map((f) => f.name)))
+      const all = await listFiles()
+      setInstrumentNames(new Set(all.filter((f) => f.ext === 'spli').map((f) => f.name)))
     })()
   })
 
