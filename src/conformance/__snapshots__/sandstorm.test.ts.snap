@@ -2,7 +2,7 @@
 
 exports[`conformance: starter Sandstorm > matches the normalised distinct-notes snapshot (self-regression) 1`] = `
 {
-  "distinctNoteCount": 24,
+  "distinctNoteCount": 30,
   "notes": [
     {
       "freq": 32.7,
@@ -759,6 +759,240 @@ exports[`conformance: starter Sandstorm > matches the normalised distinct-notes 
       ],
       "properties": {},
       "stress": 0.85,
+    },
+    {
+      "freq": 293.66,
+      "instrument": "sandstorm-pad",
+      "length": 1.7647,
+      "occurrences": [
+        {
+          "measure": "11",
+          "offsetSeconds": 19.4118,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "7",
+          "offsetSeconds": 12.3529,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 329.63,
+      "instrument": "sandstorm-pad",
+      "length": 1.7647,
+      "occurrences": [
+        {
+          "measure": "10",
+          "offsetSeconds": 17.6471,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "2",
+          "offsetSeconds": 3.5294,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "3",
+          "offsetSeconds": 5.2941,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "4",
+          "offsetSeconds": 7.0588,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "5",
+          "offsetSeconds": 8.8235,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "6",
+          "offsetSeconds": 10.5882,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "8",
+          "offsetSeconds": 14.1176,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "9",
+          "offsetSeconds": 15.8824,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 369.99,
+      "instrument": "sandstorm-pad",
+      "length": 1.7647,
+      "occurrences": [
+        {
+          "measure": "11",
+          "offsetSeconds": 19.4118,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "7",
+          "offsetSeconds": 12.3529,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 392,
+      "instrument": "sandstorm-pad",
+      "length": 1.7647,
+      "occurrences": [
+        {
+          "measure": "10",
+          "offsetSeconds": 17.6471,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "2",
+          "offsetSeconds": 3.5294,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "3",
+          "offsetSeconds": 5.2941,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "4",
+          "offsetSeconds": 7.0588,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "5",
+          "offsetSeconds": 8.8235,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "6",
+          "offsetSeconds": 10.5882,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "8",
+          "offsetSeconds": 14.1176,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "9",
+          "offsetSeconds": 15.8824,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 440,
+      "instrument": "sandstorm-pad",
+      "length": 1.7647,
+      "occurrences": [
+        {
+          "measure": "11",
+          "offsetSeconds": 19.4118,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "7",
+          "offsetSeconds": 12.3529,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 493.88,
+      "instrument": "sandstorm-pad",
+      "length": 1.7647,
+      "occurrences": [
+        {
+          "measure": "10",
+          "offsetSeconds": 17.6471,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "2",
+          "offsetSeconds": 3.5294,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "3",
+          "offsetSeconds": 5.2941,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "4",
+          "offsetSeconds": 7.0588,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "5",
+          "offsetSeconds": 8.8235,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "6",
+          "offsetSeconds": 10.5882,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "8",
+          "offsetSeconds": 14.1176,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+        {
+          "measure": "9",
+          "offsetSeconds": 15.8824,
+          "offsetTicks": 0,
+          "voice": "pad",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
     },
     {
       "freq": 587.33,
@@ -2807,13 +3041,14 @@ exports[`conformance: starter Sandstorm > matches the normalised distinct-notes 
       "stress": 1,
     },
   ],
-  "occurrenceCount": 430,
+  "occurrenceCount": 460,
   "totalLengthSeconds": 21.1765,
   "voices": [
     "bass",
     "hihat",
     "kick",
     "lead",
+    "pad",
     "snare",
   ],
 }

@@ -41,6 +41,7 @@ export {
   SANDSTORM_BASS as STARTER_SANDSTORM_BASS,
   SANDSTORM_SNARE as STARTER_SANDSTORM_SNARE,
   SANDSTORM_HIHAT as STARTER_SANDSTORM_HIHAT,
+  SANDSTORM_PAD as STARTER_SANDSTORM_PAD,
   // Pachelbel — kept in staging for the conformance suite
   PACHELBEL as STARTER_PACHELBEL,
   PACHELBEL_PIANO as STARTER_PACHELBEL_PIANO,
@@ -584,6 +585,7 @@ author: Darude (1999)
 stage:
   lead:  1|1 0.0 sandstorm-lead
   bass:  1|1 0.0 sandstorm-bass
+  pad:   1|1 0.0 sandstorm-pad
   kick:  1|1 0.0 sandstorm-kick
   snare: 1|1 0.0 sandstorm-snare
   hihat: 1|1 0.0 sandstorm-hihat
@@ -607,24 +609,27 @@ snare:
   4: D4 1
   12: D4 1
 ---
-# m2 — bass enters: Em root pumping
+# m2 — bass + pad enter: Em
 _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass:
   0,4,8,12: E2 4
+pad: "E4_15; G4_15; B4_15"
 ---
-# m3 — bass continues
+# m3 — Em continues
 _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass: true
+pad: true
 ---
 # m4 — MAIN DROP: lead arpeggio enters (Em: B5 G5 E5 G5 × 4)
 _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass: true
+pad: true
 lead: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
 ---
 # m5 — Em continues
@@ -632,6 +637,7 @@ _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass: true
+pad: true
 lead: true
 ---
 # m6 — Em continues
@@ -639,14 +645,16 @@ _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass: true
+pad: true
 lead: true
 ---
-# m7 — D bar: arpeggio shifts to D major (A5 F#5 D5 F#5 × 4)
+# m7 — D bar: arpeggio + pad shift to D major
 _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass:
   0,4,8,12: D2 4
+pad: "D4_15; F#4_15; A4_15"
 lead: "A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5"
 ---
 # m8 — Em returns (second loop)
@@ -655,6 +663,7 @@ _meta:
 snare: true
 bass:
   0,4,8,12: E2 4
+pad: "E4_15; G4_15; B4_15"
 lead: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
 ---
 # m9 — Em
@@ -662,6 +671,7 @@ _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass: true
+pad: true
 lead: true
 ---
 # m10 — Em
@@ -669,6 +679,7 @@ _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass: true
+pad: true
 lead: true
 ---
 # m11 — D close
@@ -677,6 +688,7 @@ _meta:
 snare: true
 bass:
   0,4,8,12: D2 4
+pad: "D4_15; F#4_15; A4_15"
 lead: "A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5"
 `
 
@@ -720,6 +732,25 @@ envelope:
   sustainLevel: 0.3
 `
 
+// Pad 3 (polysynth) approximation — GM program 91.
+// Three saw copies near freqMult 1.0 beat at ~2 Hz (at E4: 329.6 Hz × 0.006),
+// producing the characteristic slowly-wavering ensemble/chorus pad sound.
+// Octave copies reinforce the low-mid body.
+const SANDSTORM_PAD = `# sandstorm-pad: Pad 3 (polysynth) — stacked detuned saw oscillators.
+amp: 0.28
+oscillator: saw
+envelope:
+  attack: 0.35
+  release: 1.8
+  sustainLevel: 0.88
+partials:
+  - { freqMult: 1.000, amp: 1.0 }
+  - { freqMult: 1.006, amp: 0.75 }
+  - { freqMult: 0.994, amp: 0.75 }
+  - { freqMult: 2.000, amp: 0.45 }
+  - { freqMult: 2.005, amp: 0.30 }
+`
+
 const SEEDS: Seed[] = [
   // Sandstorm — the active UI showcase (in-project on first run).
   { name: 'sandstorm', ext: 'spls', body: SANDSTORM, inProject: true },
@@ -728,6 +759,7 @@ const SEEDS: Seed[] = [
   { name: 'sandstorm-kick', ext: 'spli', body: STARTER_KICK, inProject: true },
   { name: 'sandstorm-snare', ext: 'spli', body: SANDSTORM_SNARE, inProject: true },
   { name: 'sandstorm-hihat', ext: 'spli', body: SANDSTORM_HIHAT, inProject: true },
+  { name: 'sandstorm-pad',   ext: 'spli', body: SANDSTORM_PAD,   inProject: true },
   { name: 'tones_euro', ext: 'splt', body: STARTER_TUNING, inProject: true },
 
   // Pachelbel — moved to staging; used by conformance suite, not loaded in UI.
