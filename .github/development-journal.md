@@ -22,6 +22,20 @@
 - **Modal render dialog** during render (R11). Auto-closes on success.
 - **Solid signals as cross-domain state.** Session module hosts three signals (`editLock`, `renderStatus`, `currentBuffer`) in a plain `.ts` module; every domain imports them directly.
 - **Debug logging strategy** (R-Debug): structured logger with console + in-memory ring buffer + downloadable JSON dump. No IndexedDB sink in v1 to avoid write contention with the note cache.
+- **VCF and LFO are extensions beyond the RFC.** The Sompyler spec and Python reference have no filter support. `vcf:` and `lfo:` are additions specific to the web port. Applied to the summed output after master amp, before shape articles: VCF (biquad LPF, RBJ coefficients, 32-sample block updates) → LFO (amp target) → soft clip.
+- **Instrument preview uses envelope-aware duration.** The preview renders `attack + max(0.05, attack*0.5) + release` seconds at A4/stress=1, then scales to fill the canvas via peak-per-pixel (max abs value per pixel column). This makes short percussive sounds look like spikes without wasting canvas space on silence.
+- **liveBody Map in EditorPanel** prevents stale content on tab switch. Solid's `Show keyed` destroys/recreates the Editor on tab change; without the map the Editor would mount with the stale body from the files() snapshot. The map is updated synchronously on every keystroke; the instrument preview callback is debounced 1 s separately.
+
+## Synth pipeline (render order per note)
+
+1. Resolve sympartials (merge instrument defaults into per-partial specs)
+2. Apply railsback frequency deviation
+3. Per-partial: oscillator render → amplitude envelope → morph → timbre amp scale → accumulate into `out`
+4. Master amp × stress
+5. VCF biquad LPF (with filter envelope + LFO cutoff modulation if present)
+6. LFO amplitude modulation (if `target: amp`)
+7. Shape articles (multiplicative amplitude envelope from score)
+8. Soft clip to [−1, 1]
 
 ## Core features (v1 target)
 
@@ -32,6 +46,9 @@
 5. Import / export individual files or zip archives.
 6. Download the final mix as WAV.
 7. Install as a PWA; works offline.
+8. Instrument preview pane (player quadrant, bottom half): renders A4 through the active instrument, updates 1 s after edit or immediately on tab switch. Play button for audio audition.
+9. VCF: resonant LPF (`vcf:` block — `cutoff_hz`, `resonance`, `env_amount/attack/release`).
+10. LFO: slow modulation routed to VCF cutoff or amplitude (`lfo:` block — `rate_hz`, `depth`, `target`, `waveform`, `phase`, `delay_seconds`). Single mapping or list.
 
 ## Reference
 
