@@ -42,6 +42,7 @@ export {
   SANDSTORM_SNARE as STARTER_SANDSTORM_SNARE,
   SANDSTORM_HIHAT as STARTER_SANDSTORM_HIHAT,
   SANDSTORM_PAD as STARTER_SANDSTORM_PAD,
+  SANDSTORM_HARMONY as STARTER_SANDSTORM_HARMONY,
   // Pachelbel — kept in staging for the conformance suite
   PACHELBEL as STARTER_PACHELBEL,
   PACHELBEL_PIANO as STARTER_PACHELBEL_PIANO,
@@ -583,12 +584,13 @@ piano:
 const SANDSTORM = `title: Sandstorm
 author: Darude (1999)
 stage:
-  lead:  1|1 0.0 sandstorm-lead
-  bass:  1|1 0.0 sandstorm-bass
-  pad:   1|1 0.0 sandstorm-pad
-  kick:  1|1 0.0 sandstorm-kick
-  snare: 1|1 0.0 sandstorm-snare
-  hihat: 1|1 0.0 sandstorm-hihat
+  lead:    1|1 0.0 sandstorm-lead
+  bass:    1|1 0.0 sandstorm-bass
+  pad:     1|1 0.0 sandstorm-pad
+  harmony: 1|1 0.0 sandstorm-harmony
+  kick:    1|1 0.0 sandstorm-kick
+  snare:   1|1 0.0 sandstorm-snare
+  hihat:   1|1 0.0 sandstorm-hihat
 tuning_config: tones_euro
 ---
 # m0 — intro: kick + hi-hat only
@@ -609,13 +611,14 @@ snare:
   4: D4 1
   12: D4 1
 ---
-# m2 — bass + pad enter: Em
+# m2 — bass + pad + harmony enter: Em
 _meta:
   repeat_unmentioned_voices: true
 snare: true
 bass:
   0,4,8,12: E2 4
 pad: "E4_15; G4_15; B4_15"
+harmony: "E3_15; G3_15"
 ---
 # m3 — Em continues
 _meta:
@@ -655,6 +658,7 @@ snare: true
 bass:
   0,4,8,12: D2 4
 pad: "D4_15; F#4_15; A4_15"
+harmony: "D3_15; A3_15"
 lead: "A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5"
 ---
 # m8 — Em returns (second loop)
@@ -664,6 +668,7 @@ snare: true
 bass:
   0,4,8,12: E2 4
 pad: "E4_15; G4_15; B4_15"
+harmony: "E3_15; G3_15"
 lead: "B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5 B5 G5 E5 G5"
 ---
 # m9 — Em
@@ -689,6 +694,7 @@ snare: true
 bass:
   0,4,8,12: D2 4
 pad: "D4_15; F#4_15; A4_15"
+harmony: "D3_15; A3_15"
 lead: "A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5"
 `
 
@@ -762,15 +768,40 @@ partials:
   - { freqMult: 8, amp: 0.079 }
 `
 
+// Bagpipe (GM 110) analysis: reed-pipe harmonic series — H3 and H5 louder
+// than H1 (+0.5 dB, +1.1 dB), characteristic dual-resonance of conical bore.
+// H8 has an anomalous peak (−6.7 dBFS). Fast attack, ~1020 ms release.
+// MIDI Ch 7 plays D3/E3/G3/A3 — Em chord tones (E3+G3) and D (D3+A3).
+const SANDSTORM_HARMONY = `# sandstorm-harmony: Bagpipe (GM 110) — SF2-matched reed-pipe overtones.
+amp: 0.06
+oscillator: sin
+envelope:
+  attack: 0.005
+  release: 1.0
+  sustainLevel: 0.92
+partials:
+  - { freqMult: 1,  amp: 1.000 }
+  - { freqMult: 2,  amp: 0.791 }
+  - { freqMult: 3,  amp: 1.062 }
+  - { freqMult: 4,  amp: 0.741 }
+  - { freqMult: 5,  amp: 1.112 }
+  - { freqMult: 6,  amp: 0.337 }
+  - { freqMult: 7,  amp: 0.154 }
+  - { freqMult: 8,  amp: 0.513 }
+  - { freqMult: 9,  amp: 0.163 }
+  - { freqMult: 10, amp: 0.120 }
+`
+
 const SEEDS: Seed[] = [
   // Sandstorm — the active UI showcase (in-project on first run).
   { name: 'sandstorm', ext: 'spls', body: SANDSTORM, inProject: true },
-  { name: 'sandstorm-lead', ext: 'spli', body: SANDSTORM_LEAD, inProject: true },
-  { name: 'sandstorm-bass', ext: 'spli', body: SANDSTORM_BASS, inProject: true },
-  { name: 'sandstorm-kick', ext: 'spli', body: STARTER_KICK, inProject: true },
-  { name: 'sandstorm-snare', ext: 'spli', body: SANDSTORM_SNARE, inProject: true },
-  { name: 'sandstorm-hihat', ext: 'spli', body: SANDSTORM_HIHAT, inProject: true },
-  { name: 'sandstorm-pad',   ext: 'spli', body: SANDSTORM_PAD,   inProject: true },
+  { name: 'sandstorm-lead',    ext: 'spli', body: SANDSTORM_LEAD,    inProject: true },
+  { name: 'sandstorm-bass',    ext: 'spli', body: SANDSTORM_BASS,    inProject: true },
+  { name: 'sandstorm-kick',    ext: 'spli', body: STARTER_KICK,      inProject: true },
+  { name: 'sandstorm-snare',   ext: 'spli', body: SANDSTORM_SNARE,   inProject: true },
+  { name: 'sandstorm-hihat',   ext: 'spli', body: SANDSTORM_HIHAT,   inProject: true },
+  { name: 'sandstorm-pad',     ext: 'spli', body: SANDSTORM_PAD,     inProject: true },
+  { name: 'sandstorm-harmony', ext: 'spli', body: SANDSTORM_HARMONY, inProject: true },
   { name: 'tones_euro', ext: 'splt', body: STARTER_TUNING, inProject: true },
 
   // Pachelbel — moved to staging; used by conformance suite, not loaded in UI.

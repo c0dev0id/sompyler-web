@@ -14,6 +14,7 @@ import {
   STARTER_SANDSTORM_LEAD,
   STARTER_SANDSTORM_BASS,
   STARTER_SANDSTORM_PAD,
+  STARTER_SANDSTORM_HARMONY,
   STARTER_SANDSTORM_SNARE,
   STARTER_SANDSTORM_HIHAT,
   STARTER_KICK,
@@ -32,19 +33,21 @@ const TOTAL_TICKS = BARS * TICKS_PER_BAR
 
 // Target pattern-RMS by mix role (linear).
 // Derived from 2-bar measurement + desired mix balance for trance:
-//   lead  -15 dBFS  melodic focal point
-//   bass  -16 dBFS  solid low foundation (slightly behind lead)
-//   kick  -17 dBFS  punchy transient (peaks will be much higher than RMS)
-//   snare -22 dBFS  sparse accent (only 2 hits/bar)
-//   hihat -25 dBFS  texture layer
-//   pad   -18 dBFS  background chord wash
+//   lead    -15 dBFS  melodic focal point
+//   bass    -16 dBFS  solid low foundation (slightly behind lead)
+//   kick    -17 dBFS  punchy transient (peaks will be much higher than RMS)
+//   snare   -22 dBFS  sparse accent (only 2 hits/bar)
+//   hihat   -25 dBFS  texture layer
+//   pad     -18 dBFS  background chord wash
+//   harmony -20 dBFS  mid-register drone support (below pad)
 const TARGET: Record<string, number> = {
-  lead:  0.178,   // -15 dBFS
-  bass:  0.158,   // -16 dBFS
-  kick:  0.141,   // -17 dBFS
-  snare: 0.079,   // -22 dBFS
-  hihat: 0.056,   // -25 dBFS
-  pad:   0.126,   // -18 dBFS
+  lead:    0.178,   // -15 dBFS
+  bass:    0.158,   // -16 dBFS
+  kick:    0.141,   // -17 dBFS
+  snare:   0.079,   // -22 dBFS
+  hihat:   0.056,   // -25 dBFS
+  pad:     0.126,   // -18 dBFS
+  harmony: 0.100,   // -20 dBFS
 }
 
 interface VoicePattern {
@@ -80,6 +83,15 @@ const VOICES: VoicePattern[] = [
     notes: [
       [0, 64, 16], [0, 67, 16], [0, 71, 16],
       [16, 64, 16], [16, 67, 16], [16, 71, 16],
+    ],
+  },
+  {
+    name: 'harmony',
+    yaml: STARTER_SANDSTORM_HARMONY,
+    // Whole-bar Em chord drone: E3 + G3 simultaneously, 2 bars
+    notes: [
+      [0, 52, 16], [0, 55, 16],
+      [16, 52, 16], [16, 55, 16],
     ],
   },
   {

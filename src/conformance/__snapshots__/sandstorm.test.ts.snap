@@ -2,7 +2,7 @@
 
 exports[`conformance: starter Sandstorm > matches the normalised distinct-notes snapshot (self-regression) 1`] = `
 {
-  "distinctNoteCount": 30,
+  "distinctNoteCount": 34,
   "notes": [
     {
       "freq": 32.7,
@@ -614,6 +614,162 @@ exports[`conformance: starter Sandstorm > matches the normalised distinct-notes 
           "offsetSeconds": 15.8824,
           "offsetTicks": 0,
           "voice": "bass",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 146.83,
+      "instrument": "sandstorm-harmony",
+      "length": 1.7647,
+      "occurrences": [
+        {
+          "measure": "11",
+          "offsetSeconds": 19.4118,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "7",
+          "offsetSeconds": 12.3529,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 164.81,
+      "instrument": "sandstorm-harmony",
+      "length": 1.7647,
+      "occurrences": [
+        {
+          "measure": "10",
+          "offsetSeconds": 17.6471,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "2",
+          "offsetSeconds": 3.5294,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "3",
+          "offsetSeconds": 5.2941,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "4",
+          "offsetSeconds": 7.0588,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "5",
+          "offsetSeconds": 8.8235,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "6",
+          "offsetSeconds": 10.5882,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "8",
+          "offsetSeconds": 14.1176,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "9",
+          "offsetSeconds": 15.8824,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 196,
+      "instrument": "sandstorm-harmony",
+      "length": 1.7647,
+      "occurrences": [
+        {
+          "measure": "10",
+          "offsetSeconds": 17.6471,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "2",
+          "offsetSeconds": 3.5294,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "3",
+          "offsetSeconds": 5.2941,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "4",
+          "offsetSeconds": 7.0588,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "5",
+          "offsetSeconds": 8.8235,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "6",
+          "offsetSeconds": 10.5882,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "8",
+          "offsetSeconds": 14.1176,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "9",
+          "offsetSeconds": 15.8824,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+      ],
+      "properties": {},
+      "stress": 1,
+    },
+    {
+      "freq": 220,
+      "instrument": "sandstorm-harmony",
+      "length": 1.7647,
+      "occurrences": [
+        {
+          "measure": "11",
+          "offsetSeconds": 19.4118,
+          "offsetTicks": 0,
+          "voice": "harmony",
+        },
+        {
+          "measure": "7",
+          "offsetSeconds": 12.3529,
+          "offsetTicks": 0,
+          "voice": "harmony",
         },
       ],
       "properties": {},
@@ -3041,10 +3197,11 @@ exports[`conformance: starter Sandstorm > matches the normalised distinct-notes 
       "stress": 1,
     },
   ],
-  "occurrenceCount": 460,
+  "occurrenceCount": 480,
   "totalLengthSeconds": 21.1765,
   "voices": [
     "bass",
+    "harmony",
     "hihat",
     "kick",
     "lead",

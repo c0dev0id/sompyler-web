@@ -8,6 +8,7 @@ import {
   STARTER_SANDSTORM_LEAD,
   STARTER_SANDSTORM_BASS,
   STARTER_SANDSTORM_PAD,
+  STARTER_SANDSTORM_HARMONY,
   STARTER_SANDSTORM_SNARE,
   STARTER_SANDSTORM_HIHAT,
   STARTER_KICK,
@@ -16,7 +17,7 @@ import { normalizePlan } from './_normalize'
 
 /**
  * Conformance for the Sandstorm starter showcase. Anchors verify the
- * five-voice structure and total duration; the snapshot guards against
+ * seven-voice structure and total duration; the snapshot guards against
  * drift in the score walker, cache key, or inheritance logic.
  *
  * Refresh with `vitest -u` after any intentional score change.
@@ -28,21 +29,23 @@ beforeEach(async () => {
 
 describe('conformance: starter Sandstorm', () => {
   async function buildPlan() {
-    const lead  = await loadInstrument('sandstorm-lead',  STARTER_SANDSTORM_LEAD)
-    const bass  = await loadInstrument('sandstorm-bass',  STARTER_SANDSTORM_BASS)
-    const pad   = await loadInstrument('sandstorm-pad',   STARTER_SANDSTORM_PAD)
-    const kick  = await loadInstrument('sandstorm-kick',  STARTER_KICK)
-    const snare = await loadInstrument('sandstorm-snare', STARTER_SANDSTORM_SNARE)
-    const hihat = await loadInstrument('sandstorm-hihat', STARTER_SANDSTORM_HIHAT)
+    const lead    = await loadInstrument('sandstorm-lead',    STARTER_SANDSTORM_LEAD)
+    const bass    = await loadInstrument('sandstorm-bass',    STARTER_SANDSTORM_BASS)
+    const pad     = await loadInstrument('sandstorm-pad',     STARTER_SANDSTORM_PAD)
+    const harmony = await loadInstrument('sandstorm-harmony', STARTER_SANDSTORM_HARMONY)
+    const kick    = await loadInstrument('sandstorm-kick',    STARTER_KICK)
+    const snare   = await loadInstrument('sandstorm-snare',   STARTER_SANDSTORM_SNARE)
+    const hihat   = await loadInstrument('sandstorm-hihat',   STARTER_SANDSTORM_HIHAT)
     return buildDistinctNotes(STARTER_SANDSTORM, {
       tuner: new Tuner(),
       instruments: new Map([
-        [lead.name,  lead],
-        [bass.name,  bass],
-        [pad.name,   pad],
-        [kick.name,  kick],
-        [snare.name, snare],
-        [hihat.name, hihat],
+        [lead.name,    lead],
+        [bass.name,    bass],
+        [pad.name,     pad],
+        [harmony.name, harmony],
+        [kick.name,    kick],
+        [snare.name,   snare],
+        [hihat.name,   hihat],
       ]),
     })
   }
@@ -50,11 +53,12 @@ describe('conformance: starter Sandstorm', () => {
   it('matches hand-verified anchors', async () => {
     const plan = await buildPlan()
 
-    // Six voices as declared in the stage block.
-    expect(plan.voices.size).toBe(6)
+    // Seven voices as declared in the stage block.
+    expect(plan.voices.size).toBe(7)
     expect(plan.voices.has('lead')).toBe(true)
     expect(plan.voices.has('bass')).toBe(true)
     expect(plan.voices.has('pad')).toBe(true)
+    expect(plan.voices.has('harmony')).toBe(true)
     expect(plan.voices.has('kick')).toBe(true)
     expect(plan.voices.has('snare')).toBe(true)
     expect(plan.voices.has('hihat')).toBe(true)
