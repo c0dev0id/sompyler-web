@@ -696,22 +696,30 @@ lead: "A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5"
 // Sandstorm instruments.
 // =====================================================================
 
-const SANDSTORM_LEAD = `# sandstorm-lead: bright sawtooth synth, short staccato release.
+// Lead 8 (bass+lead, GM 88) analysis: nearly pure sine (H2 = −26 dB,
+// H3 = −38 dB). Release ~1070 ms. Matched to GeneralUser GS SF2 sample.
+const SANDSTORM_LEAD = `# sandstorm-lead: Lead 8 (bass+lead) — near-pure sine, long trance release.
 amp: 0.35
-oscillator: saw
+oscillator: sin
 envelope:
   attack: 0.005
-  release: 0.06
-  sustainLevel: 0.92
+  release: 1.0
+  sustainLevel: 0.95
+partials:
+  - { freqMult: 1, amp: 1.000 }
+  - { freqMult: 2, amp: 0.049 }
+  - { freqMult: 3, amp: 0.012 }
 `
 
-const SANDSTORM_BASS = `# sandstorm-bass: punchy square-wave synth bass.
+// Lead 1 (square, GM 81) analysis: odd harmonics match square perfectly
+// (H3 = −9 dB, H5 = −14 dB, H7 = −16 dB). Release ~1010 ms.
+const SANDSTORM_BASS = `# sandstorm-bass: Lead 1 (square) — odd-only harmonics, long trance release.
 amp: 0.5
 oscillator: square
 envelope:
-  attack: 0.008
-  release: 0.12
-  sustainLevel: 0.85
+  attack: 0.005
+  release: 1.0
+  sustainLevel: 0.90
 `
 
 const SANDSTORM_SNARE = `# sandstorm-snare: noise burst, sharp transient.
@@ -732,23 +740,26 @@ envelope:
   sustainLevel: 0.3
 `
 
-// Pad 3 (polysynth) approximation — GM program 91.
-// Three saw copies near freqMult 1.0 beat at ~2 Hz (at E4: 329.6 Hz × 0.006),
-// producing the characteristic slowly-wavering ensemble/chorus pad sound.
-// Octave copies reinforce the low-mid body.
-const SANDSTORM_PAD = `# sandstorm-pad: Pad 3 (polysynth) — stacked detuned saw oscillators.
+// Pad 3 (polysynth, GM 91) analysis: rich harmonic series, all partials
+// present (H2 = −6 dB, H3 = −13 dB, H4 = −16 dB, H6 = −18 dB oddly strong).
+// Release ~1170 ms. Slow attack kept for pad character (SF2 detector unreliable
+// for gradual onsets). Partials from GeneralUser GS SF2 spectral analysis.
+const SANDSTORM_PAD = `# sandstorm-pad: Pad 3 (polysynth) — SF2-matched harmonic series, slow attack.
 amp: 0.28
-oscillator: saw
+oscillator: sin
 envelope:
   attack: 0.35
-  release: 1.8
+  release: 1.2
   sustainLevel: 0.88
 partials:
-  - { freqMult: 1.000, amp: 1.0 }
-  - { freqMult: 1.006, amp: 0.75 }
-  - { freqMult: 0.994, amp: 0.75 }
-  - { freqMult: 2.000, amp: 0.45 }
-  - { freqMult: 2.005, amp: 0.30 }
+  - { freqMult: 1, amp: 1.000 }
+  - { freqMult: 2, amp: 0.485 }
+  - { freqMult: 3, amp: 0.213 }
+  - { freqMult: 4, amp: 0.165 }
+  - { freqMult: 5, amp: 0.110 }
+  - { freqMult: 6, amp: 0.133 }
+  - { freqMult: 7, amp: 0.073 }
+  - { freqMult: 8, amp: 0.079 }
 `
 
 const SEEDS: Seed[] = [
