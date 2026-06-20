@@ -502,7 +502,7 @@ partials:
 // Shape "100:1;0.1,0;1,0": depth decays 1→0 over the first 10% then stays 0.
 export const STARTER_KICK = `# dev/kick.spli — FM kick drum with pitch sweep.
 # Score at C1 (32.7 Hz). Carrier sweeps C3 → C1 in first ~50 ms of a 500 ms note.
-amp: 0.85
+amp: 0.73
 oscillator: sin
 envelope:
   attack: 0.002
@@ -699,7 +699,7 @@ lead: "A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5 A5 F#5 D5 F#5"
 // Lead 8 (bass+lead, GM 88) analysis: nearly pure sine (H2 = −26 dB,
 // H3 = −38 dB). Release ~1070 ms. Matched to GeneralUser GS SF2 sample.
 const SANDSTORM_LEAD = `# sandstorm-lead: Lead 8 (bass+lead) — near-pure sine, long trance release.
-amp: 0.35
+amp: 0.45
 oscillator: sin
 envelope:
   attack: 0.005
@@ -714,7 +714,7 @@ partials:
 // Lead 1 (square, GM 81) analysis: odd harmonics match square perfectly
 // (H3 = −9 dB, H5 = −14 dB, H7 = −16 dB). Release ~1010 ms.
 const SANDSTORM_BASS = `# sandstorm-bass: Lead 1 (square) — odd-only harmonics, long trance release.
-amp: 0.5
+amp: 0.30
 oscillator: square
 envelope:
   attack: 0.005
@@ -723,7 +723,7 @@ envelope:
 `
 
 const SANDSTORM_SNARE = `# sandstorm-snare: noise burst, sharp transient.
-amp: 0.7
+amp: 0.95
 oscillator: noise
 envelope:
   attack: 0.001
@@ -732,7 +732,7 @@ envelope:
 `
 
 const SANDSTORM_HIHAT = `# sandstorm-hihat: very short noise burst hi-hat.
-amp: 0.25
+amp: 0.36
 oscillator: noise
 envelope:
   attack: 0.001
@@ -745,7 +745,7 @@ envelope:
 // Release ~1170 ms. Slow attack kept for pad character (SF2 detector unreliable
 // for gradual onsets). Partials from GeneralUser GS SF2 spectral analysis.
 const SANDSTORM_PAD = `# sandstorm-pad: Pad 3 (polysynth) — SF2-matched harmonic series, slow attack.
-amp: 0.28
+amp: 0.14
 oscillator: sin
 envelope:
   attack: 0.35
