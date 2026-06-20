@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Instrument preview waveform in the player pane: the bottom half of the top-left quadrant now shows a static A4 waveform rendered through the currently active instrument tab. The preview updates automatically one second after each edit and switches immediately when changing instrument tabs. No manual button required.
+
 - Sandstorm atmospheric wave voice (`sandstorm-atmos.spli`): five symmetrically detuned unison partials (±0.002 and ±0.005 freqMult offsets) create slow amplitude beating — the ±0.002 pair beats at ~0.33 Hz on E3 (~3 s cycle), the ±0.005 pair at ~0.82 Hz (~1.2 s), layered for an organic wave texture. A quiet noise partial adds breath. The envelope (attack=0.3 s, release=1.2 s) keeps the full swell within a single measure, producing one rise-hold-fall sweep per measure that chains seamlessly between repetitions. Plays E3 (Em bars) and D3 (D bars) as a whole-measure note, sitting furthest back in the stage (distance 2.5) for maximum reverb wash.
 
 - Sandstorm room and stereo stage: `sandstorm-plate.splr` — a tight plate reverb (4 taps over 4 s, audible tail ~1.5 s) with jitter (±12% per-tap amplitude variation to smooth comb artefacts from sparse taps) and deldiffs (L +8 ms, R +14 ms per tap for stereo width). The score stage is updated with voice-specific positions: drums dry at centre, lead at distance 0.6, snare at 0.3, harmony slightly left (1.2|0.8) at distance 1.0, pad furthest back (distance 1.8) for maximum reverb wash, hihat slightly right (0.9|1.1) and dry.
