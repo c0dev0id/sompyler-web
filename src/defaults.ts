@@ -1890,7 +1890,7 @@ partials:
 vcf:
   cutoff_hz: 800
   resonance: 0.45
-  env_amount: 600
+  env_amount: 1400
   env_attack: 0.015
   env_release: 0.08
 `
@@ -1919,6 +1919,7 @@ partials:
   - { freqMult: 2, amp: 0.380 }
   - { freqMult: 3, amp: 0.160 }
   - { freqMult: 4, amp: 0.090 }
+spread: [3, -8, 6, -4]
 vcf:
   cutoff_hz: 2000
   resonance: 0.15
@@ -1941,6 +1942,10 @@ partials:
   - { freqMult: 2, amp: 0.420 }
   - { freqMult: 3, amp: 0.180 }
   - { freqMult: 4, amp: 0.090 }
+fm:
+  freq_hz: 2.01
+  dynamic: true
+  depth: 0.4
 vcf:
   cutoff_hz: 3500
   resonance: 0.18
