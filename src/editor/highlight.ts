@@ -5,7 +5,8 @@ import type { FileExtension } from '../storage/files'
 // ── Decoration marks ────────────────────────────────────────────────────────
 
 const pitchMark    = Decoration.mark({ class: 'cm-pitch' })
-const shapeMark    = Decoration.mark({ class: 'cm-shape' })
+const shapeNumMark = Decoration.mark({ class: 'cm-shape-num' })
+const shapeSepMark = Decoration.mark({ class: 'cm-shape-sep' })
 const waveformMark = Decoration.mark({ class: 'cm-waveform' })
 const tickMark     = Decoration.mark({ class: 'cm-tick' })
 
@@ -61,7 +62,17 @@ function buildDecorations(view: EditorView, ext: FileExtension): DecorationSet {
         }
         SHAPE_RX.lastIndex = 0
         while ((m = SHAPE_RX.exec(text)) !== null) {
-          matches.push({ pos: base + m.index, end: base + m.index + m[0].length, mark: shapeMark })
+          const start = base + m.index
+          const src = m[0]
+          const numRx = /\d+(?:\.\d+)?/g
+          const sepRx = /[:;,]/g
+          let nm: RegExpExecArray | null
+          numRx.lastIndex = 0
+          while ((nm = numRx.exec(src)) !== null)
+            matches.push({ pos: start + nm.index, end: start + nm.index + nm[0].length, mark: shapeNumMark })
+          sepRx.lastIndex = 0
+          while ((nm = sepRx.exec(src)) !== null)
+            matches.push({ pos: start + nm.index, end: start + nm.index + 1, mark: shapeSepMark })
         }
       }
 
