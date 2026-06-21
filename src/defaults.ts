@@ -1896,22 +1896,31 @@ vcf:
   env_release: 0.12
 `
 
-const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM109). Short attack, fast decay, metallic tines.
-# Partials from FFT of FluidR3 Kalimba G4. H3 dominant; H13-H14 cluster
-# gives the bright metallic "ting". Harmonic series, not inharmonic.
+const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM109). FM synthesis for the metallic "ting" transient.
+#
+# Analysis: FluidR3 Kalimba G4 attack FFT (392 Hz correct fundamental):
+#   H1=0.52 at 1.020x, H3=0.58 at 3.146x, H9=1.00 (dominant) at 8.929x.
+# The ting (H9, ~3500 Hz) decays in ~30ms; body (H1, H3) sustains.
+#
+# FM approach: modulator at 8.929x carrier with depth_env decaying to zero
+# in the first 5% of the note (≈25 ms at typical note length). Onset creates
+# sidebands matching the measured ting; after decay the spectrum collapses to
+# near-sine body. This is the DX7 kalimba synthesis principle.
 amp: 0.50
 oscillator: sin
 envelope:
   attack: 0.002
-  release: 0.40
+  release: 0.35
   sustainLevel: 0.15
 partials:
-  - { freqMult: 1, amp: 0.515 }
-  - { freqMult: 3, amp: 1.000 }
-  - { freqMult: 4, amp: 0.291 }
-  - { freqMult: 5, amp: 0.141 }
-  - { freqMult: 13, amp: 0.291 }
-  - { freqMult: 14, amp: 0.291 }
+  - freqMult: 1.020
+    amp: 0.55
+    fm:
+      dynamic: true
+      freq_hz: 8.929
+      depth: 3.0
+      depth_env: "1:1;0.05,0;1,0"
+  - { freqMult: 3.146, amp: 0.45 }
 `
 
 const OXYGENE_SYNBRASS = `# synbrass: SynBrass 2 (GM64). Bright, slightly buzzy, medium attack.
