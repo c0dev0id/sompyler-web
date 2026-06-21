@@ -6,22 +6,17 @@
  * and square-wave synth voices, repeat_unmentioned_voices inheritance,
  * and the chain voice syntax. All five instruments are seeded in-project.
  *
- * Pachelbel Canon in D is preserved in staging (inProject: false) because
- * the conformance suite uses it as a regression fixture. It is NOT loaded
- * into the user's project on first run.
- *
  * In-project (starter song works out of the box):
- *   - `sandstorm.spls` — five-voice electronic showcase.
- *   - `sandstorm-lead/bass/kick/snare/hihat.spli` — synth + FM instruments.
- *   - `tones_euro.splt` — equal-temperament tuning with chr/mj/mn scales.
  *   - `oxygene.spls` — Jean-Michel Jarre "Oxygène Pt. IV" (1976), full 117-bar MIDI transcription.
  *   - `filtered-bass/kalimba/synbrass/synstrings/string-ensemble/bowed-pad/oxygene-melody/tambourine/seashore.spli`
+ *   - `tones_euro.splt` — equal-temperament tuning with chr/mj/mn scales.
  *
- * In staging (conformance, dev tools, examples):
- *   - `pachelbel.spls`, `violin.spli`, `cello.spli`, `pachelbel-hall.splr`
- *   - `pachelbel-piano.spls`, `piano.spli`
+ * In staging (dev tools, examples):
  *   - `dev/piano.spli`, `dev/flute.spli`, `dev/kick.spli`
  *   - `free-field.splr`, `alle_meine_entchen.spls`
+ *
+ * Sandstorm and Pachelbel constants are retained for the conformance suite
+ * but no longer seeded into staging.
  */
 
 import { getFile, putFile, type FileExtension } from './storage/files'
@@ -5099,25 +5094,6 @@ const SEEDS: Seed[] = [
   { name: 'seashore',        ext: 'spli', body: OXYGENE_SEASHORE,   inProject: true },
   { name: 'tones_euro',      ext: 'splt', body: STARTER_TUNING,     inProject: true },
   { name: 'oxygene-plate',  ext: 'splr', body: OXYGENE_PLATE_ROOM, inProject: true },
-
-  // Sandstorm — in staging; load it to work on it.
-  { name: 'sandstorm',     ext: 'spls', body: SANDSTORM,         inProject: false },
-  { name: 'sandstorm-lead',    ext: 'spli', body: SANDSTORM_LEAD,    inProject: false },
-  { name: 'sandstorm-arp',     ext: 'spli', body: SANDSTORM_ARP,     inProject: false },
-  { name: 'sandstorm-subbass', ext: 'spli', body: SANDSTORM_SUBBASS, inProject: false },
-  { name: 'sandstorm-bass',    ext: 'spli', body: SANDSTORM_BASS,    inProject: false },
-  { name: 'sandstorm-pad',     ext: 'spli', body: SANDSTORM_PAD,     inProject: false },
-  { name: 'sandstorm-harmony', ext: 'spli', body: SANDSTORM_HARMONY, inProject: false },
-  { name: 'sandstorm-atmos',   ext: 'spli', body: SANDSTORM_ATMOS,   inProject: false },
-  { name: 'sandstorm-plate',   ext: 'splr', body: SANDSTORM_PLATE_ROOM, inProject: false },
-
-  // Pachelbel — moved to staging; used by conformance suite, not loaded in UI.
-  { name: 'pachelbel', ext: 'spls', body: PACHELBEL, inProject: false },
-  { name: 'violin', ext: 'spli', body: VIOLIN, inProject: false },
-  { name: 'cello', ext: 'spli', body: CELLO, inProject: false },
-  { name: 'pachelbel-hall', ext: 'splr', body: PACHELBEL_HALL, inProject: false },
-  { name: 'pachelbel-piano', ext: 'spls', body: PACHELBEL_PIANO, inProject: false },
-  { name: 'piano', ext: 'spli', body: PIANO, inProject: false },
 
   // Dev instruments and legacy examples.
   { name: 'dev/piano', ext: 'spli', body: STARTER_PIANO, inProject: false },
