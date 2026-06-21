@@ -155,9 +155,6 @@ export const Layout: Component<LayoutProps> = (props) => {
   const [instrumentNames, setInstrumentNames] = createSignal<Set<string>>(new Set())
   const [previewName, setPreviewName] = createSignal<string | null>(null)
   const [previewBody, setPreviewBody] = createSignal<string | null>(null)
-  const [previewHz, setPreviewHz] = createSignal(440)
-  let previewHzRun = 0
-
   createEffect(() => {
     props.refreshSignal()
     void (async () => {
@@ -166,18 +163,13 @@ export const Layout: Component<LayoutProps> = (props) => {
     })()
   })
 
-  createEffect(() => {
+  const resolveHz = async (): Promise<number> => {
     const name = previewName()
-    props.refreshSignal()
-    const run = ++previewHzRun
-    if (!name) { setPreviewHz(440); return }
-    void (async () => {
-      const files = await listProjectFiles()
-      if (run !== previewHzRun) return
-      const score = files.find((f) => f.ext === 'spls')
-      setPreviewHz(score ? (firstInstrumentPitchHz(score.body, name) ?? 440) : 440)
-    })()
-  })
+    if (!name) return 440
+    const files = await listProjectFiles()
+    const score = files.find((f) => f.ext === 'spls')
+    return score ? (firstInstrumentPitchHz(score.body, name) ?? 440) : 440
+  }
 
   // Bridge the imperative onStateChange listener into a real Solid signal so
   // every JSX expression that reads it reacts to transport changes (not just
@@ -255,7 +247,7 @@ export const Layout: Component<LayoutProps> = (props) => {
             isPlaying={() => playerState() === 'playing'}
           />
         </div>
-        <InstrumentPreview name={previewName} body={previewBody} previewHz={previewHz} />
+        <InstrumentPreview name={previewName} body={previewBody} resolveHz={resolveHz} />
       </section>
 
       {/* Top-right: instruments */}

@@ -8,7 +8,8 @@ import { DEFAULT_SAMPLE_RATE } from '../synth/constants'
 interface InstrumentPreviewProps {
   name: () => string | null
   body: () => string | null
-  previewHz: () => number
+  /** Called at play-time to get the current pitch from the score. */
+  resolveHz: () => Promise<number>
 }
 
 export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
@@ -16,6 +17,8 @@ export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
   let labelEl: HTMLSpanElement | undefined
   let currentRun = 0
   let lastSamples: Float32Array | null = null
+  let lastHz = 440
+  let lastSpec: ReturnType<typeof compileInstrument> | null = null
   let audioCtx: AudioContext | null = null
   let currentSource: AudioBufferSourceNode | null = null
 
@@ -31,13 +34,12 @@ export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
     setIsPlaying(false)
   }
 
-  function play(): void {
-    if (!lastSamples) return
+  function playBuffer(samples: Float32Array): void {
     stop()
     if (!audioCtx || audioCtx.state === 'closed') audioCtx = new AudioContext()
     const ctx = audioCtx
-    const buf = ctx.createBuffer(1, lastSamples.length, DEFAULT_SAMPLE_RATE)
-    buf.copyToChannel(new Float32Array(lastSamples), 0)
+    const buf = ctx.createBuffer(1, samples.length, DEFAULT_SAMPLE_RATE)
+    buf.copyToChannel(new Float32Array(samples), 0)
     const src = ctx.createBufferSource()
     src.buffer = buf
     src.connect(ctx.destination)
@@ -45,6 +47,27 @@ export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
     src.start()
     currentSource = src
     setIsPlaying(true)
+  }
+
+  async function play(): Promise<void> {
+    const name = props.name()
+    if (!name || !lastSpec) return
+
+    const hz = await props.resolveHz()
+
+    // Re-render if the pitch changed since the last render.
+    if (Math.abs(hz - lastHz) > 0.5 || !lastSamples) {
+      lastHz = hz
+      const spec = lastSpec
+      const env = spec.envelope ?? DEFAULT_ENVELOPE
+      const sustainHold = Math.max(0.05, env.attack * 0.5)
+      const totalSeconds = env.attack + sustainHold + env.release
+      const samples = renderNote({ instrument: spec, freqHz: hz, stress: 1, lengthSeconds: totalSeconds, dampSeconds: 0 })
+      lastSamples = samples
+      drawWaveform(samples)
+    }
+
+    if (lastSamples) playBuffer(lastSamples)
   }
 
   function sizeCanvas(c: HTMLCanvasElement): [number, number] {
@@ -95,6 +118,7 @@ export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
 
     stop()
     lastSamples = null
+    lastSpec = null
     setHasSamples(false)
 
     if (!name || !body) {
@@ -108,16 +132,12 @@ export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
         const instr = await loadInstrument(name, body)
         if (run !== currentRun) return
         const spec = compileInstrument(instr)
+        lastSpec = spec
         const env = spec.envelope ?? DEFAULT_ENVELOPE
         const sustainHold = Math.max(0.05, env.attack * 0.5)
         const totalSeconds = env.attack + sustainHold + env.release
-        const samples = renderNote({
-          instrument: spec,
-          freqHz: props.previewHz(),
-          stress: 1,
-          lengthSeconds: totalSeconds,
-          dampSeconds: 0,
-        })
+        // Initial waveform at lastHz (440 until the user plays and resolveHz fires).
+        const samples = renderNote({ instrument: spec, freqHz: lastHz, stress: 1, lengthSeconds: totalSeconds, dampSeconds: 0 })
         if (run !== currentRun) return
         lastSamples = samples
         setHasSamples(true)
@@ -143,7 +163,7 @@ export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
         <span class="preview-label" ref={labelEl} />
         <button
           class="preview-play"
-          onClick={() => (isPlaying() ? stop() : play())}
+          onClick={() => (isPlaying() ? stop() : void play())}
           disabled={!hasSamples()}
         >
           {isPlaying() ? '■' : '▶'}
