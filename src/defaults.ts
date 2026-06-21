@@ -1923,6 +1923,13 @@ envelope:
   attack: 0.004
   release: 0.01
   sustainLevel: 0.80
+partials:
+  - { freqMult: 1,  amp: 1.000 }
+  - { freqMult: 2,  amp: 0.002 }
+  - { freqMult: 3,  amp: 0.001 }
+  - { freqMult: 4,  amp: 0.0003 }
+  - { freqMult: 5,  amp: 0.0004 }
+  - { freqMult: 7,  amp: 0.0002 }
 `
 
 const OXYGENE_SYNBRASS = `# synbrass: SynBrass 2 (GM64). Bright, slightly buzzy, medium attack.
