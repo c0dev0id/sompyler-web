@@ -1871,6 +1871,18 @@ lfo:
   waveform: sin
 `
 
+// Lush plate reverb for Oxygène.
+// 6 taps over 6 s: exponential amplitude decay (100 → 20 → 1%) makes
+// the audible tail ~4 s. Tap grid based on the sandstorm-plate proportions
+// but stretched for Jarre's slower, more spacious aesthetic.
+// Deldiffs offset L by 4 ms and R by 8 ms for stereo width.
+const OXYGENE_PLATE_ROOM = `# oxygene-plate.splr — EMT 140-style plate reverb for Oxygène Pt. IV.
+name: oxygene plate
+levels: "6:100;1,20;4,4;6,1"
+delays: "6:0;6,100"
+deldiffs: "0.004|0.008"
+`
+
 // Tight plate reverb for Sandstorm.
 // 4 taps over 4 s: fast amplitude decay (100 → 55 → 2%) makes the
 // audible tail ~1.5 s. Jitter ±12% smooths sparse-tap comb artefacts.
@@ -2159,7 +2171,7 @@ stage:
   bowedpad:  1|1 1.6 bowed-pad
   melody:    1|1 0.4 oxygene-melody
 tuning_config: tones_euro
-room: free-field
+room: oxygene-plate
 ---
 # bar 1 — intro: seashore fade-in, kalimba silent
 _meta:
@@ -5086,6 +5098,7 @@ const SEEDS: Seed[] = [
   { name: 'tambourine',      ext: 'spli', body: OXYGENE_TAMBOURINE, inProject: true },
   { name: 'seashore',        ext: 'spli', body: OXYGENE_SEASHORE,   inProject: true },
   { name: 'tones_euro',      ext: 'splt', body: STARTER_TUNING,     inProject: true },
+  { name: 'oxygene-plate',  ext: 'splr', body: OXYGENE_PLATE_ROOM, inProject: true },
 
   // Sandstorm — in staging; load it to work on it.
   { name: 'sandstorm',     ext: 'spls', body: SANDSTORM,         inProject: false },
