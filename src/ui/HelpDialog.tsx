@@ -126,12 +126,15 @@ envelope:
   attack: 0.01        # seconds from silence to full volume at note start
                        # 0.001 = instant, punchy attack
                        # 0.3   = slow swell (pad, strings)
+  decay: 0.1          # seconds to fall from peak volume to sustainLevel
+                       # 0   = no decay (stays at peak until release)
+                       # 0.1 = piano-like drop after the hammer strike
+  sustainLevel: 0.85  # volume level held during the note body (0–1)
+                       # 1.0 = stays at peak (no audible decay)
+                       # 0.3 = plucked-string character: loud attack, quiet sustain
   release: 0.3        # seconds to fade out after the note ends
                        # short release = staccato, clipped
-                       # long release  = notes ring and overlap
-  sustainLevel: 0.85  # volume level during the held portion of the note (0–1)
-                       # 1.0 = stays at full volume while held
-                       # 0.5 = dips to half volume after the attack peak`,
+                       # long release  = notes ring and overlap`,
     },
     {
       subtitle: 'Partials — adding overtones to shape the timbre',

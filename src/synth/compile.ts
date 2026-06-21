@@ -62,10 +62,10 @@ function compileEnvelope(raw: unknown): EnvelopeSpec | undefined {
   const obj = asObj(raw)
   if (!obj) throw new InstrumentError(`envelope must be a mapping`)
   return {
-    attack: 'attack' in obj ? Number(obj.attack) : DEFAULT_ENVELOPE.attack,
-    release: 'release' in obj ? Number(obj.release) : DEFAULT_ENVELOPE.release,
-    sustainLevel:
-      'sustainLevel' in obj ? Number(obj.sustainLevel) : DEFAULT_ENVELOPE.sustainLevel,
+    attack:       'attack'       in obj ? Number(obj.attack)       : DEFAULT_ENVELOPE.attack,
+    decay:        'decay'        in obj ? Number(obj.decay)        : undefined,
+    release:      'release'      in obj ? Number(obj.release)      : DEFAULT_ENVELOPE.release,
+    sustainLevel: 'sustainLevel' in obj ? Number(obj.sustainLevel) : DEFAULT_ENVELOPE.sustainLevel,
   }
 }
 
