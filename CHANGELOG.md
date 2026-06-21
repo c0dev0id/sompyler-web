@@ -143,3 +143,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `scripts/render-note.ts` — render a single Sompyler instrument note to WAV via vite-node
 - `scripts/compare-spectra.py` — FFT-based spectral comparison of a reference WAV vs a Sompyler render; reports per-harmonic amplitude delta and suggests a matching partials list
+
+## [Unreleased]
+
+### Changed
+- Oxygène instrument definitions updated from FFT spectral analysis of FluidR3 SF2 samples
+  - Fretless Bass: partials now reflect Bb2 sample (near actual playing range); H2≈H3 equal-energy characteristic
+  - Kalimba: replaced inharmonic guesses with measured harmonic partials; H3 dominant with H13–H14 bright cluster
+  - SynStrings: switched from sin+partials to saw oscillator (FluidR3 preset is a sawtooth loop); keeps spread for chorus
+  - String Ensemble: updated to measured spectral shape including H4 body resonance at 0.302
+- sf2_analyze.py: fixed normalisation to max partial (not H1); added pitch_correction application; accept stereo left-channel samples (type=4)
