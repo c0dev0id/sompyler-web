@@ -2141,10 +2141,7 @@ synbrass:
   6: Eb4 2
   8: G4 2
   11: C4 7
-strings:
-  0: Eb3 24
-  0: G3 24
-  0: C3 24
+strings: "Eb3_23; G3_23; C3_23"
 ensemble:
   0: C5 5
   5: G4 1
@@ -2182,10 +2179,7 @@ synbrass:
   6: Eb4 2
   8: G4 2
   11: C4 7
-strings:
-  0: Eb3 24
-  0: G3 24
-  0: C3 24
+strings: "Eb3_23; G3_23; C3_23"
 ensemble:
   0: C5 5
   5: G4 2
@@ -2235,10 +2229,7 @@ synbrass:
   6: G4 2
   8: A4 2
   11: D4 7
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: Bb4 5
   5: A4 2
@@ -2281,9 +2272,7 @@ synbrass:
   2: G4 1
   3: F4 1
   5: C4 6
-strings:
-  0: F3 24
-  0: A3 24
+strings: "F3_23; A3_23"
 ensemble:
   0: A4 2
   2: G4 2
@@ -2333,10 +2322,7 @@ synbrass:
   6: Eb4 2
   8: G4 2
   11: C4 7
-strings:
-  0: Eb3 24
-  0: G3 24
-  0: C3 24
+strings: "Eb3_23; G3_23; C3_23"
 ensemble:
   0: C5 5
   5: G4 1
@@ -2375,9 +2361,7 @@ synbrass:
   6: Eb4 2
   8: G4 2
   11: C4 7
-strings:
-  0: Eb3 24
-  0: C3 24
+strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 5
   5: G4 2
@@ -2421,10 +2405,7 @@ synbrass:
   6: G4 2
   8: A4 2
   11: D4 7
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: Bb4 5
   5: A4 2
@@ -2467,9 +2448,7 @@ synbrass:
   2: G4 1
   3: F4 1
   5: C4 6
-strings:
-  0: F3 24
-  0: A3 24
+strings: "F3_23; A3_23"
 ensemble:
   0: A4 2
   2: G4 2
@@ -2523,10 +2502,7 @@ synbrass:
   6: Eb4 2
   8: G4 2
   11: C4 7
-strings:
-  0: Eb3 24
-  0: G3 24
-  0: C3 24
+strings: "Eb3_23; G3_23; C3_23"
 ensemble:
   0: C5 5
   5: G4 1
@@ -2564,9 +2540,7 @@ synbrass:
   6: Eb4 2
   8: G4 2
   11: C4 7
-strings:
-  0: Eb3 24
-  0: C3 24
+strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 5
   5: G4 2
@@ -2610,10 +2584,7 @@ synbrass:
   6: G4 2
   8: A4 2
   11: D4 7
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: Bb4 5
   5: A4 2
@@ -2655,9 +2626,7 @@ synbrass:
   2: G4 1
   3: F4 1
   5: C4 6
-strings:
-  0: F3 24
-  0: A3 24
+strings: "F3_23; A3_23"
 ensemble:
   0: A4 2
   2: G4 2
@@ -2702,9 +2671,7 @@ bass:
   11: G1 1
 kalimba: false
 synbrass: false
-strings:
-  0: Eb3 24
-  0: C3 24
+strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 1
   1: G5 1
@@ -2746,10 +2713,7 @@ bass:
   8: D2 1
   9: C2 2
   11: A1 1
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -2792,10 +2756,7 @@ bass:
   8: F2 1
   9: Eb2 2
   11: C2 2
-strings:
-  0: F3 24
-  0: A3 24
-  0: F4 24
+strings: "F3_23; A3_23; F4_23"
 ensemble:
   0: F5 1
   1: C6 1
@@ -2844,9 +2805,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: Eb3 24
-  0: C3 24
+strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 1
   1: G5 1
@@ -2906,10 +2865,7 @@ kalimba:
   6: D4 1 damp=2
   9: D4 1 damp=2
   11: D4 1 damp=2
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -2969,10 +2925,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: F3 24
-  0: A3 24
-  0: F4 24
+strings: "F3_23; A3_23; F4_23"
 ensemble:
   0: F5 1
   1: C6 1
@@ -3040,9 +2993,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: Eb3 24
-  0: C3 24
+strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 1
   1: G5 1
@@ -3102,10 +3053,7 @@ kalimba:
   6: D4 1 damp=2
   9: D4 1 damp=2
   11: D4 1 damp=2
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -3165,10 +3113,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: F3 24
-  0: A3 24
-  0: F4 24
+strings: "F3_23; A3_23; F4_23"
 ensemble:
   0: F5 1
   1: C6 1
@@ -3233,10 +3178,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: Eb3 24
-  0: G3 24
-  0: C3 24
+strings: "Eb3_23; G3_23; C3_23"
 ensemble:
   0: C5 5
   5: G4 1
@@ -3269,9 +3211,7 @@ bass:
   8: C2 1
   9: Bb1 2
   11: G1 1
-strings:
-  0: Eb3 24
-  0: C3 24
+strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 5
   5: G4 2
@@ -3308,10 +3248,7 @@ kalimba:
   6: D4 1 damp=2
   9: D4 1 damp=2
   11: D4 1 damp=2
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: Bb4 5
   5: A4 2
@@ -3348,9 +3285,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: F3 24
-  0: A3 24
+strings: "F3_23; A3_23"
 ensemble:
   0: A4 2
   2: G4 2
@@ -3390,10 +3325,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: Eb3 24
-  0: G3 24
-  0: C3 24
+strings: "Eb3_23; G3_23; C3_23"
 ensemble:
   0: C5 5
   5: G4 1
@@ -3425,9 +3357,7 @@ bass:
   8: G1 1
   9: Bb1 2
   11: G1 1
-strings:
-  0: Eb3 24
-  0: C3 24
+strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 5
   5: G4 2
@@ -3464,10 +3394,7 @@ kalimba:
   6: D4 1 damp=2
   9: D4 1 damp=2
   11: D4 1 damp=2
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: Bb4 5
   5: A4 2
@@ -3504,9 +3431,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: F3 24
-  0: A3 24
+strings: "F3_23; A3_23"
 ensemble:
   0: A4 2
   2: G4 2
@@ -3550,10 +3475,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: Eb3 24
-  0: G3 24
-  0: C3 24
+strings: "Eb3_23; G3_23; C3_23"
 ensemble:
   0: C5 5
   5: G4 1
@@ -3585,9 +3507,7 @@ bass:
   9: Bb1 1
   10: G1 1
   11: Bb1 1
-strings:
-  0: Eb3 24
-  0: C3 24
+strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 5
   5: G4 2
@@ -3624,10 +3544,7 @@ kalimba:
   6: D4 1 damp=2
   9: D4 1 damp=2
   11: D4 1 damp=2
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: Bb4 5
   5: A4 2
@@ -3663,9 +3580,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: F3 24
-  0: A3 24
+strings: "F3_23; A3_23"
 ensemble:
   0: A4 2
   2: G4 2
@@ -3710,9 +3625,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: Eb3 24
-  0: C3 24
+strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 1
   1: G5 1
@@ -3760,10 +3673,7 @@ kalimba:
   6: D4 1 damp=2
   9: D4 1 damp=2
   11: D4 1 damp=2
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -3812,10 +3722,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: F3 24
-  0: A3 24
-  0: F4 24
+strings: "F3_23; A3_23; F4_23"
 ensemble:
   0: F5 1
   1: C6 1
@@ -3864,9 +3771,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: Eb3 24
-  0: C3 24
+strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 1
   1: G5 1
@@ -3926,10 +3831,7 @@ kalimba:
   6: D4 1 damp=2
   9: D4 1 damp=2
   11: D4 1 damp=2
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -3989,10 +3891,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: F3 24
-  0: A3 24
-  0: F4 24
+strings: "F3_23; A3_23; F4_23"
 ensemble:
   0: F5 1
   1: C6 1
@@ -4060,9 +3959,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: Eb3 24
-  0: C3 24
+strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 1
   1: G5 1
@@ -4127,10 +4024,7 @@ kalimba:
   6: D4 1 damp=2
   9: D4 1 damp=2
   11: D4 1 damp=2
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -4198,10 +4092,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: F3 24
-  0: A3 24
-  0: F4 24
+strings: "F3_23; A3_23; F4_23"
 ensemble:
   0: F5 1
   1: C6 1
@@ -4263,9 +4154,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: Eb3 24
-  0: C3 24
+strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 1
   1: G5 1
@@ -4327,10 +4216,7 @@ kalimba:
   6: D4 1 damp=2
   9: D4 1 damp=2
   11: D4 1 damp=2
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -4395,10 +4281,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: F3 24
-  0: A3 24
-  0: F4 24
+strings: "F3_23; A3_23; F4_23"
 ensemble:
   0: F5 1
   1: C6 1
@@ -4466,9 +4349,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: Eb3 24
-  0: C3 24
+strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 1
   1: G5 1
@@ -4531,10 +4412,7 @@ kalimba:
   6: D4 1 damp=2
   9: D4 1 damp=2
   11: D4 1 damp=2
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -4602,10 +4480,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: F3 24
-  0: A3 24
-  0: F4 24
+strings: "F3_23; A3_23; F4_23"
 ensemble:
   0: F5 1
   1: C6 1
@@ -4668,9 +4543,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: Eb3 24
-  0: C3 24
+strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 1
   1: G5 1
@@ -4736,10 +4609,7 @@ kalimba:
   6: D4 1 damp=2
   9: D4 1 damp=2
   11: D4 1 damp=2
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -4804,10 +4674,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: F3 24
-  0: A3 24
-  0: F4 24
+strings: "F3_23; A3_23; F4_23"
 ensemble:
   0: F5 1
   1: C6 1
@@ -4878,9 +4745,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: Eb3 24
-  0: C3 24
+strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 1
   1: G5 1
@@ -4943,10 +4808,7 @@ kalimba:
   6: D4 1 damp=2
   9: D4 1 damp=2
   11: D4 1 damp=2
-strings:
-  0: D3 24
-  0: Bb3 24
-  0: D4 24
+strings: "D3_23; Bb3_23; D4_23"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -5013,10 +4875,7 @@ kalimba:
   6: C4 1 damp=2
   9: C4 1 damp=2
   11: C4 1 damp=2
-strings:
-  0: F3 12
-  0: A3 12
-  0: F4 12
+strings: "F3_11; A3_11; F4_11"
 ensemble:
   0: F5 1
   1: C6 1
