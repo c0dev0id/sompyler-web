@@ -401,6 +401,12 @@ html, body, #root {
   border-right: 1px solid #333;
 }
 
+/* Sompyler domain tokens */
+.editor .cm-pitch    { color: #4ec9b0; }  /* note names — teal  */
+.editor .cm-tick     { color: #b5cea8; }  /* tick offsets — sage */
+.editor .cm-waveform { color: #9cdcfe; }  /* sin/saw/square — blue */
+.editor .cm-shape    { color: #d7ba7d; }  /* shape strings — gold */
+
 .error {
   color: #ff8b73;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
