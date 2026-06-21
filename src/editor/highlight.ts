@@ -5,30 +5,70 @@ import type { FileExtension } from '../storage/files'
 // ── Decoration marks ────────────────────────────────────────────────────────
 
 const pitchMark    = Decoration.mark({ class: 'cm-pitch' })
-const shapeNumMark = Decoration.mark({ class: 'cm-shape-num' })
-const shapeSepMark = Decoration.mark({ class: 'cm-shape-sep' })
 const waveformMark = Decoration.mark({ class: 'cm-waveform' })
 const tickMark     = Decoration.mark({ class: 'cm-tick' })
+// Shape string roles: N : startVal ; pos , val ; pos , val …
+const shapeLenMark = Decoration.mark({ class: 'cm-shape-len' })  // N (resolution)
+const shapePosMark = Decoration.mark({ class: 'cm-shape-pos' })  // x-axis positions
+const shapeValMark = Decoration.mark({ class: 'cm-shape-val' })  // y-axis values
+const shapeSepMark = Decoration.mark({ class: 'cm-shape-sep' })  // : ; ,
 
 // ── Patterns ────────────────────────────────────────────────────────────────
 
-// Note name: letter + optional accidental + octave, e.g. C4, Bb2, G#3, D-1
-const PITCH_RX = /\b([A-Ga-g][#b]?-?\d+)\b/g
-
-// Shape string: N: or N.M: followed by a digit sequence with ; and ,
-// Matches "4:100;1,55;4,2" or "1:0.12" but not "C4:" or "attack:"
-const SHAPE_RX = /\b(\d+(?:\.\d+)?:[0-9;,.]+)/g
-
-// Waveform literals as bare values
+const PITCH_RX    = /\b([A-Ga-g][#b]?-?\d+)\b/g
+const SHAPE_RX    = /\b(\d+(?:\.\d+)?:[0-9;,.]+)/g
 const WAVEFORM_RX = /\b(sin|saw|square|triangle|noise)\b/g
+const TICK_RX     = /^(\s+)([\d,+*]+)(\s*:)/
 
-// Tick-offset key in score note lines: leading whitespace + digit sequence + colon
-// Matches "  0:" "  3,5,8:" "  0+1*12:" but not "  attack:" or "  vcf:"
-const TICK_RX = /^(\s+)([\d,+*]+)(\s*:)/
-
-// ── Decoration builder ───────────────────────────────────────────────────────
+// ── Shape string parser ──────────────────────────────────────────────────────
 
 type Match = { pos: number; end: number; mark: Decoration }
+
+// Parses "N:v0;pos1,val1;pos2,val2;…" and emits a decoration per token role.
+function decorateShape(src: string, base: number, matches: Match[]): void {
+  let i = 0
+
+  const tryNum = (): string | null => {
+    const m = /^\d+(?:\.\d+)?/.exec(src.slice(i))
+    return m ? m[0] : null
+  }
+
+  const push = (len: number, mark: Decoration) => {
+    matches.push({ pos: base + i, end: base + i + len, mark })
+    i += len
+  }
+
+  // N — the resolution / tail-length field
+  const lenStr = tryNum()
+  if (!lenStr) return
+  push(lenStr.length, shapeLenMark)
+
+  if (src[i] !== ':') return
+  push(1, shapeSepMark)
+
+  // Starting value (implicit position 0)
+  const startStr = tryNum()
+  if (!startStr) return
+  push(startStr.length, shapeValMark)
+
+  // Remaining (;pos,val)* pairs
+  while (i < src.length && src[i] === ';') {
+    push(1, shapeSepMark)
+
+    const posStr = tryNum()
+    if (!posStr) break
+    push(posStr.length, shapePosMark)
+
+    if (src[i] !== ',') break
+    push(1, shapeSepMark)
+
+    const valStr = tryNum()
+    if (!valStr) break
+    push(valStr.length, shapeValMark)
+  }
+}
+
+// ── Decoration builder ───────────────────────────────────────────────────────
 
 function buildDecorations(view: EditorView, ext: FileExtension): DecorationSet {
   const builder = new RangeSetBuilder<Decoration>()
@@ -49,31 +89,19 @@ function buildDecorations(view: EditorView, ext: FileExtension): DecorationSet {
         }
         PITCH_RX.lastIndex = 0
         let m: RegExpExecArray | null
-        while ((m = PITCH_RX.exec(text)) !== null) {
+        while ((m = PITCH_RX.exec(text)) !== null)
           matches.push({ pos: base + m.index, end: base + m.index + m[0].length, mark: pitchMark })
-        }
       }
 
       if (ext === 'spli' || ext === 'splr') {
         WAVEFORM_RX.lastIndex = 0
         let m: RegExpExecArray | null
-        while ((m = WAVEFORM_RX.exec(text)) !== null) {
+        while ((m = WAVEFORM_RX.exec(text)) !== null)
           matches.push({ pos: base + m.index, end: base + m.index + m[0].length, mark: waveformMark })
-        }
+
         SHAPE_RX.lastIndex = 0
-        while ((m = SHAPE_RX.exec(text)) !== null) {
-          const start = base + m.index
-          const src = m[0]
-          const numRx = /\d+(?:\.\d+)?/g
-          const sepRx = /[:;,]/g
-          let nm: RegExpExecArray | null
-          numRx.lastIndex = 0
-          while ((nm = numRx.exec(src)) !== null)
-            matches.push({ pos: start + nm.index, end: start + nm.index + nm[0].length, mark: shapeNumMark })
-          sepRx.lastIndex = 0
-          while ((nm = sepRx.exec(src)) !== null)
-            matches.push({ pos: start + nm.index, end: start + nm.index + 1, mark: shapeSepMark })
-        }
+        while ((m = SHAPE_RX.exec(text)) !== null)
+          decorateShape(m[0], base + m.index, matches)
       }
 
       // RangeSetBuilder requires strictly ascending, non-overlapping ranges.
@@ -103,12 +131,10 @@ export function sompylerHighlight(ext: FileExtension): Extension {
         this.decorations = buildDecorations(view, ext)
       }
       update(u: ViewUpdate) {
-        if (u.docChanged || u.viewportChanged) {
+        if (u.docChanged || u.viewportChanged)
           this.decorations = buildDecorations(u.view, ext)
-        }
       }
     },
     { decorations: (v) => v.decorations },
   )
 }
-

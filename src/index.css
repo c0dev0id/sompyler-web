@@ -402,11 +402,13 @@ html, body, #root {
 }
 
 /* Sompyler domain tokens */
-.editor .cm-pitch     { color: #4ec9b0; }  /* note names       — teal  */
-.editor .cm-tick      { color: #b5cea8; }  /* tick offsets     — sage  */
-.editor .cm-waveform  { color: #e5a14a; }  /* sin/saw/square   — amber */
-.editor .cm-shape-num { color: #d7ba7d; }  /* shape values     — gold  */
-.editor .cm-shape-sep { color: #5a5a5a; }  /* shape separators — muted */
+.editor .cm-pitch     { color: #4ec9b0; }  /* note names         — teal   */
+.editor .cm-tick      { color: #b5cea8; }  /* tick offsets       — sage   */
+.editor .cm-waveform  { color: #c792ea; }  /* sin/saw/square     — violet */
+.editor .cm-shape-len { color: #6a6a6a; }  /* shape N (length)   — muted  */
+.editor .cm-shape-pos { color: #e5786d; }  /* shape x positions  — coral  */
+.editor .cm-shape-val { color: #cae682; }  /* shape y values     — lime   */
+.editor .cm-shape-sep { color: #484848; }  /* shape : ; ,        — dim    */
 
 .error {
   color: #ff8b73;
