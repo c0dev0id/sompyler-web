@@ -1883,9 +1883,8 @@ jitter: "1:0.12"
 deldiffs: "0.008|0.014"
 `
 
-const OXYGENE_BASS = `# filtered-bass: Fretless Bass (GM36). Smooth, slightly resonant.
-# Partials from FFT of FluidR3 Fretless A#1 (Bb2, near actual playing range).
-# H2≈H3 characteristic of bass strings; H1 dominant at low pitches.
+const OXYGENE_BASS = `# bass: Fretless Bass (GM36 / TimGM6mb), C2. Partials from TiMidity sustain FFT.
+# H2 strong (-3.5 dB), H4 > H3, H5 strong (classic bass string characteristic).
 amp: 0.70
 oscillator: sin
 envelope:
@@ -1893,17 +1892,30 @@ envelope:
   release: 0.15
   sustainLevel: 0.80
 partials:
-  - { freqMult: 1, amp: 1.000 }
-  - { freqMult: 2, amp: 0.488 }
-  - { freqMult: 3, amp: 0.453 }
-  - { freqMult: 4, amp: 0.264 }
-  - { freqMult: 5, amp: 0.101 }
-vcf:
-  cutoff_hz: 1200
-  resonance: 0.30
-  env_amount: 800
-  env_attack: 0.008
-  env_release: 0.12
+  - { freqMult: 1,  amp: 1.000 }
+  - { freqMult: 2,  amp: 0.671 }
+  - { freqMult: 3,  amp: 0.179 }
+  - { freqMult: 4,  amp: 0.240 }
+  - { freqMult: 5,  amp: 0.326 }
+  - { freqMult: 6,  amp: 0.171 }
+  - { freqMult: 7,  amp: 0.160 }
+  - { freqMult: 8,  amp: 0.166 }
+  - { freqMult: 9,  amp: 0.096 }
+  - { freqMult: 10, amp: 0.036 }
+  - { freqMult: 11, amp: 0.039 }
+  - { freqMult: 12, amp: 0.020 }
+  - { freqMult: 13, amp: 0.0088 }
+  - { freqMult: 14, amp: 0.0041 }
+  - { freqMult: 15, amp: 0.0037 }
+  - { freqMult: 16, amp: 0.0024 }
+  - { freqMult: 17, amp: 0.0018 }
+  - { freqMult: 18, amp: 0.0014 }
+  - { freqMult: 19, amp: 0.0011 }
+  - { freqMult: 20, amp: 0.0012 }
+  - { freqMult: 21, amp: 0.00054 }
+  - { freqMult: 22, amp: 0.00066 }
+  - { freqMult: 23, amp: 0.00007 }
+  - { freqMult: 24, amp: 0.00020 }
 `
 
 const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM108 / TimGM6mb). Pure sine sustain.
@@ -1932,37 +1944,78 @@ partials:
   - { freqMult: 7,  amp: 0.0002 }
 `
 
-const OXYGENE_SYNBRASS = `# synbrass: SynBrass 2 (GM64). Bright, slightly buzzy, medium attack.
+const OXYGENE_SYNBRASS = `# synbrass: SynBrass 2 (GM64 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
+# Very slow TiMidity attack (peak at 1.95s / 3s note). Rich upper harmonics; H7 spike.
 amp: 0.20
-oscillator: saw
+oscillator: sin
 envelope:
   attack: 0.12
   release: 0.40
   sustainLevel: 0.75
-vcf:
-  cutoff_hz: 1800
-  resonance: 0.35
-  env_amount: 2000
-  env_attack: 0.10
-  env_release: 0.30
+partials:
+  - { freqMult: 1,  amp: 1.000 }
+  - { freqMult: 2,  amp: 0.723 }
+  - { freqMult: 3,  amp: 0.530 }
+  - { freqMult: 4,  amp: 0.284 }
+  - { freqMult: 5,  amp: 0.232 }
+  - { freqMult: 6,  amp: 0.122 }
+  - { freqMult: 7,  amp: 0.238 }
+  - { freqMult: 8,  amp: 0.101 }
+  - { freqMult: 9,  amp: 0.076 }
+  - { freqMult: 10, amp: 0.115 }
+  - { freqMult: 11, amp: 0.111 }
+  - { freqMult: 12, amp: 0.085 }
+  - { freqMult: 13, amp: 0.069 }
+  - { freqMult: 14, amp: 0.038 }
+  - { freqMult: 15, amp: 0.078 }
+  - { freqMult: 16, amp: 0.073 }
+  - { freqMult: 17, amp: 0.065 }
+  - { freqMult: 18, amp: 0.033 }
+  - { freqMult: 19, amp: 0.023 }
+  - { freqMult: 20, amp: 0.025 }
+  - { freqMult: 21, amp: 0.043 }
+  - { freqMult: 22, amp: 0.043 }
+  - { freqMult: 23, amp: 0.020 }
+  - { freqMult: 24, amp: 0.013 }
 `
 
-const OXYGENE_STRINGS = `# synstrings: SynString 2 (GM52). Lush, slow attack, rich harmonics.
-# FluidR3 uses a 110 Hz feedback sawtooth loop for this preset — pure
-# 1/h harmonic series. Oscillator: saw matches exactly; spread provides
-# the chorus detuning that makes the GM52 sound lush.
+const OXYGENE_STRINGS = `# strings: SynString 2 (GM52 / TimGM6mb), C3. Partials from TiMidity sustain FFT.
+# TiMidity peak at 1.45s (slow attack). H4 stronger than H2 or H3 (body resonance).
 amp: 0.12
-oscillator: saw
+oscillator: sin
 envelope:
   attack: 0.35
   release: 1.20
   sustainLevel: 0.88
-spread: [4, -6, 7, -3]
+partials:
+  - { freqMult: 1,  amp: 1.000 }
+  - { freqMult: 2,  amp: 0.188 }
+  - { freqMult: 3,  amp: 0.181 }
+  - { freqMult: 4,  amp: 0.254 }
+  - { freqMult: 5,  amp: 0.136 }
+  - { freqMult: 6,  amp: 0.065 }
+  - { freqMult: 7,  amp: 0.072 }
+  - { freqMult: 8,  amp: 0.090 }
+  - { freqMult: 9,  amp: 0.049 }
+  - { freqMult: 10, amp: 0.051 }
+  - { freqMult: 11, amp: 0.041 }
+  - { freqMult: 12, amp: 0.027 }
+  - { freqMult: 13, amp: 0.046 }
+  - { freqMult: 14, amp: 0.035 }
+  - { freqMult: 15, amp: 0.029 }
+  - { freqMult: 16, amp: 0.025 }
+  - { freqMult: 17, amp: 0.027 }
+  - { freqMult: 18, amp: 0.024 }
+  - { freqMult: 19, amp: 0.019 }
+  - { freqMult: 20, amp: 0.020 }
+  - { freqMult: 21, amp: 0.019 }
+  - { freqMult: 22, amp: 0.026 }
+  - { freqMult: 23, amp: 0.012 }
+  - { freqMult: 24, amp: 0.012 }
 `
 
-const OXYGENE_ENSEMBLE = `# string-ensemble: String Ensemble 1 (GM49). Warmer, slower release.
-# Partials from FFT of FluidR3 Strings G2L (C4 sample). H4 resurgence
-# at 0.302 is a body resonance characteristic of ensemble string sections.
+const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
+# H8/H9/H11 show a late-harmonic hump (choir/ensemble roughness character).
 amp: 0.10
 oscillator: sin
 envelope:
@@ -1970,16 +2023,34 @@ envelope:
   release: 1.50
   sustainLevel: 0.85
 partials:
-  - { freqMult: 1, amp: 1.000 }
-  - { freqMult: 2, amp: 0.608 }
-  - { freqMult: 3, amp: 0.132 }
-  - { freqMult: 4, amp: 0.302 }
-  - { freqMult: 5, amp: 0.179 }
-  - { freqMult: 6, amp: 0.115 }
-  - { freqMult: 7, amp: 0.067 }
+  - { freqMult: 1,  amp: 1.000 }
+  - { freqMult: 2,  amp: 0.258 }
+  - { freqMult: 3,  amp: 0.118 }
+  - { freqMult: 4,  amp: 0.077 }
+  - { freqMult: 5,  amp: 0.056 }
+  - { freqMult: 6,  amp: 0.029 }
+  - { freqMult: 7,  amp: 0.020 }
+  - { freqMult: 8,  amp: 0.047 }
+  - { freqMult: 9,  amp: 0.045 }
+  - { freqMult: 10, amp: 0.033 }
+  - { freqMult: 11, amp: 0.038 }
+  - { freqMult: 12, amp: 0.013 }
+  - { freqMult: 13, amp: 0.0061 }
+  - { freqMult: 14, amp: 0.016 }
+  - { freqMult: 15, amp: 0.0072 }
+  - { freqMult: 16, amp: 0.0025 }
+  - { freqMult: 17, amp: 0.0047 }
+  - { freqMult: 18, amp: 0.0037 }
+  - { freqMult: 19, amp: 0.0026 }
+  - { freqMult: 20, amp: 0.0014 }
+  - { freqMult: 21, amp: 0.00061 }
+  - { freqMult: 22, amp: 0.00068 }
+  - { freqMult: 23, amp: 0.00027 }
+  - { freqMult: 24, amp: 0.00024 }
 `
 
-const OXYGENE_BOWEDPAD = `# bowed-pad: Pad 5 Bowed (GM93). Very slow attack, ethereal.
+const OXYGENE_BOWEDPAD = `# bowedpad: Pad 5 Bowed (GM93 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
+# H4 ≈ H1 in amplitude (0.990) — defining feature of this pad. H11 hump at 0.116.
 amp: 0.08
 oscillator: sin
 envelope:
@@ -1987,9 +2058,30 @@ envelope:
   release: 2.00
   sustainLevel: 0.90
 partials:
-  - { freqMult: 1, amp: 1.000 }
-  - { freqMult: 2, amp: 0.350 }
-  - { freqMult: 3, amp: 0.120 }
+  - { freqMult: 1,  amp: 1.000 }
+  - { freqMult: 2,  amp: 0.270 }
+  - { freqMult: 3,  amp: 0.222 }
+  - { freqMult: 4,  amp: 0.990 }
+  - { freqMult: 5,  amp: 0.146 }
+  - { freqMult: 6,  amp: 0.063 }
+  - { freqMult: 7,  amp: 0.075 }
+  - { freqMult: 8,  amp: 0.069 }
+  - { freqMult: 9,  amp: 0.057 }
+  - { freqMult: 10, amp: 0.060 }
+  - { freqMult: 11, amp: 0.116 }
+  - { freqMult: 12, amp: 0.030 }
+  - { freqMult: 13, amp: 0.032 }
+  - { freqMult: 14, amp: 0.028 }
+  - { freqMult: 15, amp: 0.032 }
+  - { freqMult: 16, amp: 0.022 }
+  - { freqMult: 17, amp: 0.023 }
+  - { freqMult: 18, amp: 0.036 }
+  - { freqMult: 19, amp: 0.023 }
+  - { freqMult: 20, amp: 0.019 }
+  - { freqMult: 21, amp: 0.015 }
+  - { freqMult: 22, amp: 0.013 }
+  - { freqMult: 23, amp: 0.011 }
+  - { freqMult: 24, amp: 0.010 }
 lfo:
   rate_hz: 0.18
   depth: 0.08
@@ -1997,7 +2089,8 @@ lfo:
   waveform: sin
 `
 
-const OXYGENE_MELODY = `# oxygene-melody: Nylon Guitar (GM25) — the main melodic voice. Medium decay, clear tone.
+const OXYGENE_MELODY = `# melody: Nylon Guitar (GM25 / TimGM6mb), G3. Partials from TiMidity sustain FFT.
+# Irregular guitar-like spectrum: H2/H3 strong, H4 nearly absent, H6/H7 re-emerge.
 amp: 0.55
 oscillator: sin
 envelope:
@@ -2005,17 +2098,35 @@ envelope:
   release: 0.70
   sustainLevel: 0.55
 partials:
-  - { freqMult: 1, amp: 1.000 }
-  - { freqMult: 2, amp: 0.420 }
-  - { freqMult: 3, amp: 0.220 }
-  - { freqMult: 4, amp: 0.110 }
-  - { freqMult: 5, amp: 0.060 }
-vcf:
-  cutoff_hz: 3000
-  resonance: 0.22
+  - { freqMult: 1,  amp: 1.000 }
+  - { freqMult: 2,  amp: 0.640 }
+  - { freqMult: 3,  amp: 0.498 }
+  - { freqMult: 4,  amp: 0.0062 }
+  - { freqMult: 5,  amp: 0.042 }
+  - { freqMult: 6,  amp: 0.196 }
+  - { freqMult: 7,  amp: 0.273 }
+  - { freqMult: 8,  amp: 0.029 }
+  - { freqMult: 9,  amp: 0.0073 }
+  - { freqMult: 10, amp: 0.189 }
+  - { freqMult: 11, amp: 0.054 }
+  - { freqMult: 12, amp: 0.035 }
+  - { freqMult: 13, amp: 0.0032 }
+  - { freqMult: 14, amp: 0.0053 }
+  - { freqMult: 15, amp: 0.040 }
+  - { freqMult: 16, amp: 0.011 }
+  - { freqMult: 17, amp: 0.0043 }
+  - { freqMult: 18, amp: 0.0030 }
+  - { freqMult: 19, amp: 0.00057 }
+  - { freqMult: 20, amp: 0.027 }
+  - { freqMult: 21, amp: 0.0067 }
+  - { freqMult: 22, amp: 0.0016 }
+  - { freqMult: 23, amp: 0.0051 }
+  - { freqMult: 24, amp: 0.0027 }
 `
 
-const OXYGENE_TAMBOURINE = `# tambourine: Tambourine (GM54). Noise + metallic partial, very short.
+const OXYGENE_TAMBOURINE = `# tambourine: Tambourine (GM54 / TimGM6mb), note 54. Noise instrument.
+# TiMidity: centroid=10973 Hz, rolloff95=12971 Hz. Very bright, instant onset.
+# Envelope: peak at 0s, -40 dB at 0.15s. Total duration 1.19s.
 amp: 0.35
 oscillator: noise
 envelope:
@@ -2024,7 +2135,9 @@ envelope:
   sustainLevel: 0.20
 `
 
-const OXYGENE_SEASHORE = `# seashore: Sea Shore atmospheric (GM123). Filtered noise, slow fade.
+const OXYGENE_SEASHORE = `# seashore: Sea Shore (GM123 / TimGM6mb), C4. Noise instrument.
+# TiMidity: centroid=1271 Hz, rolloff95=2600 Hz. Low-frequency filtered noise.
+# Envelope: peak at 0.75s, -40 dB at 9.95s (11s total).
 amp: 0.06
 oscillator: noise
 envelope:
