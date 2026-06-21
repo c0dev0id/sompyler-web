@@ -153,3 +153,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - SynStrings: switched from sin+partials to saw oscillator (FluidR3 preset is a sawtooth loop); keeps spread for chorus
   - String Ensemble: updated to measured spectral shape including H4 body resonance at 0.302
 - sf2_analyze.py: fixed normalisation to max partial (not H1); added pitch_correction application; accept stereo left-channel samples (type=4)
+
+### Changed (continued)
+- Kalimba: complete rework to FM synthesis
+  - Previous definition used wrong fundamental (C4 instead of G4) due to incorrect SF2 metadata
+  - Previous ratios (2.756×, 5.404×) were marimba free-free beam values, not kalimba
+  - Attack FFT at correct G4=392 Hz reveals dominant partial at 8.929× ("ting"), body at 1.020× and 3.146×
+  - Now uses FM synthesis: carrier at 1.020×, modulator at 8.929×, depth_env decays in first 5% of note
+  - Models transient metallic quality via DX7-style FM, collapses to near-sine body after ting decay
