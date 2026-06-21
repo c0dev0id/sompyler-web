@@ -620,11 +620,12 @@ partials:
 `
 
 const OXYGENE_SYNBRASS = `# synbrass: SynBrass 2 (GM64 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
-# Very slow TiMidity attack (peak at 1.95s / 3s note). Rich upper harmonics; H7 spike.
+# TiMidity patch peaks at 1.95s (very slow swell). We use a fast attack for
+# the melodic role in the score — Jarre's synth hits crisply on the beat.
 amp: 0.20
 oscillator: sin
 envelope:
-  attack: 0.12
+  attack: 0.02
   release: 0.40
   sustainLevel: 0.75
 partials:
@@ -691,10 +692,11 @@ partials:
 
 const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
 # H8/H9/H11 show a late-harmonic hump (choir/ensemble roughness character).
+# Plays the same melodic figure as synbrass — attack shortened to not drag the beat.
 amp: 0.10
 oscillator: sin
 envelope:
-  attack: 0.30
+  attack: 0.08
   release: 1.50
   sustainLevel: 0.85
 partials:
