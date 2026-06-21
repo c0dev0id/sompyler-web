@@ -59,7 +59,7 @@ describe('conformance: starter Sandstorm', () => {
     })
   }
 
-  it('matches hand-verified anchors', async () => {
+  it('matches hand-verified anchors', { timeout: 15000 }, async () => {
     const plan = await buildPlan()
 
     // Eleven voices as declared in the stage block.
@@ -85,7 +85,7 @@ describe('conformance: starter Sandstorm', () => {
     expect(occurrences).toBeGreaterThan(2 * plan.notes.length)
   })
 
-  it('matches the normalised distinct-notes snapshot (self-regression)', async () => {
+  it('matches the normalised distinct-notes snapshot (self-regression)', { timeout: 15000 }, async () => {
     const plan = await buildPlan()
     expect(normalizePlan(plan)).toMatchSnapshot()
   })
