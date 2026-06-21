@@ -129,14 +129,14 @@ export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
 
     void (async () => {
       try {
-        const instr = await loadInstrument(name, body)
+        const [instr, hz] = await Promise.all([loadInstrument(name, body), props.resolveHz()])
         if (run !== currentRun) return
+        lastHz = hz
         const spec = compileInstrument(instr)
         lastSpec = spec
         const env = spec.envelope ?? DEFAULT_ENVELOPE
         const sustainHold = Math.max(0.05, env.attack * 0.5)
         const totalSeconds = env.attack + sustainHold + env.release
-        // Initial waveform at lastHz (440 until the user plays and resolveHz fires).
         const samples = renderNote({ instrument: spec, freqHz: lastHz, stress: 1, lengthSeconds: totalSeconds, dampSeconds: 0 })
         if (run !== currentRun) return
         lastSamples = samples
