@@ -3,7 +3,7 @@
  *
  * In-project (loads automatically):
  *   - `oxygene.spls` — Jean-Michel Jarre "Oxygène Pt. IV" (1976), full 117-bar transcription.
- *   - `filtered-bass/kalimba/synbrass/synstrings/string-ensemble/bowed-pad/oxygene-melody/tambourine/seashore.spli`
+ *   - `filtered-bass/oxygene-kick/kalimba/synbrass/synstrings/string-ensemble/bowed-pad/oxygene-melody/tambourine/seashore.spli`
  *   - `tones_euro.splt` — equal-temperament tuning.
  *   - `oxygene-plate.splr` — Freeverb plate reverb.
  *
@@ -556,6 +556,22 @@ wet: 0.22
 pre_delay_ms: 10
 `
 
+const OXYGENE_KICK = `# oxygene-kick.spli — FM kick drum with pitch sweep.
+# Score at C1 (32.7 Hz). FM init_phase=0.25 starts modulator at peak,
+# sweeping carrier from ~4× base down to base in first ~50 ms.
+amp: 0.85
+oscillator: sin
+envelope:
+  attack: 0.002
+  release: 0.28
+  sustainLevel: 1.0
+fm:
+  freq_hz: 1
+  depth: 3
+  init_phase: 0.25
+  depth_env: "100:1;0.1,0;1,0"
+`
+
 const OXYGENE_BASS = `# bass: Fretless Bass (GM36 / TimGM6mb), C2. Partials from TiMidity sustain FFT.
 # H2 strong (-3.5 dB), H4 > H3, H5 strong (classic bass string characteristic).
 amp: 0.70
@@ -831,6 +847,7 @@ stage:
   seashore:  1|1 1.8 seashore
   kalimba:   1|1 0.2 kalimba
   bass:      1|1 0.0 filtered-bass
+  kick:      1|1 0.0 oxygene-kick
   tambourine: 1|1 0.1 tambourine
   synbrass:  1|1 0.8 synbrass
   strings:   2|1 1.0 synstrings
@@ -901,6 +918,9 @@ tambourine:
   8: C4 1
   10: C4 1
   11: C4 1
+kick:
+  0: C1 2
+  6: C1 2
 ---
 # bar 6 — Cm pattern B
 _meta:
@@ -3744,6 +3764,7 @@ bowedpad:
   3: C4 8
   6: F4 4
 tambourine: false
+kick: false
 melody:
   0: A4 1
   1: G4 1
@@ -3756,6 +3777,7 @@ const SEEDS: Seed[] = [
   // Oxygène Pt. IV — Jarre (1976): default project on first run.
   { name: 'oxygene',         ext: 'spls', body: OXYGENE,            inProject: true },
   { name: 'filtered-bass',   ext: 'spli', body: OXYGENE_BASS,       inProject: true },
+  { name: 'oxygene-kick',    ext: 'spli', body: OXYGENE_KICK,       inProject: true },
   { name: 'kalimba',         ext: 'spli', body: OXYGENE_KALIMBA,    inProject: true },
   { name: 'synbrass',        ext: 'spli', body: OXYGENE_SYNBRASS,   inProject: true },
   { name: 'synstrings',      ext: 'spli', body: OXYGENE_STRINGS,    inProject: true },
