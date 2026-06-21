@@ -8,6 +8,7 @@ import { DEFAULT_SAMPLE_RATE } from '../synth/constants'
 interface InstrumentPreviewProps {
   name: () => string | null
   body: () => string | null
+  previewHz: () => number
 }
 
 export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
@@ -112,7 +113,7 @@ export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
         const totalSeconds = env.attack + sustainHold + env.release
         const samples = renderNote({
           instrument: spec,
-          freqHz: 440,
+          freqHz: props.previewHz(),
           stress: 1,
           lengthSeconds: totalSeconds,
           dampSeconds: 0,

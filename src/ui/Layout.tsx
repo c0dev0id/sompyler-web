@@ -12,6 +12,7 @@ import { PlayerVisualizer } from './PlayerVisualizer'
 import { InstrumentPreview } from './InstrumentPreview'
 import type { TransportState } from '../player/Player'
 import { HelpDialog } from './HelpDialog'
+import { firstInstrumentPitchHz } from '../parse/score'
 
 /**
  * R-UI: four equal quadrants + collapsible staging rail.
@@ -154,12 +155,27 @@ export const Layout: Component<LayoutProps> = (props) => {
   const [instrumentNames, setInstrumentNames] = createSignal<Set<string>>(new Set())
   const [previewName, setPreviewName] = createSignal<string | null>(null)
   const [previewBody, setPreviewBody] = createSignal<string | null>(null)
+  const [previewHz, setPreviewHz] = createSignal(440)
+  let previewHzRun = 0
 
   createEffect(() => {
     props.refreshSignal()
     void (async () => {
       const all = await listFiles()
       setInstrumentNames(new Set(all.filter((f) => f.ext === 'spli').map((f) => f.name)))
+    })()
+  })
+
+  createEffect(() => {
+    const name = previewName()
+    props.refreshSignal()
+    const run = ++previewHzRun
+    if (!name) { setPreviewHz(440); return }
+    void (async () => {
+      const files = await listProjectFiles()
+      if (run !== previewHzRun) return
+      const score = files.find((f) => f.ext === 'spls')
+      setPreviewHz(score ? (firstInstrumentPitchHz(score.body, name) ?? 440) : 440)
     })()
   })
 
@@ -239,7 +255,7 @@ export const Layout: Component<LayoutProps> = (props) => {
             isPlaying={() => playerState() === 'playing'}
           />
         </div>
-        <InstrumentPreview name={previewName} body={previewBody} />
+        <InstrumentPreview name={previewName} body={previewBody} previewHz={previewHz} />
       </section>
 
       {/* Top-right: instruments */}

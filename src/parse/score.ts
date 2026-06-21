@@ -4,6 +4,7 @@ import { log } from '../debug'
 import { PositionStack } from './position'
 import { expandMultiMeasures } from './multimeasure'
 import { expandChainString } from './chain'
+import { Tuner } from './tuning'
 
 /**
  * Phase 1 walker for `.spls` files.
@@ -318,6 +319,52 @@ export function parseScore(body: string): { head: ScoreHead; measures: unknown[]
         : undefined,
   }
   return { head: result, measures: expandMultiMeasures(docs.slice(1)) }
+}
+
+const FIRST_PITCH_RX = /\b([A-Ga-g][#b]?-?\d+)\b/
+
+/**
+ * Scan the score body and return the Hz of the first note played by the
+ * given instrument, or null if the instrument is not in the score.
+ * Used to pick a musically meaningful preview pitch for the instrument panel.
+ */
+export function firstInstrumentPitchHz(scoreBody: string, instrumentName: string): number | null {
+  try {
+    const { head, measures } = parseScore(scoreBody)
+
+    const voices = new Set<string>()
+    for (const [voice, sv] of Object.entries(head.stage)) {
+      if (sv.instrument === instrumentName) voices.add(voice)
+    }
+    if (voices.size === 0) return null
+
+    const tuner = new Tuner()
+
+    for (const measure of measures) {
+      if (!measure || typeof measure !== 'object') continue
+      const doc = measure as Record<string, unknown>
+      for (const voice of voices) {
+        const content = doc[voice]
+        if (!content || content === false) continue
+
+        let pitchStr: string | null = null
+        if (typeof content === 'string') {
+          pitchStr = FIRST_PITCH_RX.exec(content)?.[1] ?? null
+        } else if (typeof content === 'object' && !Array.isArray(content)) {
+          for (const val of Object.values(content as Record<string, unknown>)) {
+            if (typeof val === 'string') { pitchStr = val.trim().split(/\s+/)[0] ?? null; break }
+          }
+        }
+
+        if (pitchStr) {
+          try { return tuner.frequencyOfTone(pitchStr) } catch { /* skip unparseable pitch */ }
+        }
+      }
+    }
+    return null
+  } catch {
+    return null
+  }
 }
 
 /**
