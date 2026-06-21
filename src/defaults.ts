@@ -14,8 +14,8 @@
  *   - `sandstorm.spls` — five-voice electronic showcase.
  *   - `sandstorm-lead/bass/kick/snare/hihat.spli` — synth + FM instruments.
  *   - `tones_euro.splt` — equal-temperament tuning with chr/mj/mn scales.
- *   - `oxygene.spls` — Jean-Michel Jarre "Oxygène Pt. IV" (1976).
- *   - `oxygene-bass/sub/pad/arp.spli` — filtered synth bass, sub-bass, chord pad, arpeggio.
+ *   - `oxygene.spls` — Jean-Michel Jarre "Oxygène Pt. IV" (1976), full 117-bar MIDI transcription.
+ *   - `filtered-bass/kalimba/synbrass/synstrings/string-ensemble/bowed-pad/oxygene-melody/tambourine/seashore.spli`
  *
  * In staging (conformance, dev tools, examples):
  *   - `pachelbel.spls`, `violin.spli`, `cello.spli`, `pachelbel-hall.splr`
@@ -1873,188 +1873,186 @@ jitter: "1:0.12"
 deldiffs: "0.008|0.014"
 `
 
-const OXYGENE_BASS = `# filtered-bass: filtered synth bass with walking pattern.
-amp: 0.75
-oscillator: sin
-envelope:
-  attack: 0.008
-  release: 0.10
-  sustainLevel: 0.85
-partials:
-  - { freqMult: 1, amp: 1.000 }
-  - { freqMult: 2, amp: 0.550 }
-  - { freqMult: 3, amp: 0.350 }
-  - { freqMult: 4, amp: 0.200 }
-  - { freqMult: 5, amp: 0.120 }
-  - { freqMult: 6, amp: 0.070 }
-vcf:
-  cutoff_hz: 800
-  resonance: 0.45
-  env_amount: 1400
-  env_attack: 0.015
-  env_release: 0.08
-`
-
-const OXYGENE_SUB = `# sub-bass: sine sub-bass, sustained root tones.
-amp: 0.55
-oscillator: sin
-envelope:
-  attack: 0.25
-  release: 0.60
-  sustainLevel: 0.92
-partials:
-  - { freqMult: 1, amp: 1.000 }
-  - { freqMult: 2, amp: 0.150 }
-`
-
-const OXYGENE_PAD = `# string-pad: slow-attack chord pad with VCF and LFO sweep.
-amp: 0.18
-oscillator: sin
-envelope:
-  attack: 0.45
-  release: 1.40
-  sustainLevel: 0.85
-partials:
-  - { freqMult: 1, amp: 1.000 }
-  - { freqMult: 2, amp: 0.380 }
-  - { freqMult: 3, amp: 0.160 }
-  - { freqMult: 4, amp: 0.090 }
-spread: [3, -8, 6, -4]
-vcf:
-  cutoff_hz: 2000
-  resonance: 0.15
-lfo:
-  rate_hz: 0.28
-  depth: 250
-  target: vcf
-  waveform: sin
-`
-
-const OXYGENE_ARP = `# bell-arp: decaying bell-like arpeggio with FM metallicity.
-amp: 0.60
+const OXYGENE_BASS = `# filtered-bass: Fretless Bass (GM36). Smooth, slightly resonant.
+amp: 0.70
 oscillator: sin
 envelope:
   attack: 0.006
-  release: 0.80
-  sustainLevel: 0.45
+  release: 0.15
+  sustainLevel: 0.80
+partials:
+  - { freqMult: 1, amp: 1.000 }
+  - { freqMult: 2, amp: 0.600 }
+  - { freqMult: 3, amp: 0.300 }
+  - { freqMult: 4, amp: 0.120 }
+vcf:
+  cutoff_hz: 1200
+  resonance: 0.30
+  env_amount: 800
+  env_attack: 0.008
+  env_release: 0.12
+`
+
+const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM108). Short attack, fast decay, metallic tines.
+amp: 0.50
+oscillator: sin
+envelope:
+  attack: 0.002
+  release: 0.40
+  sustainLevel: 0.15
+partials:
+  - { freqMult: 1, amp: 1.000 }
+  - { freqMult: 2.756, amp: 0.300 }
+  - { freqMult: 5.404, amp: 0.120 }
+`
+
+const OXYGENE_SYNBRASS = `# synbrass: SynBrass 2 (GM64). Bright, slightly buzzy, medium attack.
+amp: 0.20
+oscillator: saw
+envelope:
+  attack: 0.12
+  release: 0.40
+  sustainLevel: 0.75
+vcf:
+  cutoff_hz: 1800
+  resonance: 0.35
+  env_amount: 2000
+  env_attack: 0.10
+  env_release: 0.30
+`
+
+const OXYGENE_STRINGS = `# synstrings: SynString 2 (GM52). Lush, slow attack, rich harmonics.
+amp: 0.12
+oscillator: sin
+envelope:
+  attack: 0.35
+  release: 1.20
+  sustainLevel: 0.88
+partials:
+  - { freqMult: 1, amp: 1.000 }
+  - { freqMult: 2, amp: 0.500 }
+  - { freqMult: 3, amp: 0.250 }
+  - { freqMult: 4, amp: 0.120 }
+spread: [4, -6, 7, -3]
+`
+
+const OXYGENE_ENSEMBLE = `# string-ensemble: String Ensemble 1 (GM49). Warmer, slower release.
+amp: 0.10
+oscillator: sin
+envelope:
+  attack: 0.30
+  release: 1.50
+  sustainLevel: 0.85
+partials:
+  - { freqMult: 1, amp: 1.000 }
+  - { freqMult: 2, amp: 0.450 }
+  - { freqMult: 3, amp: 0.200 }
+  - { freqMult: 4, amp: 0.080 }
+`
+
+const OXYGENE_BOWEDPAD = `# bowed-pad: Pad 5 Bowed (GM93). Very slow attack, ethereal.
+amp: 0.08
+oscillator: sin
+envelope:
+  attack: 0.80
+  release: 2.00
+  sustainLevel: 0.90
+partials:
+  - { freqMult: 1, amp: 1.000 }
+  - { freqMult: 2, amp: 0.350 }
+  - { freqMult: 3, amp: 0.120 }
+lfo:
+  rate_hz: 0.18
+  depth: 0.08
+  target: amp
+  waveform: sin
+`
+
+const OXYGENE_MELODY = `# oxygene-melody: Nylon Guitar (GM25) — the main melodic voice. Medium decay, clear tone.
+amp: 0.55
+oscillator: sin
+envelope:
+  attack: 0.004
+  release: 0.70
+  sustainLevel: 0.55
 partials:
   - { freqMult: 1, amp: 1.000 }
   - { freqMult: 2, amp: 0.420 }
-  - { freqMult: 3, amp: 0.180 }
-  - { freqMult: 4, amp: 0.090 }
-fm:
-  freq_hz: 2.01
-  dynamic: true
-  depth: 0.4
+  - { freqMult: 3, amp: 0.220 }
+  - { freqMult: 4, amp: 0.110 }
+  - { freqMult: 5, amp: 0.060 }
 vcf:
-  cutoff_hz: 3500
-  resonance: 0.18
+  cutoff_hz: 3000
+  resonance: 0.22
+`
+
+const OXYGENE_TAMBOURINE = `# tambourine: Tambourine (GM54). Noise + metallic partial, very short.
+amp: 0.35
+oscillator: noise
+envelope:
+  attack: 0.001
+  release: 0.08
+  sustainLevel: 0.20
+`
+
+const OXYGENE_SEASHORE = `# seashore: Sea Shore atmospheric (GM123). Filtered noise, slow fade.
+amp: 0.06
+oscillator: noise
+envelope:
+  attack: 2.00
+  release: 3.00
+  sustainLevel: 0.70
 `
 
 const OXYGENE = `title: Oxygène Pt. IV
 author: Jean-Michel Jarre (1976)
 stage:
-  bass:  1|1 0.0 filtered-bass
-  sub:   1|1 0.6 sub-bass
-  pad:   1|1 1.5 string-pad
-  arp:   1|1 1.0 bell-arp
-  kick:  1|1 0.0 kick
-  hihat: 1|1 0.1 hihat
-  snare: 1|1 0.3 snare
+  seashore:  1|1 1.8 seashore
+  kalimba:   1|1 0.2 kalimba
+  bass:      1|1 0.0 filtered-bass
+  tambourine: 1|1 0.1 tambourine
+  synbrass:  1|1 0.8 synbrass
+  strings:   2|1 1.0 synstrings
+  ensemble:  1|2 1.2 string-ensemble
+  bowedpad:  1|1 1.6 bowed-pad
+  melody:    1|1 0.4 oxygene-melody
 tuning_config: tones_euro
 room: free-field
 ---
-# m1 — bass + drums intro (Cm)
+# bar 1 — intro: seashore fade-in, kalimba silent
 _meta:
-  ticks_per_minute: 363
+  ticks_per_minute: 369
   stress_pattern: "2,0,0,1,0,0,1,0,0,1,0,0"
   lower_stress_bound: 70
-  upper_stress_bound: 92
+  upper_stress_bound: 90
+seashore:
+  0: C4 12
+---
+# bar 2 — kalimba fade-in begins (very quiet)
+_meta:
+  repeat_unmentioned_voices: true
+kalimba:
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  8: C4 1 damp=2
+  10: C4 1 damp=2
+---
+# bar 3 — kalimba fading in
+_meta:
+  repeat_unmentioned_voices: true
+kalimba:
+  0: C4 1 damp=2
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+---
+# bar 4 — bass pickup note (G1 at t=11)
+_meta:
+  repeat_unmentioned_voices: true
+kalimba: false
 bass:
-  0: C2 3
-  3: Bb1 2
-  5: C2 3
-  8: G1 1
-  9: Bb1 2
   11: G1 1
-kick:
-  0,2,5,8: C1 1 damp=2
-hihat:
-  0+1*12: A6 1
-snare:
-  3,9: D4 1
 ---
-# m2
-_meta:
-  repeat_unmentioned_voices: true
----
-# m3
-_meta:
-  repeat_unmentioned_voices: true
----
-# m4
-_meta:
-  repeat_unmentioned_voices: true
----
-# m5 — sub-bass, pad, arpeggio enter (Cm)
-_meta:
-  repeat_unmentioned_voices: true
-sub:
-  0: C2 12
-pad: "G3_11; C4_11; D#4_11"
-arp:
-  0: C5 5
-  5: G4 1
-  6: D#4 2
-  8: G4 3
-  11: C4 7
----
-# m6
-_meta:
-  repeat_unmentioned_voices: true
-arp: false
----
-# m7
-_meta:
-  repeat_unmentioned_voices: true
-arp:
-  0: C5 5
-  5: G4 1
-  6: D#4 2
-  8: G4 3
-  11: C4 7
----
-# m8
-_meta:
-  repeat_unmentioned_voices: true
-arp: false
----
-# m9 — Gm chord section
-_meta:
-  repeat_unmentioned_voices: true
-bass:
-  0: D2 3
-  3: C2 2
-  5: D2 3
-  8: A1 1
-  9: C2 2
-  11: A1 1
-sub:
-  0: G1 12
-pad: "A#3_11; D4_11"
-arp:
-  0: A#4 4
-  5: A4 1
-  6: G4 2
-  8: A4 2
-  11: D4 11
----
-# m10
-_meta:
-  repeat_unmentioned_voices: true
-arp: false
----
-# m11 — Cm returns
+# bar 5 — drums + bass + kalimba enter; Cm pattern A
 _meta:
   repeat_unmentioned_voices: true
 bass:
@@ -2064,62 +2062,205 @@ bass:
   8: G1 1
   9: Bb1 2
   11: G1 1
-sub:
-  0: C2 12
-pad: "G3_11; C4_11; D#4_11"
-arp:
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+tambourine:
+  0: C4 1
+  1: C4 1
+  2: C4 1
+  3: C4 1
+  4: C4 1
+  5: C4 1
+  6: C4 1
+  7: C4 1
+  8: C4 1
+  10: C4 1
+  11: C4 1
+---
+# bar 6 — Cm pattern B
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+---
+# bar 7 — Cm pattern A
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+---
+# bar 8 — Cm pattern B
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+---
+# bar 9 — Cm pattern A
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+---
+# bar 10 — SynBrass + Strings enter; Cm pattern B
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+synbrass:
+  0: C5 3
+  5: G4 1
+  6: Eb4 2
+  8: G4 2
+  11: C4 7
+strings:
+  0: Eb3 24
+  0: G3 24
+  0: C3 24
+ensemble:
   0: C5 5
   5: G4 1
-  6: D#4 2
-  8: G4 3
-  11: C4 7
+  6: Eb4 3
+  8: G4 4
+  11: C4 12
 ---
-# m12
+# bar 11 — Cm A; SynBrass silent this bar; strings hold
 _meta:
   repeat_unmentioned_voices: true
-arp: false
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+synbrass: false
+strings: false
+ensemble: false
 ---
-# m13
+# bar 12 — Cm B; SynBrass repeats
 _meta:
   repeat_unmentioned_voices: true
-arp:
-  0: C5 5
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+synbrass:
+  0: C5 3
   5: G4 1
-  6: D#4 2
-  8: G4 3
+  6: Eb4 2
+  8: G4 2
   11: C4 7
+strings:
+  0: Eb3 24
+  0: G3 24
+  0: C3 24
+ensemble:
+  0: C5 5
+  5: G4 2
+  6: Eb4 2
+  8: G4 4
+  11: C4 12
 ---
-# m14
+# bar 13 — Cm A; SynBrass off
 _meta:
   repeat_unmentioned_voices: true
-arp: false
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+synbrass: false
+strings: false
+ensemble: false
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
 ---
-# m15 — Gm again
+# bar 14 — Gm pattern; SynBrass Gm
 _meta:
   repeat_unmentioned_voices: true
 bass:
   0: D2 3
   3: C2 2
   5: D2 3
-  8: A1 1
+  8: D2 1
   9: C2 2
   11: A1 1
-sub:
-  0: G1 12
-pad: "A#3_11; D4_11"
-arp:
-  0: A#4 4
+kalimba:
+  2: D4 1 damp=2
+  4: D4 1 damp=2
+  6: D4 1 damp=2
+  9: D4 1 damp=2
+  11: D4 1 damp=2
+synbrass:
+  0: Bb4 3
   5: A4 1
   6: G4 2
   8: A4 2
-  11: D4 11
+  11: D4 7
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: Bb4 5
+  5: A4 2
+  6: G4 2
+  8: A4 4
+  11: D4 12
 ---
-# m16
+# bar 15 — Gm A; SynBrass off
 _meta:
   repeat_unmentioned_voices: true
-arp: false
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 2
+synbrass: false
+strings: false
+ensemble: false
 ---
-# m17 — Fm section
+# bar 16 — Fm transition; SynBrass Fm run + SYNSTRING1 enters
 _meta:
   repeat_unmentioned_voices: true
 bass:
@@ -2128,26 +2269,49 @@ bass:
   5: C2 3
   8: F2 1
   9: Eb2 2
-  11: C2 1
-sub:
-  0: F1 12
-pad: "A3_11; C4_11"
-arp:
-  0: A4 2
+  11: C2 2
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+synbrass:
+  0: A4 1
   2: G4 1
+  3: F4 1
+  5: C4 6
+strings:
+  0: F3 24
+  0: A3 24
+ensemble:
+  0: A4 2
+  2: G4 2
   3: F4 2
-  5: C4 7
+  5: C4 8
 ---
-# m18 — Fm arp continues (both measures active)
+# bar 17 — Fm descending run bass; pad continues
 _meta:
   repeat_unmentioned_voices: true
-arp:
-  0: A4 2
+bass:
+  2: F2 2
+  3: Eb2 2
+  5: C2 3
+  8: C2 1
+  9: Eb2 2
+  11: C2 1
+synbrass:
   2: G4 1
+  3: F4 1
+  5: C4 5
+strings: false
+ensemble:
+  0: A4 2
+  2: G4 2
   3: F4 2
-  5: C4 7
+  5: C4 8
 ---
-# m19 — Cm return
+# bar 18 — Cm A; 8-bar cycle starts
 _meta:
   repeat_unmentioned_voices: true
 bass:
@@ -2157,32 +2321,2770 @@ bass:
   8: G1 1
   9: Bb1 2
   11: G1 1
-sub:
-  0: C2 12
-pad: "G3_11; C4_11; D#4_11"
-arp:
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+synbrass:
+  0: C5 3
+  5: G4 1
+  6: Eb4 2
+  8: G4 2
+  11: C4 7
+strings:
+  0: Eb3 24
+  0: G3 24
+  0: C3 24
+ensemble:
   0: C5 5
   5: G4 1
-  6: D#4 2
-  8: G4 3
-  11: C4 7
+  6: Eb4 3
+  8: G4 4
+  11: C4 12
 ---
-# m20 — final measure
+# bar 19 — Cm B variant
 _meta:
   repeat_unmentioned_voices: true
-arp: false`
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 1
+  10: G1 1
+  11: Bb1 1
+synbrass: false
+strings: false
+ensemble: false
+---
+# bar 20 — Cm A
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+synbrass:
+  0: C5 3
+  5: G4 1
+  6: Eb4 2
+  8: G4 2
+  11: C4 7
+strings:
+  0: Eb3 24
+  0: C3 24
+ensemble:
+  0: C5 5
+  5: G4 2
+  6: Eb4 2
+  8: G4 4
+  11: C4 12
+---
+# bar 21 — Cm B
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+synbrass: false
+strings: false
+ensemble: false
+---
+# bar 22 — Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+kalimba:
+  2: D4 1 damp=2
+  4: D4 1 damp=2
+  6: D4 1 damp=2
+  9: D4 1 damp=2
+  11: D4 1 damp=2
+synbrass:
+  0: Bb4 3
+  5: A4 1
+  6: G4 2
+  8: A4 2
+  11: D4 7
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: Bb4 5
+  5: A4 2
+  6: G4 2
+  8: A4 4
+  11: D4 12
+---
+# bar 23 — Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+synbrass: false
+strings: false
+ensemble: false
+---
+# bar 24 — Fm; SynBrass Fm run
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+  11: C2 2
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+synbrass:
+  0: A4 1
+  2: G4 1
+  3: F4 1
+  5: C4 6
+strings:
+  0: F3 24
+  0: A3 24
+ensemble:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
+---
+# bar 25 — Fm descending run
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  2: F2 2
+  3: Eb2 1
+  4: C2 1
+  5: Eb2 2
+  6: C2 1
+  7: Bb1 1
+  8: G1 1
+  9: Bb1 1
+  10: G1 1
+  11: Bb1 1
+synbrass:
+  2: G4 1
+  3: F4 1
+  5: C4 5
+strings: false
+ensemble:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
+---
+# bar 26 — Cm A
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+synbrass:
+  0: C5 3
+  5: G4 1
+  6: Eb4 2
+  8: G4 2
+  11: C4 7
+strings:
+  0: Eb3 24
+  0: G3 24
+  0: C3 24
+ensemble:
+  0: C5 5
+  5: G4 1
+  6: Eb4 3
+  8: G4 4
+  11: C4 12
+---
+# bar 27 — Cm B
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+synbrass: false
+strings: false
+ensemble: false
+---
+# bar 28 — Cm A
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+synbrass:
+  0: C5 3
+  5: G4 1
+  6: Eb4 2
+  8: G4 2
+  11: C4 7
+strings:
+  0: Eb3 24
+  0: C3 24
+ensemble:
+  0: C5 5
+  5: G4 2
+  6: Eb4 2
+  8: G4 4
+  11: C4 12
+---
+# bar 29 — Cm B
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+synbrass: false
+strings: false
+ensemble: false
+---
+# bar 30 — Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+kalimba:
+  2: D4 1 damp=2
+  4: D4 1 damp=2
+  6: D4 1 damp=2
+  9: D4 1 damp=2
+  11: D4 1 damp=2
+synbrass:
+  0: Bb4 3
+  5: A4 1
+  6: G4 2
+  8: A4 2
+  11: D4 7
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: Bb4 5
+  5: A4 2
+  6: G4 2
+  8: A4 4
+  11: D4 12
+---
+# bar 31 — Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+synbrass: false
+strings: false
+ensemble: false
+---
+# bar 32 — Fm; SynBrass Fm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+synbrass:
+  0: A4 1
+  2: G4 1
+  3: F4 1
+  5: C4 6
+strings:
+  0: F3 24
+  0: A3 24
+ensemble:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
+---
+# bar 33 — Fm descending run
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 1
+  2: F2 2
+  3: Eb2 1
+  4: C2 1
+  5: Eb2 2
+  6: C2 1
+  7: Bb1 1
+  8: G1 1
+  9: Bb1 1
+  10: G1 1
+  11: Bb1 1
+synbrass:
+  2: G4 1
+  3: F4 1
+  5: C4 5
+strings: false
+ensemble:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 7
+---
+# bar 34 — BowedPad + SynString2-B enter; Cm; Kalimba silent
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+kalimba: false
+synbrass: false
+strings:
+  0: Eb3 24
+  0: C3 24
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad:
+  3: C4 21
+  6: Eb4 18
+---
+# bar 35 — Cm; repeat high strings
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+strings: false
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad: false
+---
+# bar 36 — Gm; BowedPad Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 2
+  8: D2 1
+  9: C2 2
+  11: A1 1
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad:
+  0: G3 1
+  3: Bb3 21
+  6: D4 18
+---
+# bar 37 — Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+strings: false
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad: false
+---
+# bar 38 — Fm; BowedPad Fm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+  11: C2 2
+strings:
+  0: F3 24
+  0: A3 24
+  0: F4 24
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad:
+  0: A3 24
+  3: C4 21
+  6: F4 18
+---
+# bar 39 — Fm descending run; bowedpad holds
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  2: F2 2
+  3: Eb2 2
+  5: C2 3
+  8: C2 1
+  9: Eb2 2
+  11: C2 1
+strings: false
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad: false
+---
+# bar 40 — Melody enters; Cm A; Kalimba resumes
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: Eb3 24
+  0: C3 24
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad:
+  3: C4 21
+  6: Eb4 18
+melody:
+  0: Eb4 1
+  1: D4 1
+  2: Eb4 1
+  3: C4 2
+  5: G3 7
+---
+# bar 41 — Cm B; melody repeats
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+strings: false
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad: false
+melody:
+  0: Eb4 1
+  1: D4 1
+  2: Eb4 1
+  3: C4 2
+  5: G3 7
+---
+# bar 42 — Gm; melody Gm phrase
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 2
+  8: D2 1
+  9: C2 2
+  11: A1 1
+kalimba:
+  2: D4 1 damp=2
+  4: D4 1 damp=2
+  6: D4 1 damp=2
+  9: D4 1 damp=2
+  11: D4 1 damp=2
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad:
+  0: G3 1
+  3: Bb3 21
+  6: D4 18
+melody:
+  0: Bb3 1
+  1: A3 1
+  2: Bb3 1
+  3: G3 2
+  5: D3 7
+---
+# bar 43 — Gm; melody repeats
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+strings: false
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad: false
+melody:
+  0: Bb3 1
+  1: A3 1
+  2: Bb3 1
+  3: G3 2
+  5: D3 7
+---
+# bar 44 — Fm; melody Fm phrase
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: F3 24
+  0: A3 24
+  0: F4 24
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad:
+  0: A3 24
+  3: C4 21
+  6: F4 18
+melody:
+  0: A3 1
+  1: G3 1
+  2: F3 1
+  3: F3 2
+  5: C4 7
+---
+# bar 45 — Fm descending run; melody variant
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 1
+  2: F2 2
+  3: Eb2 1
+  4: C2 1
+  5: Eb2 2
+  6: C2 1
+  7: Bb1 1
+  8: G1 1
+  9: Bb1 1
+  10: G1 1
+  11: Bb1 1
+strings: false
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad: false
+melody:
+  0: A3 1
+  1: G3 1
+  2: F3 1
+  3: A3 2
+  4: G3 2
+  5: F3 2
+  6: C4 6
+---
+# bar 46 — Cm A; 6-bar cycle repeats
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: Eb3 24
+  0: C3 24
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad:
+  3: C4 21
+  6: Eb4 18
+melody:
+  0: Eb4 1
+  1: D4 1
+  2: Eb4 1
+  3: C4 2
+  5: G3 7
+---
+# bar 47 — Cm B; melody repeats
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+strings: false
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad: false
+melody:
+  0: Eb4 1
+  1: D4 1
+  2: Eb4 1
+  3: C4 2
+  5: G3 7
+---
+# bar 48 — Gm; melody Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 2
+  8: D2 1
+  9: C2 2
+  11: A1 1
+kalimba:
+  2: D4 1 damp=2
+  4: D4 1 damp=2
+  6: D4 1 damp=2
+  9: D4 1 damp=2
+  11: D4 1 damp=2
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad:
+  0: G3 1
+  3: Bb3 21
+  6: D4 18
+melody:
+  0: Bb3 1
+  1: A3 1
+  2: Bb3 1
+  3: G3 2
+  5: D3 7
+---
+# bar 49 — Gm; melody repeats
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+strings: false
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad: false
+melody:
+  0: Bb3 1
+  1: A3 1
+  2: Bb3 1
+  3: G3 2
+  5: D3 7
+---
+# bar 50 — Fm; melody Fm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: F3 24
+  0: A3 24
+  0: F4 24
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad:
+  0: A3 24
+  3: C4 24
+  6: F4 24
+melody:
+  0: A3 1
+  1: G3 1
+  2: F3 1
+  3: F3 2
+  5: C4 7
+---
+# bar 51 — Fm descending; melody variant
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 1
+  2: F2 2
+  3: Eb2 1
+  4: C2 1
+  5: Eb2 2
+  6: C2 1
+  7: Bb1 1
+  8: G1 1
+  9: Bb1 1
+  10: G1 1
+  11: Bb1 1
+strings: false
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad: false
+melody:
+  0: A3 2
+  2: G3 3
+  4: F3 2
+  6: C4 6
+---
+# bar 52 — Cm A; melody silent bars 52-81; Kalimba continues; SynString2-B silent
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: Eb3 24
+  0: G3 24
+  0: C3 24
+ensemble:
+  0: C5 5
+  5: G4 1
+  6: Eb4 3
+  8: G4 4
+  11: C4 12
+bowedpad: false
+melody: false
+---
+# bar 53 — Cm A
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+strings: false
+ensemble: false
+---
+# bar 54 — Cm B; ensemble plays
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+strings:
+  0: Eb3 24
+  0: C3 24
+ensemble:
+  0: C5 5
+  5: G4 2
+  6: Eb4 2
+  8: G4 4
+  11: C4 12
+---
+# bar 55 — Cm A
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+strings: false
+ensemble: false
+---
+# bar 56 — Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+kalimba:
+  2: D4 1 damp=2
+  4: D4 1 damp=2
+  6: D4 1 damp=2
+  9: D4 1 damp=2
+  11: D4 1 damp=2
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: Bb4 5
+  5: A4 2
+  6: G4 2
+  8: A4 4
+  11: D4 12
+---
+# bar 57 — Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 2
+strings: false
+ensemble: false
+---
+# bar 58 — Fm; SynString1 enters (same as SynString2-A Fm)
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+  11: C2 2
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: F3 24
+  0: A3 24
+ensemble:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
+---
+# bar 59 — Fm descending
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  2: F2 2
+  3: Eb2 2
+  5: C2 3
+  8: C2 1
+  9: Eb2 2
+  11: C2 1
+strings: false
+ensemble:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
+---
+# bar 60 — Cm A
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: Eb3 24
+  0: G3 24
+  0: C3 24
+ensemble:
+  0: C5 5
+  5: G4 1
+  6: Eb4 3
+  8: G4 4
+  11: C4 12
+---
+# bar 61 — Cm B variant
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 1
+  10: G1 1
+  11: Bb1 1
+strings: false
+ensemble: false
+---
+# bar 62 — Cm A
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+strings:
+  0: Eb3 24
+  0: C3 24
+ensemble:
+  0: C5 5
+  5: G4 2
+  6: Eb4 2
+  8: G4 4
+  11: C4 12
+---
+# bar 63 — Cm B
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+strings: false
+ensemble: false
+---
+# bar 64 — Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+kalimba:
+  2: D4 1 damp=2
+  4: D4 1 damp=2
+  6: D4 1 damp=2
+  9: D4 1 damp=2
+  11: D4 1 damp=2
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: Bb4 5
+  5: A4 2
+  6: G4 2
+  8: A4 4
+  11: D4 12
+---
+# bar 65 — Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+strings: false
+ensemble: false
+---
+# bar 66 — Fm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+  11: C2 2
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: F3 24
+  0: A3 24
+ensemble:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
+---
+# bar 67 — Fm descending
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  2: F2 2
+  3: Eb2 1
+  4: C2 1
+  5: Eb2 2
+  6: C2 1
+  7: Bb1 1
+  8: G1 1
+  9: Bb1 1
+  10: G1 1
+  11: Bb1 1
+strings: false
+ensemble:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
+---
+# bar 68 — Cm A
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: Eb3 24
+  0: G3 24
+  0: C3 24
+ensemble:
+  0: C5 5
+  5: G4 1
+  6: Eb4 3
+  8: G4 4
+  11: C4 12
+---
+# bar 69 — Cm B
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+strings: false
+ensemble: false
+---
+# bar 70 — Cm B variant
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 1
+  10: G1 1
+  11: Bb1 1
+strings:
+  0: Eb3 24
+  0: C3 24
+ensemble:
+  0: C5 5
+  5: G4 2
+  6: Eb4 2
+  8: G4 4
+  11: C4 12
+---
+# bar 71 — Cm B
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+strings: false
+ensemble: false
+---
+# bar 72 — Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+kalimba:
+  2: D4 1 damp=2
+  4: D4 1 damp=2
+  6: D4 1 damp=2
+  9: D4 1 damp=2
+  11: D4 1 damp=2
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: Bb4 5
+  5: A4 2
+  6: G4 2
+  8: A4 4
+  11: D4 12
+---
+# bar 73 — Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+strings: false
+ensemble: false
+---
+# bar 74 — Fm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: F3 24
+  0: A3 24
+ensemble:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
+---
+# bar 75 — Fm descending
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 1
+  2: F2 2
+  3: Eb2 1
+  4: C2 1
+  5: Eb2 2
+  6: C2 1
+  7: Bb1 1
+  8: G1 1
+  9: Bb1 1
+  10: G1 1
+  11: Bb1 1
+strings: false
+ensemble:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 7
+---
+# bar 76 — SynString2-B high arpeggios resume; BowedPad resumes; Cm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: Eb3 24
+  0: C3 24
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad:
+  3: C4 21
+  6: Eb4 18
+---
+# bar 77 — Cm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+strings: false
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad: false
+---
+# bar 78 — Gm; BowedPad Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 2
+  8: D2 1
+  9: C2 2
+  11: A1 1
+kalimba:
+  2: D4 1 damp=2
+  4: D4 1 damp=2
+  6: D4 1 damp=2
+  9: D4 1 damp=2
+  11: D4 1 damp=2
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad:
+  0: G3 1
+  3: Bb3 21
+  6: D4 18
+---
+# bar 79 — Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+strings: false
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad: false
+---
+# bar 80 — Fm; BowedPad Fm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+  11: C2 2
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: F3 24
+  0: A3 24
+  0: F4 24
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad:
+  0: A3 24
+  3: C4 21
+  6: F4 18
+---
+# bar 81 — Fm descending; bowedpad holds
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  2: F2 2
+  3: Eb2 2
+  5: C2 3
+  8: C2 1
+  9: Eb2 2
+  11: C2 1
+strings: false
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad: false
+---
+# bar 82 — Melody returns with elaborate variations; Cm A
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: Eb3 24
+  0: C3 24
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad:
+  3: C4 21
+  6: Eb4 18
+melody:
+  0: Eb4 1
+  1: D4 1
+  2: Eb4 1
+  3: C4 2
+  5: G3 7
+---
+# bar 83 — Cm B; melody repeats
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+strings: false
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad: false
+melody:
+  0: Eb4 1
+  1: D4 1
+  2: Eb4 1
+  3: C4 2
+  5: G3 7
+---
+# bar 84 — Gm; melody Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 2
+  8: D2 1
+  9: C2 2
+  11: A1 1
+kalimba:
+  2: D4 1 damp=2
+  4: D4 1 damp=2
+  6: D4 1 damp=2
+  9: D4 1 damp=2
+  11: D4 1 damp=2
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad:
+  0: G3 1
+  3: Bb3 21
+  6: D4 18
+melody:
+  0: Bb3 1
+  1: A3 1
+  2: Bb3 1
+  3: G3 2
+  5: D3 7
+---
+# bar 85 — Gm; melody repeats
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+strings: false
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad: false
+melody:
+  0: Bb3 1
+  1: A3 1
+  2: Bb3 1
+  3: G3 2
+  5: D3 7
+---
+# bar 86 — Fm; melody Fm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: F3 24
+  0: A3 24
+  0: F4 24
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad:
+  0: A3 24
+  3: C4 21
+  6: F4 18
+melody:
+  0: A3 1
+  1: G3 1
+  2: F3 1
+  3: F3 2
+  5: C4 7
+---
+# bar 87 — Fm descending; melody extended variant
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 1
+  2: F2 2
+  3: Eb2 1
+  4: C2 1
+  5: Eb2 2
+  6: C2 1
+  7: Bb1 1
+  8: G1 1
+  9: Bb1 1
+  10: G1 1
+  11: Bb1 1
+strings: false
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad: false
+melody:
+  0: A3 1
+  1: G3 1
+  2: F3 1
+  3: A3 2
+  4: G3 2
+  5: F3 2
+  6: C4 6
+---
+# bar 88 — Cm A; melody with fill at t=8
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: Eb3 24
+  0: C3 24
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad:
+  3: C4 21
+  6: Eb4 18
+melody:
+  0: Eb4 1
+  1: D4 1
+  2: Eb4 1
+  3: C4 2
+  5: G3 3
+  8: Eb4 3
+  11: G3 1
+---
+# bar 89 — Cm B; melody with ornaments
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+strings: false
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad: false
+melody:
+  0: Eb4 1
+  1: D4 1
+  2: Eb4 1
+  3: C4 2
+  5: G3 3
+  8: Eb4 2
+  9: D4 2
+  11: C4 1
+---
+# bar 90 — Gm; melody elaborate Gm variation
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 2
+  8: D2 1
+  9: C2 2
+  11: A1 1
+kalimba:
+  2: D4 1 damp=2
+  4: D4 1 damp=2
+  6: D4 1 damp=2
+  9: D4 1 damp=2
+  11: D4 1 damp=2
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad:
+  0: G3 1
+  3: Bb3 21
+  6: D4 18
+melody:
+  0: Bb3 1
+  1: A3 1
+  2: G3 1
+  3: Bb3 1
+  4: A3 1
+  5: G3 2
+  6: D4 2
+  8: G3 3
+  11: G3 1
+---
+# bar 91 — Gm; melody variant
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+strings: false
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad: false
+melody:
+  0: Bb3 1
+  1: A3 1
+  2: G3 1
+  3: Bb3 2
+  5: D3 3
+  8: Bb3 2
+  9: A3 2
+  11: G3 1
+---
+# bar 92 — Fm; melody ascending run
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+  11: C2 2
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: F3 24
+  0: A3 24
+  0: F4 24
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad:
+  0: A3 24
+  3: C4 21
+  6: F4 18
+melody:
+  0: A3 2
+  2: F3 2
+  4: A3 2
+  6: C4 2
+  8: A3 2
+  10: C4 2
+---
+# bar 93 — Fm; melody high run
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  2: F2 2
+  3: Eb2 2
+  5: C2 3
+  8: C2 1
+  9: Eb2 2
+  11: C2 1
+strings: false
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad: false
+melody:
+  0: F4 2
+  2: C4 3
+  4: F4 2
+  6: A4 2
+  8: F4 4
+---
+# bar 94 — Cm; melody high Cm phrase
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: Eb3 24
+  0: C3 24
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad:
+  3: C4 21
+  6: Eb4 18
+melody:
+  0: Eb5 1
+  1: D5 1
+  2: Eb5 1
+  3: C5 2
+  5: G4 3
+  8: Eb5 3
+  11: G4 1
+---
+# bar 95 — Cm; melody ornament
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+strings: false
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad: false
+melody:
+  0: Eb5 2
+  2: G4 1
+  3: D5 2
+  5: C5 3
+  8: G4 4
+---
+# bar 96 — Gm; melody high Gm phrase
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 2
+  8: D2 1
+  9: C2 2
+  11: A1 1
+kalimba:
+  2: D4 1 damp=2
+  4: D4 1 damp=2
+  6: D4 1 damp=2
+  9: D4 1 damp=2
+  11: D4 1 damp=2
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad:
+  0: G3 1
+  3: Bb3 21
+  6: D4 18
+melody:
+  0: Bb4 1
+  1: A4 1
+  2: Bb4 2
+  3: G4 2
+  5: D4 4
+  8: Bb4 3
+  11: D4 1
+---
+# bar 97 — Gm; melody elaborate
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+strings: false
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad: false
+melody:
+  0: Bb4 1
+  1: A4 1
+  2: G4 1
+  3: Bb4 1
+  4: A4 1
+  5: G4 2
+  6: D5 2
+  8: G4 4
+---
+# bar 98 — Fm; melody Fm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: F3 24
+  0: A3 24
+  0: F4 24
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad:
+  0: A3 24
+  3: C4 21
+  6: F4 18
+melody:
+  0: A4 1
+  1: G4 1
+  2: F4 1
+  3: F4 2
+  5: C5 3
+  8: F4 3
+  11: F4 1
+---
+# bar 99 — Fm descending; melody
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 1
+  2: F2 2
+  3: Eb2 1
+  4: C2 1
+  5: Eb2 2
+  6: C2 1
+  7: Bb1 1
+  8: G1 1
+  9: Bb1 1
+  10: G1 1
+  11: Bb1 1
+strings: false
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad: false
+melody:
+  0: A4 2
+  2: G4 1
+  3: F4 2
+  5: C5 3
+  8: F4 4
+---
+# bar 100 — Cm; melody high Cm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: Eb3 24
+  0: C3 24
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad:
+  3: C4 21
+  6: Eb4 18
+melody:
+  0: Eb5 1
+  1: D5 1
+  2: Eb5 1
+  3: C5 2
+  5: G4 3
+  8: Eb5 3
+  11: G4 1
+---
+# bar 101 — Cm; melody ornament
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+strings: false
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad: false
+melody:
+  0: Eb5 2
+  2: G4 1
+  3: D5 2
+  5: C5 3
+  8: G4 3
+  11: G4 1
+---
+# bar 102 — Gm; melody elaborate Gm variation
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 2
+  8: D2 1
+  9: C2 2
+  11: A1 1
+kalimba:
+  2: D4 1 damp=2
+  4: D4 1 damp=2
+  6: D4 1 damp=2
+  9: D4 1 damp=2
+  11: D4 1 damp=2
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad:
+  0: G3 1
+  3: Bb3 21
+  6: D4 18
+melody:
+  0: D5 1
+  1: C5 1
+  2: Bb4 1
+  3: D5 1
+  4: C5 1
+  5: Bb4 1
+  6: D5 2
+  8: G4 3
+  11: G4 1
+---
+# bar 103 — Gm; melody variation
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+strings: false
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad: false
+melody:
+  0: D5 1
+  1: C5 1
+  2: D5 1
+  3: Bb4 2
+  5: G4 3
+  8: D5 1
+  9: C5 2
+  11: Bb4 1
+---
+# bar 104 — Fm; melody Fm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+  11: C2 2
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: F3 24
+  0: A3 24
+  0: F4 24
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad:
+  0: A3 24
+  3: C4 21
+  6: F4 18
+melody:
+  0: A4 2
+  2: G4 1
+  3: F4 2
+  5: C5 3
+  8: F4 3
+  11: F4 1
+---
+# bar 105 — Fm; melody ornament
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  2: F2 2
+  3: Eb2 2
+  5: C2 3
+  8: C2 1
+  9: Eb2 2
+  11: C2 1
+strings: false
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad: false
+melody:
+  0: A4 1
+  1: G4 1
+  2: A4 1
+  3: F4 2
+  5: C5 3
+  8: F4 4
+---
+# bar 106 — Cm; melody Cm with fill
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: Eb3 24
+  0: C3 24
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad:
+  3: C4 21
+  6: Eb4 18
+melody:
+  0: Eb4 1
+  1: D4 1
+  2: Eb4 1
+  3: C4 2
+  5: G3 3
+  8: Eb4 3
+  11: G3 1
+---
+# bar 107 — Cm; melody ornament run
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+strings: false
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad: false
+melody:
+  0: Eb4 1
+  1: D4 1
+  2: C4 1
+  3: Eb4 1
+  4: D4 1
+  5: C4 1
+  6: Eb4 2
+  8: G3 3
+  11: G3 1
+---
+# bar 108 — Gm; melody Gm with fill
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 2
+  8: D2 1
+  9: C2 2
+  11: A1 1
+kalimba:
+  2: D4 1 damp=2
+  4: D4 1 damp=2
+  6: D4 1 damp=2
+  9: D4 1 damp=2
+  11: D4 1 damp=2
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad:
+  0: G3 1
+  3: Bb3 21
+  6: D4 18
+melody:
+  0: Bb3 1
+  1: A3 1
+  2: Bb3 2
+  3: G3 2
+  5: D3 4
+  8: Bb3 3
+  11: D3 1
+---
+# bar 109 — Gm; melody variation
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+strings: false
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad: false
+melody:
+  0: D4 1
+  1: C4 1
+  2: Bb3 1
+  3: D4 1
+  4: C4 1
+  5: Bb3 2
+  6: D4 2
+  8: G3 4
+---
+# bar 110 — Fm; melody Fm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: F3 24
+  0: A3 24
+  0: F4 24
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad:
+  0: A3 24
+  3: C4 21
+  6: F4 18
+melody:
+  0: A3 1
+  1: G3 1
+  2: F3 1
+  3: F3 2
+  5: C4 3
+  8: F3 3
+  11: F3 1
+---
+# bar 111 — Fm; melody extended run
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 1
+  2: F2 2
+  3: Eb2 1
+  4: C2 1
+  5: Eb2 2
+  6: C2 1
+  7: Bb1 1
+  8: G1 1
+  9: Bb1 1
+  10: G1 1
+  11: Bb1 1
+strings: false
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad: false
+melody:
+  0: A3 1
+  1: G3 1
+  2: F3 1
+  3: A3 1
+  4: G3 1
+  5: F3 1
+  6: C4 3
+  8: F3 4
+---
+# bar 112 — Cm; melody high Cm phrase (last cycle)
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: G1 1
+  9: Bb1 2
+  11: G1 1
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: Eb3 24
+  0: C3 24
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad:
+  3: C4 21
+  6: Eb4 18
+melody:
+  0: Eb5 1
+  1: D5 1
+  2: Eb5 1
+  3: C5 2
+  5: G4 3
+  8: Eb5 3
+  11: G4 1
+---
+# bar 113 — Cm; melody ornament
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 3
+  3: Bb1 2
+  5: C2 3
+  8: C2 1
+  9: Bb1 2
+  11: G1 1
+strings: false
+ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+bowedpad: false
+melody:
+  0: Eb5 2
+  2: G4 1
+  3: D5 2
+  5: C5 3
+  8: G4 3
+  11: G4 1
+---
+# bar 114 — Gm; melody Gm
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 2
+  8: D2 1
+  9: C2 2
+  11: A1 1
+kalimba:
+  2: D4 1 damp=2
+  4: D4 1 damp=2
+  6: D4 1 damp=2
+  9: D4 1 damp=2
+  11: D4 1 damp=2
+strings:
+  0: D3 24
+  0: Bb3 24
+  0: D4 24
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad:
+  0: G3 1
+  3: Bb3 21
+  6: D4 18
+melody:
+  0: D5 1
+  1: C5 1
+  2: Bb4 1
+  3: D5 1
+  4: C5 1
+  5: Bb4 1
+  6: D5 2
+  8: G4 3
+  11: G4 1
+---
+# bar 115 — Gm; melody variation
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: D2 3
+  3: C2 2
+  5: D2 3
+  8: D2 1
+  9: C2 2
+  11: A1 1
+strings: false
+ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+bowedpad: false
+melody:
+  0: D5 1
+  1: C5 1
+  2: D5 1
+  3: Bb4 2
+  5: G4 3
+  8: D5 1
+  9: C5 2
+  11: Bb4 1
+---
+# bar 116 — Fm; fade out begins; melody Fm final
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: F2 3
+  3: Eb2 2
+  5: C2 3
+  8: F2 1
+  9: Eb2 2
+kalimba:
+  2: C4 1 damp=2
+  4: C4 1 damp=2
+  6: C4 1 damp=2
+  9: C4 1 damp=2
+  11: C4 1 damp=2
+strings:
+  0: F3 12
+  0: A3 12
+  0: F4 12
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad:
+  3: C4 9
+  6: F4 6
+melody:
+  0: A4 2
+  2: G4 1
+  3: F4 2
+  5: C5 3
+  8: F4 3
+  11: F4 1
+---
+# bar 117 — fade to silence
+_meta:
+  repeat_unmentioned_voices: true
+bass:
+  0: C2 1
+  2: F2 2
+  3: Eb2 1
+  4: C2 1
+  5: Eb2 2
+  6: C2 1
+  7: Bb1 1
+  8: G1 1
+  9: Bb1 1
+  10: G1 1
+  11: Bb1 1
+kalimba: false
+strings: false
+ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+bowedpad:
+  0: A3 1
+  3: C4 8
+  6: F4 4
+tambourine: false
+melody:
+  0: A4 1
+  1: G4 1
+  2: A4 1
+  3: F4 2
+  5: C5 3
+  8: F4 4`
 
 const SEEDS: Seed[] = [
   // Oxygène Pt. IV — Jarre (1976): default project on first run.
-  { name: 'oxygene',       ext: 'spls', body: OXYGENE,      inProject: true },
-  { name: 'filtered-bass', ext: 'spli', body: OXYGENE_BASS, inProject: true },
-  { name: 'sub-bass',      ext: 'spli', body: OXYGENE_SUB,  inProject: true },
-  { name: 'string-pad',    ext: 'spli', body: OXYGENE_PAD,  inProject: true },
-  { name: 'bell-arp',      ext: 'spli', body: OXYGENE_ARP,  inProject: true },
-  { name: 'kick',          ext: 'spli', body: STARTER_KICK,      inProject: true },
-  { name: 'snare',         ext: 'spli', body: SANDSTORM_SNARE,   inProject: true },
-  { name: 'hihat',         ext: 'spli', body: SANDSTORM_HIHAT,   inProject: true },
-  { name: 'tones_euro',    ext: 'splt', body: STARTER_TUNING,    inProject: true },
+  { name: 'oxygene',         ext: 'spls', body: OXYGENE,            inProject: true },
+  { name: 'filtered-bass',   ext: 'spli', body: OXYGENE_BASS,       inProject: true },
+  { name: 'kalimba',         ext: 'spli', body: OXYGENE_KALIMBA,    inProject: true },
+  { name: 'synbrass',        ext: 'spli', body: OXYGENE_SYNBRASS,   inProject: true },
+  { name: 'synstrings',      ext: 'spli', body: OXYGENE_STRINGS,    inProject: true },
+  { name: 'string-ensemble', ext: 'spli', body: OXYGENE_ENSEMBLE,   inProject: true },
+  { name: 'bowed-pad',       ext: 'spli', body: OXYGENE_BOWEDPAD,   inProject: true },
+  { name: 'oxygene-melody',  ext: 'spli', body: OXYGENE_MELODY,     inProject: true },
+  { name: 'tambourine',      ext: 'spli', body: OXYGENE_TAMBOURINE, inProject: true },
+  { name: 'seashore',        ext: 'spli', body: OXYGENE_SEASHORE,   inProject: true },
+  { name: 'tones_euro',      ext: 'splt', body: STARTER_TUNING,     inProject: true },
 
   // Sandstorm — in staging; load it to work on it.
   { name: 'sandstorm',     ext: 'spls', body: SANDSTORM,         inProject: false },
