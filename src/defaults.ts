@@ -1880,6 +1880,7 @@ const OXYGENE_PLATE_ROOM = `# oxygene-plate.splr — EMT 140-style plate reverb 
 name: oxygene plate
 levels: "6:100;1,20;4,4;6,1"
 delays: "6:0;6,100"
+jitter: "1:0.15"
 deldiffs: "0.004|0.008"
 `
 

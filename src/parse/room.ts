@@ -14,10 +14,9 @@ import { parseShape, renderShape, type ShapeSpec } from '../synth/shape'
  *   jitter       — amplitude jitter (deferred).
  *   diffusion    — convolution diffusor (deferred).
  *
- * Phase 11 ships levels + delays + border only — enough for a position-
- * dependent IR. The deferred fields parse cleanly but produce no audio
- * effect; mixing them in is a forward door once a fixture demonstrates
- * the difference is desired.
+ * levels, delays, border, jitter, and deldiffs are all implemented in
+ * render/room.ts. freq_lanes and diffusion parse cleanly but produce no
+ * audio effect — those remain deferred.
  */
 
 export class RoomError extends SompylerError {}
