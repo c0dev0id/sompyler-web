@@ -9,7 +9,7 @@ import { mixOnly, type MixResult } from '../render/mix'
 import { createSynthWorker } from '../render/workerClient'
 import { compileInstrument } from '../synth/compile'
 import { parseScore } from '../parse/score'
-import { parseRoom, type RoomBody } from '../parse/room'
+import { parseRoom, parseFreeverbRoom, type RoomBody, type FreeverbBody } from '../parse/room'
 import { Player } from '../player/Player'
 
 /**
@@ -173,7 +173,7 @@ export class Session {
 interface LoadedProject {
   scoreFile: StoredFile
   instruments: Map<string, Awaited<ReturnType<typeof loadInstrument>>>
-  room: RoomBody | null
+  room: RoomBody | FreeverbBody | null
 }
 
 async function loadProject(): Promise<LoadedProject> {
@@ -189,7 +189,8 @@ async function loadProject(): Promise<LoadedProject> {
     instruments.set(compiled.name, compiled)
   }
   // First in-project room file wins; absent → free-field.
+  // Try tap model first (has `levels:`), then freeverb (`type: freeverb`).
   const roomFile = projectFiles.find((f) => f.ext === 'splr')
-  const room = roomFile ? parseRoom(roomFile.body) : null
+  const room = roomFile ? (parseRoom(roomFile.body) ?? parseFreeverbRoom(roomFile.body)) : null
   return { scoreFile, instruments, room }
 }

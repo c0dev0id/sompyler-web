@@ -1,6 +1,9 @@
 import jsyaml from 'js-yaml'
 import { SompylerError } from '../errors'
 import { parseShape, renderShape, type ShapeSpec } from '../synth/shape'
+import { type FreeverbBody } from '../synth/freeverb'
+
+export type { FreeverbBody }
 
 /**
  * `.splr` (room) parser. Reference: `Sompyler/shapereverb.py:Room.__init__`.
@@ -130,4 +133,32 @@ export function renderLevels(room: RoomBody, numEchoes: number): Float32Array {
 
 export function renderDelays(room: RoomBody, numEchoes: number): Float32Array {
   return renderShape(room.delays, numEchoes)
+}
+
+/**
+ * Parse a `.splr` file with `type: freeverb` into a `FreeverbBody`.
+ * Returns null for any other room type or missing/invalid YAML.
+ */
+export function parseFreeverbRoom(body: string): FreeverbBody | null {
+  let parsed: unknown
+  try { parsed = jsyaml.load(body) } catch { return null }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null
+  const obj = parsed as Record<string, unknown>
+  if (obj.type !== 'freeverb') return null
+
+  const n = (key: string, def: number): number =>
+    typeof obj[key] === 'number' ? (obj[key] as number) : def
+  const roomSize   = n('room_size',    0.70)
+  const damping    = n('damping',      0.50)
+  const wet        = n('wet',          0.25)
+  const width      = n('width',        1.00)
+  const preDelayMs = n('pre_delay_ms', 0)
+
+  if (roomSize < 0 || roomSize > 1)    throw new RoomError(`room_size must be 0–1`)
+  if (damping  < 0 || damping  > 1)    throw new RoomError(`damping must be 0–1`)
+  if (wet      < 0 || wet      > 1)    throw new RoomError(`wet must be 0–1`)
+  if (width    < 0 || width    > 1)    throw new RoomError(`width must be 0–1`)
+  if (preDelayMs < 0)                  throw new RoomError(`pre_delay_ms must be ≥ 0`)
+
+  return { kind: 'freeverb', roomSize, damping, wet, width, preDelayMs }
 }

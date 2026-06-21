@@ -1,7 +1,7 @@
 import { log } from '../debug'
 import { getNote } from '../storage/notes'
 import type { ScoreHead } from '../parse/score'
-import type { RoomBody } from '../parse/room'
+import type { RoomBody, FreeverbBody } from '../parse/room'
 import type { DistinctRenderPlan } from './distinct'
 import {
   buildRoomPositionIR,
@@ -10,6 +10,7 @@ import {
   type ChannelGains,
   type PositionIR,
 } from './room'
+import { applyFreeverb } from '../synth/freeverb'
 
 /**
  * `Render.mixOnly()` — fast path; assumes every distinct note is in the
@@ -30,9 +31,10 @@ export interface MixOptions {
   sampleRate?: number
   /**
    * Parsed room body. When undefined, every voice uses the free-field IR.
-   * Same room is applied to all voices for v1 (matches Sympyler).
+   * Tap rooms (RoomBody) apply per-voice position IRs; freeverb (FreeverbBody)
+   * runs as a post-mix bus effect with per-voice free-field panning.
    */
-  room?: RoomBody | null
+  room?: RoomBody | FreeverbBody | null
 }
 
 export interface MixResult {
@@ -62,13 +64,16 @@ export async function mixOnly(
   const sampleRate = opts.sampleRate ?? 44100
   const room = opts.room ?? null
 
-  // Pre-compute one IR per voice. Same room applied to every voice; the
-  // *position* varies per voice and produces a different IR.
+  // Freeverb is a post-mix bus effect — voices use free-field panning for dry mix.
+  const isFV = room !== null && room !== undefined && 'kind' in room && room.kind === 'freeverb'
+
+  // Pre-compute one IR per voice. Tap rooms vary the IR by position; freeverb
+  // and free-field both use the δ-IR (free-field panning, no tail).
   const byVoice = new Map<string, ResolvedVoice>()
   for (const [voice, spec] of Object.entries(head.stage)) {
     let ir: PositionIR
-    if (room) {
-      ir = buildRoomPositionIR(room, spec.channels, spec.volume, sampleRate)
+    if (room && !isFV) {
+      ir = buildRoomPositionIR(room as RoomBody, spec.channels, spec.volume, sampleRate)
     } else {
       ir = freeFieldIR(spec.channels, spec.volume)
     }
@@ -130,6 +135,11 @@ export async function mixOnly(
         convolveAccumulate(right, pcm, v.ir.right, start, lengthSamples)
       }
     }
+  }
+
+  // Freeverb post-mix bus: add reverb to the accumulated dry stereo output.
+  if (isFV) {
+    applyFreeverb(left, right, room as FreeverbBody, sampleRate)
   }
 
   // Clip to [-1, 1] to keep playback safe regardless of overlap density.

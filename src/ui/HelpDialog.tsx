@@ -340,6 +340,41 @@ deldiffs: "0.008|0.014"
   # Makes the two channels' echoes arrive at slightly different times,
   # creating stereo width — without this, reverb sounds mono.`,
     },
+    {
+      subtitle: 'Freeverb — algorithmic reverb (alternative room type)',
+      code: `# Freeverb is a classic algorithmic reverb based on Schroeder/Moorer design:
+# 8 parallel feedback comb filters → 4 series all-pass diffusers.
+# It produces smooth, dense reverb without any WAV impulse file.
+# Use it when you want plate-style reverb with a simple parameter knob.
+#
+# To use freeverb, set type: freeverb and omit the levels/delays fields.
+
+type: freeverb
+
+room_size: 0.76   # controls how long the reverb decays (0–1)
+                   # 0.3 = tight room / short tail
+                   # 0.7 = medium hall
+                   # 0.9 = large hall / cathedral (very long tail)
+
+damping: 0.45     # high-frequency damping (0–1)
+                   # 0.0 = bright reverb (highs sustain as long as lows)
+                   # 0.5 = natural-sounding absorptive room
+                   # 0.9 = very dark / muffled (like recording in a padded studio)
+
+wet: 0.22         # how much reverb is added to the output (0–1)
+                   # 0.1 = subtle ambience, dry sound still dominates
+                   # 0.3 = noticeable reverb
+                   # 0.7 = very wet, distant-sounding
+
+width: 1.0        # stereo width of the reverb tail (0–1)
+                   # 0.0 = mono reverb (both channels identical)
+                   # 1.0 = full stereo spread (default; usually leave this)
+
+pre_delay_ms: 10  # milliseconds before reverb starts after the direct sound
+                   # 0  = reverb begins immediately (sounds very close)
+                   # 10 = small pre-delay separates dry from wet (more natural)
+                   # 50 = large pre-delay, notable "slap" before reverb builds`,
+    },
   ],
 }
 

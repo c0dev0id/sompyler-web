@@ -1871,17 +1871,16 @@ lfo:
   waveform: sin
 `
 
-// Lush plate reverb for Oxygène.
-// 6 taps over 6 s: exponential amplitude decay (100 → 20 → 1%) makes
-// the audible tail ~4 s. Tap grid based on the sandstorm-plate proportions
-// but stretched for Jarre's slower, more spacious aesthetic.
-// Deldiffs offset L by 4 ms and R by 8 ms for stereo width.
-const OXYGENE_PLATE_ROOM = `# oxygene-plate.splr — EMT 140-style plate reverb for Oxygène Pt. IV.
-name: oxygene plate
-levels: "6:100;1,20;4,4;6,1"
-delays: "6:0;6,100"
-jitter: "1:0.15"
-deldiffs: "0.004|0.008"
+// Freeverb plate for Oxygène.
+// room_size 0.76 ≈ RT60 2 s; damping 0.45 = moderate HF rolloff (warm plate);
+// wet 0.22 = audible reverb bloom without swamping dry signal;
+// pre_delay_ms 10 = very short plate-style pre-delay.
+const OXYGENE_PLATE_ROOM = `# oxygene-plate.splr — Freeverb plate reverb for Oxygène Pt. IV.
+type: freeverb
+room_size: 0.76
+damping: 0.45
+wet: 0.22
+pre_delay_ms: 10
 `
 
 // Tight plate reverb for Sandstorm.
