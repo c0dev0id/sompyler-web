@@ -552,6 +552,9 @@ html, body, #root {
   max-height: 80vh;
   padding: 0;
   overflow: hidden;
+}
+
+.help-dialog[open] {
   display: flex;
   flex-direction: column;
 }
