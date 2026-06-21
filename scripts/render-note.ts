@@ -55,14 +55,16 @@ function writeWav(path: string, samples: Float32Array, sampleRate: number): void
 }
 
 async function main() {
-  const [yamlStr, midiNoteStr, durationStr, outPath] = process.argv.slice(2)
+  // Optional 5th arg: dampSeconds (release tail after note-off)
+  const [yamlStr, midiNoteStr, durationStr, outPath, dampStr] = process.argv.slice(2)
   if (!yamlStr || !midiNoteStr || !durationStr || !outPath) {
-    console.error('Usage: render-note.ts <yaml> <midi-note> <duration-s> <out.wav>')
+    console.error('Usage: render-note.ts <yaml> <midi-note> <duration-s> <out.wav> [damp-s]')
     process.exit(1)
   }
 
   const midiNote = parseInt(midiNoteStr, 10)
   const durationSec = parseFloat(durationStr)
+  const dampSeconds = dampStr ? parseFloat(dampStr) : 0
   const freqHz = midiToHz(midiNote)
 
   const instrument = await loadInstrument('render', yamlStr)
@@ -73,6 +75,7 @@ async function main() {
     freqHz,
     stress: 1.0,
     lengthSeconds: durationSec,
+    dampSeconds,
     sampleRate: SAMPLE_RATE,
   })
 

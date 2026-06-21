@@ -1912,11 +1912,16 @@ const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM108 / TimGM6mb). Pure sine sustai
 # (3.8ms at 96.5ms), where only H1 remains — <1% of H1 at H3 through H11.
 # The rendered output is a pure sine throughout the note, confirmed by FFT
 # of the pre-committed src/conformance/fixtures/kalimba_c4_timidity.wav.
+#
+# release must be near-zero: sompyler's ASR puts the release WITHIN the note
+# window, so any release > note_length eats the sustain. With release=0.50 and
+# 1-tick notes (163ms) the sustain phase is 2ms — effectively no sustain.
+# The ring tail comes from damp=2 in the score (326ms at 369 ticks/min).
 amp: 0.45
 oscillator: sin
 envelope:
   attack: 0.004
-  release: 0.50
+  release: 0.01
   sustainLevel: 0.80
 `
 
