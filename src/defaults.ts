@@ -1873,14 +1873,6 @@ jitter: "1:0.12"
 deldiffs: "0.008|0.014"
 `
 
-const OXYGENE_HALL = `# hall.splr — long ambient hall reverb.
-name: oxygene hall
-levels: "6:90;0.5,75;2,48;4,22;6,5"
-delays: "6:0;6,100"
-jitter: "1:0.14"
-deldiffs: "0.013|0.021"
-`
-
 const OXYGENE_BASS = `# filtered-bass: filtered synth bass with walking pattern.
 amp: 0.75
 oscillator: sin
@@ -1970,7 +1962,7 @@ stage:
   hihat: 1|1 0.1 hihat
   snare: 1|1 0.3 snare
 tuning_config: tones_euro
-room: hall
+room: free-field
 ---
 # m1 — bass + drums intro (Cm)
 _meta:
@@ -2183,7 +2175,6 @@ arp: false`
 const SEEDS: Seed[] = [
   // Oxygène Pt. IV — Jarre (1976): default project on first run.
   { name: 'oxygene',       ext: 'spls', body: OXYGENE,      inProject: true },
-  { name: 'hall',          ext: 'splr', body: OXYGENE_HALL, inProject: true },
   { name: 'filtered-bass', ext: 'spli', body: OXYGENE_BASS, inProject: true },
   { name: 'sub-bass',      ext: 'spli', body: OXYGENE_SUB,  inProject: true },
   { name: 'string-pad',    ext: 'spli', body: OXYGENE_PAD,  inProject: true },
