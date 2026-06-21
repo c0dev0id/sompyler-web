@@ -1874,17 +1874,20 @@ deldiffs: "0.008|0.014"
 `
 
 const OXYGENE_BASS = `# filtered-bass: Fretless Bass (GM36). Smooth, slightly resonant.
+# Partials from FFT of FluidR3 Fretless A#1 (Bb2, near actual playing range).
+# H2≈H3 characteristic of bass strings; H1 dominant at low pitches.
 amp: 0.70
 oscillator: sin
 envelope:
-  attack: 0.006
+  attack: 0.008
   release: 0.15
   sustainLevel: 0.80
 partials:
   - { freqMult: 1, amp: 1.000 }
-  - { freqMult: 2, amp: 0.600 }
-  - { freqMult: 3, amp: 0.300 }
-  - { freqMult: 4, amp: 0.120 }
+  - { freqMult: 2, amp: 0.488 }
+  - { freqMult: 3, amp: 0.453 }
+  - { freqMult: 4, amp: 0.264 }
+  - { freqMult: 5, amp: 0.101 }
 vcf:
   cutoff_hz: 1200
   resonance: 0.30
@@ -1893,7 +1896,9 @@ vcf:
   env_release: 0.12
 `
 
-const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM108). Short attack, fast decay, metallic tines.
+const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM109). Short attack, fast decay, metallic tines.
+# Partials from FFT of FluidR3 Kalimba G4. H3 dominant; H13-H14 cluster
+# gives the bright metallic "ting". Harmonic series, not inharmonic.
 amp: 0.50
 oscillator: sin
 envelope:
@@ -1901,9 +1906,12 @@ envelope:
   release: 0.40
   sustainLevel: 0.15
 partials:
-  - { freqMult: 1, amp: 1.000 }
-  - { freqMult: 2.756, amp: 0.300 }
-  - { freqMult: 5.404, amp: 0.120 }
+  - { freqMult: 1, amp: 0.515 }
+  - { freqMult: 3, amp: 1.000 }
+  - { freqMult: 4, amp: 0.291 }
+  - { freqMult: 5, amp: 0.141 }
+  - { freqMult: 13, amp: 0.291 }
+  - { freqMult: 14, amp: 0.291 }
 `
 
 const OXYGENE_SYNBRASS = `# synbrass: SynBrass 2 (GM64). Bright, slightly buzzy, medium attack.
@@ -1922,21 +1930,21 @@ vcf:
 `
 
 const OXYGENE_STRINGS = `# synstrings: SynString 2 (GM52). Lush, slow attack, rich harmonics.
+# FluidR3 uses a 110 Hz feedback sawtooth loop for this preset — pure
+# 1/h harmonic series. Oscillator: saw matches exactly; spread provides
+# the chorus detuning that makes the GM52 sound lush.
 amp: 0.12
-oscillator: sin
+oscillator: saw
 envelope:
   attack: 0.35
   release: 1.20
   sustainLevel: 0.88
-partials:
-  - { freqMult: 1, amp: 1.000 }
-  - { freqMult: 2, amp: 0.500 }
-  - { freqMult: 3, amp: 0.250 }
-  - { freqMult: 4, amp: 0.120 }
 spread: [4, -6, 7, -3]
 `
 
 const OXYGENE_ENSEMBLE = `# string-ensemble: String Ensemble 1 (GM49). Warmer, slower release.
+# Partials from FFT of FluidR3 Strings G2L (C4 sample). H4 resurgence
+# at 0.302 is a body resonance characteristic of ensemble string sections.
 amp: 0.10
 oscillator: sin
 envelope:
@@ -1945,9 +1953,12 @@ envelope:
   sustainLevel: 0.85
 partials:
   - { freqMult: 1, amp: 1.000 }
-  - { freqMult: 2, amp: 0.450 }
-  - { freqMult: 3, amp: 0.200 }
-  - { freqMult: 4, amp: 0.080 }
+  - { freqMult: 2, amp: 0.608 }
+  - { freqMult: 3, amp: 0.132 }
+  - { freqMult: 4, amp: 0.302 }
+  - { freqMult: 5, amp: 0.179 }
+  - { freqMult: 6, amp: 0.115 }
+  - { freqMult: 7, amp: 0.067 }
 `
 
 const OXYGENE_BOWEDPAD = `# bowed-pad: Pad 5 Bowed (GM93). Very slow attack, ethereal.
