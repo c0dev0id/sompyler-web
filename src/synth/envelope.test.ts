@@ -47,11 +47,15 @@ describe('applyEnvelope', () => {
     expect(buf[400]).toBeCloseTo(0.4, 5)
   })
 
-  it('decay=0 sustainLevel=1 is identical to former ASR behaviour', () => {
-    const a = flat(SR)
-    const b = flat(SR)
-    applyEnvelope(a, { attack: 0.05, decay: 0,   release: 0.1, sustainLevel: 1 }, SR)
-    applyEnvelope(b, { attack: 0.05, decay: 0.0, release: 0.1, sustainLevel: 1 }, SR)
-    for (let i = 0; i < SR; i++) expect(a[i]).toBeCloseTo(b[i]!, 10)
+  it('decay=0 attack ramps to sustainLevel (no discontinuity)', () => {
+    // With no decay, attack should ramp to sustainLevel, not 1.0,
+    // so there is no amplitude step at the attack boundary.
+    const buf = flat(SR)
+    applyEnvelope(buf, { attack: 0.1, decay: 0, release: 0, sustainLevel: 0.6 }, SR)
+    // End of attack (sample 99) should be at or very near sustainLevel
+    expect(buf[99]).toBeCloseTo(0.6, 1)
+    // Sustain region holds at sustainLevel — no jump
+    expect(buf[100]).toBeCloseTo(0.6, 5)
+    expect(buf[500]).toBeCloseTo(0.6, 5)
   })
 })

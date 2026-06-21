@@ -562,6 +562,7 @@ amp: 0.70
 oscillator: sin
 envelope:
   attack: 0.008
+  decay: 0.04
   release: 0.15
   sustainLevel: 0.80
 partials:
@@ -606,8 +607,9 @@ amp: 0.45
 oscillator: sin
 envelope:
   attack: 0.004
+  decay: 0.40
   release: 0.01
-  sustainLevel: 0.80
+  sustainLevel: 0.10
 partials:
   - { freqMult: 1,  amp: 1.000 }
   - { freqMult: 2,  amp: 0.002 }
@@ -768,6 +770,7 @@ amp: 0.55
 oscillator: sin
 envelope:
   attack: 0.004
+  decay: 0.15
   release: 0.70
   sustainLevel: 0.55
 partials:
@@ -804,6 +807,7 @@ amp: 0.35
 oscillator: noise
 envelope:
   attack: 0.001
+  decay: 0.06
   release: 0.08
   sustainLevel: 0.20
 `

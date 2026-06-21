@@ -60,9 +60,12 @@ export function applyEnvelope(
   const decayEnd   = attackSamples + decaySamples
   const sustainEnd = total - releaseSamples
   const s = spec.sustainLevel
+  // Attack peaks at sustainLevel when there is no decay (continuous, backwards-compatible).
+  // When decay > 0, attack peaks at 1.0 and the decay ramp brings it down to sustainLevel.
+  const peak = decaySamples > 0 ? 1 : s
 
   for (let i = 0; i < attackSamples; i++) {
-    buf[i] = buf[i]! * (i / Math.max(1, attackSamples))
+    buf[i] = buf[i]! * (i / Math.max(1, attackSamples)) * peak
   }
   for (let i = attackSamples; i < decayEnd; i++) {
     const t = (i - attackSamples) / Math.max(1, decaySamples)
