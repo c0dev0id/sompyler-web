@@ -9,7 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Oxygène Pt. IV (Jean-Michel Jarre, 1976) added as a seeded default song: 20-measure score at 121 BPM with four instruments (`oxygene-bass`, `oxygene-sub`, `oxygene-pad`, `oxygene-arp`) and drums reusing the sandstorm kit. The bass uses a filtered walking pattern with VCF sweep, the pad has a slow LFO filter modulation, and the arpeggio alternates every other measure to match the original's phrasing. All seeded `inProject: true`.
+- Syntax reference help dialog: each editor pane header now has a `?` button that opens a modal with a concise annotated YAML reference for that file type (score, instrument, tuning, or room). Uses the native `<dialog>` element with `.showModal()` — no signal overhead, built-in focus trap and Escape-to-close.
+
+- Per-file-type syntax highlighting in the CodeMirror editors. Sompyler domain tokens are colored on top of the base YAML theme: pitch names (`C4`, `Bb2`) in teal, tick offset keys in sage, shape strings (`4:100;1,55`) in gold, waveform literals (`sin`, `saw`, `triangle`) in blue. Implemented as a viewport-scoped `ViewPlugin` that avoids decorating off-screen lines.
+
+- Scrollable tab bar: when many files are open in one editor pane the tab row now scrolls horizontally (scrollbar hidden) and the active tab is automatically scrolled into view via `scrollIntoView`.
+
+- "New…" inline file creation in the staging area: clicking "New…" reveals an inline form (filename + extension dropdown) for creating a blank file directly into staging without leaving the page. Enter or clicking Create confirms; Escape cancels.
+
+- Oxygène Pt. IV (Jean-Michel Jarre, 1976) added as a seeded default song: 20-measure score at 121 BPM with four instruments (`oxygene-bass`, `oxygene-sub`, `oxygene-pad`, `oxygene-arp`) and drums reusing the sandstorm kit. The bass uses a filtered walking pattern with VCF sweep, the pad has a slow LFO filter modulation, and the arpeggio alternates every other measure to match the original's phrasing. All seeded `inProject: true`. (Jean-Michel Jarre, 1976) added as a seeded default song: 20-measure score at 121 BPM with four instruments (`oxygene-bass`, `oxygene-sub`, `oxygene-pad`, `oxygene-arp`) and drums reusing the sandstorm kit. The bass uses a filtered walking pattern with VCF sweep, the pad has a slow LFO filter modulation, and the arpeggio alternates every other measure to match the original's phrasing. All seeded `inProject: true`.
 
 - LFO (low-frequency oscillator) for instrument definitions. Add an `lfo:` block (or list for multiple) with `rate_hz`, `depth`, and `target` (`vcf` or `amp`). Routes a slow sine/square/saw/triangle oscillator to the VCF cutoff (depth in Hz) or the output amplitude (depth 0–1). Optional `delay_seconds` fades the LFO in gradually. Applied at render time per note alongside the VCF.
 

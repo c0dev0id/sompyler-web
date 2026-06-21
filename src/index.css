@@ -519,6 +519,102 @@ html, body, #root {
   cursor: pointer;
 }
 
+/* Help button in pane headers */
+.help-btn {
+  background: transparent;
+  border: 1px solid #444;
+  border-radius: 50%;
+  color: #666;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.help-btn:hover {
+  color: #ccc;
+  border-color: #888;
+}
+
+/* Help dialog */
+.help-dialog {
+  background: #1e1e1e;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #eee;
+  max-width: 560px;
+  width: 90vw;
+  max-height: 80vh;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.help-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.help-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #333;
+  font-size: 13px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.help-header button {
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0.1rem 0.3rem;
+}
+
+.help-header button:hover {
+  color: #eee;
+}
+
+.help-body {
+  overflow-y: auto;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.help-body section h4 {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin: 0 0 0.35rem;
+}
+
+.help-body pre {
+  margin: 0;
+  background: #0d0d0d;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  padding: 0.6rem 0.75rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  line-height: 1.55;
+  color: #ccc;
+}
+
 /* CodeMirror lint tooltips — override the browser-default white background so
    the tooltip is readable on a dark theme. */
 .cm-tooltip {

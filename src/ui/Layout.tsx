@@ -11,6 +11,7 @@ import { downloadWav } from '../export/wav'
 import { PlayerVisualizer } from './PlayerVisualizer'
 import { InstrumentPreview } from './InstrumentPreview'
 import type { TransportState } from '../player/Player'
+import { HelpDialog } from './HelpDialog'
 
 /**
  * R-UI: four equal quadrants + collapsible staging rail.
@@ -79,6 +80,7 @@ function EditorPanel(props: {
   // instead of the already-saved (but not re-fetched) IndexedDB content.
   const liveBody = new Map<string, string>()
   let previewTimer = 0
+  let helpDialog: HTMLDialogElement | undefined
   onCleanup(() => clearTimeout(previewTimer))
 
   createEffect(() => {
@@ -113,7 +115,9 @@ function EditorPanel(props: {
             </span>
           )}
         </Show>
+        <button class="help-btn" title="Syntax reference" onClick={() => helpDialog?.showModal()}>?</button>
       </header>
+      <HelpDialog exts={props.exts} ref={(el) => { helpDialog = el }} />
       <Show when={files().length > 1}>
         <TabStrip files={files()} selected={selectedId()} onSelect={setSelectedId} />
       </Show>
