@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Kick drum (`oxygene-kick`) added to the Oxygène Pt. IV score. FM pitch sweep from ~130 Hz to C1 (32.7 Hz) in the first 50 ms produces the characteristic thump. Hits on beats 1 and 3 of every bar from bar 5, silencing at bar 117 alongside the tambourine.
+
 ### Changed
 
 - Oxygène plate reverb switched from sparse-tap model to Freeverb algorithmic reverb (`type: freeverb`, room_size 0.76, damping 0.45, wet 0.22, 10 ms pre-delay). The tap model was producing discrete echoes above the 80 ms Haas threshold, heard as notes repeating at lower volume. Freeverb produces dense, smooth tail decay closer to Jarre's EMT 140 plate unit.
