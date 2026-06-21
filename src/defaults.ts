@@ -54,6 +54,16 @@ export {
   VIOLIN as STARTER_VIOLIN,
   CELLO as STARTER_CELLO,
   PIANO as STARTER_PIANO_RAILSBACK,
+  // Oxygène instruments — exported for conformance tests and dev tooling
+  OXYGENE_BASS as OXYGENE_BASS,
+  OXYGENE_KALIMBA as OXYGENE_KALIMBA,
+  OXYGENE_SYNBRASS as OXYGENE_SYNBRASS,
+  OXYGENE_STRINGS as OXYGENE_STRINGS,
+  OXYGENE_ENSEMBLE as OXYGENE_ENSEMBLE,
+  OXYGENE_BOWEDPAD as OXYGENE_BOWEDPAD,
+  OXYGENE_MELODY as OXYGENE_MELODY,
+  OXYGENE_TAMBOURINE as OXYGENE_TAMBOURINE,
+  OXYGENE_SEASHORE as OXYGENE_SEASHORE,
 }
 
 // =====================================================================
@@ -1896,26 +1906,18 @@ vcf:
   env_release: 0.12
 `
 
-const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM108 / TimGM6mb). Sustained melodic tone, odd harmonics.
+const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM108 / TimGM6mb). Pure sine sustain.
 #
-# TiMidity's Kalimba.pat uses a looped sustain sample (root C5, 100ms with
-# 3.8ms sustain loop). Spectrum from attack FFT: pure odd harmonics only —
-# H1=1.000, H3=0.581, H5=0.322, H7=0.219, H9=0.179, H11=0.135.
-# Amplitude holds at ~90% through the loop (no percussive decay).
-# This is a sustained melodic instrument, not a struck-tine percussive.
+# TiMidity's Kalimba.pat sustain loop sits at the decayed tail of the sample
+# (3.8ms at 96.5ms), where only H1 remains — <1% of H1 at H3 through H11.
+# The rendered output is a pure sine throughout the note, confirmed by FFT
+# of the pre-committed src/conformance/fixtures/kalimba_c4_timidity.wav.
 amp: 0.45
 oscillator: sin
 envelope:
   attack: 0.004
   release: 0.50
   sustainLevel: 0.80
-partials:
-  - { freqMult: 1, amp: 1.000 }
-  - { freqMult: 3, amp: 0.581 }
-  - { freqMult: 5, amp: 0.322 }
-  - { freqMult: 7, amp: 0.219 }
-  - { freqMult: 9, amp: 0.179 }
-  - { freqMult: 11, amp: 0.135 }
 `
 
 const OXYGENE_SYNBRASS = `# synbrass: SynBrass 2 (GM64). Bright, slightly buzzy, medium attack.
