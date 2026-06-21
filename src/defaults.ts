@@ -1896,31 +1896,26 @@ vcf:
   env_release: 0.12
 `
 
-const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM109). FM synthesis for the metallic "ting" transient.
+const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM108 / TimGM6mb). Sustained melodic tone, odd harmonics.
 #
-# Analysis: FluidR3 Kalimba G4 attack FFT (392 Hz correct fundamental):
-#   H1=0.52 at 1.020x, H3=0.58 at 3.146x, H9=1.00 (dominant) at 8.929x.
-# The ting (H9, ~3500 Hz) decays in ~30ms; body (H1, H3) sustains.
-#
-# FM approach: modulator at 8.929x carrier with depth_env decaying to zero
-# in the first 5% of the note (≈25 ms at typical note length). Onset creates
-# sidebands matching the measured ting; after decay the spectrum collapses to
-# near-sine body. This is the DX7 kalimba synthesis principle.
-amp: 0.50
+# TiMidity's Kalimba.pat uses a looped sustain sample (root C5, 100ms with
+# 3.8ms sustain loop). Spectrum from attack FFT: pure odd harmonics only —
+# H1=1.000, H3=0.581, H5=0.322, H7=0.219, H9=0.179, H11=0.135.
+# Amplitude holds at ~90% through the loop (no percussive decay).
+# This is a sustained melodic instrument, not a struck-tine percussive.
+amp: 0.45
 oscillator: sin
 envelope:
-  attack: 0.002
-  release: 0.35
-  sustainLevel: 0.15
+  attack: 0.004
+  release: 0.50
+  sustainLevel: 0.80
 partials:
-  - freqMult: 1.020
-    amp: 0.55
-    fm:
-      dynamic: true
-      freq_hz: 8.929
-      depth: 3.0
-      depth_env: "1:1;0.05,0;1,0"
-  - { freqMult: 3.146, amp: 0.45 }
+  - { freqMult: 1, amp: 1.000 }
+  - { freqMult: 3, amp: 0.581 }
+  - { freqMult: 5, amp: 0.322 }
+  - { freqMult: 7, amp: 0.219 }
+  - { freqMult: 9, amp: 0.179 }
+  - { freqMult: 11, amp: 0.135 }
 `
 
 const OXYGENE_SYNBRASS = `# synbrass: SynBrass 2 (GM64). Bright, slightly buzzy, medium attack.
