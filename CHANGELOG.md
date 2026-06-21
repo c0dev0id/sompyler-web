@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Oxygène Pt. IV score and instruments replaced with a full 117-bar MIDI transcription. The previous 20-bar sketch with four generic instruments is gone. The new score covers the complete structure: sea-shore atmospheric intro (bars 1-4), fretless bass with the actual walking patterns from the recording, kalimba fade-in, tambourine drum pattern, SynBrass and strings layers entering at bar 10, BowedPad at bar 34, main melody at bar 40 (with a second melodic section at bars 82-117 featuring the more elaborate ornamental variations), and a fade-out at bar 117. Nine new instruments replace the four old ones: `filtered-bass`, `kalimba`, `synbrass`, `synstrings`, `string-ensemble`, `bowed-pad`, `oxygene-melody`, `tambourine`, `seashore`.
+
 ### Added
 
 - Syntax reference help dialog: each editor pane header now has a `?` button that opens a modal with a concise annotated YAML reference for that file type (score, instrument, tuning, or room). Uses the native `<dialog>` element with `.showModal()` — no signal overhead, built-in focus trap and Escape-to-close.
