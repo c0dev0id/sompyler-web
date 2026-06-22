@@ -177,7 +177,7 @@ export function renderNote(input: RenderNoteInput): Float32Array {
     (morph && morph.length > 0 && !!input.lengthTicks)
 
   if (hasPerPartialMods) {
-    const spreadMults = computeSpreadMults(spread, sympartials.length)
+    const spreadMults = computeSpreadMults(spread, sympartials)
     const timbreAmps = computeTimbreAmps(timbre, sympartials)
     for (let pi = 0; pi < sympartials.length; pi++) {
       const sp = sympartials[pi]!
@@ -243,17 +243,29 @@ export function renderNote(input: RenderNoteInput): Float32Array {
 }
 
 /**
- * S32132: compute per-partial frequency multipliers from cumulative cent
- * deviations. spread[i] is the incremental deviation for partial i; the
- * cumulative sum drives the actual pitch shift via 2^(cents/1200).
+ * S32132: compute per-partial frequency multipliers from the spread list.
+ *
+ * Python's model (variation.py spreaditer): walk a running position counter
+ * one step per harmonic slot (1 … maxFreqMult), where each step adds
+ * 2^(cumCents/1200) to the position. Partial k's actual frequency factor
+ * is that running position at slot k. The returned multiplier is
+ * position(k)/freqMult(k) so that `baseFreq * freqMult * mult = baseFreq * position`.
  */
-function computeSpreadMults(spread: number[] | undefined, count: number): Float32Array {
-  const mults = new Float32Array(count).fill(1)
+function computeSpreadMults(spread: number[] | undefined, sympartials: SympartialSpec[]): Float32Array {
+  const mults = new Float32Array(sympartials.length).fill(1)
   if (!spread || spread.length === 0) return mults
+  const maxFreqMult = sympartials.reduce((m, sp) => Math.max(m, sp.freqMult), 0)
   let cumCents = 0
-  for (let i = 0; i < count; i++) {
-    cumCents += spread[i] ?? 0
-    mults[i] = Math.pow(2, cumCents / 1200)
+  let position = 0
+  const positions = new Float32Array(maxFreqMult)
+  for (let k = 1; k <= maxFreqMult; k++) {
+    cumCents += spread[k - 1] ?? 0
+    position += Math.pow(2, cumCents / 1200)
+    positions[k - 1] = position
+  }
+  for (let pi = 0; pi < sympartials.length; pi++) {
+    const fm = sympartials[pi]!.freqMult
+    mults[pi] = positions[fm - 1]! / fm
   }
   return mults
 }
