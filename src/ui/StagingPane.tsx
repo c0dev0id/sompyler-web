@@ -263,15 +263,19 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
             <For each={grouped().groups}>
               {({ score, deps, missing }) => (
                 <li class={`tree-score${score.inProject ? ' in-project' : ''}`}>
-                  <div class="tree-row">
+                  <div
+                    class="tree-row"
+                    onClick={() => { if (deps.length > 0 || missing.length > 0) toggleExpanded(score.id) }}
+                    style={{ cursor: deps.length > 0 || missing.length > 0 ? 'pointer' : 'default' }}
+                  >
                     <button
                       class={`tree-toggle${expanded().has(score.id) ? ' open' : ''}`}
-                      onClick={() => toggleExpanded(score.id)}
+                      onClick={(e) => { e.stopPropagation(); toggleExpanded(score.id) }}
                       disabled={deps.length === 0 && missing.length === 0}
                       title={deps.length === 0 && missing.length === 0 ? 'No referenced files' : (expanded().has(score.id) ? 'Collapse' : 'Expand')}
                     >▶</button>
                     <span class="filename">{score.name}.{score.ext}</span>
-                    <div class="actions">
+                    <div class="actions" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => void toggleInProject(score)}
                         disabled={props.mutationsDisabled}
