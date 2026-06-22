@@ -12,6 +12,7 @@ import { PlayerVisualizer } from './PlayerVisualizer'
 import { InstrumentPreview } from './InstrumentPreview'
 import type { TransportState } from '../player/Player'
 import { HelpDialog } from './HelpDialog'
+import { Seekbar } from './Seekbar'
 import { firstInstrumentPitchHz } from '../parse/score'
 
 /**
@@ -239,6 +240,14 @@ export const Layout: Component<LayoutProps> = (props) => {
               Download WAV
             </button>
           </div>
+          <Seekbar
+            getPosition={() => props.session.player.getPosition()}
+            getDuration={() => props.session.player.getDuration()}
+            getLoopPoints={() => props.session.player.getLoopPoints()}
+            isLooping={() => props.session.player.isLoopEnabled()}
+            onSeek={(t) => props.session.player.seek(t)}
+            onSetLoopPoints={(s, e) => props.session.player.setLoopPoints(s, e)}
+          />
           <Show when={props.session.renderStatus().state === 'error'}>
             <p class="error">
               {props.session.renderStatus().errorMessage}

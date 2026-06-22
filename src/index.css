@@ -376,6 +376,79 @@ html, body, #root {
   display: block;
 }
 
+/* Seekbar — thin playback track with draggable loop region markers. */
+.seekbar {
+  padding: 14px 0 4px;
+  touch-action: none;
+  user-select: none;
+}
+
+.seekbar-track {
+  position: relative;
+  height: 4px;
+  background: #2d2d2d;
+  border-radius: 2px;
+  cursor: pointer;
+  overflow: visible;
+}
+
+.seekbar-loop-region {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: rgba(74, 141, 240, 0.25);
+  pointer-events: none;
+}
+
+.seekbar-playhead {
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  width: 2px;
+  margin-left: -1px;
+  background: #ccc;
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+.seekbar-marker {
+  position: absolute;
+  top: -14px;
+  width: 4px;
+  height: calc(100% + 14px);
+  margin-left: -2px;
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+/* Downward-pointing triangle cap above each marker bar */
+.seekbar-marker::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+
+.seekbar-marker-start { background: rgba(74, 223, 144, 0.5); }
+.seekbar-marker-start::before { border-top: 8px solid #4adf90; }
+
+.seekbar-marker-end { background: rgba(223, 96, 96, 0.5); }
+.seekbar-marker-end::before { border-top: 8px solid #df6060; }
+
+.seekbar-time {
+  display: block;
+  margin-top: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  color: #555;
+  text-align: right;
+}
+
 .instrument-preview {
   flex: 0 0 auto;
   border-top: 1px solid #2a2a2a;
