@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Damp values (sustain-pedal release extensions) were incorrectly included in bar-length calculations, causing every subsequent bar to start late by up to one full damp duration. Bars with kalimba notes (`damp=2`) at tick 11 were measured as 14 ticks instead of 12, producing ~325 ms of silence before each bar transition. All bar timing is now based solely on `offsetTicks + lengthTicks`; damp still extends the individual note's PCM tail past the bar boundary as intended.
+
 ### Added
 
 - Kick drum (`oxygene-kick`) added to the Oxygène Pt. IV score. FM pitch sweep from ~130 Hz to C1 (32.7 Hz) in the first 50 ms produces the characteristic thump. Hits on beats 1 and 3 of every bar from bar 5, silencing at bar 117 alongside the tambourine.
