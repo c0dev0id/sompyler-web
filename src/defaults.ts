@@ -649,6 +649,7 @@ const OXYGENE_STRINGS = `# strings: SynString 2 (GM52 / TimGM6mb), C3. Partials 
 # TiMidity peak at 3.78s. Global A=1.5s compresses the swell.
 # H2/H5-H9 build after the loudness peak; per-partial A: derived as
 # A_partial = 1.5 × (V_mid_sustain / V_at_peak) to match the measured ratio.
+# D: for H7(-8c), H8(+14c), H9(+17c), H11(-8c): string inharmonicities.
 character:
   O: sine
   AMP: 0.12
@@ -667,12 +668,16 @@ character:
       A: "3.7:1,100"
     - V: 8.3
       A: "4.2:1,100"
+      D: -8
     - V: 7.0
       A: "3.6:1,100"
+      D: 14
     - V: 6.2
       A: "3.9:1,100"
+      D: 17
     - 4.7
-    - 6.1
+    - V: 6.1
+      D: -8
     - 4.9
     - 4.5
     - 3.8
