@@ -73,23 +73,69 @@ function percentDbToLinear(v: number): number {
 }
 
 /**
- * S32130: PROFILE list → PartialDef[].
- * Simple form: [100, 72, 52, …] — REVERSED_DBFS amps (100=full, 0=silent).
- * Complex form: [{ V: 100, A: "…", S: "…", R: "…", D: cents }, …]
- *   A/S/T/R: per-partial envelope overrides; missing phases fall back to rootEnv.
- *   D: frequency deviance in cents from the harmonic series.
+ * S32131: VOLUMES list → number[] of REVERSED_DBFS base amplitudes, one per
+ * harmonic slot. Same format as SPREAD: list of integers or "RESOLUTION:SHAPE".
+ * Values are added to PROFILE V before converting to linear amplitude.
+ */
+function compileVolumes(raw: unknown): number[] | undefined {
+  if (raw == null) return undefined
+  if (typeof raw === 'string') {
+    const colon = raw.indexOf(':')
+    if (colon === -1) throw new InstrumentError(`VOLUMES string must be "RESOLUTION:SHAPE"`)
+    const resolution = parseInt(raw.slice(0, colon), 10)
+    if (!Number.isFinite(resolution) || resolution <= 0) {
+      throw new InstrumentError(`VOLUMES resolution must be a positive integer`)
+    }
+    return Array.from(renderShapeString(raw, resolution))
+  }
+  if (!Array.isArray(raw)) throw new InstrumentError(`VOLUMES must be a list or "RESOLUTION:SHAPE" string`)
+  return raw.map((item, i) => {
+    const n = Number(item)
+    if (!Number.isFinite(n)) throw new InstrumentError(`VOLUMES[${i}] must be a number`)
+    return n
+  })
+}
+
+/**
+ * S32130/S32131: PROFILE list + optional VOLUMES → PartialDef[].
+ *
+ * VOLUMES provides a per-partial base amplitude in REVERSED_DBFS.
+ * PROFILE V is additive on top: effective = V + VOLUMES[i].
+ * If VOLUMES is longer than PROFILE, the excess slots create implicit partials.
+ *
+ * Simple PROFILE form: [100, 72, 52, …] — V values (added to VOLUMES[i] or absolute).
+ * Complex form: [{ V: …, A: "…", S: "…", R: "…", D: cents }, …]
  */
 function compileProfile(
   raw: unknown,
   rootEnv: { A: unknown; S: unknown; T: unknown; R: unknown },
+  volumes?: number[],
 ): PartialDef[] | undefined {
-  if (raw == null) return undefined
-  if (!Array.isArray(raw)) throw new InstrumentError(`PROFILE must be a list`)
-  return raw.map((item, i) => {
-    if (typeof item === 'number') return { freqMult: i + 1, amp: percentDbToLinear(item) }
+  const profileItems: unknown[] = Array.isArray(raw) ? raw : []
+  const profileLen = profileItems.length
+  const volumesLen = volumes?.length ?? 0
+  const count = Math.max(profileLen, volumesLen)
+  if (count === 0) return undefined
+
+  return Array.from({ length: count }, (_, i) => {
+    const baseVol = volumes?.[i] ?? 0
+    const item = profileItems[i]
+
+    if (item == null) {
+      // Implicit partial from VOLUMES only
+      return { freqMult: i + 1, amp: percentDbToLinear(baseVol) } satisfies PartialDef
+    }
+    if (typeof item === 'number') {
+      return { freqMult: i + 1, amp: percentDbToLinear(item + baseVol) } satisfies PartialDef
+    }
     const obj = asObj(item)
-    if (!obj || !('V' in obj)) throw new InstrumentError(`PROFILE[${i}] must be a number or {V:…}`)
-    const def: PartialDef = { freqMult: i + 1, amp: percentDbToLinear(Number(obj.V)) }
+    // V is optional when VOLUMES provides a base; required when VOLUMES is absent
+    const hasV = obj != null && 'V' in obj
+    if (!obj || (!hasV && volumesLen === 0)) {
+      throw new InstrumentError(`PROFILE[${i}] must be a number or {V:…}`)
+    }
+    const profileV = hasV ? Number(obj.V) : 0
+    const def: PartialDef = { freqMult: i + 1, amp: percentDbToLinear(profileV + baseVol) }
     const pA = obj.A ?? null
     const pS = obj.S ?? null
     const pT = obj.T ?? null
@@ -334,7 +380,8 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
   if (osc) spec.oscillator = osc
   const env = compileRfcEnvelope(root.A, root.S, root.T, root.R)
   if (env) spec.envelope = env
-  const partials = compileProfile(root.PROFILE, { A: root.A, S: root.S, T: root.T, R: root.R })
+  const volumes = compileVolumes(root.VOLUMES)
+  const partials = compileProfile(root.PROFILE, { A: root.A, S: root.S, T: root.T, R: root.R }, volumes)
   if (partials) spec.partials = partials
   const railsback = compileRailsback(root.RAILSBACK_CURVE)
   if (railsback) spec.railsback = railsback

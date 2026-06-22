@@ -34,6 +34,55 @@ describe('compileInstrument', () => {
     expect(spec.partials![1]!.amp).toBeCloseTo(Math.pow(10, -2.5), 10)
   })
 
+  it('compiles VOLUMES alone → implicit partials at those amplitudes', async () => {
+    const i = await loadInstrument(
+      'dev/piano',
+      `character:
+  O: sine
+  VOLUMES: [100, 50]`,
+    )
+    const spec = compileInstrument(i)
+    expect(spec.partials).toHaveLength(2)
+    expect(spec.partials![0]).toMatchObject({ freqMult: 1, amp: 1.0 })
+    expect(spec.partials![1]!.amp).toBeCloseTo(Math.pow(10, -2.5), 10)
+  })
+
+  it('compiles VOLUMES + PROFILE: V values are additive on top of VOLUMES', async () => {
+    const i = await loadInstrument(
+      'dev/piano',
+      `character:
+  O: sine
+  VOLUMES: [80, 60]
+  PROFILE:
+    - 10
+    - V: 5`,
+    )
+    const spec = compileInstrument(i)
+    // Partial 1: 10 + 80 = 90 REVERSED_DBFS
+    expect(spec.partials![0]!.amp).toBeCloseTo(Math.pow(10, -5 * (1 - 90 / 100)), 10)
+    // Partial 2: 5 + 60 = 65 REVERSED_DBFS
+    expect(spec.partials![1]!.amp).toBeCloseTo(Math.pow(10, -5 * (1 - 65 / 100)), 10)
+  })
+
+  it('compiles VOLUMES longer than PROFILE → extra implicit partials from VOLUMES', async () => {
+    const i = await loadInstrument(
+      'dev/piano',
+      `character:
+  O: sine
+  VOLUMES: [100, 80, 60]
+  PROFILE:
+    - 0`,
+    )
+    const spec = compileInstrument(i)
+    expect(spec.partials).toHaveLength(3)
+    // Partial 1: PROFILE 0 + VOLUMES 100 = 100
+    expect(spec.partials![0]!.amp).toBeCloseTo(1.0, 10)
+    // Partial 2: implicit (V=0) + VOLUMES 80 = 80
+    expect(spec.partials![1]!.amp).toBeCloseTo(Math.pow(10, -5 * (1 - 80 / 100)), 10)
+    // Partial 3: implicit (V=0) + VOLUMES 60 = 60
+    expect(spec.partials![2]!.amp).toBeCloseTo(Math.pow(10, -5 * (1 - 60 / 100)), 10)
+  })
+
   it('compiles complex PROFILE entry with per-partial A: envelope override', async () => {
     const i = await loadInstrument(
       'dev/piano',
