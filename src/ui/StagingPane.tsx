@@ -344,10 +344,10 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
             </For>
             <Show when={grouped().unreferenced.length > 0}>
               <li class={`tree-score unreferenced-group${expanded().has('__unreferenced__') ? ' open' : ''}`}>
-                <div class="tree-row">
+                <div class="tree-row" style={{ cursor: 'pointer' }} onClick={() => toggleExpanded('__unreferenced__')}>
                   <button
                     class={`tree-toggle${expanded().has('__unreferenced__') ? ' open' : ''}`}
-                    onClick={() => toggleExpanded('__unreferenced__')}
+                    onClick={(e) => { e.stopPropagation(); toggleExpanded('__unreferenced__') }}
                     title={expanded().has('__unreferenced__') ? 'Collapse' : 'Expand'}
                   >▶</button>
                   <span class="filename unreferenced-label">unreferenced</span>
