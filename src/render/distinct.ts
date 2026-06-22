@@ -101,7 +101,7 @@ export async function buildDistinctNotes(
   // nothing; tempo shapes on empty measures are not meaningful.
   const measureTickSpan = new Map<number, number>()
   for (const note of rawNotes) {
-    const span = note.offsetTicks + note.lengthTicks + note.damp
+    const span = note.offsetTicks + note.lengthTicks
     const cur = measureTickSpan.get(note.measureIndex) ?? 0
     if (span > cur) measureTickSpan.set(note.measureIndex, span)
   }
@@ -178,7 +178,7 @@ export async function buildDistinctNotes(
       activeTickSeconds,
       activeTicksPerMinute,
       0,
-      note.offsetTicks + note.lengthTicks + note.damp,
+      note.offsetTicks + note.lengthTicks,
     )
     activeMeasureLengthSeconds = Math.max(activeMeasureLengthSeconds, noteEndSeconds)
 

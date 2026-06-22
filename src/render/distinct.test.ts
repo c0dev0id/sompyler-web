@@ -334,4 +334,34 @@ piano:
     expect(plan.notes.some((n) => n.properties.offScale === '!')).toBe(true)
     expect(plan.notes.some((n) => n.properties.offScale === undefined)).toBe(true)
   })
+
+  it('damp does not extend the bar — next bar starts at tick boundary (S51a10)', async () => {
+    // Bar 1: note at tick 0, length 4, damp 4 (tail bleeds past bar end).
+    // Bar 2: note at tick 0, length 1.
+    // At 60 tpm bar 1 is 4 ticks = 4 s. Bar 2 tick-0 note must start at 4 s,
+    // NOT at 8 s (what including damp would produce).
+    const TWO_BAR = `
+title: damp-bar
+stage:
+  piano: 1|1 0 dev/piano
+---
+_meta:
+  ticks_per_minute: 60
+  stress_pattern: "1"
+  lower_stress_bound: 100
+  upper_stress_bound: 100
+piano:
+  0: A4 4 damp=4
+---
+piano:
+  0: B4 1
+`
+    const plan = await buildDistinctNotes(TWO_BAR, {
+      tuner: new Tuner(),
+      instruments: new Map([[piano.name, piano]]),
+    })
+    const b4 = plan.notes.find((n) => Math.abs(n.frequencyHz - 493.88) < 1)
+    expect(b4).toBeDefined()
+    expect(b4!.occurrences[0]!.offsetSeconds).toBeCloseTo(4, 4)
+  })
 })
