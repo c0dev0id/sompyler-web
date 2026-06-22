@@ -36,6 +36,9 @@ const RAILSBACK_KEYS = 88
 
 const WAVEFORMS: ReadonlySet<Waveform> = new Set(['sin', 'square', 'saw', 'triangle', 'noise'])
 
+// RFC waveform names → internal Waveform identifiers (S32110).
+const RFC_WAVEFORM: Record<string, Waveform> = { sine: 'sin', sawtooth: 'saw' }
+
 function asObj(x: unknown): Record<string, unknown> | null {
   return x && typeof x === 'object' && !Array.isArray(x) ? (x as Record<string, unknown>) : null
 }
@@ -43,18 +46,20 @@ function asObj(x: unknown): Record<string, unknown> | null {
 function compileOscillator(raw: unknown): OscillatorSpec | undefined {
   if (raw == null) return undefined
   if (typeof raw === 'string') {
-    if (!WAVEFORMS.has(raw as Waveform)) {
+    const wf = (RFC_WAVEFORM[raw] ?? raw) as Waveform
+    if (!WAVEFORMS.has(wf)) {
       throw new InstrumentError(`Unknown oscillator waveform '${raw}'`)
     }
-    return { waveform: raw as Waveform }
+    return { waveform: wf }
   }
   const obj = asObj(raw)
   if (!obj) throw new InstrumentError(`oscillator must be a string or mapping`)
-  const wf = obj.waveform
-  if (typeof wf !== 'string' || !WAVEFORMS.has(wf as Waveform)) {
-    throw new InstrumentError(`Unknown oscillator waveform '${String(wf)}'`)
+  const rawWf = String(obj.waveform)
+  const wf = (RFC_WAVEFORM[rawWf] ?? rawWf) as Waveform
+  if (!WAVEFORMS.has(wf)) {
+    throw new InstrumentError(`Unknown oscillator waveform '${String(obj.waveform)}'`)
   }
-  return { waveform: wf as Waveform }
+  return { waveform: wf }
 }
 
 function compileEnvelope(raw: unknown): EnvelopeSpec | undefined {
@@ -104,6 +109,57 @@ function compilePartials(raw: unknown): PartialDef[] | undefined {
     if (fm) partial.fm = fm
     return partial
   })
+}
+
+/**
+ * S32130: PROFILE list → PartialDef[].
+ * Simple form: [100, 72, 52, …] — REVERSED_DBFS amps (100=full, 0=silent).
+ * Complex form: [{ V: 100, A: "shape" }, …] — V is REVERSED_DBFS; A (per-partial
+ * attack shape) is accepted but currently ignored (future work).
+ */
+function compileProfile(raw: unknown): PartialDef[] | undefined {
+  if (raw == null) return undefined
+  if (!Array.isArray(raw)) throw new InstrumentError(`PROFILE must be a list`)
+  return raw.map((item, i) => {
+    if (typeof item === 'number') return { freqMult: i + 1, amp: item / 100 }
+    const obj = asObj(item)
+    if (!obj || !('V' in obj)) throw new InstrumentError(`PROFILE[${i}] must be a number or {V:…}`)
+    return { freqMult: i + 1, amp: Number(obj.V) / 100 }
+  })
+}
+
+/** Extract the leading seconds value from an RFC shape string "DURATION:…". */
+function parseRfcDuration(s: string): number {
+  const i = s.indexOf(':')
+  return i === -1 ? 0 : Math.abs(parseFloat(s.slice(0, i)))
+}
+
+/**
+ * Extract end-of-sustain level from S format "DUR:START;x,y;…".
+ * The last ";x,y" segment's y is the terminal REVERSED_DBFS level (0–100).
+ */
+function parseRfcSustainLevel(s: string): number {
+  const i = s.indexOf(':')
+  if (i === -1) return 1
+  const segs = s.slice(i + 1).split(';')
+  const last = segs[segs.length - 1]!
+  const comma = last.indexOf(',')
+  if (comma === -1) return 1
+  return Math.min(1, Math.max(0, Number(last.slice(comma + 1)) / 100))
+}
+
+/**
+ * Build an EnvelopeSpec from RFC character-block A/S/R shape strings.
+ * Returns undefined when none are present (flat format falls through instead).
+ */
+function compileRfcEnvelope(A: unknown, S: unknown, R: unknown): EnvelopeSpec | undefined {
+  if (A == null && S == null && R == null) return undefined
+  return {
+    attack:       A != null ? parseRfcDuration(String(A)) : DEFAULT_ENVELOPE.attack,
+    decay:        S != null ? parseRfcDuration(String(S)) : 0,
+    sustainLevel: S != null ? parseRfcSustainLevel(String(S)) : DEFAULT_ENVELOPE.sustainLevel,
+    release:      R != null ? parseRfcDuration(String(R)) : DEFAULT_ENVELOPE.release,
+  }
 }
 
 /** S32132: list of incremental cent deviations, or RESOLUTION:SHAPE string. */
@@ -290,18 +346,17 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
     throw cause
   }
 
-  // S32132/S32134/S32135: SPREAD/TIMBRE/MORPH live in character.root when
-  // expressed as character-block keys (uppercase), or at the top level in
-  // the flat instrument format (lowercase). Character block takes precedence.
+  // S32110/S32130–S32135: all character-block root keys (uppercase) take
+  // precedence over their flat-format equivalents (lowercase top-level keys).
   const root = character.root
 
   const spec: InstrumentSpec = {}
   if ('amp' in obj) spec.amp = Number(obj.amp)
-  const osc = compileOscillator(obj.oscillator)
+  const osc = compileOscillator(root.O ?? obj.oscillator)
   if (osc) spec.oscillator = osc
-  const env = compileEnvelope(obj.envelope)
+  const env = compileRfcEnvelope(root.A, root.S, root.R) ?? compileEnvelope(obj.envelope)
   if (env) spec.envelope = env
-  const partials = compilePartials(obj.partials)
+  const partials = compileProfile(root.PROFILE) ?? compilePartials(obj.partials)
   if (partials) spec.partials = partials
   const railsback = compileRailsback(obj.railsback)
   if (railsback) spec.railsback = railsback
