@@ -49,9 +49,8 @@ stage:                      # places each voice in the stereo field
     {
       subtitle: 'Measure settings — controls tempo and dynamics for one measure',
       code: `_meta:
-  ticks_per_minute: 363     # tempo: how many note slots (ticks) per minute
-  beats_per_minute: 120     # alias for ticks_per_minute (RFC §S46140)
-                             # if both are present, beats_per_minute wins
+  beats_per_minute: 120     # tempo (RFC §S46100): scaled by the stress_pattern
+                             # to get the internal ticks-per-minute rate
   stress_pattern: "2,0,1,0" # accent cycle applied across ticks
                              # 2 = strong beat (loudest)
                              # 1 = weak beat
@@ -111,88 +110,32 @@ const INSTRUMENT: Section = {
     'like filters, vibrato, or FM synthesis.',
   blocks: [
     {
-      subtitle: 'Basic sound — wave shape and volume',
-      code: `amp: 0.8          # master output level (0–1)
-               # use this to balance instruments against each other
-
-oscillator: sin  # the basic wave shape — sets the core character:
-               #   sin      — smooth, pure tone (flute, sine bass)
-               #   saw      — bright and buzzy (strings, brass, synth lead)
-               #   square   — hollow and reedy (clarinet, chiptune, organ)
-               #   triangle — softer than saw, rounder than square (mellow lead)
-               #   noise    — unpitched hiss (cymbals, breath, wind)
-
-envelope:
-  attack: 0.01        # seconds from silence to full volume at note start
-                       # 0.001 = instant, punchy attack
-                       # 0.3   = slow swell (pad, strings)
-  decay: 0.1          # seconds to fall from peak volume to sustainLevel
-                       # 0   = no decay (stays at peak until release)
-                       # 0.1 = piano-like drop after the hammer strike
-  sustainLevel: 0.85  # volume level held during the note body (0–1)
-                       # 1.0 = stays at peak (no audible decay)
-                       # 0.3 = plucked-string character: loud attack, quiet sustain
-  release: 0.3        # seconds to fade out after the note ends
-                       # short release = staccato, clipped
-                       # long release  = notes ring and overlap`,
-    },
-    {
-      subtitle: 'Partials — adding overtones to shape the timbre',
-      code: `# A real instrument's sound is made up of many frequencies at once.
-# The fundamental is the note you hear; overtones (partials) sit above
-# it and determine whether it sounds like a piano, a violin, or a synth.
-
-partials:
-  - { freqMult: 1, amp: 1.0 }   # fundamental — the base pitch itself
-  - { freqMult: 2, amp: 0.5 }   # 1 octave above, half as loud
-  - { freqMult: 3, amp: 0.25 }  # octave + perfect fifth above
-  - { freqMult: 4, amp: 0.12 }  # 2 octaves above
-  # freqMult is a multiplier of the base frequency:
-  #   1 = base, 2 = double (octave), 3 = triple, etc.
-  # Higher-numbered partials with louder amp values = brighter sound
-  # Each partial can also override the oscillator:
-  - { freqMult: 2, amp: 0.3, oscillator: saw }
-
-spread: [0, 5, -3, 4]
-  # Detunes each partial by a cumulative number of cents (1/100 of a semitone)
-  # [0, 5, -3, 4] means:
-  #   partial 1: no shift
-  #   partial 2: +5 cents flat
-  #   partial 3: +5−3 = +2 cents sharp (values are cumulative)
-  #   partial 4: +2+4 = +6 cents flat
-  # Small detuning creates beating between partials — adds warmth and life
-  # to sounds that would otherwise be too mathematically perfect`,
-    },
-    {
-      subtitle: 'character block — RFC format (alternative to flat keys)',
-      code: `# The character: block is the original Sompyler instrument format.
-# It replaces the flat oscillator/envelope/partials keys above.
-# character: takes precedence over any flat keys in the same file.
+      subtitle: 'Wave shape, envelope, and overtones — the character block',
+      code: `amp: 0.8          # master output level (0–1); balances instruments
 
 character:
   O: sine          # oscillator wave shape (RFC §S32110):
                     #   sine | sawtooth | square | triangle | noise
-                    # (same waveforms as "oscillator:", different names)
 
-  A: ".01:1,100"   # attack  — DURATION:SHAPE  (RFC §S32130)
-  S: ".2:100;1,0"  # sustain — DURATION:START;SHAPE
-  R: ".05:100;1,0" # release — DURATION:START;SHAPE
+  A: "0.01:1,100"  # attack  — DURATION:from,to  (RFC §S32130)
+  S: "0.1:100;1,85"# decay/sustain — DURATION:start;count,sustainLevel
+  R: "0.3:100;1,0" # release — DURATION:start;count,0
                     #
-                    # DURATION is a float in seconds (.01 = 10ms, 1.5 = 1.5s)
-                    # SHAPE is a list of x,y control points for a Bezier curve
+                    # DURATION is a float in seconds (0.01 = 10ms, 1.5 = 1.5s)
                     # Values are REVERSED_DBFS: 100 = full amplitude, 0 = silence
-                    # S defines the body decay; the end value sets sustainLevel
+                    # A: rise from 1 to 100 over attack duration
+                    # S: decay from 100 to sustain level (85 here = 0.85)
+                    # R: fall from 100 to silence over release duration
+
+  PROFILE: [100, 50, 25, 12]
+                    # partial amplitudes in REVERSED_DBFS (S32130)
+                    # index i → partial i+1 (freqMult = i+1)
+                    # 100 = full, 0 = silent, omitted = absent
+                    # [100, 50, 25, 12] = fundamental + 3 overtones
 
   SPREAD: [0, 5, -3, 7]
                     # detuning per partial in cumulative cents (S32132)
-                    # same as flat "spread:" key, values are cumulative offsets
-
-  PROFILE: [100, 72, 52, 38, 26]
-                    # partial amplitudes in REVERSED_DBFS (S32130)
-                    # list index i → partial i+1 at freqMult = i+1
-                    # 100 = full, 0 = silent
-                    # replaces the flat "partials:" list for simple amplitude shaping
-                    # complex form: [{V: 100}, {V: 72}] — V key holds the amplitude
+                    # small values add warmth and beating between partials
 
   TIMBRE: "4:shape" # spectrum width shape string (S32134)
   MORPH: ["1 shape"] # per-partial amplitude shape overrides (S32135)`,
