@@ -606,18 +606,18 @@ character:
   A: "0.08:1,100"
   S: "0.001:100;1,85"
   R: "1.50:100;1,0"
-  PROFILE: [100, 25.8, 11.8, 7.7, 5.6, 2.9, 2, 4.7, 4.5, 3.3, 3.8, 1.3, 0.61, 1.6, 0.72, 0.25, 0.47, 0.37, 0.26, 0.14, 0.061, 0.068, 0.027, 0.024]
+  PROFILE: [100, 39, 11.8, 7.7, 5.6, 2.9, 2, 4.7, 4.5, 3.3, 3.8, 1.3, 0.61, 1.6, 0.72, 0.25, 0.47, 0.37, 0.26, 0.14, 0.061, 0.068, 0.027, 0.024]
 `
 
 const OXYGENE_BOWEDPAD = `# bowedpad: Pad 5 Bowed (GM93 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
-# H4 ≈ H1 in amplitude (0.990) — defining feature of this pad. H11 hump at 0.116.
+# H4 > H1 in amplitude (1.31) — defining feature of this pad. H9/H10 hump at ~18%.
 character:
   O: sine
   AMP: 0.08
   A: "0.80:1,100"
   S: "0.001:100;1,90"
   R: "2.00:100;1,0"
-  PROFILE: [100, 27, 22.2, 99, 14.6, 6.3, 7.5, 6.9, 5.7, 6, 11.6, 3, 3.2, 2.8, 3.2, 2.2, 2.3, 3.6, 2.3, 1.9, 1.5, 1.3, 1.1, 1]
+  PROFILE: [100, 27, 22.2, 131, 14.6, 6.3, 7.5, 6.9, 18, 18, 11.6, 12, 3.2, 2.8, 3.2, 2.2, 2.3, 3.6, 2.3, 1.9, 1.5, 1.3, 1.1, 1]
   LFO: "0.18@sin;0.08:amp"
 `
 
@@ -649,9 +649,9 @@ const OXYGENE_SEASHORE = `# seashore: Sea Shore (GM123 / TimGM6mb), C4. Noise in
 character:
   O: noise
   AMP: 0.06
-  A: "2.00:1,100"
+  A: "0.75:1,100"
   S: "0.001:100;1,70"
-  R: "3.00:100;1,0"
+  R: "9.00:100;1,0"
 `
 
 const OXYGENE = `title: Oxygène Pt. IV
