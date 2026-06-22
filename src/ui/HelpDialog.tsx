@@ -50,8 +50,8 @@ stage:                      # places each voice in the stereo field
       subtitle: 'Measure settings — controls tempo and dynamics for one measure',
       code: `_meta:
   ticks_per_minute: 363     # tempo: how many note slots (ticks) per minute
-                             # 480 ticks/min with 4 ticks per note = 120 BPM
-                             # lower = slower, higher = faster
+  beats_per_minute: 120     # alias for ticks_per_minute (RFC §S46140)
+                             # if both are present, beats_per_minute wins
   stress_pattern: "2,0,1,0" # accent cycle applied across ticks
                              # 2 = strong beat (loudest)
                              # 1 = weak beat
@@ -162,6 +162,40 @@ spread: [0, 5, -3, 4]
   #   partial 4: +2+4 = +6 cents flat
   # Small detuning creates beating between partials — adds warmth and life
   # to sounds that would otherwise be too mathematically perfect`,
+    },
+    {
+      subtitle: 'character block — RFC format (alternative to flat keys)',
+      code: `# The character: block is the original Sompyler instrument format.
+# It replaces the flat oscillator/envelope/partials keys above.
+# character: takes precedence over any flat keys in the same file.
+
+character:
+  O: sine          # oscillator wave shape (RFC §S32110):
+                    #   sine | sawtooth | square | triangle | noise
+                    # (same waveforms as "oscillator:", different names)
+
+  A: ".01:1,100"   # attack  — DURATION:SHAPE  (RFC §S32130)
+  S: ".2:100;1,0"  # sustain — DURATION:START;SHAPE
+  R: ".05:100;1,0" # release — DURATION:START;SHAPE
+                    #
+                    # DURATION is a float in seconds (.01 = 10ms, 1.5 = 1.5s)
+                    # SHAPE is a list of x,y control points for a Bezier curve
+                    # Values are REVERSED_DBFS: 100 = full amplitude, 0 = silence
+                    # S defines the body decay; the end value sets sustainLevel
+
+  SPREAD: [0, 5, -3, 7]
+                    # detuning per partial in cumulative cents (S32132)
+                    # same as flat "spread:" key, values are cumulative offsets
+
+  PROFILE: [100, 72, 52, 38, 26]
+                    # partial amplitudes in REVERSED_DBFS (S32130)
+                    # list index i → partial i+1 at freqMult = i+1
+                    # 100 = full, 0 = silent
+                    # replaces the flat "partials:" list for simple amplitude shaping
+                    # complex form: [{V: 100}, {V: 72}] — V key holds the amplitude
+
+  TIMBRE: "4:shape" # spectrum width shape string (S32134)
+  MORPH: ["1 shape"] # per-partial amplitude shape overrides (S32135)`,
     },
     {
       subtitle: 'VCF — resonant low-pass filter',
