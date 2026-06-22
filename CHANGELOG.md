@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Notes whose `offset + length` exceeds the bar boundary (e.g. synbrass at tick 11, length 7 in a 12-tick bar) were inflating `activeMeasureLengthSeconds`, shifting every subsequent bar later. Fix: new inherited `_meta` field `ticks_per_measure` pins the bar duration exactly. Overflow notes still render at full length and bleed into the next bar during mixing. Oxygène sets `ticks_per_measure: 12` on bar 1; all 117 bars inherit it.
+
 - Damp values (sustain-pedal release extensions) were incorrectly included in bar-length calculations, causing every subsequent bar to start late by up to one full damp duration. Bars with kalimba notes (`damp=2`) at tick 11 were measured as 14 ticks instead of 12, producing ~325 ms of silence before each bar transition. All bar timing is now based solely on `offsetTicks + lengthTicks`; damp still extends the individual note's PCM tail past the bar boundary as intended.
 
 ### Added
