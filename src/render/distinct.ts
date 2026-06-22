@@ -90,6 +90,14 @@ export async function buildDistinctNotes(
   let activeElasticksPattern: string | undefined
   /** S46180 active elasticks shape string. Clears when elasticksPattern changes. */
   let activeElasticksShape: string | undefined
+  /**
+   * Canonical bar length in ticks from `_meta.ticks_per_measure`. Inherited.
+   * When > 0, the bar's duration is exactly this many ticks regardless of
+   * how far individual notes extend past the bar boundary. Notes are free to
+   * overflow into the next bar's time; they don't stretch the bar itself.
+   * When 0 (not set), bar duration = max note extent (backwards-compat).
+   */
+  let activeMeasureTicks = 0
   let activeMeasureIndex = -1
   let activeMeasureLengthSeconds = 0
 
@@ -147,6 +155,10 @@ export async function buildDistinctNotes(
         activeElasticksShape =
           typeof metaBlock.elasticks_shape === 'string' ? metaBlock.elasticks_shape : undefined
       }
+      // Inherited: update explicit bar length only when set in this meta block.
+      if (metaBlock && 'ticks_per_measure' in metaBlock) {
+        activeMeasureTicks = Number(metaBlock.ticks_per_measure)
+      }
       // (Re-)compute the per-tick seconds buffer for this measure.
       const measureLen = measureTickSpan.get(note.measureIndex) ?? 0
       activeTickSeconds = activeTempoShape
@@ -163,6 +175,16 @@ export async function buildDistinctNotes(
           activeTickSeconds[t]! *= elasticks[t]!
         }
       }
+      // When ticks_per_measure is set, fix the bar length now so overflow
+      // notes (length + offset > bar) cannot stretch the bar.
+      if (activeMeasureTicks > 0) {
+        activeMeasureLengthSeconds = tickRangeSeconds(
+          activeTickSeconds,
+          activeTicksPerMinute,
+          0,
+          activeMeasureTicks,
+        )
+      }
     }
 
     const offsetSeconds =
@@ -174,13 +196,17 @@ export async function buildDistinctNotes(
       note.offsetTicks,
       note.lengthTicks,
     )
-    const noteEndSeconds = tickRangeSeconds(
-      activeTickSeconds,
-      activeTicksPerMinute,
-      0,
-      note.offsetTicks + note.lengthTicks,
-    )
-    activeMeasureLengthSeconds = Math.max(activeMeasureLengthSeconds, noteEndSeconds)
+    // Only extend bar duration from note extent when ticks_per_measure is not set.
+    // With an explicit bar length, overflow notes don't change when the next bar starts.
+    if (activeMeasureTicks === 0) {
+      const noteEndSeconds = tickRangeSeconds(
+        activeTickSeconds,
+        activeTicksPerMinute,
+        0,
+        note.offsetTicks + note.lengthTicks,
+      )
+      activeMeasureLengthSeconds = Math.max(activeMeasureLengthSeconds, noteEndSeconds)
+    }
 
     const frequencyHz = ctx.tuner.frequencyOfTone(note.pitch, {
       scale: ctx.scale,

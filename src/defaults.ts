@@ -860,6 +860,7 @@ room: oxygene-plate
 # bar 1 — intro: seashore fade-in, kalimba silent
 _meta:
   ticks_per_minute: 369
+  ticks_per_measure: 12
   stress_pattern: "2,0,0,1,0,0,1,0,0,1,0,0"
   lower_stress_bound: 70
   upper_stress_bound: 90
