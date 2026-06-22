@@ -13,7 +13,7 @@ export interface EnvelopeSpec {
   release: number
   /** Sustain level in [0,1]; the level held between decay and release. */
   sustainLevel: number
-  /** Tail duration in seconds (RFC §3.2.1.1.4 T: segment). Parsed but not yet applied. */
+  /** Tail duration in seconds (RFC §3.2.1.1.4 T: segment). Carved from sustain end. */
   tail?: number
   /** Raw RFC A: shape string; when set drives the attack curve via bezier. */
   attackShape?: string
@@ -21,6 +21,8 @@ export interface EnvelopeSpec {
   decayShape?: string
   /** Raw RFC R: shape string; when set drives the release curve via bezier. */
   releaseShape?: string
+  /** Raw RFC T: shape string; drives the tail curve. Release scales from tail's final level. */
+  tailShape?: string
 }
 
 export const DEFAULT_ENVELOPE: EnvelopeSpec = {
@@ -67,19 +69,22 @@ export function applyEnvelope(
   const total = buf.length
   let attackSamples  = Math.round(spec.attack * sampleRate)
   let decaySamples   = Math.round((spec.decay ?? 0) * sampleRate)
+  let tailSamples    = Math.round((spec.tail ?? 0) * sampleRate)
   let releaseSamples = Math.round((spec.release + Math.max(0, dampSeconds)) * sampleRate)
 
-  // Clamp so segments fit.
-  const fixed = attackSamples + decaySamples + releaseSamples
+  // Clamp so all segments fit.
+  const fixed = attackSamples + decaySamples + tailSamples + releaseSamples
   if (fixed > total) {
     const ratio = total / fixed
     attackSamples  = Math.floor(attackSamples  * ratio)
     decaySamples   = Math.floor(decaySamples   * ratio)
-    releaseSamples = total - attackSamples - decaySamples
+    tailSamples    = Math.floor(tailSamples    * ratio)
+    releaseSamples = total - attackSamples - decaySamples - tailSamples
   }
 
-  const decayEnd   = attackSamples + decaySamples
-  const sustainEnd = total - releaseSamples
+  const decayEnd  = attackSamples + decaySamples
+  const tailStart = total - releaseSamples - tailSamples  // sustain ends here
+  const tailEnd   = total - releaseSamples                // tail ends / release starts
   const s = spec.sustainLevel
   // Attack peaks at sustainLevel when there is no decay (continuous, backwards-compatible).
   // When decay > 0, attack peaks at 1.0 and the decay ramp brings it down to sustainLevel.
@@ -111,20 +116,35 @@ export function applyEnvelope(
   }
 
   // --- Sustain ---
-  for (let i = decayEnd; i < sustainEnd; i++) {
+  for (let i = decayEnd; i < tailStart; i++) {
     buf[i] = buf[i]! * s
+  }
+
+  // --- Tail (RFC §3.2.1.1.4) ---
+  // Bridges sustain and release; its final amplitude sets the release start level.
+  let releaseLevel = s
+  if (tailSamples > 0) {
+    if (spec.tailShape) {
+      const curve = renderShapeString(spec.tailShape, tailSamples)
+      for (let i = tailStart; i < tailEnd; i++) {
+        buf[i] = buf[i]! * (curve[i - tailStart]! / 100)
+      }
+      releaseLevel = (curve[tailSamples - 1] ?? s * 100) / 100
+    } else {
+      for (let i = tailStart; i < tailEnd; i++) buf[i] = buf[i]! * s
+    }
   }
 
   // --- Release ---
   if (spec.releaseShape && releaseSamples > 0) {
     const curve = renderShapeString(spec.releaseShape, releaseSamples)
-    for (let i = sustainEnd; i < total; i++) {
-      buf[i] = buf[i]! * (curve[i - sustainEnd]! / 100) * s
+    for (let i = tailEnd; i < total; i++) {
+      buf[i] = buf[i]! * (curve[i - tailEnd]! / 100) * releaseLevel
     }
   } else {
-    for (let i = sustainEnd; i < total; i++) {
+    for (let i = tailEnd; i < total; i++) {
       const t = (total - 1 - i) / Math.max(1, releaseSamples - 1)
-      buf[i] = buf[i]! * t * s
+      buf[i] = buf[i]! * t * releaseLevel
     }
   }
 }

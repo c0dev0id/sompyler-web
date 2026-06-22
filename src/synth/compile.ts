@@ -144,7 +144,10 @@ function compileRfcEnvelope(A: unknown, S: unknown, T: unknown, R: unknown): Env
   if (A != null) env.attackShape = String(A)
   if (S != null) env.decayShape = String(S)
   if (R != null) env.releaseShape = String(R)
-  if (T != null) env.tail = parseRfcDuration(String(T))
+  if (T != null) {
+    env.tail = parseRfcDuration(String(T))
+    env.tailShape = String(T)
+  }
   return env
 }
 

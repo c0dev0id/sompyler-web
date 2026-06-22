@@ -102,6 +102,37 @@ describe('applyEnvelope', () => {
     expect(buf[999]).toBeCloseTo(0, 1)
   })
 
+  it('tail segment is applied between sustain and release', () => {
+    // 100 ms sustain @ 0.8, 100 ms tail dropping from 0.8 to 0.4, 100 ms release
+    const buf = flat(SR)
+    applyEnvelope(buf, {
+      attack: 0, decay: 0, sustainLevel: 0.8, release: 0.1,
+      tail: 0.1, tailShape: '0.1:80;1,40',
+    }, SR)
+    // Before tail (sustain): holds at 0.8
+    expect(buf[400]).toBeCloseTo(0.8, 5)
+    // Start of tail (sample 800): 80/100 = 0.8
+    expect(buf[800]).toBeCloseTo(0.8, 1)
+    // End of tail (sample 899): 40/100 = 0.4
+    expect(buf[899]).toBeCloseTo(0.4, 1)
+    // Release starts from tail's final level (0.4), not sustainLevel (0.8)
+    // End of release (sample 999): 0
+    expect(buf[999]).toBeCloseTo(0, 1)
+    // Mid-release: between 0.4 and 0 (not between 0.8 and 0)
+    expect(buf[950]).toBeLessThan(0.4)
+  })
+
+  it('tail integrates into segment clamping', () => {
+    // Total 400 samples, ask for attack=1s + tail=1s + release=1s → must clamp
+    const buf = flat(400)
+    applyEnvelope(buf, {
+      attack: 1, decay: 0, sustainLevel: 1, release: 1,
+      tail: 1, tailShape: '1:100;1,50',
+    }, 100)
+    // Should not throw and last sample should be near 0
+    expect(buf[399]).toBeCloseTo(0, 1)
+  })
+
   it('multi-segment shaped decay reaches intermediate waypoints', () => {
     // S: ".2:100;1,60;2,0" — three control points: 100→60→0
     // The bezier curve passes through these points (approximately for bezier,
