@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Oxygène instruments re-tuned against TiMidity WAV fixtures:
-  - **bowed-pad**: H4 raised from 99 to 131 (dominant partial is 31% *above* H1, not equal); H9/H10 raised from ~6 to 18; H12 from 3 to 12.
-  - **string-ensemble**: H2 raised from 25.8 to 39 (octave partial was underestimated by 13%).
+- Oxygène instruments re-tuned from a full multi-window WAV analysis (attack-peak, mid-sustain, late-sustain FFT windows per instrument):
+  - **synbrass**: several harmonics were significantly overestimated — H6 12.2→8.2, H11 11.1→5.2, H15 7.8→1.7, H17 6.5→2.0, H21–H23 all roughly halved.
+  - **synstrings**: PROFILE had been measured at attack onset, missing the harmonic build-up. H2 18.8→36, H3 18→32, H4 25→34, H5 14→19, H6 6.5→15. Now measured at mid-sustain.
+  - **bowed-pad**: H4 corrected to 95 (not 99 or 131); H8/H11/H18 were all overestimated in the original analysis (H11 was 11.6 but WAV measures 3.1).
+  - **string-ensemble**: H2 refined to 34 (mid-sustain measurement).
   - **seashore**: attack shortened from 2.0s to 0.75s (measured WAV peak); release extended from 3.0s to 9.0s (WAV -40dB tail at ~9.25s).
 
 ### Added
