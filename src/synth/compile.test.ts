@@ -34,6 +34,46 @@ describe('compileInstrument', () => {
     expect(spec.partials![1]!.amp).toBeCloseTo(Math.pow(10, -2.5), 10)
   })
 
+  it('compiles complex PROFILE entry with per-partial A: envelope override', async () => {
+    const i = await loadInstrument(
+      'dev/piano',
+      `character:
+  O: sine
+  A: "0.01:1,100"
+  S: "0.1:100;1,80"
+  R: "0.3:100;1,0"
+  PROFILE:
+    - 100
+    - V: 72
+      A: "0.05:1,100"`,
+    )
+    const spec = compileInstrument(i)
+    expect(spec.partials).toHaveLength(2)
+    // First partial: simple numeric — no per-partial envelope
+    expect(spec.partials![0]!.envelope).toBeUndefined()
+    // Second partial: A overridden to 0.05s; S and R inherited from root
+    const env = spec.partials![1]!.envelope!
+    expect(env).toBeDefined()
+    expect(env.attack).toBeCloseTo(0.05)
+    expect(env.sustainLevel).toBeCloseTo(0.8)
+    expect(env.release).toBeCloseTo(0.3)
+  })
+
+  it('compiles complex PROFILE entry with D: deviance', async () => {
+    const i = await loadInstrument(
+      'dev/piano',
+      `character:
+  O: sine
+  PROFILE:
+    - 100
+    - V: 80
+      D: 14`,
+    )
+    const spec = compileInstrument(i)
+    expect(spec.partials![1]!.devianceCents).toBe(14)
+    expect(spec.partials![0]!.devianceCents).toBeUndefined()
+  })
+
   it('rejects unknown waveform', async () => {
     const i = await loadInstrument(
       'bad',

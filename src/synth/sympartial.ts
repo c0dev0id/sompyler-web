@@ -16,12 +16,14 @@ import { renderOscillator, type FMSpec, type OscillatorSpec } from './oscillator
 export interface SympartialSpec {
   oscillator: OscillatorSpec
   envelope: EnvelopeSpec
-  /** Multiplier on the fundamental frequency (1.0 = fundamental). */
+  /** Integer harmonic multiplier (1, 2, 3, …); kept as pure integer for spread indexing. */
   freqMult: number
   /** Linear amplitude weight; clamped to >= 0. */
   amp: number
   /** FM spec; when set, the per-partial path in renderNote uses renderOscillatorFM. */
   fm?: FMSpec
+  /** Pre-computed 2^(D_cents/1200); applied at freq calculation after spread. */
+  devianceMult?: number
 }
 
 export type { FMSpec }

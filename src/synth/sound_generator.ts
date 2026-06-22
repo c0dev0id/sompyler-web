@@ -114,6 +114,8 @@ export interface PartialDef {
   envelope?: EnvelopeSpec
   /** Per-partial FM; overrides InstrumentSpec.fm if set. */
   fm?: FMSpec
+  /** D: frequency deviance in cents from the harmonic series (S32130). */
+  devianceCents?: number
 }
 
 function resolveSympartials(spec: InstrumentSpec): SympartialSpec[] {
@@ -128,6 +130,7 @@ function resolveSympartials(spec: InstrumentSpec): SympartialSpec[] {
     freqMult: p.freqMult ?? 1,
     amp: p.amp ?? 1,
     fm: p.fm ?? spec.fm,
+    devianceMult: p.devianceCents ? Math.pow(2, p.devianceCents / 1200) : undefined,
   }))
 }
 
@@ -174,14 +177,15 @@ export function renderNote(input: RenderNoteInput): Float32Array {
     hasFM ||
     (spread && spread.length > 0) ||
     !!timbre ||
-    (morph && morph.length > 0 && !!input.lengthTicks)
+    (morph && morph.length > 0 && !!input.lengthTicks) ||
+    sympartials.some((sp) => sp.devianceMult != null)
 
   if (hasPerPartialMods) {
     const spreadMults = computeSpreadMults(spread, sympartials)
     const timbreAmps = computeTimbreAmps(timbre, sympartials)
     for (let pi = 0; pi < sympartials.length; pi++) {
       const sp = sympartials[pi]!
-      const partialFreqHz = baseFreq * sp.freqMult * (spreadMults[pi] ?? 1)
+      const partialFreqHz = baseFreq * sp.freqMult * (spreadMults[pi] ?? 1) * (sp.devianceMult ?? 1)
       const buf = new Float32Array(totalSamples)
       if (sp.fm) {
         const depthEnv = sp.fm.depthEnv

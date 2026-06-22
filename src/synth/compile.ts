@@ -75,17 +75,40 @@ function percentDbToLinear(v: number): number {
 /**
  * S32130: PROFILE list → PartialDef[].
  * Simple form: [100, 72, 52, …] — REVERSED_DBFS amps (100=full, 0=silent).
- * Complex form: [{ V: 100, A: "shape" }, …] — V is REVERSED_DBFS; A (per-partial
- * attack shape) is accepted but currently ignored (future work).
+ * Complex form: [{ V: 100, A: "…", S: "…", R: "…", D: cents }, …]
+ *   A/S/T/R: per-partial envelope overrides; missing phases fall back to rootEnv.
+ *   D: frequency deviance in cents from the harmonic series.
  */
-function compileProfile(raw: unknown): PartialDef[] | undefined {
+function compileProfile(
+  raw: unknown,
+  rootEnv: { A: unknown; S: unknown; T: unknown; R: unknown },
+): PartialDef[] | undefined {
   if (raw == null) return undefined
   if (!Array.isArray(raw)) throw new InstrumentError(`PROFILE must be a list`)
   return raw.map((item, i) => {
     if (typeof item === 'number') return { freqMult: i + 1, amp: percentDbToLinear(item) }
     const obj = asObj(item)
     if (!obj || !('V' in obj)) throw new InstrumentError(`PROFILE[${i}] must be a number or {V:…}`)
-    return { freqMult: i + 1, amp: percentDbToLinear(Number(obj.V)) }
+    const def: PartialDef = { freqMult: i + 1, amp: percentDbToLinear(Number(obj.V)) }
+    const pA = obj.A ?? null
+    const pS = obj.S ?? null
+    const pT = obj.T ?? null
+    const pR = obj.R ?? null
+    if (pA != null || pS != null || pT != null || pR != null) {
+      const env = compileRfcEnvelope(
+        pA ?? rootEnv.A,
+        pS ?? rootEnv.S,
+        pT ?? rootEnv.T,
+        pR ?? rootEnv.R,
+      )
+      if (env) def.envelope = env
+    }
+    if ('D' in obj) {
+      const d = Number(obj.D)
+      if (!Number.isFinite(d)) throw new InstrumentError(`PROFILE[${i}].D must be a number`)
+      if (d !== 0) def.devianceCents = d
+    }
+    return def
   })
 }
 
@@ -308,7 +331,7 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
   if (osc) spec.oscillator = osc
   const env = compileRfcEnvelope(root.A, root.S, root.T, root.R)
   if (env) spec.envelope = env
-  const partials = compileProfile(root.PROFILE)
+  const partials = compileProfile(root.PROFILE, { A: root.A, S: root.S, T: root.T, R: root.R })
   if (partials) spec.partials = partials
   const railsback = compileRailsback(root.RAILSBACK_CURVE)
   if (railsback) spec.railsback = railsback
