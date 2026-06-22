@@ -111,11 +111,10 @@ const INSTRUMENT: Section = {
   blocks: [
     {
       subtitle: 'Wave shape, envelope, and overtones — the character block',
-      code: `amp: 0.8          # master output level (0–1); balances instruments
-
-character:
+      code: `character:
   O: sine          # oscillator wave shape (RFC §S32110):
                     #   sine | sawtooth | square | triangle | noise
+  AMP: 0.8          # master output level (0–1); balances instruments
 
   A: "0.01:1,100"  # attack  — DURATION:from,to  (RFC §S32130)
   S: "0.1:100;1,85"# decay/sustain — DURATION:start;count,sustainLevel
@@ -149,22 +148,27 @@ character:
 # With an envelope, the filter sweeps open and closed over each note —
 # the trademark sound of acid bass lines and pad filter sweeps.
 
-vcf:
-  cutoff_hz: 2000  # frequency where filtering begins (in Hz)
-                    # 200–600   = very dark / muffled
-                    # 1000–3000 = warm and present
-                    # 8000+     = bright (filter barely noticeable)
-  resonance: 0.5   # sharpness of the peak at the cutoff (0–1)
-                    # 0.0 = gentle slope, no peak
-                    # 0.6 = pronounced "wah" character
-                    # 0.9 = sharp ringing — handle carefully
-
-  # Filter envelope — optional; omit for a static (non-moving) filter:
-  env_amount: 1000  # how many Hz the cutoff rises at the start of each note
-                     # positive = filter opens brighter on attack
-                     # negative = filter closes darker on attack
-  env_attack: 0.05  # seconds for the filter to reach its peak opening
-  env_release: 0.3  # seconds for the filter to fall back to cutoff_hz`,
+character:
+  VCF: "CUTOFF;RESONANCE[;ENV_AMOUNT[;ENV_ATTACK[;ENV_RELEASE]]]"
+  #
+  # CUTOFF      — frequency where filtering begins (Hz)
+  #               200–600   = very dark / muffled
+  #               1000–3000 = warm and present
+  #               8000+     = bright (filter barely noticeable)
+  # RESONANCE   — sharpness of the peak at the cutoff (0–1)
+  #               0.0 = gentle slope, no peak
+  #               0.6 = pronounced "wah" character
+  #               0.9 = sharp ringing — handle carefully
+  # ENV_AMOUNT  — Hz the cutoff opens on attack (optional)
+  #               positive = filter opens brighter on attack
+  #               negative = filter closes darker on attack
+  # ENV_ATTACK  — seconds for the filter to reach its peak (optional)
+  # ENV_RELEASE — seconds for the filter to fall back to CUTOFF (optional)
+  #
+  # Static filter (no envelope):
+  VCF: "2000;0.5"
+  # With envelope:
+  VCF: "2000;0.5;1000;0.05;0.3"`,
     },
     {
       subtitle: 'LFO — slow cyclic modulation',
@@ -172,26 +176,30 @@ vcf:
 # Routed to the filter it creates a wah sweep; routed to amplitude
 # it creates tremolo (volume pulsing).
 
-lfo:
-  rate_hz: 0.5      # how fast the cycle repeats (oscillations per second)
-                     # 0.2 Hz = one full sweep every 5 seconds (very slow)
-                     # 5.0 Hz = fast tremolo / vibrato
-  target: vcf       # what the LFO modulates:
-                     #   vcf = filter cutoff frequency
-                     #   amp = output volume
-  depth: 200        # how strongly it modulates the target:
-                     #   if target=vcf: depth in Hz (cutoff swings ±200 Hz)
-                     #   if target=amp: fraction 0–1 (volume swings by this much)
-  waveform: sin     # shape of the modulation wave (sin|saw|square|triangle)
-  phase: 0          # starting position in the cycle (0–1, where 1 = full turn)
-                     # 0.25 = starts at the peak of a sin wave
-  delay_seconds: 0.5 # LFO fades in gradually over this many seconds
-                      # prevents an abrupt jump at the start of each note
+character:
+  LFO: "RATE[@OSC][[DELAY]];DEPTH:TARGET[+PHASE_DEG]"
+  #
+  # RATE       — oscillations per second
+  #              0.2 Hz = one full sweep every 5 seconds (very slow)
+  #              5.0 Hz = fast tremolo / vibrato
+  # @OSC       — optional waveform for the LFO (sin|saw|square|triangle)
+  # [DELAY]    — optional fade-in seconds; LFO grows from zero to full depth
+  #              over this time, preventing an abrupt jump at note start
+  # DEPTH      — modulation intensity:
+  #              if target=vcf: in Hz (cutoff swings by ±DEPTH Hz)
+  #              if target=amp: fraction 0–1 (volume swings by this much)
+  # TARGET     — what the LFO modulates: vcf or amp
+  # +PHASE_DEG — optional starting phase in degrees (0–359)
+  #              +90 = sine starts at its positive peak
 
-# To use multiple LFOs simultaneously, write lfo as a list:
-# lfo:
-#   - { rate_hz: 0.5, target: vcf, depth: 300, waveform: sin }
-#   - { rate_hz: 3.0, target: amp, depth: 0.1, waveform: triangle }`,
+  # Examples:
+  LFO: "0.5@sin[0.5];200:vcf"   # slow filter sweep, 0.5 s fade-in
+  LFO: "3.0@triangle;0.1:amp"   # fast tremolo, no fade-in
+
+  # Multiple LFOs — write LFO as a list:
+  LFO:
+    - "0.5@sin[0.5];200:vcf"
+    - "3.0@triangle;0.1:amp"`,
     },
     {
       subtitle: 'FM synthesis — frequency modulation for complex tones',
@@ -201,23 +209,30 @@ lfo:
 # complex sidebands — metallic, bell-like, or harsh tones that are
 # impossible to achieve with simple waveforms.
 
-fm:
-  freq_hz: 2.01    # modulator frequency
-  dynamic: true    # if true, freq_hz is a ratio of the carrier pitch
-                    # e.g. 2.01 at C4 (262 Hz) → modulator at 524.6 Hz
-                    # keeps the timbre consistent across all pitches
-                    # false = fixed frequency regardless of note played
-  depth: 0.4       # intensity of the pitch distortion (fraction of carrier)
-                    # 0.05 = subtle shimmer
-                    # 0.3  = metallic, bell-like
-                    # 0.8+ = heavy distortion, inharmonic noise
-  init_phase: 0    # modulator starting position (0–1)
-                    # 0.25 puts a sine modulator at its positive peak at t=0,
-                    # which creates a downward pitch sweep on the attack
-  depth_env: "1:1;0.5,0"
-                    # shape string: how FM depth changes over the note lifetime
-                    # "1:1;0.5,0" = starts at full depth, fades to zero by
-                    # the halfway point — gives a metallic attack that cleans up`,
+character:
+  FM: "FREQ[f][@OSC][[DEPTH_ENV]];DEPTH[+PHASE_DEG]"
+  #
+  # FREQ      — modulator frequency in Hz
+  # f or F    — optional: FREQ is a ratio of the carrier pitch (dynamic)
+  #             e.g. "2f" at C4 (262 Hz) → modulator at 524 Hz
+  #             keeps the timbre consistent across all pitches;
+  #             omit for a fixed frequency regardless of note played
+  # @OSC      — optional waveform for the modulator (sin|saw|square|triangle)
+  # [DEPTH_ENV] — optional shape string: how depth changes over the note
+  #               "1:1;0.5,0" = full depth, fades to zero by halfway
+  #               gives a metallic attack that cleans up
+  # DEPTH     — intensity of pitch distortion (fraction of carrier frequency)
+  #             0.05 = subtle shimmer
+  #             0.3  = metallic, bell-like
+  #             0.8+ = heavy distortion, inharmonic noise
+  # +PHASE_DEG — optional modulator starting phase in degrees (0–359)
+  #              +90 puts a sine modulator at its positive peak at t=0,
+  #              creating a downward pitch sweep on the attack
+
+  # Examples:
+  FM: "2f[1:1;0.5,0];0.4"    # dynamic 2× ratio, depth envelope, depth 0.4
+  FM: "2f;0.4+90"             # dynamic, depth 0.4, initial phase 90°
+  FM: "220@saw;0.3"           # fixed 220 Hz sawtooth modulator`,
     },
   ],
 }
