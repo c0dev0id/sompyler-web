@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Critical project rules
+
+- **Always** check RFC conformance with ../sompyler/doc/rfc.md
+- **Must** support RFC specified syntax (existing sompyler must work)
+- **Must** follow existing syntax conventions when adding new features
+- **Do not** implement features flagged as experimental in the RFC
+- **Do not** create syntax aliases
+- Sompyler-web **must** create the same output as python sompyler on the same input
+
+
 ## Project
 
 A **reimplementation of [Sompyler](../sompyler/)** as a progressive web app. End goal: a single static page hosted on GitHub Pages where a user can author instruments and scores, render them to audio entirely client-side, play the result, iterate, and persist their work in IndexedDB. The full create → render → listen → fix cycle happens in the browser, with no backend.
