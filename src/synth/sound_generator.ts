@@ -10,11 +10,9 @@ import { renderSympartial, type SympartialSpec } from './sympartial'
  * Top-level instrument → PCM rendering. Reference:
  * `Sompyler/synthesizer/sound_generator.py:SoundGenerator`.
  *
- * The Python `SoundGenerator` composes a list of `Sympartial`s plus
- * variation-driven selection (`Instrument.render_tone()` →
- * `variation.sound_generator_for(note)` → `SoundGenerator.render()`).
- * Phase 3 ships the simple sum-of-partials path. Variation selection
- * lands once we wire in the full instrument compiler.
+ * Renders the sum-of-partials path. Variation selection
+ * (`Instrument.render_tone()` → `variation.sound_generator_for(note)`)
+ * is not yet implemented.
  */
 
 /**
