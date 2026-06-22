@@ -124,7 +124,9 @@ function scanBezier(
   if (x > 0 && !filled[x - 1]) {
     scanBezier(approx, length, results, filled, start, halfPos, x - 1)
   } else if (length && x + 1 <= max && filled[x + 1]) {
-    // upper neighbour already painted — left branch done.
+    // Upper neighbour already painted — mirroring Python's `return` here
+    // stops the right recursion too, preventing repeated overwrites.
+    return
   }
 
   if (x < max) {

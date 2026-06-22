@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `T:` (tail) envelope segment now parsed from the character block and stored in `EnvelopeSpec.tail` (RFC §3.2.1.1.4).
 
+- Bezier rendering bug fixed: `scanBezier` was missing a `return` when the upper neighbour was already filled, mirroring Python's early-exit in `scan_bezier`. Without it the right recursion continued indefinitely, repeatedly overwriting the correct value with the last sampled y (which drifted toward the curve endpoint). Multi-segment shapes with 5 or more control points were most affected. All shape curves now match the Python reference output exactly.
+
 - Envelope shape strings are now fully evaluated via the bezier kernel. Previously `A:`, `S:`, and `R:` strings were stripped to just their leading duration; all intermediate control points were discarded and segments were rendered as linear ramps. Now the raw strings are stored in `EnvelopeSpec` and `applyEnvelope` calls `renderShapeString` per segment, producing the correct bezier curve. Multi-segment decay curves (e.g. `S: ".20:100;1,60;2,25;3,8;4,0"`) now trace through their control points. Release is scaled by `sustainLevel` to match Python sompyler's `y_scale` chaining.
 
 ### Added
