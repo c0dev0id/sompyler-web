@@ -1,7 +1,7 @@
 import { ScoreError } from '../errors'
 import { log } from '../debug'
 import type { Instrument } from '../parse/instrument'
-import { parseScore, walkMeasures, ticksToSeconds, stressorSubCumlen, type RawNote } from '../parse/score'
+import { parseScore, walkMeasures, ticksToSeconds, stressorCumlen, stressorSubCumlen, type RawNote } from '../parse/score'
 import type { Scale, Tuner } from '../parse/tuning'
 import { noteCacheKey } from '../storage/hash'
 import { evaluateShape } from '../synth/shape'
@@ -102,6 +102,9 @@ export async function buildDistinctNotes(
   let activeMeasureTicks = 0
   let activeMeasureIndex = -1
   let activeMeasureLengthSeconds = 0
+  /** Running maximum of (offsetSeconds + lengthSeconds + dampSeconds) across all notes.
+   * Used to size the render buffer when notes overflow their bar boundary. */
+  let maxNoteEndSeconds = 0
 
   const rawNotes: RawNote[] = []
   for (const note of walkMeasures(head, measures)) rawNotes.push(note)
@@ -179,16 +182,19 @@ export async function buildDistinctNotes(
           activeTickSeconds[t]! *= elasticks[t]!
         }
       }
-      // When ticks_per_measure is set, fix the bar length now so overflow
-      // notes (length + offset > bar) cannot stretch the bar.
-      if (activeMeasureTicks > 0) {
-        activeMeasureLengthSeconds = tickRangeSeconds(
-          activeTickSeconds,
-          activeTicksPerMinute,
-          0,
-          activeMeasureTicks,
-        )
-      }
+      // Bar length = ticks_per_measure if set, otherwise stressorCumlen —
+      // matching Python sompyler's Measure.length = stressor.cumlen (measure.py:230).
+      // Notes that overflow the bar bleed into the next bar's time without
+      // stretching the current bar's reported duration.
+      const barTicks = activeMeasureTicks > 0
+        ? activeMeasureTicks
+        : stressorCumlen(activeStressPattern)
+      activeMeasureLengthSeconds = tickRangeSeconds(
+        activeTickSeconds,
+        activeTicksPerMinute,
+        0,
+        barTicks,
+      )
     }
 
     const offsetSeconds =
@@ -200,17 +206,6 @@ export async function buildDistinctNotes(
       note.offsetTicks,
       note.lengthTicks,
     )
-    // Only extend bar duration from note extent when ticks_per_measure is not set.
-    // With an explicit bar length, overflow notes don't change when the next bar starts.
-    if (activeMeasureTicks === 0) {
-      const noteEndSeconds = tickRangeSeconds(
-        activeTickSeconds,
-        activeTicksPerMinute,
-        0,
-        note.offsetTicks + note.lengthTicks,
-      )
-      activeMeasureLengthSeconds = Math.max(activeMeasureLengthSeconds, noteEndSeconds)
-    }
 
     const frequencyHz = ctx.tuner.frequencyOfTone(note.pitch, {
       scale: ctx.scale,
@@ -279,9 +274,13 @@ export async function buildDistinctNotes(
       offsetTicks: note.offsetTicks,
       offsetSeconds,
     })
+    const noteEndSeconds = offsetSeconds + lengthSeconds + dampSeconds
+    if (noteEndSeconds > maxNoteEndSeconds) maxNoteEndSeconds = noteEndSeconds
   }
 
-  const totalLengthSeconds = cumLengthSeconds + activeMeasureLengthSeconds
+  // Bar start times are gated by stressorCumlen (bars don't stretch for overflow notes),
+  // but the render buffer must accommodate notes that bleed past the last bar boundary.
+  const totalLengthSeconds = Math.max(cumLengthSeconds + activeMeasureLengthSeconds, maxNoteEndSeconds)
   const plan: DistinctRenderPlan = {
     notes: Array.from(byKey.values()),
     totalLengthSeconds,

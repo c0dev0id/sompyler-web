@@ -369,8 +369,8 @@ piano:
   it('damp does not extend the bar — next bar starts at tick boundary (S51a10)', async () => {
     // Bar 1: note at tick 0, length 4, damp 4 (tail bleeds past bar end).
     // Bar 2: note at tick 0, length 1.
-    // At 60 tpm bar 1 is 4 ticks = 4 s. Bar 2 tick-0 note must start at 4 s,
-    // NOT at 8 s (what including damp would produce).
+    // stress_pattern "1,1,1,1" → stressorCumlen=4, so bar 1 is 4 ticks = 4 s.
+    // Bar 2 tick-0 note must start at 4 s, NOT at 8 s (what including damp would produce).
     const TWO_BAR = `
 title: damp-bar
 stage:
@@ -378,7 +378,7 @@ stage:
 ---
 _meta:
   beats_per_minute: 60
-  stress_pattern: "1"
+  stress_pattern: "1,1,1,1"
   lower_stress_bound: 100
   upper_stress_bound: 100
 piano:
