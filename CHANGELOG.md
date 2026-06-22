@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Flat instrument keys (`oscillator:`, `envelope:`, `partials:`, `spread:`, `timbre:`, `morph:`, `railsback:`) removed from the compiler. The RFC `character:` block is now the only supported instrument format. All 14 built-in instruments in `defaults.ts` converted accordingly. `RAILSBACK_CURVE:` moves into the character block; `fm:`, `lfo:`, and `amp:` remain as top-level non-RFC extensions.
+
+- `ticks_per_minute` removed from score meta parsing. `beats_per_minute` is the only tempo key; it is multiplied by the stress pattern's sub-level cumulative length (`sub_cumlen`) to derive ticks/minute — matching Python sompyler's `Measure.__init__` behaviour.
+
+- `T:` (tail) envelope segment now parsed from the character block and stored in `EnvelopeSpec.tail` (RFC §3.2.1.1.4).
+
 ### Added
 
 - RFC instrument format (`character:` block) is now fully wired in the compiler. The keys `O:` (oscillator waveform), `A:` / `S:` / `R:` (attack/sustain/release shape strings), and `PROFILE:` (partial amplitudes in REVERSED_DBFS) are all read and converted to the internal `InstrumentSpec`. RFC waveform names (`sine`, `sawtooth`) are mapped to the internal equivalents. Score meta now supports `beats_per_minute`, converted to ticks/minute by multiplying with the stress pattern's sub-level length (`sub_cumlen`) — matching Python sompyler's `Measure.__init__` behaviour exactly.
