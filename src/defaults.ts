@@ -56,7 +56,7 @@ room: pachelbel-hall
 ---
 # m1 — cello phrase A: D A B F#
 _meta:
-  ticks_per_minute: 120
+  beats_per_minute: 15
   stress_pattern: "2,0,1,0;1,0;1,0;1,0"
   lower_stress_bound: 72
   upper_stress_bound: 96
@@ -348,7 +348,7 @@ room: pachelbel-hall
 ---
 # Bass + melody combined for a single instrument. Damp emulates sustain pedal.
 _meta:
-  ticks_per_minute: 120
+  beats_per_minute: 15
   stress_pattern: "2,0,1,0;1,0;1,0;1,0"
   lower_stress_bound: 70
   upper_stress_bound: 96
@@ -398,33 +398,22 @@ piano:
 // =====================================================================
 const VIOLIN = `# Violin: bright sawtooth-like timbre with strong odd harmonics.
 amp: 0.35
-oscillator: sin
-envelope:
-  attack: 0.05
-  release: 0.25
-  sustainLevel: 0.85
-partials:
-  - { freqMult: 1, amp: 1.0 }
-  - { freqMult: 2, amp: 0.55 }
-  - { freqMult: 3, amp: 0.40 }
-  - { freqMult: 4, amp: 0.28 }
-  - { freqMult: 5, amp: 0.18 }
-  - { freqMult: 6, amp: 0.10 }
+character:
+  O: sine
+  A: "0.05:1,100"
+  S: "0.001:100;1,85"
+  R: "0.25:100;1,0"
+  PROFILE: [100, 55, 40, 28, 18, 10]
 `
 
 const CELLO = `# Cello: deeper, slower attack; favours lower partials, gentler decay.
 amp: 0.45
-oscillator: sin
-envelope:
-  attack: 0.08
-  release: 0.5
-  sustainLevel: 0.8
-partials:
-  - { freqMult: 1, amp: 1.0 }
-  - { freqMult: 2, amp: 0.65 }
-  - { freqMult: 3, amp: 0.30 }
-  - { freqMult: 4, amp: 0.18 }
-  - { freqMult: 5, amp: 0.09 }
+character:
+  O: sine
+  A: "0.08:1,100"
+  S: "0.001:100;1,80"
+  R: "0.5:100;1,0"
+  PROFILE: [100, 65, 30, 18, 9]
 `
 
 // Piano with S32136 railsback: high keys stretch sharper than 12-TET,
@@ -433,19 +422,16 @@ partials:
 const PIANO = `# Piano: hammered-string approximation. Decaying sustain with rich
 # upper partials, mild S32136 railsback inharmonicity.
 amp: 0.5
-oscillator: sin
-envelope:
-  attack: 0.005
-  release: 0.6
-  sustainLevel: 0.55
-partials:
-  - { freqMult: 1, amp: 1.0 }
-  - { freqMult: 2, amp: 0.5 }
-  - { freqMult: 3, amp: 0.3 }
-  - { freqMult: 4, amp: 0.18 }
-  - { freqMult: 5, amp: 0.1 }
-  - { freqMult: 6, amp: 0.06 }
-railsback: [27.5, 4186, "0;100,0.02"]
+character:
+  O: sine
+  A: "0.005:1,100"
+  S: "0.001:100;1,55"
+  R: "0.6:100;1,0"
+  PROFILE: [100, 50, 30, 18, 10, 6]
+  RAILSBACK_CURVE:
+    - 27.5
+    - 4186
+    - "0;100,0.02"
 `
 
 // Hall reverb: two-level echo train, gentle border falloff.
@@ -457,28 +443,21 @@ border: "120:0;120,100"
 `
 
 const STARTER_PIANO = `amp: 0.5
-oscillator: sin
-envelope:
-  attack: 0.005
-  release: 0.4
-  sustainLevel: 0.7
-partials:
-  - { freqMult: 1, amp: 1.0 }
-  - { freqMult: 2, amp: 0.5 }
-  - { freqMult: 3, amp: 0.25 }
-  - { freqMult: 4, amp: 0.12 }
+character:
+  O: sine
+  A: "0.005:1,100"
+  S: "0.001:100;1,70"
+  R: "0.4:100;1,0"
+  PROFILE: [100, 50, 25, 12]
 `
 
 const STARTER_FLUTE = `amp: 0.4
-oscillator: triangle
-envelope:
-  attack: 0.05
-  release: 0.2
-  sustainLevel: 0.9
-partials:
-  - { freqMult: 1, amp: 1.0 }
-  - { freqMult: 2, amp: 0.15 }
-  - { freqMult: 3, amp: 0.05 }
+character:
+  O: triangle
+  A: "0.05:1,100"
+  S: "0.001:100;1,90"
+  R: "0.2:100;1,0"
+  PROFILE: [100, 15, 5]
 `
 
 // FM kick drum: near-DC modulator (1 Hz) starts at peak (initPhase=0.25) so
@@ -488,11 +467,11 @@ partials:
 export const STARTER_KICK = `# dev/kick.spli — FM kick drum with pitch sweep.
 # Score at C1 (32.7 Hz). Carrier sweeps C3 → C1 in first ~50 ms of a 500 ms note.
 amp: 0.90
-oscillator: sin
-envelope:
-  attack: 0.002
-  release: 0.3
-  sustainLevel: 1.0
+character:
+  O: sine
+  A: "0.002:1,100"
+  S: "0.001:100;1,100"
+  R: "0.3:100;1,0"
 fm:
   freq_hz: 1
   depth: 3
@@ -529,7 +508,7 @@ stage:
 ---
 _meta:
   stress_pattern: "2,0,1,0;1,0"
-  ticks_per_minute: 140
+  beats_per_minute: 70
   lower_stress_bound: 85
   upper_stress_bound: 100
 piano:
@@ -560,11 +539,11 @@ const OXYGENE_KICK = `# oxygene-kick.spli — FM kick drum with pitch sweep.
 # Score at C1 (32.7 Hz). FM init_phase=0.25 starts modulator at peak,
 # sweeping carrier from ~4× base down to base in first ~50 ms.
 amp: 0.85
-oscillator: sin
-envelope:
-  attack: 0.002
-  release: 0.28
-  sustainLevel: 1.0
+character:
+  O: sine
+  A: "0.002:1,100"
+  S: "0.001:100;1,100"
+  R: "0.28:100;1,0"
 fm:
   freq_hz: 1
   depth: 3
@@ -575,37 +554,12 @@ fm:
 const OXYGENE_BASS = `# bass: Fretless Bass (GM36 / TimGM6mb), C2. Partials from TiMidity sustain FFT.
 # H2 strong (-3.5 dB), H4 > H3, H5 strong (classic bass string characteristic).
 amp: 0.70
-oscillator: sin
-envelope:
-  attack: 0.008
-  decay: 0.04
-  release: 0.15
-  sustainLevel: 0.80
-partials:
-  - { freqMult: 1,  amp: 1.000 }
-  - { freqMult: 2,  amp: 0.671 }
-  - { freqMult: 3,  amp: 0.179 }
-  - { freqMult: 4,  amp: 0.240 }
-  - { freqMult: 5,  amp: 0.326 }
-  - { freqMult: 6,  amp: 0.171 }
-  - { freqMult: 7,  amp: 0.160 }
-  - { freqMult: 8,  amp: 0.166 }
-  - { freqMult: 9,  amp: 0.096 }
-  - { freqMult: 10, amp: 0.036 }
-  - { freqMult: 11, amp: 0.039 }
-  - { freqMult: 12, amp: 0.020 }
-  - { freqMult: 13, amp: 0.0088 }
-  - { freqMult: 14, amp: 0.0041 }
-  - { freqMult: 15, amp: 0.0037 }
-  - { freqMult: 16, amp: 0.0024 }
-  - { freqMult: 17, amp: 0.0018 }
-  - { freqMult: 18, amp: 0.0014 }
-  - { freqMult: 19, amp: 0.0011 }
-  - { freqMult: 20, amp: 0.0012 }
-  - { freqMult: 21, amp: 0.00054 }
-  - { freqMult: 22, amp: 0.00066 }
-  - { freqMult: 23, amp: 0.00007 }
-  - { freqMult: 24, amp: 0.00020 }
+character:
+  O: sine
+  A: "0.008:1,100"
+  S: "0.04:100;1,80"
+  R: "0.15:100;1,0"
+  PROFILE: [100, 67.1, 17.9, 24, 32.6, 17.1, 16, 16.6, 9.6, 3.6, 3.9, 2, 0.88, 0.41, 0.37, 0.24, 0.18, 0.14, 0.11, 0.12, 0.054, 0.066, 0.007, 0.02]
 `
 
 const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM108 / TimGM6mb). Pure sine sustain.
@@ -620,161 +574,58 @@ const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM108 / TimGM6mb). Pure sine sustai
 # 1-tick notes (163ms) the sustain phase is 2ms — effectively no sustain.
 # The ring tail comes from damp=2 in the score (326ms at 369 ticks/min).
 amp: 0.45
-oscillator: sin
-envelope:
-  attack: 0.004
-  decay: 0.40
-  release: 0.01
-  sustainLevel: 0.10
-partials:
-  - { freqMult: 1,  amp: 1.000 }
-  - { freqMult: 2,  amp: 0.002 }
-  - { freqMult: 3,  amp: 0.001 }
-  - { freqMult: 4,  amp: 0.0003 }
-  - { freqMult: 5,  amp: 0.0004 }
-  - { freqMult: 7,  amp: 0.0002 }
+character:
+  O: sine
+  A: "0.004:1,100"
+  S: "0.40:100;1,10"
+  R: "0.01:100;1,0"
+  PROFILE: [100, 0.2, 0.1, 0.03, 0.04, 0, 0.02]
 `
 
 const OXYGENE_SYNBRASS = `# synbrass: SynBrass 2 (GM64 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
 # TiMidity patch peaks at 1.95s (very slow swell). We use a fast attack for
 # the melodic role in the score — Jarre's synth hits crisply on the beat.
 amp: 0.20
-oscillator: sin
-envelope:
-  attack: 0.02
-  release: 0.40
-  sustainLevel: 0.75
-partials:
-  - { freqMult: 1,  amp: 1.000 }
-  - { freqMult: 2,  amp: 0.723 }
-  - { freqMult: 3,  amp: 0.530 }
-  - { freqMult: 4,  amp: 0.284 }
-  - { freqMult: 5,  amp: 0.232 }
-  - { freqMult: 6,  amp: 0.122 }
-  - { freqMult: 7,  amp: 0.238 }
-  - { freqMult: 8,  amp: 0.101 }
-  - { freqMult: 9,  amp: 0.076 }
-  - { freqMult: 10, amp: 0.115 }
-  - { freqMult: 11, amp: 0.111 }
-  - { freqMult: 12, amp: 0.085 }
-  - { freqMult: 13, amp: 0.069 }
-  - { freqMult: 14, amp: 0.038 }
-  - { freqMult: 15, amp: 0.078 }
-  - { freqMult: 16, amp: 0.073 }
-  - { freqMult: 17, amp: 0.065 }
-  - { freqMult: 18, amp: 0.033 }
-  - { freqMult: 19, amp: 0.023 }
-  - { freqMult: 20, amp: 0.025 }
-  - { freqMult: 21, amp: 0.043 }
-  - { freqMult: 22, amp: 0.043 }
-  - { freqMult: 23, amp: 0.020 }
-  - { freqMult: 24, amp: 0.013 }
+character:
+  O: sine
+  A: "0.02:1,100"
+  S: "0.001:100;1,75"
+  R: "0.40:100;1,0"
+  PROFILE: [100, 72.3, 53, 28.4, 23.2, 12.2, 23.8, 10.1, 7.6, 11.5, 11.1, 8.5, 6.9, 3.8, 7.8, 7.3, 6.5, 3.3, 2.3, 2.5, 4.3, 4.3, 2, 1.3]
 `
 
 const OXYGENE_STRINGS = `# strings: SynString 2 (GM52 / TimGM6mb), C3. Partials from TiMidity sustain FFT.
 # TiMidity peak at 1.45s (slow attack). H4 stronger than H2 or H3 (body resonance).
 amp: 0.12
-oscillator: sin
-envelope:
-  attack: 0.35
-  release: 1.20
-  sustainLevel: 0.88
-partials:
-  - { freqMult: 1,  amp: 1.000 }
-  - { freqMult: 2,  amp: 0.188 }
-  - { freqMult: 3,  amp: 0.181 }
-  - { freqMult: 4,  amp: 0.254 }
-  - { freqMult: 5,  amp: 0.136 }
-  - { freqMult: 6,  amp: 0.065 }
-  - { freqMult: 7,  amp: 0.072 }
-  - { freqMult: 8,  amp: 0.090 }
-  - { freqMult: 9,  amp: 0.049 }
-  - { freqMult: 10, amp: 0.051 }
-  - { freqMult: 11, amp: 0.041 }
-  - { freqMult: 12, amp: 0.027 }
-  - { freqMult: 13, amp: 0.046 }
-  - { freqMult: 14, amp: 0.035 }
-  - { freqMult: 15, amp: 0.029 }
-  - { freqMult: 16, amp: 0.025 }
-  - { freqMult: 17, amp: 0.027 }
-  - { freqMult: 18, amp: 0.024 }
-  - { freqMult: 19, amp: 0.019 }
-  - { freqMult: 20, amp: 0.020 }
-  - { freqMult: 21, amp: 0.019 }
-  - { freqMult: 22, amp: 0.026 }
-  - { freqMult: 23, amp: 0.012 }
-  - { freqMult: 24, amp: 0.012 }
+character:
+  O: sine
+  A: "0.35:1,100"
+  S: "0.001:100;1,88"
+  R: "1.20:100;1,0"
+  PROFILE: [100, 18.8, 18.1, 25.4, 13.6, 6.5, 7.2, 9, 4.9, 5.1, 4.1, 2.7, 4.6, 3.5, 2.9, 2.5, 2.7, 2.4, 1.9, 2, 1.9, 2.6, 1.2, 1.2]
 `
 
 const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
 # H8/H9/H11 show a late-harmonic hump (choir/ensemble roughness character).
 # Plays the same melodic figure as synbrass — attack shortened to not drag the beat.
 amp: 0.10
-oscillator: sin
-envelope:
-  attack: 0.08
-  release: 1.50
-  sustainLevel: 0.85
-partials:
-  - { freqMult: 1,  amp: 1.000 }
-  - { freqMult: 2,  amp: 0.258 }
-  - { freqMult: 3,  amp: 0.118 }
-  - { freqMult: 4,  amp: 0.077 }
-  - { freqMult: 5,  amp: 0.056 }
-  - { freqMult: 6,  amp: 0.029 }
-  - { freqMult: 7,  amp: 0.020 }
-  - { freqMult: 8,  amp: 0.047 }
-  - { freqMult: 9,  amp: 0.045 }
-  - { freqMult: 10, amp: 0.033 }
-  - { freqMult: 11, amp: 0.038 }
-  - { freqMult: 12, amp: 0.013 }
-  - { freqMult: 13, amp: 0.0061 }
-  - { freqMult: 14, amp: 0.016 }
-  - { freqMult: 15, amp: 0.0072 }
-  - { freqMult: 16, amp: 0.0025 }
-  - { freqMult: 17, amp: 0.0047 }
-  - { freqMult: 18, amp: 0.0037 }
-  - { freqMult: 19, amp: 0.0026 }
-  - { freqMult: 20, amp: 0.0014 }
-  - { freqMult: 21, amp: 0.00061 }
-  - { freqMult: 22, amp: 0.00068 }
-  - { freqMult: 23, amp: 0.00027 }
-  - { freqMult: 24, amp: 0.00024 }
+character:
+  O: sine
+  A: "0.08:1,100"
+  S: "0.001:100;1,85"
+  R: "1.50:100;1,0"
+  PROFILE: [100, 25.8, 11.8, 7.7, 5.6, 2.9, 2, 4.7, 4.5, 3.3, 3.8, 1.3, 0.61, 1.6, 0.72, 0.25, 0.47, 0.37, 0.26, 0.14, 0.061, 0.068, 0.027, 0.024]
 `
 
 const OXYGENE_BOWEDPAD = `# bowedpad: Pad 5 Bowed (GM93 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
 # H4 ≈ H1 in amplitude (0.990) — defining feature of this pad. H11 hump at 0.116.
 amp: 0.08
-oscillator: sin
-envelope:
-  attack: 0.80
-  release: 2.00
-  sustainLevel: 0.90
-partials:
-  - { freqMult: 1,  amp: 1.000 }
-  - { freqMult: 2,  amp: 0.270 }
-  - { freqMult: 3,  amp: 0.222 }
-  - { freqMult: 4,  amp: 0.990 }
-  - { freqMult: 5,  amp: 0.146 }
-  - { freqMult: 6,  amp: 0.063 }
-  - { freqMult: 7,  amp: 0.075 }
-  - { freqMult: 8,  amp: 0.069 }
-  - { freqMult: 9,  amp: 0.057 }
-  - { freqMult: 10, amp: 0.060 }
-  - { freqMult: 11, amp: 0.116 }
-  - { freqMult: 12, amp: 0.030 }
-  - { freqMult: 13, amp: 0.032 }
-  - { freqMult: 14, amp: 0.028 }
-  - { freqMult: 15, amp: 0.032 }
-  - { freqMult: 16, amp: 0.022 }
-  - { freqMult: 17, amp: 0.023 }
-  - { freqMult: 18, amp: 0.036 }
-  - { freqMult: 19, amp: 0.023 }
-  - { freqMult: 20, amp: 0.019 }
-  - { freqMult: 21, amp: 0.015 }
-  - { freqMult: 22, amp: 0.013 }
-  - { freqMult: 23, amp: 0.011 }
-  - { freqMult: 24, amp: 0.010 }
+character:
+  O: sine
+  A: "0.80:1,100"
+  S: "0.001:100;1,90"
+  R: "2.00:100;1,0"
+  PROFILE: [100, 27, 22.2, 99, 14.6, 6.3, 7.5, 6.9, 5.7, 6, 11.6, 3, 3.2, 2.8, 3.2, 2.2, 2.3, 3.6, 2.3, 1.9, 1.5, 1.3, 1.1, 1]
 lfo:
   rate_hz: 0.18
   depth: 0.08
@@ -785,60 +636,34 @@ lfo:
 const OXYGENE_MELODY = `# melody: Nylon Guitar (GM25 / TimGM6mb), G3. Partials from TiMidity sustain FFT.
 # Irregular guitar-like spectrum: H2/H3 strong, H4 nearly absent, H6/H7 re-emerge.
 amp: 0.55
-oscillator: sin
-envelope:
-  attack: 0.004
-  decay: 0.15
-  release: 0.70
-  sustainLevel: 0.55
-partials:
-  - { freqMult: 1,  amp: 1.000 }
-  - { freqMult: 2,  amp: 0.640 }
-  - { freqMult: 3,  amp: 0.498 }
-  - { freqMult: 4,  amp: 0.0062 }
-  - { freqMult: 5,  amp: 0.042 }
-  - { freqMult: 6,  amp: 0.196 }
-  - { freqMult: 7,  amp: 0.273 }
-  - { freqMult: 8,  amp: 0.029 }
-  - { freqMult: 9,  amp: 0.0073 }
-  - { freqMult: 10, amp: 0.189 }
-  - { freqMult: 11, amp: 0.054 }
-  - { freqMult: 12, amp: 0.035 }
-  - { freqMult: 13, amp: 0.0032 }
-  - { freqMult: 14, amp: 0.0053 }
-  - { freqMult: 15, amp: 0.040 }
-  - { freqMult: 16, amp: 0.011 }
-  - { freqMult: 17, amp: 0.0043 }
-  - { freqMult: 18, amp: 0.0030 }
-  - { freqMult: 19, amp: 0.00057 }
-  - { freqMult: 20, amp: 0.027 }
-  - { freqMult: 21, amp: 0.0067 }
-  - { freqMult: 22, amp: 0.0016 }
-  - { freqMult: 23, amp: 0.0051 }
-  - { freqMult: 24, amp: 0.0027 }
+character:
+  O: sine
+  A: "0.004:1,100"
+  S: "0.15:100;1,55"
+  R: "0.70:100;1,0"
+  PROFILE: [100, 64, 49.8, 0.62, 4.2, 19.6, 27.3, 2.9, 0.73, 18.9, 5.4, 3.5, 0.32, 0.53, 4, 1.1, 0.43, 0.30, 0.057, 2.7, 0.67, 0.16, 0.51, 0.27]
 `
 
 const OXYGENE_TAMBOURINE = `# tambourine: Tambourine (GM54 / TimGM6mb), note 54. Noise instrument.
 # TiMidity: centroid=10973 Hz, rolloff95=12971 Hz. Very bright, instant onset.
 # Envelope: peak at 0s, -40 dB at 0.15s. Total duration 1.19s.
 amp: 0.35
-oscillator: noise
-envelope:
-  attack: 0.001
-  decay: 0.06
-  release: 0.08
-  sustainLevel: 0.20
+character:
+  O: noise
+  A: "0.001:1,100"
+  S: "0.06:100;1,20"
+  R: "0.08:100;1,0"
 `
 
 const OXYGENE_SEASHORE = `# seashore: Sea Shore (GM123 / TimGM6mb), C4. Noise instrument.
 # TiMidity: centroid=1271 Hz, rolloff95=2600 Hz. Low-frequency filtered noise.
 # Envelope: peak at 0.75s, -40 dB at 9.95s (11s total).
 amp: 0.06
-oscillator: noise
-envelope:
-  attack: 2.00
-  release: 3.00
-  sustainLevel: 0.70
+character:
+  O: noise
+  A: "2.00:1,100"
+  S: "0.001:100;1,70"
+  R: "3.00:100;1,0"
 `
 
 const OXYGENE = `title: Oxygène Pt. IV
@@ -859,7 +684,7 @@ room: oxygene-plate
 ---
 # bar 1 — intro: seashore fade-in, kalimba silent
 _meta:
-  ticks_per_minute: 369
+  beats_per_minute: 369
   ticks_per_measure: 12
   stress_pattern: "2,0,0,1,0,0,1,0,0,1,0,0"
   lower_stress_bound: 70
