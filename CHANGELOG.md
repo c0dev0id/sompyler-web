@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Staging tree now shows ghost entries for referenced but not-yet-created files. Missing deps appear as muted italic rows inside the expanded score node with a "Create" button instead of the usual action trio. Clicking creates an empty file and marks it in-project when the parent score is already active.
+
 - Staging area is now a grouped tree view. Score (`.spls`) files are the root nodes; clicking the arrow beside a score expands it to show all files it references (instruments, room, tuning) indented beneath it. Files not referenced by any score appear under a collapsible "unreferenced" group. All file actions (add/remove, rename, delete) remain available at both levels.
 
 - Kick drum (`oxygene-kick`) added to the Oxygène Pt. IV score. FM pitch sweep from ~130 Hz to C1 (32.7 Hz) in the first 50 ms produces the characteristic thump. Hits on beats 1 and 3 of every bar from bar 5, silencing at bar 117 alongside the tambourine.
