@@ -3774,6 +3774,2022 @@ melody:
   5: C5 3
   8: F4 4`
 
+// =====================================================================
+// oxygene4old — original Python Sompyler source files (RFC character: format)
+//
+const OXYGENE4OLD_KICK = `name: Bass Drum (Minipops 7 BD)
+# The Minipops 7 kick is a soft, rounded thump — noticeably gentler than the
+# DMX kick. There is minimal pitch-drop content; the fundamental sustains for
+# ~150ms before fading. The upper partials cut very quickly, leaving only the
+# low body. Jarre filtered the drum sounds for "life" — here that is
+# approximated by the longer tail on the fundamental compared to upper partials.
+character:
+    O: sine
+    R: ".10:100;1,0"
+    SPREAD: [0, 0, 168, -120, 85]
+    PROFILE:
+        - { V: 100, A: ".18:1,100!;2,65;4,28;8,10" }
+        - { V: 80,  A: ".10:1,100!;2,45;3,12" }
+        - { V: 55,  A: ".07:1,100!;2,28;3,6" }
+        - { V: 32,  A: ".05:1,100!;2,14" }
+        - { V: 16,  A: ".04:1,100!;2,6" }`
+
+const OXYGENE4OLD_CLAVES = `name: Claves (Minipops 7 CL)
+# The Minipops CL (claves/snare) channel produces a sharp wooden click.
+# High register, very short — a transient without sustain. Played at A5 or
+# similar in the score. The near-harmonic SPREAD gives a slightly wooden
+# rather than purely metallic character.
+character:
+    O: sine
+    A: ".003:1,100"
+    S: ".07:100;1,42;2,12;3,0"
+    R: ".02:100;1,0"
+    SPREAD: [0, 180, -120, 260, -210, 140]
+    PROFILE:
+        - { V: 100 }
+        - { V: 58 }
+        - { V: 30 }
+        - { V: 14 }
+        - { V: 5 }`
+
+const OXYGENE4OLD_CYMBAL = `name: Cymbal / Hi-hat (Minipops 7 CY)
+# The Minipops 7 cymbal is a short metallic tick — lighter and drier than the
+# DMX hi-hat. Its character comes from the same inharmonic partial cluster that
+# gives metallic instruments their shimmer, but the decay is extremely tight
+# (50ms) to match the Minipops' characteristic "ticky" rather than "splashy" feel.
+character:
+    O: sine
+    A: ".003:1,100"
+    S: ".05:100;1,28;2,0"
+    R: ".015:100;1,0"
+    SPREAD: [0, -1138, -644, -423, 565, -51, -113, 106, -81]
+    PROFILE:
+        - { V: 100 }
+        - 84
+        - 68
+        - 52
+        - { V: 40, O: noise }
+        - { V: 72, S: ".05:100;1,0" }
+        - { V: 44, O: sine }
+        - { V: 80, O: noise }
+        - { V: 36, O: sine }`
+
+const OXYGENE4OLD_BASS = `name: Bass (RMI Harmonic Synthesizer style)
+# The RMI Harmonic Synthesizer was an additive synthesis instrument — it built
+# tones by mixing individual organ-pipe-like harmonics. Its bass character is
+# described as having a "growl in the upper mid range": harmonics 4-6 are
+# boosted relative to the fundamental, creating a slightly nasal, buzzy quality
+# unlike a standard sawtooth or square. Long sustain holds the pedal tones.
+character:
+    O: sawtooth
+    A: ".015:1,100"
+    S: "6:100;4,98;8,95;12,88;16,75"
+    R: ".28:100;1,0"
+    SPREAD: [0, 5, -4, 8, -6, 4, -3]
+    PROFILE: [95, 88, 94, 100, 96, 90, 76, 62, 48, 36, 26, 18, 12, 7, 4]`
+
+const OXYGENE4OLD_ARPEGGIO = `name: Arpeggio Pluck (RMI Harmonic Synthesizer style)
+# The iconic Oxygène Part IV arpeggio was produced by the RMI Harmonic
+# Synthesizer in one-key arpeggio mode, triggered by the Minipops. The sound
+# is a clean, bell-like pluck — additive synthesis at its most literal:
+# individual harmonics mixed at precise levels, decaying together.
+# The 200ms sustain gives a clean staccato at 120 BPM 16th notes (125ms grid).
+# Slight SPREAD adds a very faint metallic shimmer without disturbing the pitch.
+character:
+    O: sine
+    A: ".005:1,100"
+    S: ".20:100;1,60;2,25;3,8;4,0"
+    R: ".07:100;1,0"
+    SPREAD: [0, 4, -3, 7, -5, 3, -2]
+    PROFILE: [100, 72, 52, 38, 26, 17, 10, 6, 3]`
+
+const OXYGENE4OLD_PAD = `name: String Pad (Eminent 310 Unique style)
+# The Eminent 310 Unique electronic organ/string ensemble is the defining pad
+# texture of Oxygène. Its string sound has a slow, organic swell — not as cold
+# as the Kraftwerk/robots pad — with a subtle reedy formant around partials 3-4.
+# The 700ms attack bloom gives the characteristic "breathing in" entrance.
+# Very gentle SPREAD simulates the ensemble-like slight detuning of the Eminent's
+# multiple oscillator ranks.
+character:
+    O: sawtooth
+    A: ".7:1,35;2,68;4,100"
+    S: "10:100;8,99;16,97"
+    R: ".6:100;1,0"
+    SPREAD: [0, 6, -4, 10, -7, 4, -3, 6, -4]
+    PROFILE: [88, 78, 100, 94, 72, 56, 40, 28, 18, 11, 6, 3]`
+
+const OXYGENE4OLD_LEAD = `name: Lead Synth (ARP 2600 + Small Stone phaser style)
+# The ARP 2600 lead in Oxygène Part IV runs through an Electro-Harmonix Small
+# Stone phaser, giving it a sweeping, slightly hollow spectral quality. In
+# additive synthesis the phaser sweep cannot be dynamically replicated, but
+# the SPREAD values are tuned so adjacent partials beat against each other at
+# slow rates — approximating the mild hollowness of a phased sawtooth.
+# The 60ms attack is slightly slower than the arpeggio, giving it a legato
+# "breath" entry that contrasts with the percussive arpeggio beneath it.
+character:
+    O: sawtooth
+    A: ".09:1,35;2,100"
+    S: "4:100;4,98;8,95"
+    R: "1.8:100;1,0"
+    SPREAD: [0, -12, 8, -18, 14, -8, 5, -10, 6]
+    PROFILE: [100, 88, 76, 62, 50, 38, 28, 20, 13, 8, 4, 2]`
+
+const OXYGENE4OLD = `title: 'oxygene-part-iv'
+# From oxygene-part-iv.mid
+# Time: 12/8  BPM: 115.0  Ticks/measure: 12
+stage:
+    kick:     1|1  0.3  oxygene4old/kick
+    claves:   2|1  0.2  oxygene4old/claves
+    cymbal:   1|2  0.4  oxygene4old/cymbal
+    bass:     1|1  0.3  oxygene4old/bass
+    arpeggio: 2|1  0.8  oxygene4old/arpeggio
+    pad_l:    5|1  2.0  oxygene4old/pad
+    pad_r:    1|5  2.0  oxygene4old/pad
+    lead:     2|1  0    oxygene4old/lead
+---
+# ── Measure 1 ─────────────────────────────────────────────────────────────
+_meta:
+    beats_per_minute: 115
+    stress_pattern: "2,1,0;4"
+    upper_stress_bound: 100
+    lower_stress_bound: 96
+lead:     {}
+pad_l:
+    0:  C4 72
+pad_r:
+    0:  C4 72
+arpeggio:
+    4:  C4 2
+    6:  C4 2
+    8:  C4 2
+    10:  C4 2
+bass:
+    11:  G1 1
+cymbal:     {}
+claves:     {}
+kick:     {}
+---
+# ── Measure 2 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+arpeggio:
+    0:  C4 1
+    1:  C4 1
+    2:  C4 1
+    3:  C4 1
+    4:  C4 1
+    5:  C4 1
+    6:  C4 1
+    7:  Bb3 1
+    8:  C4 1
+    9:  C4 1
+    10:  Bb3 1
+    11:  C4 1
+bass:
+    0:  C2 2
+    2:  C2 1
+    3:  Bb1 2
+    5:  C2 3
+    8:  G1 1
+    9:  Bb1 2
+    11:  G1 1
+cymbal:
+    0:  A5 1
+    1:  A5 1
+    2:  A5 1
+    3:  A5 1
+    4:  A5 1
+    5:  A5 1
+    6:  A5 1
+    7:  A5 1
+    8:  A5 1
+    9:  A5 1
+    10:  A5 1
+    11:  A5 1
+claves:
+    9:  A4 1
+kick:
+    3:  A2 1
+---
+# ── Measure 3 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+---
+# ── Measure 4 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+---
+# ── Measure 5 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+---
+# ── Measure 6 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+---
+# ── Measure 7 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 5
+    5:  G4 1
+    6:  Eb4 2
+    8:  G4 3
+    11:  C4 13
+---
+# ── Measure 8 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+---
+# ── Measure 9 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 5
+    5:  G4 1
+    6:  Eb4 2
+    8:  G4 3
+    11:  C4 13
+---
+# ── Measure 10 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+---
+# ── Measure 11 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Bb4 5
+    5:  A4 1
+    6:  G4 2
+    8:  A4 3
+    11:  D4 13
+pad_l:
+    0:  D4 24
+pad_r:
+    0:  D4 24
+arpeggio:
+    0:  D4 1
+    1:  D4 1
+    2:  D4 1
+    3:  D4 1
+    4:  D4 1
+    5:  D4 1
+    6:  D4 1
+    7:  C4 1
+    8:  D4 1
+    9:  D4 1
+    10:  C4 1
+    11:  D4 1
+bass:
+    0:  D2 2
+    2:  D2 1
+    3:  C2 2
+    5:  D2 3
+    8:  Bb1 1
+    9:  C2 2
+    11:  Bb1 1
+---
+# ── Measure 12 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 13 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 5
+    5:  G4 1
+    6:  Eb4 2
+    8:  G4 3
+    11:  C4 13
+pad_l:
+    0:  C4 48
+pad_r:
+    0:  C4 48
+arpeggio:
+    0:  C4 1
+    1:  C4 1
+    2:  C4 1
+    3:  C4 1
+    4:  C4 1
+    5:  C4 1
+    6:  C4 1
+    7:  Bb3 1
+    8:  C4 1
+    9:  C4 1
+    10:  Bb3 1
+    11:  C4 1
+bass:
+    0:  C2 2
+    2:  C2 1
+    3:  Bb1 2
+    5:  C2 3
+    8:  G1 1
+    9:  Bb1 2
+    11:  G1 1
+---
+# ── Measure 14 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 15 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 5
+    5:  G4 1
+    6:  Eb4 2
+    8:  G4 3
+    11:  C4 13
+---
+# ── Measure 16 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+---
+# ── Measure 17 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Bb4 5
+    5:  A4 1
+    6:  G4 2
+    8:  A4 3
+    11:  D4 13
+pad_l:
+    0:  D4 24
+pad_r:
+    0:  D4 24
+arpeggio:
+    0:  D4 1
+    1:  D4 1
+    2:  D4 1
+    3:  D4 1
+    4:  D4 1
+    5:  D4 1
+    6:  D4 1
+    7:  C4 1
+    8:  D4 1
+    9:  D4 1
+    10:  C4 1
+    11:  D4 1
+bass:
+    0:  D2 2
+    2:  D2 1
+    3:  C2 2
+    5:  D2 3
+    8:  Bb1 1
+    9:  C2 2
+    11:  Bb1 1
+---
+# ── Measure 18 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 19 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 2
+    2:  G4 1
+    3:  F4 2
+    5:  C4 7
+pad_l:
+    0:  F4 24
+pad_r:
+    0:  F4 24
+arpeggio:
+    0:  C4 1
+    1:  C4 1
+    2:  C4 1
+    3:  C4 1
+    4:  C4 1
+    5:  C4 1
+    6:  C4 1
+    7:  Bb3 1
+    8:  C4 1
+    9:  C4 1
+    10:  Bb3 1
+    11:  C4 1
+bass:
+    0:  F2 2
+    2:  F2 1
+    3:  Eb2 2
+    5:  C2 3
+    8:  F2 1
+    9:  Eb2 2
+    11:  C2 1
+---
+# ── Measure 20 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+bass:
+    0:  F2 1
+    1:  Eb2 1
+    2:  F2 1
+    3:  Eb2 1
+    4:  C2 1
+    5:  Eb2 1
+    6:  C2 1
+    7:  Bb1 1
+    8:  C2 1
+    9:  Bb1 1
+    10:  G1 1
+    11:  Bb1 1
+---
+# ── Measure 21 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 5
+    5:  G4 1
+    6:  Eb4 2
+    8:  G4 3
+    11:  C4 13
+pad_l:
+    0:  C4 48
+pad_r:
+    0:  C4 48
+bass:
+    0:  C2 2
+    2:  C2 1
+    3:  Bb1 2
+    5:  C2 3
+    8:  G1 1
+    9:  Bb1 2
+    11:  G1 1
+---
+# ── Measure 22 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 23 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 5
+    5:  G4 1
+    6:  Eb4 2
+    8:  G4 3
+    11:  C4 13
+---
+# ── Measure 24 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+---
+# ── Measure 25 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Bb4 5
+    5:  A4 1
+    6:  G4 2
+    8:  A4 3
+    11:  D4 13
+pad_l:
+    0:  D4 24
+pad_r:
+    0:  D4 24
+arpeggio:
+    0:  D4 1
+    1:  D4 1
+    2:  D4 1
+    3:  D4 1
+    4:  D4 1
+    5:  D4 1
+    6:  D4 1
+    7:  C4 1
+    8:  D4 1
+    9:  D4 1
+    10:  C4 1
+    11:  D4 1
+bass:
+    0:  D2 2
+    2:  D2 1
+    3:  C2 2
+    5:  D2 3
+    8:  Bb1 1
+    9:  C2 2
+    11:  Bb1 1
+---
+# ── Measure 26 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 27 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 2
+    2:  G4 1
+    3:  F4 2
+    5:  C4 7
+pad_l:
+    0:  F4 24
+pad_r:
+    0:  F4 24
+arpeggio:
+    0:  C4 1
+    1:  C4 1
+    2:  C4 1
+    3:  C4 1
+    4:  C4 1
+    5:  C4 1
+    6:  C4 1
+    7:  Bb3 1
+    8:  C4 1
+    9:  C4 1
+    10:  Bb3 1
+    11:  C4 1
+bass:
+    0:  F2 2
+    2:  F2 1
+    3:  Eb2 2
+    5:  C2 3
+    8:  F2 1
+    9:  Eb2 2
+    11:  C2 1
+---
+# ── Measure 28 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+bass:
+    0:  F2 1
+    1:  Eb2 1
+    2:  F2 1
+    3:  Eb2 1
+    4:  C2 1
+    5:  Eb2 1
+    6:  C2 1
+    7:  Bb1 1
+    8:  C2 1
+    9:  Bb1 1
+    10:  G1 1
+    11:  Bb1 1
+---
+# ── Measure 29 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 5
+    5:  G4 1
+    6:  Eb4 2
+    8:  G4 3
+    11:  C4 13
+pad_l:
+    0:  C4 48
+pad_r:
+    0:  C4 48
+bass:
+    0:  C2 2
+    2:  C2 1
+    3:  Bb1 2
+    5:  C2 3
+    8:  G1 1
+    9:  Bb1 2
+    11:  G1 1
+---
+# ── Measure 30 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 31 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 5
+    5:  G4 1
+    6:  Eb4 2
+    8:  G4 3
+    11:  C4 13
+---
+# ── Measure 32 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+---
+# ── Measure 33 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Bb4 5
+    5:  A4 1
+    6:  G4 2
+    8:  A4 3
+    11:  D4 13
+pad_l:
+    0:  D4 24
+pad_r:
+    0:  D4 24
+arpeggio:
+    0:  D4 1
+    1:  D4 1
+    2:  D4 1
+    3:  D4 1
+    4:  D4 1
+    5:  D4 1
+    6:  D4 1
+    7:  C4 1
+    8:  D4 1
+    9:  D4 1
+    10:  C4 1
+    11:  D4 1
+bass:
+    0:  D2 2
+    2:  D2 1
+    3:  C2 2
+    5:  D2 3
+    8:  Bb1 1
+    9:  C2 2
+    11:  Bb1 1
+---
+# ── Measure 34 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 35 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 2
+    2:  G4 1
+    3:  F4 2
+    5:  C4 7
+pad_l:
+    0:  F4 24
+pad_r:
+    0:  F4 24
+arpeggio:
+    0:  C4 1
+    1:  C4 1
+    2:  C4 1
+    3:  C4 1
+    4:  C4 1
+    5:  C4 1
+    6:  C4 1
+    7:  Bb3 1
+    8:  C4 1
+    9:  C4 1
+    10:  Bb3 1
+    11:  C4 1
+bass:
+    0:  F2 2
+    2:  F2 1
+    3:  Eb2 2
+    5:  C2 3
+    8:  F2 1
+    9:  Eb2 2
+    11:  C2 1
+---
+# ── Measure 36 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+bass:
+    0:  F2 1
+    1:  Eb2 1
+    2:  F2 1
+    3:  Eb2 1
+    4:  C2 1
+    5:  Eb2 1
+    6:  C2 1
+    7:  Bb1 1
+    8:  C2 1
+    9:  Bb1 1
+    10:  G1 1
+    11:  Bb1 1
+---
+# ── Measure 37 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 1
+    1:  G5 1
+    2:  C5 1
+    3:  G5 2
+    5:  C5 1
+pad_l:
+    0:  C4 24
+pad_r:
+    0:  C4 24
+arpeggio:     {}
+bass:
+    0:  C2 2
+    2:  C2 1
+    3:  Bb1 2
+    5:  C2 3
+    8:  G1 1
+    9:  Bb1 2
+    11:  G1 1
+---
+# ── Measure 38 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 39 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  D5 1
+    1:  Bb5 1
+    2:  D5 1
+    3:  Bb5 2
+    5:  D5 1
+pad_l:
+    0:  D4 24
+pad_r:
+    0:  D4 24
+bass:
+    0:  D2 2
+    2:  D2 1
+    3:  C2 2
+    5:  D2 3
+    8:  Bb1 1
+    9:  C2 2
+    11:  Bb1 1
+---
+# ── Measure 40 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 41 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  F5 1
+    1:  C6 1
+    2:  F5 1
+    3:  C6 2
+    5:  F5 1
+pad_l:
+    0:  F4 24
+pad_r:
+    0:  F4 24
+bass:
+    0:  F2 2
+    2:  F2 1
+    3:  Eb2 2
+    5:  C2 3
+    8:  F2 1
+    9:  Eb2 2
+    11:  C2 1
+---
+# ── Measure 42 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+bass:
+    0:  F2 1
+    1:  Eb2 1
+    2:  F2 1
+    3:  Eb2 1
+    4:  C2 1
+    5:  Eb2 1
+    6:  C2 1
+    7:  Bb1 1
+    8:  C2 1
+    9:  Bb1 1
+    10:  G1 1
+    11:  Bb1 1
+---
+# ── Measure 43 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Eb5 1
+    1:  D5 1
+    2:  Eb5 1
+    3:  C5 2
+    5:  G4 1
+pad_l:
+    0:  C4 24
+pad_r:
+    0:  C4 24
+arpeggio:
+    0:  C3 1
+    1:  G3 1
+    2:  C3 1
+    3:  G3 1
+    4:  C3 1
+    5:  G3 1
+bass:
+    0:  C2 2
+    2:  C2 1
+    3:  Bb1 2
+    5:  C2 3
+    8:  G1 1
+    9:  Bb1 2
+    11:  G1 1
+---
+# ── Measure 44 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 45 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Bb4 1
+    1:  A4 1
+    2:  Bb4 1
+    3:  G4 2
+    5:  D4 1
+pad_l:
+    0:  D4 24
+pad_r:
+    0:  D4 24
+arpeggio:
+    0:  D3 1
+    1:  Bb3 1
+    2:  D3 1
+    3:  Bb3 1
+    4:  D3 1
+    5:  Bb3 1
+bass:
+    0:  D2 2
+    2:  D2 1
+    3:  C2 2
+    5:  D2 3
+    8:  Bb1 1
+    9:  C2 2
+    11:  Bb1 1
+---
+# ── Measure 46 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 47 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 1
+    1:  G4 1
+    2:  A4 1
+    3:  F4 2
+    5:  C5 1
+pad_l:
+    0:  F4 24
+pad_r:
+    0:  F4 24
+arpeggio:
+    0:  F3 1
+    1:  C4 1
+    2:  F3 1
+    3:  C4 1
+    4:  F3 1
+    5:  C4 1
+bass:
+    0:  F2 2
+    2:  F2 1
+    3:  Eb2 2
+    5:  C2 3
+    8:  F2 1
+    9:  Eb2 2
+    11:  C2 1
+---
+# ── Measure 48 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 1
+    1:  G4 1
+    2:  A4 1
+    3:  F4 1
+    4:  A4 1
+    5:  C5 1
+pad_l:     {}
+pad_r:     {}
+bass:
+    0:  F2 1
+    1:  Eb2 1
+    2:  F2 1
+    3:  Eb2 1
+    4:  C2 1
+    5:  Eb2 1
+    6:  C2 1
+    7:  Bb1 1
+    8:  C2 1
+    9:  Bb1 1
+    10:  G1 1
+    11:  Bb1 1
+---
+# ── Measure 49 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Eb5 1
+    1:  D5 1
+    2:  Eb5 1
+    3:  C5 2
+    5:  G4 1
+pad_l:
+    0:  C4 24
+pad_r:
+    0:  C4 24
+arpeggio:
+    0:  C3 1
+    1:  G3 1
+    2:  C3 1
+    3:  G3 1
+    4:  C3 1
+    5:  G3 1
+bass:
+    0:  C2 2
+    2:  C2 1
+    3:  Bb1 2
+    5:  C2 3
+    8:  G1 1
+    9:  Bb1 2
+    11:  G1 1
+---
+# ── Measure 50 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 51 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Bb4 1
+    1:  A4 1
+    2:  Bb4 1
+    3:  G4 2
+    5:  D4 1
+pad_l:
+    0:  D4 24
+pad_r:
+    0:  D4 24
+arpeggio:
+    0:  D3 1
+    1:  Bb3 1
+    2:  D3 1
+    3:  Bb3 1
+    4:  D3 1
+    5:  Bb3 1
+bass:
+    0:  D2 2
+    2:  D2 1
+    3:  C2 2
+    5:  D2 3
+    8:  Bb1 1
+    9:  C2 2
+    11:  Bb1 1
+---
+# ── Measure 52 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 53 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 1
+    1:  G4 1
+    2:  A4 1
+    3:  F4 2
+    5:  C5 1
+arpeggio:
+    0:  F3 1
+    1:  C4 1
+    2:  F3 1
+    3:  C4 1
+    4:  F3 1
+    5:  C4 1
+bass:
+    0:  F2 2
+    2:  F2 1
+    3:  Eb2 2
+    5:  C2 3
+    8:  F2 1
+    9:  Eb2 2
+    11:  C2 1
+---
+# ── Measure 54 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 2
+    2:  G4 2
+    4:  F4 2
+    6:  C5 2
+pad_l:
+    0:  F4 12
+pad_r:
+    0:  F4 12
+bass:
+    0:  F2 1
+    1:  Eb2 1
+    2:  F2 1
+    3:  Eb2 1
+    4:  C2 1
+    5:  Eb2 1
+    6:  C2 1
+    7:  Bb1 1
+    8:  C2 1
+    9:  Bb1 1
+    10:  G1 1
+    11:  Bb1 1
+---
+# ── Measure 55 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 5
+    5:  G4 1
+    6:  Eb4 2
+    8:  G4 3
+    11:  C4 13
+pad_l:
+    0:  C4 48
+pad_r:
+    0:  C4 48
+arpeggio:
+    0:  C4 1
+    1:  C4 1
+    2:  C4 1
+    3:  C4 1
+    4:  C4 1
+    5:  C4 1
+    6:  C4 1
+    7:  Bb3 1
+    8:  C4 1
+    9:  C4 1
+    10:  Bb3 1
+    11:  C4 1
+bass:
+    0:  C2 2
+    2:  C2 1
+    3:  Bb1 2
+    5:  C2 3
+    8:  G1 1
+    9:  Bb1 2
+    11:  G1 1
+---
+# ── Measure 56 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 57 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 5
+    5:  G4 1
+    6:  Eb4 2
+    8:  G4 3
+    11:  C4 13
+---
+# ── Measure 58 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+---
+# ── Measure 59 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Bb4 5
+    5:  A4 1
+    6:  G4 2
+    8:  A4 3
+    11:  D4 13
+pad_l:
+    0:  D4 24
+pad_r:
+    0:  D4 24
+arpeggio:
+    0:  D4 1
+    1:  D4 1
+    2:  D4 1
+    3:  D4 1
+    4:  D4 1
+    5:  D4 1
+    6:  D4 1
+    7:  C4 1
+    8:  D4 1
+    9:  D4 1
+    10:  C4 1
+    11:  D4 1
+bass:
+    0:  D2 2
+    2:  D2 1
+    3:  C2 2
+    5:  D2 3
+    8:  Bb1 1
+    9:  C2 2
+    11:  Bb1 1
+---
+# ── Measure 60 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 61 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 2
+    2:  G4 1
+    3:  F4 2
+    5:  C4 7
+pad_l:
+    0:  F4 24
+pad_r:
+    0:  F4 24
+arpeggio:
+    0:  C4 1
+    1:  C4 1
+    2:  C4 1
+    3:  C4 1
+    4:  C4 1
+    5:  C4 1
+    6:  C4 1
+    7:  Bb3 1
+    8:  C4 1
+    9:  C4 1
+    10:  Bb3 1
+    11:  C4 1
+bass:
+    0:  F2 2
+    2:  F2 1
+    3:  Eb2 2
+    5:  C2 3
+    8:  F2 1
+    9:  Eb2 2
+    11:  C2 1
+---
+# ── Measure 62 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+bass:
+    0:  F2 1
+    1:  Eb2 1
+    2:  F2 1
+    3:  Eb2 1
+    4:  C2 1
+    5:  Eb2 1
+    6:  C2 1
+    7:  Bb1 1
+    8:  C2 1
+    9:  Bb1 1
+    10:  G1 1
+    11:  Bb1 1
+---
+# ── Measure 63 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 5
+    5:  G4 1
+    6:  Eb4 2
+    8:  G4 3
+    11:  C4 13
+pad_l:
+    0:  C4 48
+pad_r:
+    0:  C4 48
+bass:
+    0:  C2 2
+    2:  C2 1
+    3:  Bb1 2
+    5:  C2 3
+    8:  G1 1
+    9:  Bb1 2
+    11:  G1 1
+---
+# ── Measure 64 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 65 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 5
+    5:  G4 1
+    6:  Eb4 2
+    8:  G4 3
+    11:  C4 13
+---
+# ── Measure 66 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+---
+# ── Measure 67 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Bb4 5
+    5:  A4 1
+    6:  G4 2
+    8:  A4 3
+    11:  D4 13
+pad_l:
+    0:  D4 24
+pad_r:
+    0:  D4 24
+arpeggio:
+    0:  D4 1
+    1:  D4 1
+    2:  D4 1
+    3:  D4 1
+    4:  D4 1
+    5:  D4 1
+    6:  D4 1
+    7:  C4 1
+    8:  D4 1
+    9:  D4 1
+    10:  C4 1
+    11:  D4 1
+bass:
+    0:  D2 2
+    2:  D2 1
+    3:  C2 2
+    5:  D2 3
+    8:  Bb1 1
+    9:  C2 2
+    11:  Bb1 1
+---
+# ── Measure 68 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 69 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 2
+    2:  G4 1
+    3:  F4 2
+    5:  C4 7
+pad_l:
+    0:  F4 24
+pad_r:
+    0:  F4 24
+arpeggio:
+    0:  C4 1
+    1:  C4 1
+    2:  C4 1
+    3:  C4 1
+    4:  C4 1
+    5:  C4 1
+    6:  C4 1
+    7:  Bb3 1
+    8:  C4 1
+    9:  C4 1
+    10:  Bb3 1
+    11:  C4 1
+bass:
+    0:  F2 2
+    2:  F2 1
+    3:  Eb2 2
+    5:  C2 3
+    8:  F2 1
+    9:  Eb2 2
+    11:  C2 1
+---
+# ── Measure 70 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+bass:
+    0:  F2 1
+    1:  Eb2 1
+    2:  F2 1
+    3:  Eb2 1
+    4:  C2 1
+    5:  Eb2 1
+    6:  C2 1
+    7:  Bb1 1
+    8:  C2 1
+    9:  Bb1 1
+    10:  G1 1
+    11:  Bb1 1
+---
+# ── Measure 71 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 5
+    5:  G4 1
+    6:  Eb4 2
+    8:  G4 3
+    11:  C4 13
+pad_l:
+    0:  C4 48
+pad_r:
+    0:  C4 48
+bass:
+    0:  C2 2
+    2:  C2 1
+    3:  Bb1 2
+    5:  C2 3
+    8:  G1 1
+    9:  Bb1 2
+    11:  G1 1
+---
+# ── Measure 72 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 73 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 5
+    5:  G4 1
+    6:  Eb4 2
+    8:  G4 3
+    11:  C4 13
+---
+# ── Measure 74 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+---
+# ── Measure 75 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Bb4 5
+    5:  A4 1
+    6:  G4 2
+    8:  A4 3
+    11:  D4 13
+pad_l:
+    0:  D4 24
+pad_r:
+    0:  D4 24
+arpeggio:
+    0:  D4 1
+    1:  D4 1
+    2:  D4 1
+    3:  D4 1
+    4:  D4 1
+    5:  D4 1
+    6:  D4 1
+    7:  C4 1
+    8:  D4 1
+    9:  D4 1
+    10:  C4 1
+    11:  D4 1
+bass:
+    0:  D2 2
+    2:  D2 1
+    3:  C2 2
+    5:  D2 3
+    8:  Bb1 1
+    9:  C2 2
+    11:  Bb1 1
+---
+# ── Measure 76 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:     {}
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 77 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 2
+    2:  G4 1
+    3:  F4 2
+    5:  C4 7
+pad_l:
+    0:  F4 24
+pad_r:
+    0:  F4 24
+arpeggio:
+    0:  C4 1
+    1:  C4 1
+    2:  C4 1
+    3:  C4 1
+    4:  C4 1
+    5:  C4 1
+    6:  C4 1
+    7:  Bb3 1
+    8:  C4 1
+    9:  C4 1
+    10:  Bb3 1
+    11:  C4 1
+bass:
+    0:  F2 2
+    2:  F2 1
+    3:  Eb2 2
+    5:  C2 3
+    8:  F2 1
+    9:  Eb2 2
+    11:  C2 1
+---
+# ── Measure 78 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+bass:
+    0:  F2 1
+    1:  Eb2 1
+    2:  F2 1
+    3:  Eb2 1
+    4:  C2 1
+    5:  Eb2 1
+    6:  C2 1
+    7:  Bb1 1
+    8:  C2 1
+    9:  Bb1 1
+    10:  G1 1
+    11:  Bb1 1
+---
+# ── Measure 79 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C5 1
+    1:  G5 1
+    2:  C5 1
+    3:  G5 2
+    5:  C5 1
+pad_l:
+    0:  C4 24
+pad_r:
+    0:  C4 24
+arpeggio:     {}
+bass:
+    0:  C2 2
+    2:  C2 1
+    3:  Bb1 2
+    5:  C2 3
+    8:  G1 1
+    9:  Bb1 2
+    11:  G1 1
+---
+# ── Measure 80 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 81 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  D5 1
+    1:  Bb5 1
+    2:  D5 1
+    3:  Bb5 2
+    5:  D5 1
+pad_l:
+    0:  D4 24
+pad_r:
+    0:  D4 24
+bass:
+    0:  D2 2
+    2:  D2 1
+    3:  C2 2
+    5:  D2 3
+    8:  Bb1 1
+    9:  C2 2
+    11:  Bb1 1
+---
+# ── Measure 82 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 83 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  F5 1
+    1:  C6 1
+    2:  F5 1
+    3:  C6 2
+    5:  F5 1
+pad_l:
+    0:  F4 24
+pad_r:
+    0:  F4 24
+bass:
+    0:  F2 2
+    2:  F2 1
+    3:  Eb2 2
+    5:  C2 3
+    8:  F2 1
+    9:  Eb2 2
+    11:  C2 1
+---
+# ── Measure 84 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+bass:
+    0:  F2 1
+    1:  Eb2 1
+    2:  F2 1
+    3:  Eb2 1
+    4:  C2 1
+    5:  Eb2 1
+    6:  C2 1
+    7:  Bb1 1
+    8:  C2 1
+    9:  Bb1 1
+    10:  G1 1
+    11:  Bb1 1
+---
+# ── Measure 85 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Eb5 1
+    1:  D5 1
+    2:  Eb5 1
+    3:  C5 2
+    5:  G4 1
+pad_l:
+    0:  C4 24
+pad_r:
+    0:  C4 24
+arpeggio:
+    0:  C3 1
+    1:  G3 1
+    2:  C3 1
+    3:  G3 1
+    4:  C3 1
+    5:  G3 1
+bass:
+    0:  C2 2
+    2:  C2 1
+    3:  Bb1 2
+    5:  C2 3
+    8:  G1 1
+    9:  Bb1 2
+    11:  G1 1
+---
+# ── Measure 86 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 87 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Bb4 1
+    1:  A4 1
+    2:  Bb4 1
+    3:  G4 2
+    5:  D4 1
+pad_l:
+    0:  D4 24
+pad_r:
+    0:  D4 24
+arpeggio:
+    0:  D3 1
+    1:  Bb3 1
+    2:  D3 1
+    3:  Bb3 1
+    4:  D3 1
+    5:  Bb3 1
+bass:
+    0:  D2 2
+    2:  D2 1
+    3:  C2 2
+    5:  D2 3
+    8:  Bb1 1
+    9:  C2 2
+    11:  Bb1 1
+---
+# ── Measure 88 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 89 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 1
+    1:  G4 1
+    2:  A4 1
+    3:  F4 2
+    5:  C5 1
+pad_l:
+    0:  F4 24
+pad_r:
+    0:  F4 24
+arpeggio:
+    0:  F3 1
+    1:  C4 1
+    2:  F3 1
+    3:  C4 1
+    4:  F3 1
+    5:  C4 1
+bass:
+    0:  F2 2
+    2:  F2 1
+    3:  Eb2 2
+    5:  C2 3
+    8:  F2 1
+    9:  Eb2 2
+    11:  C2 1
+---
+# ── Measure 90 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 1
+    1:  G4 1
+    2:  A4 1
+    3:  G4 1
+    4:  A4 1
+    5:  G4 1
+    6:  C5 2
+    8:  A4 1
+pad_l:     {}
+pad_r:     {}
+bass:
+    0:  F2 1
+    1:  Eb2 1
+    2:  F2 1
+    3:  Eb2 1
+    4:  C2 1
+    5:  Eb2 1
+    6:  C2 1
+    7:  Bb1 1
+    8:  C2 1
+    9:  Bb1 1
+    10:  G1 1
+    11:  Bb1 1
+---
+# ── Measure 91 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Eb5 1
+    1:  D5 1
+    2:  Eb5 1
+    3:  C5 2
+    5:  G4 1
+    11:  G4 1
+pad_l:
+    0:  C4 24
+pad_r:
+    0:  C4 24
+arpeggio:
+    0:  C3 1
+    1:  G3 1
+    2:  C3 1
+    3:  G3 1
+    4:  C3 1
+    5:  G3 1
+bass:
+    0:  C2 2
+    2:  C2 1
+    3:  Bb1 2
+    5:  C2 3
+    8:  G1 1
+    9:  Bb1 2
+    11:  G1 1
+---
+# ── Measure 92 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Eb5 3
+    3:  D5 2
+    5:  C5 2
+    8:  Eb5 1
+    9:  D5 2
+    11:  C5 1
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 93 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  D5 1
+    1:  C5 1
+    2:  D5 1
+    3:  Bb4 2
+    5:  G5 1
+    8:  D5 1
+    11:  C5 1
+pad_l:
+    0:  D4 24
+pad_r:
+    0:  D4 24
+arpeggio:
+    0:  D3 1
+    1:  Bb3 1
+    2:  D3 1
+    3:  Bb3 1
+    4:  D3 1
+    5:  Bb3 1
+bass:
+    0:  D2 2
+    2:  D2 1
+    3:  C2 2
+    5:  D2 3
+    8:  Bb1 1
+    9:  C2 2
+    11:  Bb1 1
+---
+# ── Measure 94 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  D5 2
+    2:  C5 1
+    3:  Bb4 2
+    5:  G4 1
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 95 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 1
+    1:  G4 1
+    2:  A4 1
+    3:  C5 2
+    6:  G4 2
+    8:  F4 2
+    10:  G4 2
+pad_l:
+    0:  F4 24
+pad_r:
+    0:  F4 24
+arpeggio:
+    0:  F3 1
+    1:  C4 1
+    2:  F3 1
+    3:  C4 1
+    4:  F3 1
+    5:  C4 1
+bass:
+    0:  F2 2
+    2:  F2 1
+    3:  Eb2 2
+    5:  C2 3
+    8:  F2 1
+    9:  Eb2 2
+    11:  C2 1
+---
+# ── Measure 96 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 2
+    2:  G4 2
+    4:  A4 2
+    6:  C5 2
+    8:  A4 2
+    10:  C5 2
+pad_l:     {}
+pad_r:     {}
+bass:
+    0:  F2 1
+    1:  Eb2 1
+    2:  F2 1
+    3:  Eb2 1
+    4:  C2 1
+    5:  Eb2 1
+    6:  C2 1
+    7:  Bb1 1
+    8:  C2 1
+    9:  Bb1 1
+    10:  G1 1
+    11:  Bb1 1
+---
+# ── Measure 97 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Eb5 1
+    1:  D5 1
+    2:  Eb5 1
+    3:  C5 2
+    5:  G4 1
+    11:  G4 1
+pad_l:
+    0:  C4 24
+pad_r:
+    0:  C4 24
+arpeggio:
+    0:  C3 1
+    1:  G3 1
+    2:  C3 1
+    3:  G3 1
+    4:  C3 1
+    5:  G3 1
+bass:
+    0:  C2 2
+    2:  C2 1
+    3:  Bb1 2
+    5:  C2 3
+    8:  G1 1
+    9:  Bb1 2
+    11:  G1 1
+---
+# ── Measure 98 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  Eb5 3
+    3:  D5 2
+    5:  C5 2
+    8:  Eb5 1
+    9:  D5 2
+    11:  C5 1
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 99 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  D5 1
+    1:  C5 1
+    2:  D5 1
+    3:  Bb4 2
+    5:  G5 1
+    8:  D5 1
+    11:  C5 1
+pad_l:
+    0:  D4 24
+pad_r:
+    0:  D4 24
+arpeggio:
+    0:  D3 1
+    1:  Bb3 1
+    2:  D3 1
+    3:  Bb3 1
+    4:  D3 1
+    5:  Bb3 1
+bass:
+    0:  D2 2
+    2:  D2 1
+    3:  C2 2
+    5:  D2 3
+    8:  Bb1 1
+    9:  C2 2
+    11:  Bb1 1
+---
+# ── Measure 100 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  D5 2
+    2:  C5 1
+    3:  Bb4 2
+    5:  G4 1
+pad_l:     {}
+pad_r:     {}
+---
+# ── Measure 101 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 1
+    1:  G4 1
+    2:  A4 1
+    3:  C5 2
+    6:  G4 2
+    8:  F4 2
+    10:  G4 2
+pad_l:
+    0:  F4 24
+pad_r:
+    0:  F4 24
+arpeggio:
+    0:  F3 1
+    1:  C4 1
+    2:  F3 1
+    3:  C4 1
+    4:  F3 1
+    5:  C4 1
+bass:
+    0:  F2 2
+    2:  F2 1
+    3:  Eb2 2
+    5:  C2 3
+    8:  F2 1
+    9:  Eb2 2
+    11:  C2 1
+---
+# ── Measure 102 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  A4 2
+    2:  G4 2
+    4:  A4 2
+    6:  C5 2
+    8:  A4 2
+    10:  C5 2
+pad_l:     {}
+pad_r:     {}
+bass:
+    0:  F2 1
+    1:  Eb2 1
+    2:  F2 1
+    3:  Eb2 1
+    4:  C2 1
+    5:  Eb2 1
+    6:  C2 1
+    7:  Bb1 1
+    8:  C2 1
+    9:  Bb1 1
+    10:  G1 1
+    11:  Bb1 1
+---
+# ── Measure 103 ─────────────────────────────────────────────────────────────
+_meta:
+    repeat_unmentioned_voices: true
+lead:
+    0:  C6 4
+pad_l:
+    0:  C4 12
+pad_r:
+    0:  C4 12
+arpeggio:     {}
+bass:
+    0:  C2 4
+cymbal:     {}
+claves:     {}
+kick:     {}`
+
 const SEEDS: Seed[] = [
   // Oxygène Pt. IV — Jarre (1976): default project on first run.
   { name: 'oxygene',         ext: 'spls', body: OXYGENE,            inProject: true },
@@ -3789,6 +5805,16 @@ const SEEDS: Seed[] = [
   { name: 'seashore',        ext: 'spli', body: OXYGENE_SEASHORE,   inProject: true },
   { name: 'tones_euro',      ext: 'splt', body: STARTER_TUNING,     inProject: true },
   { name: 'oxygene-plate',  ext: 'splr', body: OXYGENE_PLATE_ROOM, inProject: true },
+
+  // oxygene4old — original Python Sompyler source (RFC character: format).
+  { name: 'oxygene4old',          ext: 'spls', body: OXYGENE4OLD,          inProject: false },
+  { name: 'oxygene4old/kick',     ext: 'spli', body: OXYGENE4OLD_KICK,     inProject: false },
+  { name: 'oxygene4old/claves',   ext: 'spli', body: OXYGENE4OLD_CLAVES,   inProject: false },
+  { name: 'oxygene4old/cymbal',   ext: 'spli', body: OXYGENE4OLD_CYMBAL,   inProject: false },
+  { name: 'oxygene4old/bass',     ext: 'spli', body: OXYGENE4OLD_BASS,     inProject: false },
+  { name: 'oxygene4old/arpeggio', ext: 'spli', body: OXYGENE4OLD_ARPEGGIO, inProject: false },
+  { name: 'oxygene4old/pad',      ext: 'spli', body: OXYGENE4OLD_PAD,      inProject: false },
+  { name: 'oxygene4old/lead',     ext: 'spli', body: OXYGENE4OLD_LEAD,     inProject: false },
 
   // Dev instruments and legacy examples.
   { name: 'dev/piano', ext: 'spli', body: STARTER_PIANO, inProject: false },
