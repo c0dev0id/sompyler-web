@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Second-pass STFT instrument analysis** using a reusable analysis script (`analyze_instrument.py`, 4096-frame Hann window, 512-hop, parabolic interpolation for sub-bin accuracy). All six pitched instruments now use per-frame harmonic tracking to select the true mid-sustain window rather than a single FFT snapshot:
+  - **synstrings**: previous PROFILE used a late-sustain window (H2=36%). Corrected to mid-sustain: H2=21.9, H3=18.5, H4=12.4 (much more modest). Six harmonics (H2, H5–H9) that build after the loudness peak now have per-partial `A:` overrides — each attack time derived as `A_partial = 1.5s × (V_sustained / V_at_peak)`, so the measured onset ratio is reproduced exactly at global-attack completion. String inharmonicities added: H7(−8c), H8(+14c), H9(+17c), H11(−8c).
+  - **synbrass**: previous PROFILE came from a 3-window analysis with a very narrow sustain window (0.27s). Replaced with a stable 1.0s average across the mid-swell (1.5–2.5s): H2 67→80, H6 8.2→13.6, H8 8.9→14.0, H10 7.1→13.3, H11 5.2→11.1. Six harmonics now carry measured inharmonicities: H2(+9c), H4(+6c), H5(+7c), H6(+10c), H8(+6c), H11(+12c).
+  - **string-ensemble**: four measured inharmonicities added — H4(+14c), H5(−8c), H6(−7c), H11(−18c). These are string-bowing artefacts that add the characteristic ensemble roughness.
+  - **bowed-pad**: inharmonicities H4(+8c), H5(+6c), H8(+10c), H9(+26c) added. H9 is the most audible single-partial deviation across all instruments.
+  - **bass**: H8 inharmonicity +5c from fretless string stretch.
+
 - Oxygène instruments re-tuned from a full multi-window WAV analysis (attack-peak, mid-sustain, late-sustain FFT windows per instrument):
   - **synbrass**: several harmonics were significantly overestimated — H6 12.2→8.2, H11 11.1→5.2, H15 7.8→1.7, H17 6.5→2.0, H21–H23 all roughly halved.
   - **synstrings**: PROFILE had been measured at attack onset, missing the harmonic build-up. H2 18.8→36, H3 18→32, H4 25→34, H5 14→19, H6 6.5→15. Now measured at mid-sustain.
