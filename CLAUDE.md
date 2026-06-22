@@ -10,6 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Do not** implement features flagged as experimental in the RFC
 - **Do not** create syntax aliases
 - Sompyler-web **must** create the same output as python sompyler on the same input
+- The canonical truth for sompyler file compilation algorithms **must** be the python code in ../sompyler
 
 
 ## Project
