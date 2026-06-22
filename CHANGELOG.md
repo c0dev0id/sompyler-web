@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Seekbar in the player pane: click or drag to seek, with a current-time / total-time readout. When loop is enabled, green (in) and red (out) markers appear and can be dragged independently to define the loop region. Loop points survive a new render — they are clamped to the new buffer duration but otherwise preserved, so you can re-render and immediately hear the same section. All changes apply to the live source node without restarting playback.
+
 - Staging tree now shows ghost entries for referenced but not-yet-created files. Missing deps appear as muted italic rows inside the expanded score node with a "Create" button instead of the usual action trio. Clicking creates an empty file and marks it in-project when the parent score is already active.
 
 - Staging area is now a grouped tree view. Score (`.spls`) files are the root nodes; clicking the arrow beside a score expands it to show all files it references (instruments, room, tuning) indented beneath it. Files not referenced by any score appear under a collapsible "unreferenced" group. All file actions (add/remove, rename, delete) remain available at both levels.
