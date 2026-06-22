@@ -85,11 +85,11 @@ describe('expandMultiMeasures', () => {
   })
 
   it('cycles meta field values', () => {
-    const m = { _meta: { _loop: 2, ticks_per_minute: '60 | 120' }, piano: { '0': 'A4 1' } }
+    const m = { _meta: { _loop: 2, beats_per_minute: '60 | 120' }, piano: { '0': 'A4 1' } }
     const out = expandMultiMeasures([m]) as Record<string, unknown>[]
     expect(out).toHaveLength(2)
-    expect((out[0]!._meta as Record<string, unknown>).ticks_per_minute).toBe('60')
-    expect((out[1]!._meta as Record<string, unknown>).ticks_per_minute).toBe('120')
+    expect((out[0]!._meta as Record<string, unknown>).beats_per_minute).toBe('60')
+    expect((out[1]!._meta as Record<string, unknown>).beats_per_minute).toBe('120')
   })
 
   it('assigns _id like "name[i]" to each sub-measure', () => {
@@ -108,7 +108,7 @@ stage:
   piano: 1|1 0 dev/piano
 ---
 _meta:
-  ticks_per_minute: 60
+  beats_per_minute: 60
   stress_pattern: "1"
   _loop: 2
 piano:
@@ -120,7 +120,7 @@ stage:
   piano: 1|1 0 dev/piano
 ---
 _meta:
-  ticks_per_minute: 60
+  beats_per_minute: 60
   stress_pattern: "1"
 piano:
   0: A4 1

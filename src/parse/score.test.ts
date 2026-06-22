@@ -7,7 +7,7 @@ stage:
   piano: 1|1 0 dev/piano
 ---
 _meta:
-  ticks_per_minute: 60
+  beats_per_minute: 60
   stress_pattern: "2,0,1,0"
   lower_stress_bound: 50
   upper_stress_bound: 100
@@ -120,7 +120,7 @@ stage:
   piano: 1|1 0 dev/piano
 ---
 _meta:
-  ticks_per_minute: 60
+  beats_per_minute: 60
   stress_pattern: "2,0,1,0"
 piano:
   0: C4 1
@@ -158,7 +158,7 @@ stage:
   cello: 1|1 0 dev/piano
 ---
 _meta:
-  ticks_per_minute: 60
+  beats_per_minute: 60
   stress_pattern: "1"
 violin:
   0: A4 1
@@ -189,7 +189,7 @@ stage:
   cello: 1|1 0 dev/piano
 ---
 _meta:
-  ticks_per_minute: 60
+  beats_per_minute: 60
   stress_pattern: "1"
 violin:
   0: A4 1
@@ -219,7 +219,7 @@ stage:
   piano: 1|1 0 dev/piano
 ---
 _meta:
-  ticks_per_minute: 60
+  beats_per_minute: 60
   stress_pattern: "1"
 piano:
   0: A4 1
@@ -242,7 +242,7 @@ stage:
   piano: 1|1 0 dev/piano
 ---
 _meta:
-  ticks_per_minute: 60
+  beats_per_minute: 60
   stress_pattern: "1"
 piano:
   0: A4 1
@@ -269,7 +269,7 @@ stage:
   piano: 1|1 0 dev/piano
 ---
 _meta:
-  ticks_per_minute: 60
+  beats_per_minute: 60
   stress_pattern: "1"
   is_last: true
 piano:
@@ -291,7 +291,7 @@ stage:
   piano: 1|1 0 dev/piano
 ---
 _meta:
-  ticks_per_minute: 60
+  beats_per_minute: 60
   stress_pattern: "1"
   cut: 4
 piano:
@@ -374,7 +374,7 @@ stage:
   piano: 1|1 0 dev/piano
 ---
 _meta:
-  ticks_per_minute: 60
+  beats_per_minute: 60
   stress_pattern: "1"
   lower_stress_bound: 100
   upper_stress_bound: 100
@@ -386,7 +386,7 @@ stage:
   piano: 1|1 0 dev/piano
 ---
 _meta:
-  ticks_per_minute: 60
+  beats_per_minute: 60
   stress_pattern: "1"
   lower_stress_bound: 100
   upper_stress_bound: 100

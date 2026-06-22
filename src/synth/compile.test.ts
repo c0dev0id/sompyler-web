@@ -4,34 +4,41 @@ import { compileInstrument } from './compile'
 import { InstrumentError } from '../errors'
 
 describe('compileInstrument', () => {
-  it('compiles a minimal sin instrument', async () => {
-    const i = await loadInstrument('dev/sin', 'oscillator: sin')
+  it('compiles a minimal sine instrument via character block', async () => {
+    const i = await loadInstrument(
+      'dev/sin',
+      `character:
+  O: sine`,
+    )
     const spec = compileInstrument(i)
     expect(spec.oscillator).toEqual({ waveform: 'sin' })
   })
 
-  it('compiles partials with envelope + amp', async () => {
+  it('compiles PROFILE + envelope + amp via character block', async () => {
     const i = await loadInstrument(
       'dev/piano',
       `amp: 0.5
-envelope:
-  attack: 0.01
-  release: 0.3
-  sustainLevel: 0.7
-partials:
-  - { freqMult: 1, amp: 1.0 }
-  - { freqMult: 2, amp: 0.5 }`,
+character:
+  O: sine
+  A: "0.01:1,100"
+  S: "0.0:100;1,70"
+  R: "0.3:100;1,0"
+  PROFILE: [100, 50]`,
     )
     const spec = compileInstrument(i)
     expect(spec.amp).toBe(0.5)
-    expect(spec.envelope).toEqual({ attack: 0.01, release: 0.3, sustainLevel: 0.7 })
+    expect(spec.envelope).toMatchObject({ attack: 0.01, release: 0.3, sustainLevel: 0.7 })
     expect(spec.partials).toHaveLength(2)
     expect(spec.partials![0]).toMatchObject({ freqMult: 1, amp: 1.0 })
     expect(spec.partials![1]).toMatchObject({ freqMult: 2, amp: 0.5 })
   })
 
   it('rejects unknown waveform', async () => {
-    const i = await loadInstrument('bad', 'oscillator: kazoo')
+    const i = await loadInstrument(
+      'bad',
+      `character:
+  O: kazoo`,
+    )
     expect(() => compileInstrument(i)).toThrow(InstrumentError)
   })
 
@@ -56,17 +63,15 @@ partials:
     expect(() => compileInstrument(i)).not.toThrow()
   })
 
-  it('compiles a railsback curve (S32136)', async () => {
-    // Curve string mirrors the form used in lib/instruments/dev/piano.spli:68 —
-    // bezier-only control points (no length prefix); the compiler prepends
-    // "1:" before parsing, matching Sompyler's convention.
+  it('compiles a railsback curve via RAILSBACK_CURVE in character block (S32136)', async () => {
     const i = await loadInstrument(
       'dev/piano',
-      `oscillator: sin
-railsback:
-  - 27
-  - 4187
-  - "-8+240;0,0;1,8;2,8;13,8;14,8;15,16"
+      `character:
+  O: sine
+  RAILSBACK_CURVE:
+    - 27
+    - 4187
+    - "-8+240;0,0;1,8;2,8;13,8;14,8;15,16"
 `,
     )
     const spec = compileInstrument(i)
@@ -76,15 +81,22 @@ railsback:
     expect(spec.railsback!.curve.length).toBe(88)
   })
 
-  it('rejects a malformed railsback spec', async () => {
-    const i = await loadInstrument('bad', 'railsback: [100, 50, "junk"]')
+  it('rejects a malformed RAILSBACK_CURVE spec', async () => {
+    const i = await loadInstrument(
+      'bad',
+      `character:
+  RAILSBACK_CURVE: [100, 50, "junk"]`,
+    )
     expect(() => compileInstrument(i)).toThrow(/railsback bounds invalid/)
   })
 
-  it('compiles top-level fm spec', async () => {
+  it('compiles top-level fm spec (non-RFC extension)', async () => {
     const i = await loadInstrument(
       'dev/kick',
-      `oscillator: sin
+      `character:
+  O: sine
+  A: "0.002:1,100"
+  R: "0.3:100;1,0"
 fm:
   freq_hz: 1
   depth: 3
@@ -98,24 +110,6 @@ fm:
     expect(spec.fm!.depth).toBe(3)
     expect(spec.fm!.initPhase).toBe(0.25)
     expect(spec.fm!.depthEnv).toBe('100:1;1,0')
-  })
-
-  it('compiles per-partial fm spec', async () => {
-    const i = await loadInstrument(
-      'dev/synth',
-      `partials:
-  - freqMult: 1
-    amp: 1
-    fm:
-      freq_hz: 200
-      depth: 0.5
-      waveform: sin
-      dynamic: false
-`,
-    )
-    const spec = compileInstrument(i)
-    expect(spec.partials).toHaveLength(1)
-    expect(spec.partials![0]!.fm).toMatchObject({ freqHz: 200, depth: 0.5, waveform: 'sin' })
   })
 
   it('rejects fm with missing freq_hz', async () => {

@@ -9,7 +9,7 @@ stage:
   piano: 1|1 0 dev/piano
 ---
 _meta:
-  ticks_per_minute: 60
+  beats_per_minute: 60
   stress_pattern: "1"
   lower_stress_bound: 100
   upper_stress_bound: 100

@@ -1,7 +1,7 @@
 import { ScoreError } from '../errors'
 import { log } from '../debug'
 import type { Instrument } from '../parse/instrument'
-import { parseScore, walkMeasures, ticksToSeconds, type RawNote } from '../parse/score'
+import { parseScore, walkMeasures, ticksToSeconds, stressorSubCumlen, type RawNote } from '../parse/score'
 import type { Scale, Tuner } from '../parse/tuning'
 import { noteCacheKey } from '../storage/hash'
 import { evaluateShape } from '../synth/shape'
@@ -87,6 +87,8 @@ export async function buildDistinctNotes(
    */
   let activeTickSeconds: Float32Array | undefined
   /** S46170 active elasticks pattern (stressor format), if any. Inherited. */
+  /** Active stress pattern (RFC §S46120). Used to convert beats_per_minute → ticks/min. */
+  let activeStressPattern = '1'
   let activeElasticksPattern: string | undefined
   /** S46180 active elasticks shape string. Clears when elasticksPattern changes. */
   let activeElasticksShape: string | undefined
@@ -138,9 +140,11 @@ export async function buildDistinctNotes(
       if (metaBlock && typeof metaBlock.offset_seconds === 'number' && metaBlock.offset_seconds > 0) {
         cumLengthSeconds += metaBlock.offset_seconds
       }
-      if (metaBlock && 'ticks_per_minute' in metaBlock) {
-        activeTicksPerMinute = Number(metaBlock.ticks_per_minute)
-        // Explicit constant TPM clears any inherited Shape (matches Sompyler).
+      if (metaBlock && 'stress_pattern' in metaBlock && typeof metaBlock.stress_pattern === 'string') {
+        activeStressPattern = metaBlock.stress_pattern
+      }
+      if (metaBlock && 'beats_per_minute' in metaBlock) {
+        activeTicksPerMinute = Number(metaBlock.beats_per_minute) * stressorSubCumlen(activeStressPattern)
         activeTempoShape = undefined
       }
       if (metaBlock && 'tempo' in metaBlock && typeof metaBlock.tempo === 'string') {

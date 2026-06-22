@@ -9,29 +9,21 @@ import { parseCharacterBlock, validateVariationGraph } from './variation'
 const RAILSBACK_KEYS = 88
 
 /**
- * Forgiving YAML → `InstrumentSpec` compiler used by `renderAll()`.
- * As of Phase 10 the rich Sompyler `character:` block is accepted and
- * its variation graph is validated (cycle detection, S32122). The full
- * per-attribute sound differentiation (S32200) lands in Phase 12.
+ * RFC-compliant YAML → InstrumentSpec compiler.
+ * Instruments must use the RFC `character:` block format (rfc.md §3.2).
  *
- * Supported v1 shape:
+ * Valid instrument shape:
  *
- *     amp: 0.5
- *     oscillator: sin                # or a richer object
- *     envelope: { attack: 0.01, release: 0.3, sustainLevel: 0.7 }
- *     partials:
- *       - { freqMult: 1, amp: 1.0 }
- *       - { freqMult: 2, amp: 0.5 }
- *
- * Sympyler-rich shape (Phase 10+):
- *
+ *     amp: 0.5                    # optional global scalar (non-RFC extension)
  *     character:
- *       - ATTR: pitch
- *         O: sine
- *         labelName: { ... }      # label spec (referenced via @labelName)
- *         27: { PROFILE: [...] }  # numeric-keyed variation
+ *       O: sine
+ *       A: ".01:1,100"
+ *       S: ".2:100;1,70"
+ *       R: ".3:100;1,0"
+ *       PROFILE: [100, 70, 50]
+ *       RAILSBACK_CURVE: [27.5, 4186, "0;100,0.02"]
  *
- * Anything off these shapes is ignored (lenient pass-through).
+ * Non-RFC extensions (fm:, vcf:, lfo:) are accepted at top level.
  */
 
 const WAVEFORMS: ReadonlySet<Waveform> = new Set(['sin', 'square', 'saw', 'triangle', 'noise'])
@@ -45,34 +37,12 @@ function asObj(x: unknown): Record<string, unknown> | null {
 
 function compileOscillator(raw: unknown): OscillatorSpec | undefined {
   if (raw == null) return undefined
-  if (typeof raw === 'string') {
-    const wf = (RFC_WAVEFORM[raw] ?? raw) as Waveform
-    if (!WAVEFORMS.has(wf)) {
-      throw new InstrumentError(`Unknown oscillator waveform '${raw}'`)
-    }
-    return { waveform: wf }
-  }
-  const obj = asObj(raw)
-  if (!obj) throw new InstrumentError(`oscillator must be a string or mapping`)
-  const rawWf = String(obj.waveform)
-  const wf = (RFC_WAVEFORM[rawWf] ?? rawWf) as Waveform
-  if (!WAVEFORMS.has(wf)) {
-    throw new InstrumentError(`Unknown oscillator waveform '${String(obj.waveform)}'`)
-  }
+  if (typeof raw !== 'string') throw new InstrumentError(`O must be a waveform name string`)
+  const wf = (RFC_WAVEFORM[raw] ?? raw) as Waveform
+  if (!WAVEFORMS.has(wf)) throw new InstrumentError(`Unknown oscillator waveform '${raw}'`)
   return { waveform: wf }
 }
 
-function compileEnvelope(raw: unknown): EnvelopeSpec | undefined {
-  if (raw == null) return undefined
-  const obj = asObj(raw)
-  if (!obj) throw new InstrumentError(`envelope must be a mapping`)
-  return {
-    attack:       'attack'       in obj ? Number(obj.attack)       : DEFAULT_ENVELOPE.attack,
-    decay:        'decay'        in obj ? Number(obj.decay)        : undefined,
-    release:      'release'      in obj ? Number(obj.release)      : DEFAULT_ENVELOPE.release,
-    sustainLevel: 'sustainLevel' in obj ? Number(obj.sustainLevel) : DEFAULT_ENVELOPE.sustainLevel,
-  }
-}
 
 function compileRailsback(raw: unknown): RailsbackCurve | undefined {
   if (raw == null) return undefined
@@ -93,23 +63,6 @@ function compileRailsback(raw: unknown): RailsbackCurve | undefined {
   return { lowHz, highHz, curve }
 }
 
-function compilePartials(raw: unknown): PartialDef[] | undefined {
-  if (raw == null) return undefined
-  if (!Array.isArray(raw)) throw new InstrumentError(`partials must be a list`)
-  return raw.map((p, i) => {
-    const obj = asObj(p)
-    if (!obj) throw new InstrumentError(`partials[${i}] must be a mapping`)
-    const partial: PartialDef = {
-      freqMult: 'freqMult' in obj ? Number(obj.freqMult) : 1,
-      amp: 'amp' in obj ? Number(obj.amp) : 1,
-      oscillator: compileOscillator(obj.oscillator),
-      envelope: compileEnvelope(obj.envelope),
-    }
-    const fm = compileFM(obj.fm)
-    if (fm) partial.fm = fm
-    return partial
-  })
-}
 
 /**
  * S32130: PROFILE list → PartialDef[].
@@ -148,18 +101,17 @@ function parseRfcSustainLevel(s: string): number {
   return Math.min(1, Math.max(0, Number(last.slice(comma + 1)) / 100))
 }
 
-/**
- * Build an EnvelopeSpec from RFC character-block A/S/R shape strings.
- * Returns undefined when none are present (flat format falls through instead).
- */
-function compileRfcEnvelope(A: unknown, S: unknown, R: unknown): EnvelopeSpec | undefined {
-  if (A == null && S == null && R == null) return undefined
-  return {
+/** Build an EnvelopeSpec from RFC character-block A/S/T/R shape strings (§3.2.1.1.2–1.5). */
+function compileRfcEnvelope(A: unknown, S: unknown, T: unknown, R: unknown): EnvelopeSpec | undefined {
+  if (A == null && S == null && T == null && R == null) return undefined
+  const env: EnvelopeSpec = {
     attack:       A != null ? parseRfcDuration(String(A)) : DEFAULT_ENVELOPE.attack,
     decay:        S != null ? parseRfcDuration(String(S)) : 0,
     sustainLevel: S != null ? parseRfcSustainLevel(String(S)) : DEFAULT_ENVELOPE.sustainLevel,
     release:      R != null ? parseRfcDuration(String(R)) : DEFAULT_ENVELOPE.release,
   }
+  if (T != null) env.tail = parseRfcDuration(String(T))
+  return env
 }
 
 /** S32132: list of incremental cent deviations, or RESOLUTION:SHAPE string. */
@@ -352,20 +304,20 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
 
   const spec: InstrumentSpec = {}
   if ('amp' in obj) spec.amp = Number(obj.amp)
-  const osc = compileOscillator(root.O ?? obj.oscillator)
+  const osc = compileOscillator(root.O)
   if (osc) spec.oscillator = osc
-  const env = compileRfcEnvelope(root.A, root.S, root.R) ?? compileEnvelope(obj.envelope)
+  const env = compileRfcEnvelope(root.A, root.S, root.T, root.R)
   if (env) spec.envelope = env
-  const partials = compileProfile(root.PROFILE) ?? compilePartials(obj.partials)
+  const partials = compileProfile(root.PROFILE)
   if (partials) spec.partials = partials
-  const railsback = compileRailsback(obj.railsback)
+  const railsback = compileRailsback(root.RAILSBACK_CURVE)
   if (railsback) spec.railsback = railsback
 
-  const spread = compileSpread(root.SPREAD ?? obj.spread)
+  const spread = compileSpread(root.SPREAD)
   if (spread) spec.spread = spread
-  const timbre = compileTimbre(root.TIMBRE ?? obj.timbre)
+  const timbre = compileTimbre(root.TIMBRE)
   if (timbre) spec.timbre = timbre
-  const morph = compileMorph(root.MORPH ?? obj.morph)
+  const morph = compileMorph(root.MORPH)
   if (morph) spec.morph = morph
   const fm = compileFM(obj.fm)
   if (fm) spec.fm = fm

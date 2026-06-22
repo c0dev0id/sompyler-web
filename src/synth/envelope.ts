@@ -18,6 +18,8 @@ export interface EnvelopeSpec {
   release: number
   /** Sustain level in [0,1]; the level held between decay and release. */
   sustainLevel: number
+  /** Tail duration in seconds (RFC §3.2.1.1.4 T: segment). Parsed but not yet applied. */
+  tail?: number
 }
 
 export const DEFAULT_ENVELOPE: EnvelopeSpec = {
