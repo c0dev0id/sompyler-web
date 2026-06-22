@@ -12,14 +12,10 @@ export type { FreeverbBody }
  *   levels       — echo amplitude curve (per-echo, x = echo index).
  *   delays       — delay shape over echoes.
  *   border       — distance falloff curve applied at the IR head/tail.
- *   freq_lanes   — per-band EQ shapes (deferred — Phase 11 scope).
- *   deldiffs     — per-echo jitter (deferred).
- *   jitter       — amplitude jitter (deferred).
- *   diffusion    — convolution diffusor (deferred).
- *
- * levels, delays, border, jitter, and deldiffs are all implemented in
- * render/room.ts. freq_lanes and diffusion parse cleanly but produce no
- * audio effect — those remain deferred.
+ *   jitter       — per-tap amplitude variation (S33500); implemented.
+ *   deldiffs     — per-channel tap delay offsets in seconds (S33600); implemented.
+ *   freq_lanes   — per-band FFT EQ shapes (S33300); not yet implemented (needs FFT convolution).
+ *   diffusion    — convolution diffusor (S33700); not yet implemented.
  */
 
 export class RoomError extends SompylerError {}
