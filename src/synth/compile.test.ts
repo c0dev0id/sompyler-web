@@ -30,7 +30,8 @@ character:
     expect(spec.envelope).toMatchObject({ attack: 0.01, release: 0.3, sustainLevel: 0.7 })
     expect(spec.partials).toHaveLength(2)
     expect(spec.partials![0]).toMatchObject({ freqMult: 1, amp: 1.0 })
-    expect(spec.partials![1]).toMatchObject({ freqMult: 2, amp: 0.5 })
+    // V=50 → 10^(-5*(1-50/100)) = 10^-2.5 ≈ 0.003162 (RFC %dB scale)
+    expect(spec.partials![1]!.amp).toBeCloseTo(Math.pow(10, -2.5), 10)
   })
 
   it('rejects unknown waveform', async () => {

@@ -65,6 +65,14 @@ function compileRailsback(raw: unknown): RailsbackCurve | undefined {
 
 
 /**
+ * RFC "%dB" → linear amplitude. 100%dB = 0dBFS = 1.0, 0%dB = -100dBFS ≈ 0.
+ * Matches Python's log_to_linear(v/100) = 10^(-5*(1-v/100)) in sympartial.py.
+ */
+function percentDbToLinear(v: number): number {
+  return Math.pow(10, -5 * (1 - v / 100))
+}
+
+/**
  * S32130: PROFILE list → PartialDef[].
  * Simple form: [100, 72, 52, …] — REVERSED_DBFS amps (100=full, 0=silent).
  * Complex form: [{ V: 100, A: "shape" }, …] — V is REVERSED_DBFS; A (per-partial
@@ -74,10 +82,10 @@ function compileProfile(raw: unknown): PartialDef[] | undefined {
   if (raw == null) return undefined
   if (!Array.isArray(raw)) throw new InstrumentError(`PROFILE must be a list`)
   return raw.map((item, i) => {
-    if (typeof item === 'number') return { freqMult: i + 1, amp: item / 100 }
+    if (typeof item === 'number') return { freqMult: i + 1, amp: percentDbToLinear(item) }
     const obj = asObj(item)
     if (!obj || !('V' in obj)) throw new InstrumentError(`PROFILE[${i}] must be a number or {V:…}`)
-    return { freqMult: i + 1, amp: Number(obj.V) / 100 }
+    return { freqMult: i + 1, amp: percentDbToLinear(Number(obj.V)) }
   })
 }
 
