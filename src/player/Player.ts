@@ -28,6 +28,8 @@ export class Player {
   private pausedAt = 0
   private startedAt = 0
   private loopEnabled = true
+  private loopStart = 0   // seconds; 0 = beginning of buffer
+  private loopEnd = 0     // seconds; 0 = end of buffer (Web Audio API default)
   private state: TransportState = 'empty'
   private listeners = new Set<(s: TransportState) => void>()
 
@@ -49,11 +51,58 @@ export class Player {
 
   setLoop(enabled: boolean): void {
     this.loopEnabled = enabled
-    if (this.source) this.source.loop = enabled
+    if (this.source) {
+      this.source.loop = enabled
+      if (enabled) {
+        this.source.loopStart = this.loopStart
+        this.source.loopEnd = this.loopEnd
+      }
+    }
   }
 
   isLoopEnabled(): boolean {
     return this.loopEnabled
+  }
+
+  setLoopPoints(start: number, end: number): void {
+    const dur = this.buffer?.duration ?? Infinity
+    this.loopStart = Math.max(0, Math.min(start, dur))
+    this.loopEnd = end <= 0 ? 0 : Math.min(end, dur)
+    if (this.source) {
+      this.source.loopStart = this.loopStart
+      this.source.loopEnd = this.loopEnd
+    }
+  }
+
+  getLoopPoints(): { start: number; end: number } {
+    return { start: this.loopStart, end: this.loopEnd }
+  }
+
+  getDuration(): number {
+    return this.buffer?.duration ?? 0
+  }
+
+  getPosition(): number {
+    if (!this.buffer) return 0
+    if (this.state !== 'playing' || !this.ctx) return this.pausedAt
+    const elapsed = this.ctx.currentTime - this.startedAt
+    if (elapsed === 0) return this.pausedAt
+    if (this.loopEnabled) {
+      const end = this.loopEnd > 0 ? this.loopEnd : this.buffer.duration
+      const len = end - this.loopStart
+      if (len <= 0) return this.loopStart
+      return this.loopStart + ((this.pausedAt - this.loopStart + elapsed) % len)
+    }
+    return Math.min(this.pausedAt + elapsed, this.buffer.duration)
+  }
+
+  seek(t: number): void {
+    if (!this.buffer) return
+    const clamped = Math.max(0, Math.min(t, this.buffer.duration))
+    const wasPlaying = this.state === 'playing'
+    if (wasPlaying) this.stopSource()
+    this.pausedAt = clamped
+    if (wasPlaying) this.startSource(this.pausedAt)
   }
 
   /** Lazily build the AudioContext on first use (gesture-driven). */
@@ -78,6 +127,10 @@ export class Player {
     const buf = ctx.createBuffer(2, mix.lengthSamples, mix.sampleRate)
     buf.getChannelData(0).set(mix.left)
     buf.getChannelData(1).set(mix.right)
+    // Clamp loop points to the new duration; preserve them across renders.
+    const dur = buf.duration
+    if (this.loopEnd > 0) this.loopEnd = Math.min(this.loopEnd, dur)
+    this.loopStart = Math.max(0, Math.min(this.loopStart, (this.loopEnd > 0 ? this.loopEnd : dur) - 0.01))
     const wasPlaying = this.state === 'playing'
     this.stopSource()
     this.buffer = buf
@@ -114,7 +167,11 @@ export class Player {
     if (this.state !== 'playing' || !this.ctx) return
     const elapsed = this.ctx.currentTime - this.startedAt
     if (this.loopEnabled && this.buffer) {
-      this.pausedAt = (this.pausedAt + elapsed) % this.buffer.duration
+      const end = this.loopEnd > 0 ? this.loopEnd : this.buffer.duration
+      const len = end - this.loopStart
+      this.pausedAt = len > 0
+        ? this.loopStart + ((this.pausedAt - this.loopStart + elapsed) % len)
+        : this.loopStart
     } else {
       this.pausedAt = Math.min(this.pausedAt + elapsed, this.buffer?.duration ?? 0)
     }
@@ -133,6 +190,8 @@ export class Player {
     const node = this.ctx.createBufferSource()
     node.buffer = this.buffer
     node.loop = this.loopEnabled
+    node.loopStart = this.loopStart
+    node.loopEnd = this.loopEnd
     node.connect(this.analyser ?? this.ctx.destination)
     node.start(0, offset)
     node.onended = () => {

@@ -5,6 +5,8 @@ import type { MixResult } from '../render/mix'
 class FakeBufferSource {
   buffer: AudioBuffer | null = null
   loop = false
+  loopStart = 0
+  loopEnd = 0
   onended: (() => void) | null = null
   start = vi.fn()
   stop = vi.fn()
@@ -131,5 +133,66 @@ describe('Player', () => {
     p.loadBuffer(makeMix())
     p.clearBuffer()
     expect(p.getState()).toBe('empty')
+  })
+
+  it('getDuration returns 0 when empty and buffer duration when loaded', () => {
+    const ctx = new FakeAudioContext()
+    const p = new Player(() => ctx as unknown as AudioContext)
+    expect(p.getDuration()).toBe(0)
+    p.loadBuffer(makeMix(44100))   // 1 s at 44100 Hz
+    expect(p.getDuration()).toBeCloseTo(1, 4)
+  })
+
+  it('getPosition returns 0 when not playing', () => {
+    const ctx = new FakeAudioContext()
+    const p = new Player(() => ctx as unknown as AudioContext)
+    p.loadBuffer(makeMix(44100))
+    expect(p.getPosition()).toBe(0)
+  })
+
+  it('seek clamps to buffer bounds and resumes if playing', () => {
+    const ctx = new FakeAudioContext()
+    const p = new Player(() => ctx as unknown as AudioContext)
+    p.loadBuffer(makeMix(44100))
+    p.seek(0.5)
+    expect(p.getPosition()).toBeCloseTo(0.5, 4)
+    p.play()
+    p.seek(0.25)
+    expect(p.getPosition()).toBeCloseTo(0.25, 4)
+    expect(p.getState()).toBe('playing')
+    p.seek(999)   // past end — clamps
+    expect(p.getPosition()).toBeCloseTo(1, 4)
+  })
+
+  it('setLoopPoints applies to source immediately', () => {
+    const ctx = new FakeAudioContext()
+    const p = new Player(() => ctx as unknown as AudioContext)
+    p.loadBuffer(makeMix(44100))
+    p.play()
+    p.setLoopPoints(0.2, 0.8)
+    expect(ctx.lastSource?.loopStart).toBeCloseTo(0.2, 4)
+    expect(ctx.lastSource?.loopEnd).toBeCloseTo(0.8, 4)
+    expect(p.getLoopPoints()).toEqual({ start: 0.2, end: 0.8 })
+  })
+
+  it('loop points survive a buffer swap clamped to new duration', () => {
+    const ctx = new FakeAudioContext()
+    const p = new Player(() => ctx as unknown as AudioContext)
+    p.loadBuffer(makeMix(44100 * 10))   // 10 s
+    p.setLoopPoints(3, 8)
+    p.loadBuffer(makeMix(44100 * 5))    // new buffer is 5 s
+    const pts = p.getLoopPoints()
+    expect(pts.start).toBeCloseTo(3, 4)
+    expect(pts.end).toBeCloseTo(5, 1)   // clamped to new duration
+  })
+
+  it('startSource propagates loopStart/loopEnd to the new source node', () => {
+    const ctx = new FakeAudioContext()
+    const p = new Player(() => ctx as unknown as AudioContext)
+    p.loadBuffer(makeMix(44100))
+    p.setLoopPoints(0.1, 0.9)
+    p.play()
+    expect(ctx.lastSource?.loopStart).toBeCloseTo(0.1, 4)
+    expect(ctx.lastSource?.loopEnd).toBeCloseTo(0.9, 4)
   })
 })
