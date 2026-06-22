@@ -211,6 +211,20 @@ html, body, #root {
   font-style: italic;
 }
 
+.tree-dep-missing .filename {
+  color: #555;
+  font-style: italic;
+}
+
+.tree-dep-missing .actions button {
+  color: #555;
+  font-size: 11px;
+}
+
+.tree-dep-missing .actions button:hover:not(:disabled) {
+  color: #aaa;
+}
+
 .staging-footer {
   padding: 0.5rem;
   border-top: 1px solid #2a2a2a;

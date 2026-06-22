@@ -80,12 +80,20 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
     const claimedIds = new Set<string>()
     const groups = scores.map((score) => {
       const refs = getScoreRefs(score.body)
-      const deps = nonScores.filter((f) => {
-        const ext = f.ext as 'spli' | 'splr' | 'splt'
-        return refs[ext]?.has(f.name)
-      })
-      deps.forEach((d) => claimedIds.add(d.id))
-      return { score, deps }
+      const deps: StoredFile[] = []
+      const missing: Array<{ name: string; ext: 'spli' | 'splr' | 'splt' }> = []
+      for (const [ext, names] of Object.entries(refs) as Array<['spli' | 'splr' | 'splt', Set<string>]>) {
+        for (const name of names) {
+          const found = nonScores.find((f) => f.ext === ext && f.name === name)
+          if (found) {
+            deps.push(found)
+            claimedIds.add(found.id)
+          } else {
+            missing.push({ name, ext })
+          }
+        }
+      }
+      return { score, deps, missing }
     })
     const unreferenced = nonScores.filter((f) => !claimedIds.has(f.id))
     return { groups, unreferenced }
@@ -144,6 +152,13 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
     if (props.mutationsDisabled) return
     if (f.inProject && !confirm(`Delete in-project file '${f.id}'?`)) return
     await deleteFile(f.name, f.ext)
+    await refresh()
+    props.onChange()
+  }
+
+  async function handleCreateMissing(name: string, ext: FileExtension, score: StoredFile) {
+    if (props.mutationsDisabled) return
+    await putFile({ name, ext, body: '', inProject: score.inProject })
     await refresh()
     props.onChange()
   }
@@ -246,14 +261,14 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
         <div class="staging-body">
           <ul class="staging-tree">
             <For each={grouped().groups}>
-              {({ score, deps }) => (
+              {({ score, deps, missing }) => (
                 <li class={`tree-score${score.inProject ? ' in-project' : ''}`}>
                   <div class="tree-row">
                     <button
                       class={`tree-toggle${expanded().has(score.id) ? ' open' : ''}`}
                       onClick={() => toggleExpanded(score.id)}
-                      disabled={deps.length === 0}
-                      title={deps.length === 0 ? 'No referenced files' : (expanded().has(score.id) ? 'Collapse' : 'Expand')}
+                      disabled={deps.length === 0 && missing.length === 0}
+                      title={deps.length === 0 && missing.length === 0 ? 'No referenced files' : (expanded().has(score.id) ? 'Collapse' : 'Expand')}
                     >▶</button>
                     <span class="filename">{score.name}.{score.ext}</span>
                     <div class="actions">
@@ -276,7 +291,7 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
                       >✕</button>
                     </div>
                   </div>
-                  <Show when={expanded().has(score.id) && deps.length > 0}>
+                  <Show when={expanded().has(score.id) && (deps.length > 0 || missing.length > 0)}>
                     <ul class="tree-deps">
                       <For each={deps}>
                         {(f) => (
@@ -300,6 +315,20 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
                                 disabled={props.mutationsDisabled}
                                 title="Delete"
                               >✕</button>
+                            </div>
+                          </li>
+                        )}
+                      </For>
+                      <For each={missing}>
+                        {(ghost) => (
+                          <li class="tree-dep tree-dep-missing">
+                            <span class="filename">{ghost.name}.{ghost.ext}</span>
+                            <div class="actions">
+                              <button
+                                onClick={() => void handleCreateMissing(ghost.name, ghost.ext, score)}
+                                disabled={props.mutationsDisabled}
+                                title="Create empty file"
+                              >Create</button>
                             </div>
                           </li>
                         )}
