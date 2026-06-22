@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `tones:` block support in `.splt` tuning files: maps arbitrary note names to semitone positions within an octave, extending (not replacing) the default Anglo-Saxon note table. Enables German notation (`H`, `Cis`, `Dis`, `B`) and other regional naming conventions. Tone name regex widened to accept multi-letter names.
+
+- Per-partial envelope overrides in `PROFILE` entries: complex entries `{V, A, S, T, R, D}` now apply per-partial envelope phases that override (not replace) the root instrument envelope per phase. Missing phases inherit from the root.
+
+- `D:` (deviance) in `PROFILE` entries: sets a per-partial frequency offset in cents from the harmonic series (RFC §S32130). Applied as a separate multiplier after spread, preserving integer `freqMult` indices required by the spread model.
+
+- `T:` (tail) envelope segment fully implemented (RFC §3.2.1.1.4): a shape applied between sustain and release, evaluated via the bezier kernel. The tail's final amplitude level becomes the release start level rather than `sustainLevel`.
+
+- `VOLUMES:` per-partial base amplitudes (RFC §S32131): a list or `RESOLUTION:SHAPE` string of REVERSED_DBFS values. `PROFILE.V` is additive on top (`effective = V + VOLUMES[i]`). VOLUMES entries beyond the PROFILE length create implicit partials.
+
 ### Changed
 
 - `fm:`, `lfo:`, `vcf:`, and `amp:` instrument keys moved inside the `character:` block as uppercase strings, matching the RFC's character-block naming convention. New syntax:
