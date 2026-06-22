@@ -43,7 +43,7 @@ export const DEFAULT_TUNER_CONFIG: TunerConfig = {
   tones: ANGLOSAX_TONES,
 }
 
-const TONE_SPEC_RX = /^([A-Ga-g][#b]?)(-?\d+)?((?:[+-]\d+[a-z])*)$/
+const TONE_SPEC_RX = /^([A-Za-z][A-Za-z#]*)(-?\d+)?((?:[+-]\d+[a-z])*)$/
 
 interface ParsedToneSpec {
   toneName: string
@@ -136,11 +136,9 @@ export function makeScale(
  * Parse a YAML-form `.splt` body into tuner config + named scales.
  * Recognised top-level keys:
  *   - `basics:` → `ref_frequency`, `ref_octave_number`, `ref_octave_offset`, `tones_per_octave`
+ *   - `tones:` → mapping of note-name → semitone position within an octave (extends defaults)
  *   - `scales:` → mapping of name → space-separated step string or `[2, 2, 1, …]` list.
  *   - `default_scale:` → name of one of the scales (becomes the active scale).
- *
- * The richer INI-style RFC §S45000 surface (intervals as `15:1`, alt
- * tone-name tables, chord patterns) lands once a consumer needs it.
  */
 export function parseTuning(body: string): ParsedTuning {
   const doc = jsyaml.load(body) as Record<string, unknown> | null
@@ -156,8 +154,22 @@ export function parseTuning(body: string): ParsedTuning {
     if ('ref_octave_offset' in b) config.refOctaveOffset = Number(b.ref_octave_offset)
     if ('tones_per_octave' in b) config.tonesPerOctave = Number(b.tones_per_octave)
   }
-  const scales: Record<string, Scale> = {}
   const tonesPerOctave = config.tonesPerOctave ?? DEFAULT_TONES_PER_OCTAVE
+  const tonesBlock = doc.tones
+  if (tonesBlock && typeof tonesBlock === 'object' && !Array.isArray(tonesBlock)) {
+    const customTones: Record<string, number> = {}
+    for (const [name, raw] of Object.entries(tonesBlock as Record<string, unknown>)) {
+      const n = Number(raw)
+      if (!Number.isFinite(n) || n < 0 || n >= tonesPerOctave) {
+        throw new TuningError(
+          `Tone '${name}' must be a semitone position in [0, ${tonesPerOctave})`,
+        )
+      }
+      customTones[name] = n
+    }
+    config.tones = customTones
+  }
+  const scales: Record<string, Scale> = {}
   const scalesBlock = doc.scales
   if (scalesBlock && typeof scalesBlock === 'object') {
     for (const [name, raw] of Object.entries(scalesBlock as Record<string, unknown>)) {
@@ -194,7 +206,10 @@ export class Tuner {
   readonly config: TunerConfig
 
   constructor(config: Partial<TunerConfig> = {}) {
-    this.config = { ...DEFAULT_TUNER_CONFIG, ...config }
+    const tones = config.tones
+      ? { ...DEFAULT_TUNER_CONFIG.tones, ...config.tones }
+      : DEFAULT_TUNER_CONFIG.tones
+    this.config = { ...DEFAULT_TUNER_CONFIG, ...config, tones }
   }
 
   /**

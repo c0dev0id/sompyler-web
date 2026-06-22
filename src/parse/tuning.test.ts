@@ -165,6 +165,40 @@ default_scale: major
     expect(t.defaultScaleName).toBe('major')
   })
 
+  it('parses custom tones and merges with Anglo-Saxon defaults', () => {
+    const t = parseTuning(`
+tones:
+  H: 11
+  B: 10
+  Cis: 1
+  Dis: 3
+`)
+    const tuner = new Tuner(t.config)
+    // H = pos 11 (natural B); Cb4 is also pos 11 in ANGLOSAX_TONES (not overridden)
+    expect(tuner.frequencyOfTone('H4')).toBeCloseTo(tuner.frequencyOfTone('Cb4'), 5)
+    // B is overridden to pos 10 → same as Bb
+    expect(tuner.frequencyOfTone('B4')).toBeCloseTo(tuner.frequencyOfTone('Bb4'), 5)
+    // Default Anglo-Saxon names still work
+    expect(tuner.frequencyOfTone('C4')).toBeCloseTo(261.626, 0)
+  })
+
+  it('rejects a tone position outside [0, tonesPerOctave)', () => {
+    expect(() =>
+      parseTuning(`
+tones:
+  X: 12
+`),
+    ).toThrow(/semitone position/)
+  })
+
+  it('Tuner merges custom tones with defaults, not replaces', () => {
+    const tuner = new Tuner({ tones: { H: 11 } })
+    // Custom tone available
+    expect(tuner.frequencyOfTone('H4')).toBeCloseTo(tuner.frequencyOfTone('B4'), 5)
+    // Default tones still present
+    expect(tuner.frequencyOfTone('C4')).toBeCloseTo(261.626, 0)
+  })
+
   it('rejects an unknown default_scale name', () => {
     expect(() =>
       parseTuning(`
