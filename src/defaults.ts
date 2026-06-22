@@ -397,9 +397,9 @@ piano:
 // Rich string instruments — violin and cello sympartial stacks.
 // =====================================================================
 const VIOLIN = `# Violin: bright sawtooth-like timbre with strong odd harmonics.
-amp: 0.35
 character:
   O: sine
+  AMP: 0.35
   A: "0.05:1,100"
   S: "0.001:100;1,85"
   R: "0.25:100;1,0"
@@ -407,9 +407,9 @@ character:
 `
 
 const CELLO = `# Cello: deeper, slower attack; favours lower partials, gentler decay.
-amp: 0.45
 character:
   O: sine
+  AMP: 0.45
   A: "0.08:1,100"
   S: "0.001:100;1,80"
   R: "0.5:100;1,0"
@@ -421,9 +421,9 @@ character:
 // up to +0.02 octaves at C8 (≈+24 cents). Mild but audible.
 const PIANO = `# Piano: hammered-string approximation. Decaying sustain with rich
 # upper partials, mild S32136 railsback inharmonicity.
-amp: 0.5
 character:
   O: sine
+  AMP: 0.5
   A: "0.005:1,100"
   S: "0.001:100;1,55"
   R: "0.6:100;1,0"
@@ -442,18 +442,18 @@ delays: "120:0;30,40;120,80"
 border: "120:0;120,100"
 `
 
-const STARTER_PIANO = `amp: 0.5
-character:
+const STARTER_PIANO = `character:
   O: sine
+  AMP: 0.5
   A: "0.005:1,100"
   S: "0.001:100;1,70"
   R: "0.4:100;1,0"
   PROFILE: [100, 50, 25, 12]
 `
 
-const STARTER_FLUTE = `amp: 0.4
-character:
+const STARTER_FLUTE = `character:
   O: triangle
+  AMP: 0.4
   A: "0.05:1,100"
   S: "0.001:100;1,90"
   R: "0.2:100;1,0"
@@ -466,17 +466,13 @@ character:
 // Shape "100:1;0.1,0;1,0": depth decays 1→0 over the first 10% then stays 0.
 export const STARTER_KICK = `# dev/kick.spli — FM kick drum with pitch sweep.
 # Score at C1 (32.7 Hz). Carrier sweeps C3 → C1 in first ~50 ms of a 500 ms note.
-amp: 0.90
 character:
   O: sine
+  AMP: 0.90
   A: "0.002:1,100"
   S: "0.001:100;1,100"
   R: "0.3:100;1,0"
-fm:
-  freq_hz: 1
-  depth: 3
-  init_phase: 0.25
-  depth_env: "100:1;0.1,0;1,0"
+  FM: "1[100:1;0.1,0;1,0];3+90"
 `
 
 // Subset port of lib/tones_euro_de+en.splt — basics block (Tuner.config) plus
@@ -536,25 +532,21 @@ pre_delay_ms: 10
 `
 
 const OXYGENE_KICK = `# oxygene-kick.spli — FM kick drum with pitch sweep.
-# Score at C1 (32.7 Hz). FM init_phase=0.25 starts modulator at peak,
+# Score at C1 (32.7 Hz). FM +90 starts modulator at peak,
 # sweeping carrier from ~4× base down to base in first ~50 ms.
-amp: 0.85
 character:
   O: sine
+  AMP: 0.85
   A: "0.002:1,100"
   S: "0.001:100;1,100"
   R: "0.28:100;1,0"
-fm:
-  freq_hz: 1
-  depth: 3
-  init_phase: 0.25
-  depth_env: "100:1;0.1,0;1,0"
+  FM: "1[100:1;0.1,0;1,0];3+90"
 `
 
 const OXYGENE_BASS = `# bass: Fretless Bass (GM36 / TimGM6mb), C2. Partials from TiMidity sustain FFT.
 # H2 strong (-3.5 dB), H4 > H3, H5 strong (classic bass string characteristic).
-amp: 0.70
 character:
+  AMP: 0.70
   O: sine
   A: "0.008:1,100"
   S: "0.04:100;1,80"
@@ -573,9 +565,9 @@ const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM108 / TimGM6mb). Pure sine sustai
 # window, so any release > note_length eats the sustain. With release=0.50 and
 # 1-tick notes (163ms) the sustain phase is 2ms — effectively no sustain.
 # The ring tail comes from damp=2 in the score (326ms at 369 ticks/min).
-amp: 0.45
 character:
   O: sine
+  AMP: 0.45
   A: "0.004:1,100"
   S: "0.40:100;1,10"
   R: "0.01:100;1,0"
@@ -585,9 +577,9 @@ character:
 const OXYGENE_SYNBRASS = `# synbrass: SynBrass 2 (GM64 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
 # TiMidity patch peaks at 1.95s (very slow swell). We use a fast attack for
 # the melodic role in the score — Jarre's synth hits crisply on the beat.
-amp: 0.20
 character:
   O: sine
+  AMP: 0.20
   A: "0.02:1,100"
   S: "0.001:100;1,75"
   R: "0.40:100;1,0"
@@ -596,9 +588,9 @@ character:
 
 const OXYGENE_STRINGS = `# strings: SynString 2 (GM52 / TimGM6mb), C3. Partials from TiMidity sustain FFT.
 # TiMidity peak at 1.45s (slow attack). H4 stronger than H2 or H3 (body resonance).
-amp: 0.12
 character:
   O: sine
+  AMP: 0.12
   A: "0.35:1,100"
   S: "0.001:100;1,88"
   R: "1.20:100;1,0"
@@ -608,9 +600,9 @@ character:
 const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
 # H8/H9/H11 show a late-harmonic hump (choir/ensemble roughness character).
 # Plays the same melodic figure as synbrass — attack shortened to not drag the beat.
-amp: 0.10
 character:
   O: sine
+  AMP: 0.10
   A: "0.08:1,100"
   S: "0.001:100;1,85"
   R: "1.50:100;1,0"
@@ -619,25 +611,21 @@ character:
 
 const OXYGENE_BOWEDPAD = `# bowedpad: Pad 5 Bowed (GM93 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
 # H4 ≈ H1 in amplitude (0.990) — defining feature of this pad. H11 hump at 0.116.
-amp: 0.08
 character:
   O: sine
+  AMP: 0.08
   A: "0.80:1,100"
   S: "0.001:100;1,90"
   R: "2.00:100;1,0"
   PROFILE: [100, 27, 22.2, 99, 14.6, 6.3, 7.5, 6.9, 5.7, 6, 11.6, 3, 3.2, 2.8, 3.2, 2.2, 2.3, 3.6, 2.3, 1.9, 1.5, 1.3, 1.1, 1]
-lfo:
-  rate_hz: 0.18
-  depth: 0.08
-  target: amp
-  waveform: sin
+  LFO: "0.18@sin;0.08:amp"
 `
 
 const OXYGENE_MELODY = `# melody: Nylon Guitar (GM25 / TimGM6mb), G3. Partials from TiMidity sustain FFT.
 # Irregular guitar-like spectrum: H2/H3 strong, H4 nearly absent, H6/H7 re-emerge.
-amp: 0.55
 character:
   O: sine
+  AMP: 0.55
   A: "0.004:1,100"
   S: "0.15:100;1,55"
   R: "0.70:100;1,0"
@@ -647,9 +635,9 @@ character:
 const OXYGENE_TAMBOURINE = `# tambourine: Tambourine (GM54 / TimGM6mb), note 54. Noise instrument.
 # TiMidity: centroid=10973 Hz, rolloff95=12971 Hz. Very bright, instant onset.
 # Envelope: peak at 0s, -40 dB at 0.15s. Total duration 1.19s.
-amp: 0.35
 character:
   O: noise
+  AMP: 0.35
   A: "0.001:1,100"
   S: "0.06:100;1,20"
   R: "0.08:100;1,0"
@@ -658,9 +646,9 @@ character:
 const OXYGENE_SEASHORE = `# seashore: Sea Shore (GM123 / TimGM6mb), C4. Noise instrument.
 # TiMidity: centroid=1271 Hz, rolloff95=2600 Hz. Low-frequency filtered noise.
 # Envelope: peak at 0.75s, -40 dB at 9.95s (11s total).
-amp: 0.06
 character:
   O: noise
+  AMP: 0.06
   A: "2.00:1,100"
   S: "0.001:100;1,70"
   R: "3.00:100;1,0"
@@ -3734,7 +3722,7 @@ stage:
 ---
 # ── Measure 1 ─────────────────────────────────────────────────────────────
 _meta:
-    beats_per_minute: 115
+    beats_per_minute: 94
     stress_pattern: "2,1,0;4"
     upper_stress_bound: 100
     lower_stress_bound: 96

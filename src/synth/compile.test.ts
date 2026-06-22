@@ -17,9 +17,9 @@ describe('compileInstrument', () => {
   it('compiles PROFILE + envelope + amp via character block', async () => {
     const i = await loadInstrument(
       'dev/piano',
-      `amp: 0.5
-character:
+      `character:
   O: sine
+  AMP: 0.5
   A: "0.01:1,100"
   S: "0.0:100;1,70"
   R: "0.3:100;1,0"
@@ -91,36 +91,32 @@ character:
     expect(() => compileInstrument(i)).toThrow(/railsback bounds invalid/)
   })
 
-  it('compiles top-level fm spec (non-RFC extension)', async () => {
+  it('compiles FM: string in character block', async () => {
     const i = await loadInstrument(
       'dev/kick',
       `character:
   O: sine
   A: "0.002:1,100"
   R: "0.3:100;1,0"
-fm:
-  freq_hz: 1
-  depth: 3
-  init_phase: 0.25
-  depth_env: "100:1;1,0"
+  FM: "1[100:1;1,0];3+90"
 `,
     )
     const spec = compileInstrument(i)
     expect(spec.fm).toBeTruthy()
     expect(spec.fm!.freqHz).toBe(1)
     expect(spec.fm!.depth).toBe(3)
-    expect(spec.fm!.initPhase).toBe(0.25)
+    expect(spec.fm!.initPhase).toBeCloseTo(0.25, 5)
     expect(spec.fm!.depthEnv).toBe('100:1;1,0')
   })
 
-  it('rejects fm with missing freq_hz', async () => {
-    const i = await loadInstrument('bad', 'fm:\n  depth: 1')
-    expect(() => compileInstrument(i)).toThrow(/freq_hz/)
+  it('rejects FM: with invalid syntax', async () => {
+    const i = await loadInstrument('bad', 'character:\n  O: sine\n  FM: "notvalid"')
+    expect(() => compileInstrument(i)).toThrow(/FM/)
   })
 
-  it('rejects fm with negative depth', async () => {
-    const i = await loadInstrument('bad', 'fm:\n  freq_hz: 1\n  depth: -1')
-    expect(() => compileInstrument(i)).toThrow(/depth/)
+  it('rejects FM: with invalid syntax when depth is negative', async () => {
+    const i = await loadInstrument('bad', 'character:\n  O: sine\n  FM: "1;-1"')
+    expect(() => compileInstrument(i)).toThrow(/FM/)
   })
 
   it('rejects a character block with circular label refs (S32122)', async () => {

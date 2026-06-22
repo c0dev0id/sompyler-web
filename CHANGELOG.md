@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `fm:`, `lfo:`, `vcf:`, and `amp:` instrument keys moved inside the `character:` block as uppercase strings, matching the RFC's character-block naming convention. New syntax:
+  - `AMP: 0.35` — linear output scalar (replaces top-level `amp:`)
+  - `FM: "FREQ[@OSC][SHAPE];DEPTH[+PHASE_DEG]"` — RFC §S32117 string (replaces `fm:` mapping)
+  - `LFO: "RATE[@OSC][DELAY];DEPTH:TARGET"` — compact string (replaces `lfo:` mapping)
+  - `VCF: "CUTOFF;RESONANCE[;ENV_AMOUNT[;ATTACK[;RELEASE]]]"` — compact string (replaces `vcf:` mapping)
+  - All 16 built-in instruments and both kick drum variants updated accordingly.
+
 ### Fixed
 
 - `PROFILE` partial amplitudes now use the RFC `%dB` logarithmic scale (`10^(-5*(1-V/100))`), matching Python's `log_to_linear` in `sympartial.py`. The previous linear conversion (`V/100`) made upper harmonics up to 3000× too loud relative to the fundamental — at V=3 the error was a factor of ~2100×.

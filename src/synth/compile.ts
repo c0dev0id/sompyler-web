@@ -153,109 +153,98 @@ function compileTimbre(raw: unknown): string | undefined {
 }
 
 /**
- * Compile fm: { freq_hz, depth, waveform?, dynamic?, init_phase?, depth_env? }
- * into FMSpec. Snake_case keys match the YAML convention used in .spli files.
+ * FM: "FREQ["f"/"F"]["@"OSC]["["SHAPE"]"]";"DEPTH["+"INIT_DEG]"
+ * RFC §S32117. FREQ in Hz (suffix "f"/"F" for dynamic). DEPTH is the peak
+ * frequency-deviation ratio. INIT_DEG is modulator start phase in degrees.
  */
+const FM_RX = /^([\d.]+)([fF])?(?:@(\w+))?(?:\[([^\]]+)\])?;([\d.]+)(?:\+(\d+))?$/
+
 function compileFM(raw: unknown): FMSpec | undefined {
   if (raw == null) return undefined
-  const obj = asObj(raw)
-  if (!obj) throw new InstrumentError(`fm must be a mapping`)
-  const freqHz = Number(obj.freq_hz)
-  if (!Number.isFinite(freqHz) || freqHz <= 0) {
-    throw new InstrumentError(`fm.freq_hz must be a positive number`)
-  }
-  const depth = Number(obj.depth)
-  if (!Number.isFinite(depth) || depth < 0) {
-    throw new InstrumentError(`fm.depth must be a non-negative number`)
-  }
+  if (typeof raw !== 'string') throw new InstrumentError(`FM must be a string`)
+  const m = FM_RX.exec(raw.trim())
+  if (!m) throw new InstrumentError(`FM: invalid syntax — expected "FREQ[@OSC][SHAPE];DEPTH[+PHASE_DEG]"`)
+  const freqHz = parseFloat(m[1]!)
+  if (!Number.isFinite(freqHz) || freqHz <= 0) throw new InstrumentError(`FM: frequency must be positive`)
+  const depth = parseFloat(m[5]!)
+  if (!Number.isFinite(depth) || depth < 0) throw new InstrumentError(`FM: depth must be non-negative`)
   const spec: FMSpec = { freqHz, depth }
-  if (obj.waveform != null) {
-    const wf = String(obj.waveform)
-    if (!WAVEFORMS.has(wf as Waveform)) throw new InstrumentError(`fm.waveform '${wf}' is unknown`)
-    spec.waveform = wf as Waveform
+  if (m[2]) spec.dynamic = true
+  if (m[3]) {
+    const wf = m[3] as Waveform
+    if (!WAVEFORMS.has(wf)) throw new InstrumentError(`FM: unknown waveform '${m[3]}'`)
+    spec.waveform = wf
   }
-  if (obj.dynamic != null) spec.dynamic = Boolean(obj.dynamic)
-  if (obj.init_phase != null) {
-    const ip = Number(obj.init_phase)
-    if (!Number.isFinite(ip)) throw new InstrumentError(`fm.init_phase must be a number`)
-    spec.initPhase = ip
-  }
-  if (obj.depth_env != null) {
-    if (typeof obj.depth_env !== 'string') throw new InstrumentError(`fm.depth_env must be a Shape string`)
-    spec.depthEnv = obj.depth_env
-  }
+  if (m[4]) spec.depthEnv = m[4]
+  if (m[6]) spec.initPhase = parseInt(m[6], 10) / 360
   return spec
 }
 
+/**
+ * VCF: "CUTOFF_HZ;RESONANCE[;ENV_AMOUNT[;ENV_ATTACK_S[;ENV_RELEASE_S]]]"
+ */
 function compileVCF(raw: unknown): VCFSpec | undefined {
   if (raw == null) return undefined
-  const obj = asObj(raw)
-  if (!obj) throw new InstrumentError(`vcf must be a mapping`)
-  const cutoffHz = Number(obj.cutoff_hz)
-  if (!Number.isFinite(cutoffHz) || cutoffHz <= 0) {
-    throw new InstrumentError(`vcf.cutoff_hz must be a positive number`)
-  }
-  const resonance = Number(obj.resonance)
-  if (!Number.isFinite(resonance) || resonance < 0 || resonance > 1) {
-    throw new InstrumentError(`vcf.resonance must be a number in [0, 1]`)
-  }
+  if (typeof raw !== 'string') throw new InstrumentError(`VCF must be a string`)
+  const parts = raw.trim().split(';')
+  const cutoffHz = Number(parts[0])
+  if (!Number.isFinite(cutoffHz) || cutoffHz <= 0) throw new InstrumentError(`VCF: cutoff must be a positive Hz value`)
+  const resonance = Number(parts[1])
+  if (!Number.isFinite(resonance) || resonance < 0 || resonance > 1) throw new InstrumentError(`VCF: resonance must be in [0, 1]`)
   const spec: VCFSpec = { cutoffHz, resonance }
-  if (obj.env_amount != null) {
-    const v = Number(obj.env_amount)
-    if (!Number.isFinite(v)) throw new InstrumentError(`vcf.env_amount must be a number`)
+  if (parts[2] != null && parts[2] !== '') {
+    const v = Number(parts[2])
+    if (!Number.isFinite(v)) throw new InstrumentError(`VCF: env_amount must be a number`)
     spec.envAmount = v
   }
-  if (obj.env_attack != null) {
-    const v = Number(obj.env_attack)
-    if (!Number.isFinite(v) || v < 0) throw new InstrumentError(`vcf.env_attack must be a non-negative number`)
+  if (parts[3] != null && parts[3] !== '') {
+    const v = Number(parts[3])
+    if (!Number.isFinite(v) || v < 0) throw new InstrumentError(`VCF: env_attack must be non-negative`)
     spec.envAttack = v
   }
-  if (obj.env_release != null) {
-    const v = Number(obj.env_release)
-    if (!Number.isFinite(v) || v < 0) throw new InstrumentError(`vcf.env_release must be a non-negative number`)
+  if (parts[4] != null && parts[4] !== '') {
+    const v = Number(parts[4])
+    if (!Number.isFinite(v) || v < 0) throw new InstrumentError(`VCF: env_release must be non-negative`)
     spec.envRelease = v
   }
   return spec
 }
 
-function compileLFOEntry(raw: unknown): LFOSpec {
-  const obj = asObj(raw)
-  if (!obj) throw new InstrumentError(`lfo entry must be a mapping`)
-  const rateHz = Number(obj.rate_hz)
-  if (!Number.isFinite(rateHz) || rateHz <= 0) {
-    throw new InstrumentError(`lfo.rate_hz must be a positive number`)
+/**
+ * LFO: "RATE_HZ["@"OSC]["["DELAY_S"]"]";"DEPTH":"TARGET["+"PHASE_DEG]"
+ * or a list of such strings for multiple LFOs.
+ */
+const LFO_RX = /^([\d.]+)(?:@(\w+))?(?:\[([\d.]+)\])?;([\d.]+):(amp|vcf)(?:\+(\d+))?$/
+
+function compileLFOEntry(raw: string): LFOSpec {
+  const m = LFO_RX.exec(raw.trim())
+  if (!m) throw new InstrumentError(`LFO: invalid syntax — expected "RATE[@OSC][DELAY];DEPTH:TARGET"`)
+  const rateHz = parseFloat(m[1]!)
+  if (!Number.isFinite(rateHz) || rateHz <= 0) throw new InstrumentError(`LFO: rate must be positive`)
+  const depth = parseFloat(m[4]!)
+  if (!Number.isFinite(depth)) throw new InstrumentError(`LFO: depth must be a number`)
+  const target = m[5] as 'amp' | 'vcf'
+  const spec: LFOSpec = { rateHz, depth, target }
+  if (m[2]) {
+    const wf = m[2] as Waveform
+    if (!WAVEFORMS.has(wf)) throw new InstrumentError(`LFO: unknown waveform '${m[2]}'`)
+    spec.waveform = wf
   }
-  const depth = Number(obj.depth)
-  if (!Number.isFinite(depth)) throw new InstrumentError(`lfo.depth must be a number`)
-  const targetRaw = String(obj.target ?? 'vcf')
-  if (targetRaw !== 'vcf' && targetRaw !== 'amp') {
-    throw new InstrumentError(`lfo.target must be 'vcf' or 'amp'`)
-  }
-  const spec: LFOSpec = { rateHz, depth, target: targetRaw }
-  if (obj.waveform != null) {
-    const wf = String(obj.waveform)
-    if (!WAVEFORMS.has(wf as Waveform)) throw new InstrumentError(`lfo.waveform '${wf}' is unknown`)
-    spec.waveform = wf as Waveform
-  }
-  if (obj.phase != null) {
-    const p = Number(obj.phase)
-    if (!Number.isFinite(p)) throw new InstrumentError(`lfo.phase must be a number`)
-    spec.phase = p
-  }
-  if (obj.delay_seconds != null) {
-    const d = Number(obj.delay_seconds)
-    if (!Number.isFinite(d) || d < 0) throw new InstrumentError(`lfo.delay_seconds must be non-negative`)
-    spec.delaySeconds = d
-  }
+  if (m[3]) spec.delaySeconds = parseFloat(m[3])
+  if (m[6]) spec.phase = parseInt(m[6], 10) / 360
   return spec
 }
 
 function compileLFO(raw: unknown): LFOSpec | LFOSpec[] | undefined {
   if (raw == null) return undefined
   if (Array.isArray(raw)) {
-    const entries = raw.map(compileLFOEntry)
+    const entries = (raw as unknown[]).map((e, i) => {
+      if (typeof e !== 'string') throw new InstrumentError(`LFO[${i}] must be a string`)
+      return compileLFOEntry(e)
+    })
     return entries.length === 1 ? entries[0]! : entries
   }
+  if (typeof raw !== 'string') throw new InstrumentError(`LFO must be a string or list of strings`)
   return compileLFOEntry(raw)
 }
 
@@ -314,7 +303,7 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
   const root = character.root
 
   const spec: InstrumentSpec = {}
-  if ('amp' in obj) spec.amp = Number(obj.amp)
+  if (root.AMP != null) spec.amp = Number(root.AMP)
   const osc = compileOscillator(root.O)
   if (osc) spec.oscillator = osc
   const env = compileRfcEnvelope(root.A, root.S, root.T, root.R)
@@ -330,11 +319,11 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
   if (timbre) spec.timbre = timbre
   const morph = compileMorph(root.MORPH)
   if (morph) spec.morph = morph
-  const fm = compileFM(obj.fm)
+  const fm = compileFM(root.FM)
   if (fm) spec.fm = fm
-  const vcf = compileVCF(obj.vcf)
+  const vcf = compileVCF(root.VCF)
   if (vcf) spec.vcf = vcf
-  const lfo = compileLFO(obj.lfo)
+  const lfo = compileLFO(root.LFO)
   if (lfo) spec.lfo = lfo
 
   return spec
