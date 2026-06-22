@@ -110,6 +110,9 @@ function compileRfcEnvelope(A: unknown, S: unknown, T: unknown, R: unknown): Env
     sustainLevel: S != null ? parseRfcSustainLevel(String(S)) : DEFAULT_ENVELOPE.sustainLevel,
     release:      R != null ? parseRfcDuration(String(R)) : DEFAULT_ENVELOPE.release,
   }
+  if (A != null) env.attackShape = String(A)
+  if (S != null) env.decayShape = String(S)
+  if (R != null) env.releaseShape = String(R)
   if (T != null) env.tail = parseRfcDuration(String(T))
   return env
 }

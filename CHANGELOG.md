@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `T:` (tail) envelope segment now parsed from the character block and stored in `EnvelopeSpec.tail` (RFC §3.2.1.1.4).
 
+- Envelope shape strings are now fully evaluated via the bezier kernel. Previously `A:`, `S:`, and `R:` strings were stripped to just their leading duration; all intermediate control points were discarded and segments were rendered as linear ramps. Now the raw strings are stored in `EnvelopeSpec` and `applyEnvelope` calls `renderShapeString` per segment, producing the correct bezier curve. Multi-segment decay curves (e.g. `S: ".20:100;1,60;2,25;3,8;4,0"`) now trace through their control points. Release is scaled by `sustainLevel` to match Python sompyler's `y_scale` chaining.
+
 ### Added
 
 - RFC instrument format (`character:` block) is now fully wired in the compiler. The keys `O:` (oscillator waveform), `A:` / `S:` / `R:` (attack/sustain/release shape strings), and `PROFILE:` (partial amplitudes in REVERSED_DBFS) are all read and converted to the internal `InstrumentSpec`. RFC waveform names (`sine`, `sawtooth`) are mapped to the internal equivalents. Score meta now supports `beats_per_minute`, converted to ticks/minute by multiplying with the stress pattern's sub-level length (`sub_cumlen`) — matching Python sompyler's `Measure.__init__` behaviour exactly.

@@ -58,4 +58,63 @@ describe('applyEnvelope', () => {
     expect(buf[100]).toBeCloseTo(0.6, 5)
     expect(buf[500]).toBeCloseTo(0.6, 5)
   })
+
+  it('shaped attack follows bezier curve from shape string', () => {
+    // A: "0.1:1,100" — linear ramp from 1 to 100 REVERSED_DBFS over 100 ms
+    const buf = flat(SR)
+    applyEnvelope(buf, {
+      attack: 0.1, decay: 0.2, sustainLevel: 0.4, release: 0,
+      attackShape: '0.1:1,100',
+    }, SR)
+    // Start of attack: ~1/100 = 0.01
+    expect(buf[0]).toBeCloseTo(0.01, 1)
+    // End of attack: 100/100 = 1.0
+    expect(buf[99]).toBeCloseTo(1, 1)
+  })
+
+  it('shaped decay follows bezier curve from shape string', () => {
+    // S: ".2:100;1,0" — from 100 down to 0 over 200 ms
+    const buf = flat(SR)
+    applyEnvelope(buf, {
+      attack: 0, decay: 0.2, sustainLevel: 0, release: 0,
+      decayShape: '.2:100;1,0',
+    }, SR)
+    // Start of decay: 100/100 = 1.0
+    expect(buf[0]).toBeCloseTo(1, 1)
+    // End of decay: 0/100 = 0
+    expect(buf[199]).toBeCloseTo(0, 1)
+    // Sustain holds at 0
+    expect(buf[500]).toBeCloseTo(0, 5)
+  })
+
+  it('shaped release scales by sustainLevel', () => {
+    // R: "0.2:100;1,0" — shape from 100→0, scaled by sustainLevel=0.6
+    const buf = flat(SR)
+    applyEnvelope(buf, {
+      attack: 0, decay: 0, sustainLevel: 0.6, release: 0.2,
+      releaseShape: '0.2:100;1,0',
+    }, SR)
+    // Sustain holds at 0.6 up to sample 799
+    expect(buf[500]).toBeCloseTo(0.6, 5)
+    // Start of release (sample 800): 100/100 * 0.6 = 0.6
+    expect(buf[800]).toBeCloseTo(0.6, 1)
+    // End of release (sample 999): 0/100 * 0.6 = 0
+    expect(buf[999]).toBeCloseTo(0, 1)
+  })
+
+  it('multi-segment shaped decay reaches intermediate waypoints', () => {
+    // S: ".2:100;1,60;2,0" — three control points: 100→60→0
+    // The bezier curve passes through these points (approximately for bezier,
+    // exactly for linear segments). Midpoint should be well below 100 and above 0.
+    const buf = flat(SR)
+    applyEnvelope(buf, {
+      attack: 0, decay: 0.2, sustainLevel: 0, release: 0,
+      decayShape: '.2:100;1,60;2,0',
+    }, SR)
+    // At decay midpoint (~sample 100), value should be around 60 / 100 = 0.6
+    expect(buf[100]).toBeGreaterThan(0.3)
+    expect(buf[100]).toBeLessThan(0.9)
+    // End of decay: 0
+    expect(buf[199]).toBeCloseTo(0, 1)
+  })
 })
