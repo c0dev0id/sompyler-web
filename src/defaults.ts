@@ -545,13 +545,39 @@ character:
 
 const OXYGENE_BASS = `# bass: Fretless Bass (GM36 / TimGM6mb), C2. Partials from TiMidity STFT (4096-frame).
 # H2 strong, H4-H5 prominent. H5 32.6→29 corrected by STFT vs single-window.
+# H8 has +5c inharmonicity (fretless string stretch).
 character:
   AMP: 0.70
   O: sine
   A: "0.008:1,100"
   S: "0.04:100;1,80"
   R: "0.15:100;1,0"
-  PROFILE: [100, 70, 20, 23.6, 29, 14.5, 14.5, 16.6, 10.8, 4.0, 3.9, 2.0, 0.9, 0.4, 0.4, 0.2, 0.2, 0.1, 0.1, 0.1, 0.1, 0.1, 0.0, 0.0]
+  PROFILE:
+    - 100
+    - 70
+    - 20
+    - 23.6
+    - 29
+    - 14.5
+    - 14.5
+    - V: 16.6
+      D: 5
+    - 10.8
+    - 4.0
+    - 3.9
+    - 2.0
+    - 0.9
+    - 0.4
+    - 0.4
+    - 0.2
+    - 0.2
+    - 0.1
+    - 0.1
+    - 0.1
+    - 0.1
+    - 0.1
+    - 0.0
+    - 0.0
 `
 
 const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM108 / TimGM6mb). Pure sine sustain.
@@ -666,13 +692,43 @@ const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / TimGM6mb), C4. P
 # H1 decays faster than H2/H4/H8 — post-peak sustain heavily weighted toward
 # octave and 4th harmonic (gives the "ensemble warmth" quality).
 # Attack shortened to not drag the beat (TiMidity peak at 0.52s, we use 0.08s).
+# D: from STFT tracking: H4+14c and H11-18c are real inharmonicities;
+# H5(-8c) and H6(-7c) add ensemble roughness.
 character:
   O: sine
   AMP: 0.10
   A: "0.08:1,100"
   S: "0.001:100;1,85"
   R: "1.50:100;1,0"
-  PROFILE: [100, 56, 18.5, 26, 13, 11, 7.5, 15, 7.2, 9.8, 5.4, 3.0, 1.8, 2.6, 2.6, 1.1, 1.4, 1.0, 0.5, 0.4, 0.2, 0.1, 0.0, 0.1]
+  PROFILE:
+    - 100
+    - 56
+    - 18.5
+    - V: 26
+      D: 14
+    - V: 13
+      D: -8
+    - V: 11
+      D: -7
+    - 7.5
+    - 15
+    - 7.2
+    - 9.8
+    - V: 5.4
+      D: -18
+    - 3.0
+    - 1.8
+    - 2.6
+    - 2.6
+    - 1.1
+    - 1.4
+    - 1.0
+    - 0.5
+    - 0.4
+    - 0.2
+    - 0.1
+    - 0.0
+    - 0.1
 `
 
 const OXYGENE_BOWEDPAD = `# bowedpad: Pad 5 Bowed (GM93 / TimGM6mb), C4. Partials from TiMidity STFT.
