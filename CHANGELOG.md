@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Oxygène instruments re-tuned against TiMidity WAV fixtures:
+  - **bowed-pad**: H4 raised from 99 to 131 (dominant partial is 31% *above* H1, not equal); H9/H10 raised from ~6 to 18; H12 from 3 to 12.
+  - **string-ensemble**: H2 raised from 25.8 to 39 (octave partial was underestimated by 13%).
+  - **seashore**: attack shortened from 2.0s to 0.75s (measured WAV peak); release extended from 3.0s to 9.0s (WAV -40dB tail at ~9.25s).
+
 ### Added
 
 - `tones:` block support in `.splt` tuning files: maps arbitrary note names to semitone positions within an octave, extending (not replacing) the default Anglo-Saxon note table. Enables German notation (`H`, `Cis`, `Dis`, `B`) and other regional naming conventions. Tone name regex widened to accept multi-letter names.
