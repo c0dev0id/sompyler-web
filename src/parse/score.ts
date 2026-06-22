@@ -213,12 +213,32 @@ function parseShortNote(raw: string): ParsedNoteShort {
   }
 }
 
+// Port of Python Stressor.sub_cumlen(): cumlen of the first sub-level of the stress pattern.
+// Used to convert beats_per_minute → ticks_per_minute (same formula as Python measure.py).
+function stressorCumlen(pattern: string): number {
+  const semi = pattern.indexOf(';')
+  const first = semi === -1 ? pattern : pattern.slice(0, semi)
+  const rest  = semi === -1 ? null    : pattern.slice(semi + 1)
+  const head  = first.includes('/') ? first.split('/')[0]! : first
+  const count = head.includes(',') ? head.split(',').length : Math.max(1, parseInt(head.trim(), 10) || 1)
+  return count * (rest ? stressorCumlen(rest) : 1)
+}
+
+function stressorSubCumlen(pattern: string): number {
+  const semi = pattern.indexOf(';')
+  return semi === -1 ? 1 : stressorCumlen(pattern.slice(semi + 1))
+}
+
 function readMeta(metaBlock: Record<string, unknown> | undefined, fallback: MeasureMeta): MeasureMeta {
   if (!metaBlock) return fallback
   const next: MeasureMeta = { ...fallback }
-  if ('ticks_per_minute' in metaBlock) next.ticksPerMinute = Number(metaBlock.ticks_per_minute)
-  if ('beats_per_minute' in metaBlock) next.ticksPerMinute = Number(metaBlock.beats_per_minute)
   if ('stress_pattern' in metaBlock) next.stressPattern = String(metaBlock.stress_pattern)
+  if ('ticks_per_minute' in metaBlock) {
+    next.ticksPerMinute = Number(metaBlock.ticks_per_minute)
+  } else if ('beats_per_minute' in metaBlock) {
+    const sp = next.stressPattern ?? '1'
+    next.ticksPerMinute = Number(metaBlock.beats_per_minute) * stressorSubCumlen(sp)
+  }
   if ('lower_stress_bound' in metaBlock) next.lowerStressBound = Number(metaBlock.lower_stress_bound)
   if ('upper_stress_bound' in metaBlock) next.upperStressBound = Number(metaBlock.upper_stress_bound)
   if ('tempo' in metaBlock) {

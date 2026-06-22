@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- RFC instrument format (`character:` block) is now fully wired in the compiler. The keys `O:` (oscillator waveform), `A:` / `S:` / `R:` (attack/sustain/release shape strings), and `PROFILE:` (partial amplitudes in REVERSED_DBFS) are all read and converted to the internal `InstrumentSpec`. RFC waveform names (`sine`, `sawtooth`) are mapped to the internal equivalents. Score meta now also accepts `beats_per_minute` as an alias for `ticks_per_minute` (RFC §S46140).
+- RFC instrument format (`character:` block) is now fully wired in the compiler. The keys `O:` (oscillator waveform), `A:` / `S:` / `R:` (attack/sustain/release shape strings), and `PROFILE:` (partial amplitudes in REVERSED_DBFS) are all read and converted to the internal `InstrumentSpec`. RFC waveform names (`sine`, `sawtooth`) are mapped to the internal equivalents. Score meta now supports `beats_per_minute`, converted to ticks/minute by multiplying with the stress pattern's sub-level length (`sub_cumlen`) — matching Python sompyler's `Measure.__init__` behaviour exactly.
 
 - `oxygene4old` score and instruments added to the library as staging defaults. The 103-measure Oxygène Part IV score from the original Python Sompyler source is now loadable from the staging pane, together with its seven instruments (kick, claves, cymbal, bass, arpeggio, pad, lead) all in the RFC `character:` format.
 
