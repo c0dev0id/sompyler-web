@@ -543,15 +543,15 @@ character:
   FM: "1[100:1;0.1,0;1,0];3+90"
 `
 
-const OXYGENE_BASS = `# bass: Fretless Bass (GM36 / TimGM6mb), C2. Partials from TiMidity sustain FFT.
-# H2 strong (-3.5 dB), H4 > H3, H5 strong (classic bass string characteristic).
+const OXYGENE_BASS = `# bass: Fretless Bass (GM36 / TimGM6mb), C2. Partials from TiMidity STFT (4096-frame).
+# H2 strong, H4-H5 prominent. H5 32.6→29 corrected by STFT vs single-window.
 character:
   AMP: 0.70
   O: sine
   A: "0.008:1,100"
   S: "0.04:100;1,80"
   R: "0.15:100;1,0"
-  PROFILE: [100, 67.1, 17.9, 24, 32.6, 17.1, 16, 16.6, 9.6, 3.6, 3.9, 2, 0.88, 0.41, 0.37, 0.24, 0.18, 0.14, 0.11, 0.12, 0.054, 0.066, 0.007, 0.02]
+  PROFILE: [100, 70, 20, 23.6, 29, 14.5, 14.5, 16.6, 10.8, 4.0, 3.9, 2.0, 0.9, 0.4, 0.4, 0.2, 0.2, 0.1, 0.1, 0.1, 0.1, 0.1, 0.0, 0.0]
 `
 
 const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM108 / TimGM6mb). Pure sine sustain.
@@ -577,48 +577,140 @@ character:
 const OXYGENE_SYNBRASS = `# synbrass: SynBrass 2 (GM64 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
 # TiMidity patch peaks at 1.95s (very slow swell). We use a fast attack for
 # the melodic role in the score — Jarre's synth hits crisply on the beat.
+# D: from STFT frequency tracking: H2+9c, H5+7c, H6+10c are the most audible.
 character:
   O: sine
   AMP: 0.20
   A: "0.02:1,100"
   S: "0.001:100;1,75"
   R: "0.40:100;1,0"
-  PROFILE: [100, 67, 53, 24.5, 28, 8.2, 21.4, 8.9, 8.3, 7.1, 5.2, 10.3, 5, 4.8, 1.7, 4.1, 2, 2, 1.5, 1, 0.6, 0.2, 0.1, 0.2]
+  PROFILE:
+    - 100
+    - V: 67
+      D: 9
+    - 53
+    - V: 24.5
+      D: 6
+    - V: 28
+      D: 7
+    - V: 8.2
+      D: 10
+    - 21.4
+    - V: 8.9
+      D: 6
+    - 8.3
+    - 7.1
+    - V: 5.2
+      D: 12
+    - 10.3
+    - 5
+    - 4.8
+    - 1.7
+    - 4.1
+    - 2
+    - 2
+    - 1.5
+    - 1
+    - 0.6
+    - 0.2
+    - 0.1
+    - 0.2
 `
 
-const OXYGENE_STRINGS = `# strings: SynString 2 (GM52 / TimGM6mb), C3. Partials from TiMidity sustain FFT.
-# TiMidity peak at 3.78s (very slow attack). H2-H4 build significantly after onset:
-# H2 rises from 17% at onset to 36% in mid-sustain. PROFILE from mid-sustain window.
+const OXYGENE_STRINGS = `# strings: SynString 2 (GM52 / TimGM6mb), C3. Partials from TiMidity STFT mid-sustain.
+# TiMidity peak at 3.78s. Global A=1.5s compresses the swell.
+# H2/H5-H9 build after the loudness peak; per-partial A: derived as
+# A_partial = 1.5 × (V_mid_sustain / V_at_peak) to match the measured ratio.
 character:
   O: sine
   AMP: 0.12
-  A: "0.35:1,100"
+  A: "1.5:1,100"
   S: "0.001:100;1,88"
   R: "1.20:100;1,0"
-  PROFILE: [100, 36, 32, 34, 19, 15, 12, 4.4, 6.6, 7.7, 5.2, 3.9, 3.2, 5.1, 5.3, 4, 2.2, 1.7, 1.3, 2.4, 1.9, 4.2, 0.9, 1.5]
+  PROFILE:
+    - 100
+    - V: 21.9
+      A: "3.2:1,100"
+    - 18.5
+    - 12.4
+    - V: 13.8
+      A: "3.3:1,100"
+    - V: 9.9
+      A: "3.7:1,100"
+    - V: 8.3
+      A: "4.2:1,100"
+    - V: 7.0
+      A: "3.6:1,100"
+    - V: 6.2
+      A: "3.9:1,100"
+    - 4.7
+    - 6.1
+    - 4.9
+    - 4.5
+    - 3.8
+    - 3.9
+    - 2.9
+    - 2.8
+    - 3.1
+    - 2.7
+    - 2.4
+    - 2.3
+    - 1.6
+    - 1.2
+    - 1.3
 `
 
-const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
-# H8/H9/H11 show a late-harmonic hump (choir/ensemble roughness character).
-# Plays the same melodic figure as synbrass — attack shortened to not drag the beat.
+const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / TimGM6mb), C4. Partials from TiMidity STFT.
+# H1 decays faster than H2/H4/H8 — post-peak sustain heavily weighted toward
+# octave and 4th harmonic (gives the "ensemble warmth" quality).
+# Attack shortened to not drag the beat (TiMidity peak at 0.52s, we use 0.08s).
 character:
   O: sine
   AMP: 0.10
   A: "0.08:1,100"
   S: "0.001:100;1,85"
   R: "1.50:100;1,0"
-  PROFILE: [100, 34, 11.8, 7.7, 5.6, 2.9, 2, 4.7, 4.5, 3.3, 3.8, 1.3, 0.61, 1.6, 0.72, 0.25, 0.47, 0.37, 0.26, 0.14, 0.061, 0.068, 0.027, 0.024]
+  PROFILE: [100, 56, 18.5, 26, 13, 11, 7.5, 15, 7.2, 9.8, 5.4, 3.0, 1.8, 2.6, 2.6, 1.1, 1.4, 1.0, 0.5, 0.4, 0.2, 0.1, 0.0, 0.1]
 `
 
-const OXYGENE_BOWEDPAD = `# bowedpad: Pad 5 Bowed (GM93 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
-# H4 ≈ H1 (95% at mid-sustain). H11 comment was wrong — measures 3%, not 11.6%.
+const OXYGENE_BOWEDPAD = `# bowedpad: Pad 5 Bowed (GM93 / TimGM6mb), C4. Partials from TiMidity STFT.
+# H4 above H1 (105%). Rich mid-range (H5-H11 all 7-24%). Dense pad texture.
+# D: from STFT tracking: H9 notably sharp (+26c), H8 sharp (+10c), H4/H5 smaller.
 character:
   O: sine
   AMP: 0.08
   A: "0.80:1,100"
   S: "0.001:100;1,90"
   R: "2.00:100;1,0"
-  PROFILE: [100, 28.5, 22.7, 95, 14.4, 5.3, 7.5, 2.8, 3.3, 3.4, 3.1, 3, 2.6, 1.1, 2.9, 1.6, 1.4, 0.8, 0.7, 1.9, 1.5, 0.4, 0.3, 0.4]
+  PROFILE:
+    - 100
+    - 32
+    - 26.7
+    - V: 105
+      D: 8
+    - V: 24
+      D: 6
+    - 12
+    - 12.4
+    - V: 8.8
+      D: 10
+    - V: 6.9
+      D: 26
+    - 9.4
+    - 10.2
+    - 4.8
+    - 5.4
+    - 5.7
+    - 4.9
+    - 3.9
+    - 3.6
+    - 4.2
+    - 3.6
+    - 3.5
+    - 2.2
+    - 2.0
+    - 1.5
+    - 1.6
   LFO: "0.18@sin;0.08:amp"
 `
 
@@ -630,7 +722,7 @@ character:
   A: "0.004:1,100"
   S: "0.15:100;1,55"
   R: "0.70:100;1,0"
-  PROFILE: [100, 64, 49.8, 0.62, 4.2, 19.6, 27.3, 2.9, 0.73, 18.9, 5.4, 3.5, 0.32, 0.53, 4, 1.1, 0.43, 0.30, 0.057, 2.7, 0.67, 0.16, 0.51, 0.27]
+  PROFILE: [100, 54, 45, 0.6, 3.9, 18, 24.3, 2.7, 0.8, 16.7, 4.7, 3.4, 0.3, 0.6, 3.3, 1.1, 0.4, 0.3, 0.1, 2.3, 0.6, 0.2, 0.4, 0.2]
 `
 
 const OXYGENE_TAMBOURINE = `# tambourine: Tambourine (GM54 / TimGM6mb), note 54. Noise instrument.
