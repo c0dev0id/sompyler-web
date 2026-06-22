@@ -30,6 +30,7 @@ import { firstInstrumentPitchHz } from '../parse/score'
 export interface LayoutProps {
   session: Session
   refreshSignal: () => number
+  onScoreSave?: () => void
 }
 
 function TabStrip(props: {
@@ -72,6 +73,7 @@ function EditorPanel(props: {
   renderDiagnostics: () => ReturnType<Session['renderDiagnostics']>
   emptyMessage: string
   onActiveInstrumentChange?: (name: string | null, body: string | null) => void
+  onFileSave?: () => void
 }) {
   const [files, setFiles] = createSignal<StoredFile[]>([])
   const [selectedId, setSelectedId] = createSignal<string | null>(null)
@@ -141,6 +143,7 @@ function EditorPanel(props: {
                 previewTimer = window.setTimeout(() => {
                   if (selectedFile()?.id === f.id) {
                     props.onActiveInstrumentChange?.(f.name, body)
+                    props.onFileSave?.()
                   }
                 }, 1000)
               }}
@@ -277,6 +280,7 @@ export const Layout: Component<LayoutProps> = (props) => {
           instrumentNames={instrumentNames}
           renderDiagnostics={props.session.renderDiagnostics}
           emptyMessage="No score in project. Add a .spls from staging."
+          onFileSave={props.onScoreSave}
         />
       </section>
 

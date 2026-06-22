@@ -7,6 +7,7 @@ import { seedDefaults } from './defaults'
 
 export const App: Component = () => {
   const [refreshTick, setRefreshTick] = createSignal(0)
+  const [stagingTick, setStagingTick] = createSignal(0)
   const session = new Session(() => new AudioContext())
 
   onMount(() => {
@@ -17,15 +18,17 @@ export const App: Component = () => {
   })
 
   const bumpRefresh = () => setRefreshTick((n) => n + 1)
+  const bumpStaging = () => setStagingTick((n) => n + 1)
 
   return (
     <main class="shell">
       <StagingPane
         refreshSignal={refreshTick}
+        scoreRefreshSignal={stagingTick}
         onChange={bumpRefresh}
         mutationsDisabled={session.editLock()}
       />
-      <Layout session={session} refreshSignal={refreshTick} />
+      <Layout session={session} refreshSignal={refreshTick} onScoreSave={bumpStaging} />
       <RenderModal session={session} />
     </main>
   )

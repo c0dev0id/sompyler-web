@@ -35,6 +35,8 @@ function parseFilename(filename: string): { name: string; ext: FileExtension } |
 export interface StagingPaneProps {
   /** Trigger a re-read of storage when files change. */
   refreshSignal: () => number
+  /** Trigger a re-read when a score body may have been edited (staging-only, no editor reload). */
+  scoreRefreshSignal?: () => number
   /** Called when the set of in-project files may have changed. */
   onChange: () => void
   mutationsDisabled: boolean
@@ -104,6 +106,7 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
   }
   createEffect(() => {
     props.refreshSignal()
+    props.scoreRefreshSignal?.()
     void refresh()
   })
 
