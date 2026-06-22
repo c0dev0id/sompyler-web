@@ -110,6 +110,33 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
     void refresh()
   })
 
+  createEffect(() => {
+    if (props.mutationsDisabled) return
+    const { groups, unreferenced } = grouped()
+    void (async () => {
+      let changed = false
+      for (const f of unreferenced) {
+        if (f.inProject) {
+          await setInProject(f.name, f.ext, false)
+          changed = true
+        }
+      }
+      for (const { score, deps } of groups) {
+        if (!score.inProject) continue
+        for (const f of deps) {
+          if (!f.inProject) {
+            await setInProject(f.name, f.ext, true)
+            changed = true
+          }
+        }
+      }
+      if (changed) {
+        await refresh()
+        props.onChange()
+      }
+    })()
+  })
+
   onMount(() => {
     void (async () => {
       setCollapsed(await getPref<boolean>(COLLAPSED_PREF_KEY, false))
