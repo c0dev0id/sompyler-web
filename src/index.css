@@ -111,6 +111,106 @@ html, body, #root {
   color: #fff;
 }
 
+/* Tree view */
+.staging-tree {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.tree-row {
+  display: flex;
+  align-items: center;
+  padding: 0.3rem 0.5rem;
+  font-size: 12px;
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.tree-score.in-project > .tree-row {
+  background: #1d2530;
+}
+
+.tree-toggle {
+  background: transparent;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  padding: 0 0.25rem 0 0;
+  font-size: 9px;
+  flex-shrink: 0;
+  transition: transform 120ms;
+  line-height: 1;
+}
+
+.tree-toggle.open {
+  transform: rotate(90deg);
+  color: #888;
+}
+
+.tree-toggle:disabled {
+  color: #333;
+  cursor: default;
+}
+
+.tree-toggle:not(:disabled):hover {
+  color: #aaa;
+}
+
+.tree-deps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tree-dep {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem 0.25rem 1.5rem;
+  font-size: 12px;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.tree-dep.in-project {
+  background: #19222e;
+}
+
+.tree-dep .filename,
+.tree-row .filename {
+  flex: 1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tree-row .actions,
+.tree-dep .actions {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.tree-row .actions button,
+.tree-dep .actions button {
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 0.1rem 0.3rem;
+  font-size: 12px;
+}
+
+.tree-row .actions button:hover:not(:disabled),
+.tree-dep .actions button:hover:not(:disabled) {
+  color: #fff;
+}
+
+.unreferenced-label {
+  color: #555;
+  font-style: italic;
+}
+
 .staging-footer {
   padding: 0.5rem;
   border-top: 1px solid #2a2a2a;

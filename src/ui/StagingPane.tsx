@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, onMount, Show, type Component } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, onMount, Show, type Component } from 'solid-js'
 import {
   deleteFile,
   listFiles,
@@ -40,14 +40,56 @@ export interface StagingPaneProps {
   mutationsDisabled: boolean
 }
 
+function getScoreRefs(body: string): Record<'spli' | 'splr' | 'splt', Set<string>> {
+  const refs: Record<'spli' | 'splr' | 'splt', Set<string>> = {
+    spli: new Set(),
+    splr: new Set(),
+    splt: new Set(),
+  }
+  try {
+    const { head } = parseScore(body)
+    for (const v of Object.values(head.stage)) refs.spli.add(v.instrument)
+    if (head.room) refs.splr.add(head.room)
+    if (head.tuningConfig) refs.splt.add(head.tuningConfig)
+  } catch { /* unparseable score — no deps shown */ }
+  return refs
+}
+
 export const StagingPane: Component<StagingPaneProps> = (props) => {
   const [files, setFiles] = createSignal<StoredFile[]>([])
   const [collapsed, setCollapsed] = createSignal(false)
   const [showCreate, setShowCreate] = createSignal(false)
   const [newName, setNewName] = createSignal('')
   const [newExt, setNewExt] = createSignal<FileExtension>('spli')
+  const [expanded, setExpanded] = createSignal(new Set<string>())
   let fileInput: HTMLInputElement | undefined
   let nameInput: HTMLInputElement | undefined
+
+  function toggleExpanded(id: string) {
+    setExpanded((s) => {
+      const n = new Set(s)
+      n.has(id) ? n.delete(id) : n.add(id)
+      return n
+    })
+  }
+
+  const grouped = createMemo(() => {
+    const all = files()
+    const scores = all.filter((f) => f.ext === 'spls')
+    const nonScores = all.filter((f) => f.ext !== 'spls')
+    const claimedIds = new Set<string>()
+    const groups = scores.map((score) => {
+      const refs = getScoreRefs(score.body)
+      const deps = nonScores.filter((f) => {
+        const ext = f.ext as 'spli' | 'splr' | 'splt'
+        return refs[ext]?.has(f.name)
+      })
+      deps.forEach((d) => claimedIds.add(d.id))
+      return { score, deps }
+    })
+    const unreferenced = nonScores.filter((f) => !claimedIds.has(f.id))
+    return { groups, unreferenced }
+  })
 
   async function refresh() {
     setFiles(await listFiles())
@@ -81,24 +123,13 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
           await setInProject(g.name, g.ext, false)
         }
       }
-      const referenced: Record<'spli' | 'splr' | 'splt', Set<string>> = {
-        spli: new Set(),
-        splr: new Set(),
-        splt: new Set(),
-      }
-      try {
-        const { head } = parseScore(f.body)
-        for (const v of Object.values(head.stage)) referenced.spli.add(v.instrument)
-        if (head.room) referenced.splr.add(head.room)
-        if (head.tuningConfig) referenced.splt.add(head.tuningConfig)
-      } catch (err) {
-        log('storage', 'warn', `Cannot parse '${f.id}'; skipping auto-link`, {
-          error: String(err),
-        })
+      const refs = getScoreRefs(f.body)
+      if (Object.values(refs).every((s) => s.size === 0)) {
+        log('storage', 'warn', `Cannot parse '${f.id}'; skipping auto-link`)
       }
       for (const g of files()) {
         if (g.id === f.id) continue
-        const wanted = referenced[g.ext as 'spli' | 'splr' | 'splt']
+        const wanted = refs[g.ext as 'spli' | 'splr' | 'splt']
         if (wanted && wanted.has(g.name)) {
           await setInProject(g.name, g.ext, true)
         }
@@ -213,39 +244,113 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
       </header>
       <Show when={!collapsed()}>
         <div class="staging-body">
-          <ul class="staging-list">
-            <For each={files()}>
-              {(f) => (
-                <li class={f.inProject ? 'in-project' : ''}>
-                  <span class="filename">
-                    {f.name}.{f.ext}
-                  </span>
-                  <div class="actions">
+          <ul class="staging-tree">
+            <For each={grouped().groups}>
+              {({ score, deps }) => (
+                <li class={`tree-score${score.inProject ? ' in-project' : ''}`}>
+                  <div class="tree-row">
                     <button
-                      onClick={() => void toggleInProject(f)}
-                      disabled={props.mutationsDisabled}
-                      title={f.inProject ? 'Remove from project' : 'Add to project'}
-                    >
-                      {f.inProject ? '−' : '+'}
-                    </button>
-                    <button
-                      onClick={() => void handleRename(f)}
-                      disabled={props.mutationsDisabled}
-                      title="Rename"
-                    >
-                      ✎
-                    </button>
-                    <button
-                      onClick={() => void handleDelete(f)}
-                      disabled={props.mutationsDisabled}
-                      title="Delete"
-                    >
-                      ✕
-                    </button>
+                      class={`tree-toggle${expanded().has(score.id) ? ' open' : ''}`}
+                      onClick={() => toggleExpanded(score.id)}
+                      disabled={deps.length === 0}
+                      title={deps.length === 0 ? 'No referenced files' : (expanded().has(score.id) ? 'Collapse' : 'Expand')}
+                    >▶</button>
+                    <span class="filename">{score.name}.{score.ext}</span>
+                    <div class="actions">
+                      <button
+                        onClick={() => void toggleInProject(score)}
+                        disabled={props.mutationsDisabled}
+                        title={score.inProject ? 'Remove from project' : 'Add to project'}
+                      >
+                        {score.inProject ? '−' : '+'}
+                      </button>
+                      <button
+                        onClick={() => void handleRename(score)}
+                        disabled={props.mutationsDisabled}
+                        title="Rename"
+                      >✎</button>
+                      <button
+                        onClick={() => void handleDelete(score)}
+                        disabled={props.mutationsDisabled}
+                        title="Delete"
+                      >✕</button>
+                    </div>
                   </div>
+                  <Show when={expanded().has(score.id) && deps.length > 0}>
+                    <ul class="tree-deps">
+                      <For each={deps}>
+                        {(f) => (
+                          <li class={`tree-dep${f.inProject ? ' in-project' : ''}`}>
+                            <span class="filename">{f.name}.{f.ext}</span>
+                            <div class="actions">
+                              <button
+                                onClick={() => void toggleInProject(f)}
+                                disabled={props.mutationsDisabled}
+                                title={f.inProject ? 'Remove from project' : 'Add to project'}
+                              >
+                                {f.inProject ? '−' : '+'}
+                              </button>
+                              <button
+                                onClick={() => void handleRename(f)}
+                                disabled={props.mutationsDisabled}
+                                title="Rename"
+                              >✎</button>
+                              <button
+                                onClick={() => void handleDelete(f)}
+                                disabled={props.mutationsDisabled}
+                                title="Delete"
+                              >✕</button>
+                            </div>
+                          </li>
+                        )}
+                      </For>
+                    </ul>
+                  </Show>
                 </li>
               )}
             </For>
+            <Show when={grouped().unreferenced.length > 0}>
+              <li class={`tree-score unreferenced-group${expanded().has('__unreferenced__') ? ' open' : ''}`}>
+                <div class="tree-row">
+                  <button
+                    class={`tree-toggle${expanded().has('__unreferenced__') ? ' open' : ''}`}
+                    onClick={() => toggleExpanded('__unreferenced__')}
+                    title={expanded().has('__unreferenced__') ? 'Collapse' : 'Expand'}
+                  >▶</button>
+                  <span class="filename unreferenced-label">unreferenced</span>
+                </div>
+                <Show when={expanded().has('__unreferenced__')}>
+                  <ul class="tree-deps">
+                    <For each={grouped().unreferenced}>
+                      {(f) => (
+                        <li class={`tree-dep${f.inProject ? ' in-project' : ''}`}>
+                          <span class="filename">{f.name}.{f.ext}</span>
+                          <div class="actions">
+                            <button
+                              onClick={() => void toggleInProject(f)}
+                              disabled={props.mutationsDisabled}
+                              title={f.inProject ? 'Remove from project' : 'Add to project'}
+                            >
+                              {f.inProject ? '−' : '+'}
+                            </button>
+                            <button
+                              onClick={() => void handleRename(f)}
+                              disabled={props.mutationsDisabled}
+                              title="Rename"
+                            >✎</button>
+                            <button
+                              onClick={() => void handleDelete(f)}
+                              disabled={props.mutationsDisabled}
+                              title="Delete"
+                            >✕</button>
+                          </div>
+                        </li>
+                      )}
+                    </For>
+                  </ul>
+                </Show>
+              </li>
+            </Show>
           </ul>
           <div class="staging-footer">
             <input
