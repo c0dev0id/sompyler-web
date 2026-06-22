@@ -583,18 +583,19 @@ character:
   A: "0.02:1,100"
   S: "0.001:100;1,75"
   R: "0.40:100;1,0"
-  PROFILE: [100, 72.3, 53, 28.4, 23.2, 12.2, 23.8, 10.1, 7.6, 11.5, 11.1, 8.5, 6.9, 3.8, 7.8, 7.3, 6.5, 3.3, 2.3, 2.5, 4.3, 4.3, 2, 1.3]
+  PROFILE: [100, 67, 53, 24.5, 28, 8.2, 21.4, 8.9, 8.3, 7.1, 5.2, 10.3, 5, 4.8, 1.7, 4.1, 2, 2, 1.5, 1, 0.6, 0.2, 0.1, 0.2]
 `
 
 const OXYGENE_STRINGS = `# strings: SynString 2 (GM52 / TimGM6mb), C3. Partials from TiMidity sustain FFT.
-# TiMidity peak at 1.45s (slow attack). H4 stronger than H2 or H3 (body resonance).
+# TiMidity peak at 3.78s (very slow attack). H2-H4 build significantly after onset:
+# H2 rises from 17% at onset to 36% in mid-sustain. PROFILE from mid-sustain window.
 character:
   O: sine
   AMP: 0.12
   A: "0.35:1,100"
   S: "0.001:100;1,88"
   R: "1.20:100;1,0"
-  PROFILE: [100, 18.8, 18.1, 25.4, 13.6, 6.5, 7.2, 9, 4.9, 5.1, 4.1, 2.7, 4.6, 3.5, 2.9, 2.5, 2.7, 2.4, 1.9, 2, 1.9, 2.6, 1.2, 1.2]
+  PROFILE: [100, 36, 32, 34, 19, 15, 12, 4.4, 6.6, 7.7, 5.2, 3.9, 3.2, 5.1, 5.3, 4, 2.2, 1.7, 1.3, 2.4, 1.9, 4.2, 0.9, 1.5]
 `
 
 const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
@@ -606,18 +607,18 @@ character:
   A: "0.08:1,100"
   S: "0.001:100;1,85"
   R: "1.50:100;1,0"
-  PROFILE: [100, 39, 11.8, 7.7, 5.6, 2.9, 2, 4.7, 4.5, 3.3, 3.8, 1.3, 0.61, 1.6, 0.72, 0.25, 0.47, 0.37, 0.26, 0.14, 0.061, 0.068, 0.027, 0.024]
+  PROFILE: [100, 34, 11.8, 7.7, 5.6, 2.9, 2, 4.7, 4.5, 3.3, 3.8, 1.3, 0.61, 1.6, 0.72, 0.25, 0.47, 0.37, 0.26, 0.14, 0.061, 0.068, 0.027, 0.024]
 `
 
 const OXYGENE_BOWEDPAD = `# bowedpad: Pad 5 Bowed (GM93 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
-# H4 > H1 in amplitude (1.31) — defining feature of this pad. H9/H10 hump at ~18%.
+# H4 ≈ H1 (95% at mid-sustain). H11 comment was wrong — measures 3%, not 11.6%.
 character:
   O: sine
   AMP: 0.08
   A: "0.80:1,100"
   S: "0.001:100;1,90"
   R: "2.00:100;1,0"
-  PROFILE: [100, 27, 22.2, 131, 14.6, 6.3, 7.5, 6.9, 18, 18, 11.6, 12, 3.2, 2.8, 3.2, 2.2, 2.3, 3.6, 2.3, 1.9, 1.5, 1.3, 1.1, 1]
+  PROFILE: [100, 28.5, 22.7, 95, 14.4, 5.3, 7.5, 2.8, 3.3, 3.4, 3.1, 3, 2.6, 1.1, 2.9, 1.6, 1.4, 0.8, 0.7, 1.9, 1.5, 0.4, 0.3, 0.4]
   LFO: "0.18@sin;0.08:amp"
 `
 
