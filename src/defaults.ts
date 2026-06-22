@@ -574,10 +574,12 @@ character:
   PROFILE: [100, 0.2, 0.1, 0.03, 0.04, 0, 0.02]
 `
 
-const OXYGENE_SYNBRASS = `# synbrass: SynBrass 2 (GM64 / TimGM6mb), C4. Partials from TiMidity sustain FFT.
+const OXYGENE_SYNBRASS = `# synbrass: SynBrass 2 (GM64 / TimGM6mb), C4. Partials from TiMidity STFT (1.5–2.5s mid-swell).
 # TiMidity patch peaks at 1.95s (very slow swell). We use a fast attack for
 # the melodic role in the score — Jarre's synth hits crisply on the beat.
 # D: from STFT frequency tracking: H2+9c, H5+7c, H6+10c are the most audible.
+# Harmonics oscillate strongly over time (detuned-layer beating) so PROFILE
+# values are averages across the stable 1.5–2.5s swell window.
 character:
   O: sine
   AMP: 0.20
@@ -586,35 +588,35 @@ character:
   R: "0.40:100;1,0"
   PROFILE:
     - 100
-    - V: 67
+    - V: 80.3
       D: 9
-    - 53
-    - V: 24.5
+    - 52.8
+    - V: 30.7
       D: 6
-    - V: 28
+    - V: 32.1
       D: 7
-    - V: 8.2
+    - V: 13.6
       D: 10
-    - 21.4
-    - V: 8.9
+    - 21.7
+    - V: 14.0
       D: 6
-    - 8.3
-    - 7.1
-    - V: 5.2
+    - 10.4
+    - 13.3
+    - V: 11.1
       D: 12
-    - 10.3
-    - 5
-    - 4.8
-    - 1.7
-    - 4.1
-    - 2
-    - 2
-    - 1.5
-    - 1
-    - 0.6
-    - 0.2
-    - 0.1
-    - 0.2
+    - 11.9
+    - 7.6
+    - 5.8
+    - 7.6
+    - 7.7
+    - 6.5
+    - 4.4
+    - 2.7
+    - 3.0
+    - 4.6
+    - 2.4
+    - 1.9
+    - 1.1
 `
 
 const OXYGENE_STRINGS = `# strings: SynString 2 (GM52 / TimGM6mb), C3. Partials from TiMidity STFT mid-sustain.
