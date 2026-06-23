@@ -55,8 +55,7 @@ export class Session {
   private controller: AbortController | null = null
   private lastScoreId: string | null = null
   private barTimes: number[] = []
-  private markerStartBar: number | null = null
-  private markerEndBar: number | null = null
+  private markerBar: number | null = null
 
   constructor(audioContextFactory: () => AudioContext) {
     const [editLock, setEditLock] = createSignal(false)
@@ -135,15 +134,14 @@ export class Session {
 
       if (scoreFile.id !== this.lastScoreId) {
         this.player.resetLoopPoints()
-        this.markerStartBar = null
-        this.markerEndBar = null
+        this.markerBar = null
         this.lastScoreId = scoreFile.id
       }
       this.barTimes = plan.barTimes
       // Re-apply bar markers with updated times after re-render.
-      if (this.markerStartBar !== null) {
-        const tStart = this.barTimes[this.markerStartBar] ?? 0
-        const tEnd = this.markerEndBar !== null ? (this.barTimes[this.markerEndBar] ?? 0) : 0
+      if (this.markerBar !== null) {
+        const tStart = this.barTimes[this.markerBar] ?? 0
+        const tEnd = this.barTimes[this.markerBar + 2] ?? 0
         this.player.setLoopPoints(tStart, tEnd)
       }
       this.player.loadBuffer(mix)
@@ -188,49 +186,18 @@ export class Session {
 
   /**
    * Called when the user clicks a line number in the score editor.
-   * Cycles through: no markers → set start → set end → click existing → clear.
-   * Adjusts player loop points immediately using the last-rendered bar times.
+   * Single click sets a 2-bar window (bar N to bar N+2). Clicking the
+   * same bar again clears the markers.
    */
   setBarMarker(barIndex: number): void {
-    const times = this.barTimes
-    const startBar = this.markerStartBar
-    const endBar = this.markerEndBar
-
-    const resolve = (bar: number) => times[bar] ?? 0
-
-    if (startBar === null) {
-      // No markers → set start
-      this.markerStartBar = barIndex
-      this.player.setLoopPoints(resolve(barIndex), 0)
-    } else if (endBar === null) {
-      if (barIndex === startBar) {
-        // Click same bar as start → clear all
-        this.markerStartBar = null
-        this.player.setLoopPoints(0, 0)
-      } else {
-        // Set end, auto-sort so earlier bar is always start
-        const lo = Math.min(startBar, barIndex)
-        const hi = Math.max(startBar, barIndex)
-        this.markerStartBar = lo
-        this.markerEndBar = hi
-        this.player.setLoopPoints(resolve(lo), resolve(hi))
-      }
+    if (this.markerBar === barIndex) {
+      this.markerBar = null
+      this.player.setLoopPoints(0, 0)
     } else {
-      if (barIndex === startBar) {
-        // Remove start → clear both (avoids end-only state)
-        this.markerStartBar = null
-        this.markerEndBar = null
-        this.player.setLoopPoints(0, 0)
-      } else if (barIndex === endBar) {
-        // Remove end only
-        this.markerEndBar = null
-        this.player.setLoopPoints(resolve(startBar), 0)
-      } else {
-        // Click new bar → restart: new start, clear end
-        this.markerStartBar = barIndex
-        this.markerEndBar = null
-        this.player.setLoopPoints(resolve(barIndex), 0)
-      }
+      this.markerBar = barIndex
+      const tStart = this.barTimes[barIndex] ?? 0
+      const tEnd = this.barTimes[barIndex + 2] ?? 0
+      this.player.setLoopPoints(tStart, tEnd)
     }
     this.player.restartFromMarkers()
   }
