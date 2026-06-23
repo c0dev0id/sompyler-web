@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Must** follow existing syntax conventions when adding new features
 - **Do not** implement features flagged as experimental in the RFC
 - **Do not** create syntax aliases
-- Sompyler-web **must** create the same output as python sompyler on the same input
+- Sompyler-web **must** produce the same output as python sompyler when given python-sompyler input files (forward compatibility). This does **not** imply the inverse: sompyler-web may add new syntax (e.g. `LFO:`, `VCF:` already do) so long as the interpretation of existing RFC-defined syntax is unchanged.
 - The canonical truth for sompyler file compilation algorithms **must** be the python code in ../sompyler
 
 
