@@ -533,11 +533,17 @@ html, body, #root {
   border-bottom: 1px solid #2a2a2a;
   margin-bottom: 0.5rem;
   overflow-x: auto;
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: #3a3a3a transparent;
 }
 
 .editor-panel .tabs::-webkit-scrollbar {
-  display: none;
+  height: 3px;
+}
+
+.editor-panel .tabs::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 2px;
 }
 
 .editor-panel .tab {
@@ -550,6 +556,8 @@ html, body, #root {
   font-size: 12px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   border-radius: 3px 3px 0 0;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .editor-panel .tab.selected {
