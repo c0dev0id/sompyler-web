@@ -3,9 +3,13 @@ import type { FileExtension } from '../storage/files'
 
 // ── Content ────────────────────────────────────────────────────────────────────
 
+interface Param { key: string; desc: string }
+
 interface Block {
   subtitle?: string
-  code: string
+  text?: string
+  params?: Param[]
+  code?: string
 }
 
 interface Section {
@@ -18,69 +22,73 @@ interface Section {
 
 const SCORE: Section = {
   title: 'Score  (.spls)',
-  intro:
-    'A score file describes a complete piece: the instruments, how they sit in ' +
-    'the stereo field, the tempo and dynamics, and all the notes.',
+  intro: 'Describes a complete piece: instrument layout, tempo, dynamics, and notes.',
   blocks: [
     {
-      subtitle: 'File header — shared settings at the top of the file',
+      subtitle: 'File header',
+      text: 'Opens the file with metadata and the stage layout that positions voices in the stereo field.',
+      params: [
+        { key: 'title / author', desc: 'Descriptive labels — not used during rendering.' },
+        { key: 'tuning_config', desc: 'Name of a .splt file that maps note names to frequencies.' },
+        { key: 'room', desc: 'Name of a .splr reverb file. Omit for a dry sound.' },
+        { key: 'stage', desc: 'Places each voice. Value format: "L|R  distance  instrument" — L|R = pan ratio (1|1 = centre, 2|1 = left, 1|2 = right); distance = reverb send (0.0 = dry, 1.0 = fully wet); instrument = name of a .spli file.' },
+      ],
       code: `title: Song Title
 author: Artist Name
-tuning_config: tones_euro  # .splt file that defines note names and frequencies
-room: hall                 # .splr file that adds reverb; omit for a dry sound
+tuning_config: tones_euro
+room: hall
 
-stage:                     # places each voice in the stereo field
-  bass: "1|1 0.0 bass"    # "L|R  distance  instrument"
-  lead: "2|1 0.5 piano"   #
-  pad:  "1|2 0.8 strings" # L|R      — pan ratio; 1|1=centre, 2|1=left, 1|2=right
-                            # distance — room send amount; 0.0=dry, 1.0=fully wet
-                            # instrument — name of a .spli file in the project`,
+stage:
+  bass: "1|1 0.0 bass"
+  lead: "2|1 0.5 piano"
+  pad:  "1|2 0.8 strings"`,
     },
     {
-      subtitle: 'Measure settings — the _meta block',
+      subtitle: 'Measure settings — _meta block',
+      params: [
+        { key: 'beats_per_minute', desc: 'Tempo. Multiplied by the stress sub-level count to derive internal ticks per minute.' },
+        { key: 'stress_pattern', desc: 'Accent cycle: 2 = strong beat, 1 = weak, 0 = off-beat. Groups separated by ";" are one beat each — "2,0,1,0" gives 4/4 time.' },
+        { key: 'lower_stress_bound', desc: 'Quietest note velocity (0–100).' },
+        { key: 'upper_stress_bound', desc: 'Loudest note velocity. A narrow range produces flat dynamics.' },
+        { key: 'repeat_unmentioned_voices', desc: 'When true, voices absent from this measure replay their previous measure.' },
+      ],
       code: `_meta:
-  beats_per_minute: 120           # tempo; multiplied by stress sub-level count
-                                   # to derive the internal ticks-per-minute rate
-  stress_pattern: "2,0,1,0"      # accent cycle: 2=strong, 1=weak, 0=off-beat
-                                   # "2,0,1,0" → four ticks per beat (4/4 time)
-                                   # each group separated by ";" is one beat
-  lower_stress_bound: 70          # quietest note velocity (0–100)
-  upper_stress_bound: 95          # loudest note velocity; narrow range = flat dynamics
-  repeat_unmentioned_voices: true # voices not listed here loop their previous measure`,
+  beats_per_minute: 120
+  stress_pattern: "2,0,1,0"
+  lower_stress_bound: 70
+  upper_stress_bound: 95
+  repeat_unmentioned_voices: true`,
     },
     {
-      subtitle: 'Notes — placing pitches on the timeline',
-      code: `voice:              # must match a name declared in stage:
-  0:  C4  3          # tick, pitch, duration (in ticks)
-  3:  Bb3 2          # note names: C D E F G A B
-                      # sharps: C# D# F# G# A#   flats: Db Eb Gb Ab Bb
-                      # octave 4 = middle C ≈ 262 Hz; each +1 doubles the pitch
-
-  0:  G3  2  damp=2  # damp=N — extend the release phase by N extra ticks
-                      # (the note rings past the end of the score's note window)
-
-  3,5: E4 1          # comma list — place the same note at multiple ticks
-  0+2*4: C5 1        # range — start + step * count → ticks 0, 2, 4, 6
-
-  voice: false        # silence this voice for the measure`,
+      subtitle: 'Notes',
+      text: 'A voice block maps tick offsets to pitches. Names: C D E F G A B. Sharps: C# D# F# G# A#. Flats: Db Eb Gb Ab Bb. Octave 4 = middle C (≈262 Hz); each +1 octave doubles the frequency.',
+      params: [
+        { key: 'tick: pitch dur', desc: 'Basic note entry. Duration is in ticks.' },
+        { key: 'damp=N', desc: 'Extend the release by N extra ticks — the note rings past the score window.' },
+        { key: '3,5: pitch dur', desc: 'Comma list — place the same note at multiple tick positions.' },
+        { key: '0+2*4: pitch dur', desc: 'Range — start + step × count, producing ticks 0, 2, 4, 6.' },
+        { key: 'voice: false', desc: 'Silence this voice for the measure.' },
+      ],
+      code: `voice:
+  0:  C4  3
+  3:  Bb3 2
+  0:  G3  2  damp=2
+  3,5: E4 1
+  0+2*4: C5 1`,
     },
     {
-      subtitle: 'Chain notation — compact sequences and chords',
-      code: `# Assign a string to a voice instead of individual tick offsets:
-voice: "C4 E4 G4 C5"           # sequential: one note per tick
-voice: "G3_11; B3_11; D4_11"   # chord: all three share a start tick
-                                 # _11 = hold for 12 ticks (1 + 11)
-
-# Modifiers:
-#   _N    hold for 1+N ticks              (_3 = 4 ticks, _11 = 12 ticks)
-#   ;     the next note starts at the same tick (chord)
-#   .     rest — silence one tick         (.3 = three silent ticks)
-#   +N    shift up N semitones from the previous pitch  (+7 = a fifth)
-#   -N    shift down N semitones
-
-# Examples:
-voice: "C4_3 E4_3 G4_3"         # ascending arpeggio, 4 ticks each
-voice: "C4_3 .2 +4_3 .2 +3_3"  # with rests, each note a third above the last`,
+      subtitle: 'Chain notation',
+      text: 'Assign a string to a voice for compact sequences. Notes play one per tick unless joined with ";" for chords.',
+      params: [
+        { key: '_N', desc: 'Hold for 1+N ticks — _3 = 4 ticks, _11 = 12 ticks.' },
+        { key: ';', desc: 'Start the next note at the same tick (chord).' },
+        { key: '.', desc: 'Rest — silence one tick. .3 = three silent ticks.' },
+        { key: '+N / -N', desc: 'Shift up or down N semitones from the previous pitch.' },
+      ],
+      code: `voice: "C4 E4 G4 C5"             # sequential, one note per tick
+voice: "G3_11; B3_11; D4_11"    # chord, each held 12 ticks
+voice: "C4_3 E4_3 G4_3"         # ascending arpeggio
+voice: "C4_3 .2 +4_3 .2 +3_3"  # rests and interval shifts`,
     },
   ],
 }
@@ -90,124 +98,105 @@ voice: "C4_3 .2 +4_3 .2 +3_3"  # with rests, each note a third above the last`,
 const INSTRUMENT: Section = {
   title: 'Instrument  (.spli)',
   intro:
-    'An instrument file describes how a voice sounds — the wave shape, the ' +
-    'amplitude envelope, the overtone spectrum, and any modulation effects.',
+    'Defines how a voice sounds — the wave shape, amplitude envelope, overtone spectrum, and modulation effects.',
   blocks: [
     {
-      subtitle: 'Wave shape and envelope',
+      subtitle: 'Oscillator and envelope',
+      text: 'Shape strings use the format "DURATION:startVal;pos,val;…" — DURATION in seconds, values in REVERSED_DBFS (100 = peak amplitude, 0 = silence), with bezier interpolation between control points.',
+      params: [
+        { key: 'O', desc: 'Oscillator waveform — sine | sawtooth | square | triangle | noise.' },
+        { key: 'AMP', desc: 'Master amplitude scalar. Use this to balance instruments against each other.' },
+        { key: 'A', desc: 'Attack — ramp from silence to full amplitude.' },
+        { key: 'S', desc: 'Sustain — holds while the key is held; typically decays to a plateau.' },
+        { key: 'T', desc: 'Tail (optional) — additional decay inserted between sustain and release.' },
+        { key: 'R', desc: 'Release — fade after the note ends.' },
+      ],
       code: `character:
-  O: sine      # oscillator waveform: sine | sawtooth | square | triangle | noise
-  AMP: 0.8     # master amplitude scalar — use this to balance instruments
-
-  # Envelope — shape strings: "DURATION:startVal;pos,val;pos,val;…"
-  #   DURATION = phase length in seconds
-  #   Values are in REVERSED_DBFS: 100 = peak amplitude, 0 = silence
-  #   Positions between points are bezier-interpolated
-  A: "0.01:1,100"       # attack:  10ms, ramps 0 → 100
-  S: "0.10:100;1,85"    # sustain: 100ms decay 100 → 85, then holds at 85
-  R: "0.30:100;1,0"     # release: 300ms fall 100 → 0
-
-  # T: tail (optional) — inserted between sustain and release
-  T: "0.20:85;1,50"     # 200ms further decay from 85 to 50
-
-  # Multiple control points give finer curve control:
-  R: "0.50:100;0.3,70;1,0"   # fast initial drop, then slow fade`,
+  O: sine
+  AMP: 0.8
+  A: "0.01:1,100"       # 10ms ramp up
+  S: "0.10:100;1,85"    # 100ms decay to 85, then holds
+  T: "0.20:85;1,50"     # 200ms further decay (optional)
+  R: "0.30:100;1,0"     # 300ms release
+  R: "0.50:100;0.3,70;1,0"  # multiple points for shaped curve`,
     },
     {
       subtitle: 'PROFILE — overtone structure',
+      text: 'Defines the amplitude of each harmonic partial. Index 0 = fundamental (H1), index 1 = second harmonic (H2), and so on. Simple entries are REVERSED_DBFS values (100 = same level as H1). Complex entries are objects with per-partial overrides.',
+      params: [
+        { key: 'V', desc: 'Amplitude in REVERSED_DBFS. Required when the entry is an object.' },
+        { key: 'A / S / T / R', desc: 'Per-partial envelope phases. Inherit from the root character block when omitted.' },
+        { key: 'D', desc: 'Frequency deviance in cents from the pure harmonic series. +7 = 7¢ sharp, -12 = 12¢ flat. Models string inharmonicity.' },
+        { key: 'SPREAD', desc: 'Cumulative per-partial detune in cents. Adds warmth by slightly spreading harmonics.' },
+      ],
       code: `character:
   O: sine
   A: "0.01:1,100"
   S: "0.1:100;1,80"
   R: "0.3:100;1,0"
+  PROFILE: [100, 60, 30, 15, 8, 4]   # simple list
 
-  # PROFILE defines the amplitude of each harmonic partial.
-  # Index 0 = fundamental (H1), index 1 = 2nd harmonic (H2), and so on.
-  # Values are in REVERSED_DBFS: 100 = same level as H1, 0 = absent.
-  PROFILE: [100, 60, 30, 15, 8, 4]    # fundamental + 5 overtones
+  PROFILE:                             # per-partial overrides
+    - 100
+    - V: 60
+      A: "0.5:1,100"   # this harmonic builds more slowly
+    - V: 30
+      D: 7             # +7¢ sharp
 
-  # Per-partial overrides — any entry can be an object with V, A, S, R, D:
-  PROFILE:
-    - 100                          # H1 — simple value
-    - V: 60                        # H2 — same as plain 60
-      A: "0.5:1,100"               #      but this harmonic builds more slowly
-    - V: 30                        # H3
-      D: 7                         #      frequency offset: +7 cents (slightly sharp)
-    - 15                           # H4 — plain value
-    # V   — amplitude in REVERSED_DBFS; required when the entry is an object
-    # A/S/R/T — per-partial envelope phases; inherit from root when omitted
-    # D   — deviance in cents from the pure harmonic series
-    #        D:7 = 7¢ sharp, D:-12 = 12¢ flat; models string inharmonicity
-
-  SPREAD: [0, 3, -2, 5]   # cumulative per-partial detune in cents; adds warmth`,
+  SPREAD: [0, 3, -2, 5]`,
     },
     {
       subtitle: 'VCF — resonant low-pass filter',
-      code: `# Removes high frequencies to make the sound darker and warmer.
-# "Resonant" adds a peak right at the cutoff, giving the classic synthesizer
-# "wah" quality. With an envelope the filter sweeps open and closed per note.
+      text: 'Removes high frequencies to make the sound darker and warmer. Resonance adds a peak at the cutoff frequency, producing the classic synthesizer "wah" quality. An envelope makes the filter sweep open and closed per note.',
+      params: [
+        { key: 'CUTOFF', desc: 'Cutoff frequency in Hz — 200–600 Hz = dark, 1–3 kHz = warm, 8 kHz+ = bright.' },
+        { key: 'RESONANCE', desc: '0.0 = gentle slope, no peak → 0.9 = sharp ringing peak.' },
+        { key: 'ENV_AMOUNT', desc: 'Hz the cutoff shifts on attack. Positive = brighter, negative = darker.' },
+        { key: 'ENV_ATTACK', desc: 'Seconds for the filter to reach its peak (optional).' },
+        { key: 'ENV_RELEASE', desc: 'Seconds to fall back to CUTOFF (optional).' },
+      ],
+      code: `VCF: "CUTOFF;RESONANCE[;ENV_AMOUNT[;ENV_ATTACK[;ENV_RELEASE]]]"
 
-character:
-  VCF: "CUTOFF;RESONANCE[;ENV_AMOUNT[;ENV_ATTACK[;ENV_RELEASE]]]"
-
-  # CUTOFF      — frequency in Hz where the filter begins to cut
-  #               200–600 Hz = dark/muffled   1–3 kHz = warm   8 kHz+ = bright
-  # RESONANCE   — 0.0 = gentle slope, no peak  →  0.9 = sharp ringing peak
-  # ENV_AMOUNT  — Hz the cutoff shifts on attack (positive = brighter, negative = darker)
-  # ENV_ATTACK  — seconds for the filter to reach its peak (optional)
-  # ENV_RELEASE — seconds to fall back to CUTOFF (optional)
-
-  VCF: "2000;0.5"               # static: 2 kHz cutoff, gentle resonance
-  VCF: "800;0.6;1200;0.05;0.4"  # sweep: opens from 800 Hz to 2 kHz on attack`,
+VCF: "2000;0.5"               # static: 2 kHz cutoff, gentle resonance
+VCF: "800;0.6;1200;0.05;0.4"  # sweep: opens from 800 Hz to 2 kHz on attack`,
     },
     {
       subtitle: 'LFO — slow cyclic modulation',
-      code: `# Produces slow, repeating movement — filter sweep, tremolo, or vibrato.
+      text: 'Produces slow repeating movement — filter sweep, tremolo, or vibrato. Multiple LFOs can be stacked as a list.',
+      params: [
+        { key: 'RATE', desc: 'Cycles per second — 0.2 Hz = one sweep per 5 s, 5 Hz = fast tremolo.' },
+        { key: '@OSC', desc: 'LFO waveform — sin | saw | square | triangle. Default: sin.' },
+        { key: '[DELAY]', desc: 'Fade-in time in seconds. The LFO grows from zero to full depth over this period.' },
+        { key: 'DEPTH', desc: 'Swing amount. Unit depends on TARGET: vcf = Hz shift, amp = 0–1 fraction, pitch = cents.' },
+        { key: 'TARGET', desc: 'vcf | amp | pitch.' },
+        { key: '+PHASE', desc: 'Starting phase in degrees (0–359). Optional.' },
+      ],
+      code: `LFO: "RATE[@OSC][[DELAY]];DEPTH:TARGET[+PHASE]"
 
-character:
-  LFO: "RATE[@OSC][[DELAY]];DEPTH:TARGET[+PHASE]"
+LFO: "0.5@sin[0.5];200:vcf"     # slow filter wobble, 0.5 s fade-in
+LFO: "3.0@tri;0.08:amp"         # fast tremolo
+LFO: "8.18@sin[0.37];15:pitch"  # vibrato: ±15¢ at 8.18 Hz
 
-  # RATE    — cycles per second; 0.2 Hz = one sweep per 5s; 5 Hz = fast tremolo
-  # @OSC    — LFO waveform (sin | saw | square | triangle); default sin
-  # [DELAY] — fade-in time in seconds; the LFO grows from zero to full depth
-  # DEPTH   — swing amount; unit depends on TARGET:
-  #             vcf   — Hz shift applied to filter cutoff
-  #             amp   — fraction 0–1 of amplitude (0.08 = ±8% tremolo)
-  #             pitch — cents deviation (15 = ±15¢ vibrato)
-  # TARGET  — vcf | amp | pitch
-  # +PHASE  — starting phase in degrees (0–359); optional
-
-  LFO: "0.5@sin[0.5];200:vcf"     # slow filter wobble, 0.5s fade-in
-  LFO: "3.0@tri;0.08:amp"         # fast tremolo, no fade-in
-  LFO: "8.18@sin[0.37];15:pitch"  # vibrato: ±15¢ at 8.18 Hz, 0.37s delay
-
-  # Multiple LFOs (e.g. tremolo + vibrato together):
-  LFO:
-    - "5.0@sin;0.05:amp"
-    - "6.0@sin[0.5];10:pitch"`,
+LFO:                             # multiple LFOs
+  - "5.0@sin;0.05:amp"
+  - "6.0@sin[0.5];10:pitch"`,
     },
     {
       subtitle: 'FM — frequency modulation',
-      code: `# Uses one oscillator (the modulator) to rapidly vary the pitch of the note.
-# Unlike the LFO, the modulator runs at audio frequencies, creating complex
-# sidebands — metallic, bell-like, or harsh tones not achievable with simple waves.
+      text: 'Uses one oscillator (the modulator) to rapidly vary the pitch of the note, creating complex sidebands — metallic, bell-like, or harsh tones not achievable with simple waves.',
+      params: [
+        { key: 'FREQ', desc: 'Modulator frequency in Hz.' },
+        { key: 'f', desc: 'Treat FREQ as a ratio of the note pitch ("2f" at A4 = 880 Hz). Keeps timbre consistent across all pitches.' },
+        { key: '@OSC', desc: 'Modulator waveform — sin | saw | square | triangle. Default: sin.' },
+        { key: '[DEPTH_ENV]', desc: 'Shape string controlling depth over time — "1:1;0.5,0" = full depth fading to zero by halfway.' },
+        { key: 'DEPTH', desc: 'Pitch swing as fraction of carrier frequency — 0.05 = subtle shimmer, 0.3 = metallic, 0.8+ = heavy distortion.' },
+        { key: '+PHASE', desc: 'Modulator starting phase in degrees. +90 creates a downward pitch dip on attack.' },
+      ],
+      code: `FM: "FREQ[f][@OSC][[DEPTH_ENV]];DEPTH[+PHASE]"
 
-character:
-  FM: "FREQ[f][@OSC][[DEPTH_ENV]];DEPTH[+PHASE]"
-
-  # FREQ       — modulator frequency in Hz
-  # f          — treat FREQ as a ratio of the note pitch ("2f" at A4 = 880 Hz)
-  #              keeps timbre consistent across all pitches; omit for fixed Hz
-  # @OSC       — modulator waveform (sin | saw | square | triangle); default sin
-  # [DEPTH_ENV]— shape string controlling depth over time
-  #              "1:1;0.5,0" = full depth, fades to zero by halfway
-  # DEPTH      — pitch swing as fraction of carrier frequency
-  #              0.05 = subtle shimmer   0.3 = metallic/bell   0.8+ = heavy distortion
-  # +PHASE     — modulator starting phase in degrees; +90 creates a downward pitch dip
-
-  FM: "2f[1:1;0.5,0];0.4"  # 2× ratio, depth fades out: metallic attack, clean sustain
-  FM: "220@saw;0.3"         # fixed 220 Hz sawtooth modulator, depth 0.3
-  FM: "2f;0.4+90"           # ratio 2×, depth 0.4, phase 90° (downward pitch dip)`,
+FM: "2f[1:1;0.5,0];0.4"  # ratio 2×, depth fades out: metallic attack, clean sustain
+FM: "220@saw;0.3"         # fixed 220 Hz sawtooth modulator
+FM: "2f;0.4+90"           # ratio 2×, phase 90° (downward pitch dip)`,
     },
   ],
 }
@@ -217,31 +206,38 @@ character:
 const TUNING: Section = {
   title: 'Tuning  (.splt)',
   intro:
-    'A tuning file defines the pitch system — what frequencies the note names ' +
-    'map to, which scales are available, and which scale is active by default. ' +
-    'The built-in "tones_euro" covers standard Western notation (A–G, sharps and flats).',
+    'Defines the pitch system — what frequencies note names map to, which scales are available, ' +
+    'and which scale is active by default. The built-in "tones_euro" covers standard Western notation.',
   blocks: [
     {
+      params: [
+        { key: 'ref_frequency', desc: 'Hz of the reference pitch — 440 = concert A.' },
+        { key: 'ref_octave_number', desc: 'Octave containing the reference (A4 = 440 Hz → 4).' },
+        { key: 'ref_octave_offset', desc: 'Semitones above C: C=0, D=2, E=4, F=5, G=7, A=9, B=11.' },
+        { key: 'tones_per_octave', desc: '12 = equal temperament. Increase for microtonal systems.' },
+        { key: 'tones', desc: 'Custom note names mapped to semitone positions. Merged with built-in Anglo-Saxon names.' },
+        { key: 'scales', desc: 'Step sizes in semitones — must sum to tones_per_octave.' },
+        { key: 'default_scale', desc: 'Scale used when no scale is specified in the score.' },
+      ],
       code: `basics:
-  ref_frequency:    440  # Hz of the reference pitch; 440 = concert A
-  ref_octave_number:  4  # octave containing the reference (A4 = 440 Hz)
-  ref_octave_offset:  9  # semitones above C: C=0 D=2 E=4 F=5 G=7 A=9 B=11
-  tones_per_octave:  12  # 12 = equal temperament; increase for microtonal systems
+  ref_frequency:    440
+  ref_octave_number:  4
+  ref_octave_offset:  9
+  tones_per_octave:  12
 
-tones:                   # custom note names (merged with built-in Anglo-Saxon set)
-  H:   11                # semitone position in [0, tones_per_octave)
-  Cis:  1                # e.g. German notation: H=B-natural, Cis=C-sharp
+tones:
+  H:   11   # German B-natural
+  Cis:  1   # German C-sharp
 
-scales:                  # step sizes in semitones; must sum to tones_per_octave
-  mj:  "2 2 1 2 2 2 1"  # major scale (W W H W W W H)
-  mn:  "2 1 2 2 1 2 2"  # natural minor
-  chr: "1 1 1 1 1 1 1 1 1 1 1 1"  # chromatic (all 12 semitones)
+scales:
+  mj:  "2 2 1 2 2 2 1"   # major
+  mn:  "2 1 2 2 1 2 2"   # natural minor
 
-default_scale: mj        # scale used when no scale is specified in the score
+default_scale: mj
 
-# When a scale is active, off-scale notes require an explicit suffix:
-#   C#4?  — snap to the nearest in-scale pitch
-#   C#4!  — play the exact chromatic pitch regardless of scale`,
+# Off-scale notes need an explicit suffix:
+#   C#4?  — snap to nearest in-scale pitch
+#   C#4!  — play exact chromatic pitch`,
     },
   ],
 }
@@ -251,72 +247,62 @@ default_scale: mj        # scale used when no scale is specified in the score
 const ROOM: Section = {
   title: 'Room  (.splr)',
   intro:
-    'A room file adds reverb — reflected sound that builds a sense of space. ' +
-    'There are two room types: a tap-delay model (explicit echo taps) and ' +
-    'Freeverb (a smooth algorithmic reverb). The same shape string format used ' +
-    'in instrument envelopes also appears in room fields.',
+    'Adds reverb — reflected sound that creates a sense of space. Two types: ' +
+    'tap-delay (explicit echo taps) and Freeverb (smooth algorithmic reverb).',
   blocks: [
     {
-      subtitle: 'Shape strings — bezier curves in a compact notation',
+      subtitle: 'Shape strings',
+      text: 'Values between control points are smoothly bezier-interpolated. Used in both instrument envelopes and room fields.',
+      params: [
+        { key: 'DURATION', desc: 'Output size — seconds for envelopes, tap count for rooms.' },
+        { key: 'startVal', desc: 'Value at position 0. Omit to start from 0.' },
+        { key: 'pos,val', desc: 'Control points. Positions must increase left to right (0–1 range).' },
+      ],
       code: `# Format:  DURATION : [startVal ;] pos,val [; pos,val …]
+
+"0.01:1,100"           # 10ms ramp: 0 → 100
+"0.10:100;1,85"        # 100ms: 100 → 85
+"0.30:100;0.3,70;1,0"  # 300ms: fast drop, slow fade
+
+"6:90;1,60;4,20;6,5"   # 6-tap room curve:
 #
-# DURATION  — output size: seconds (instrument envelopes) or tap count (rooms)
-# startVal  — value at position 0; omit to start from 0
-# pos,val   — control points; positions must increase left to right
-# Values between points are smoothly bezier-interpolated.
-#
-# Examples used in instrument envelopes (REVERSED_DBFS: 100=peak, 0=silence):
-"0.01:1,100"          # 10ms ramp: 0 → 100
-"0.10:100;1,85"       # 100ms decay: 100 → 85
-"0.30:100;0.3,70;1,0" # 300ms release: fast drop, then slow fade to 0
-#
-# Example used in room levels/delays (6 taps):
-"6:90;1,60;4,20;6,5"  # 6-output curve
-#
-#  90 ●                   ← tap 0
+#  90 ●
 #  60   ╲
-#  20       ━━━━━━●       ← tap 4
-#   5              ────────●  ← tap 6
+#  20       ━━━━━●
+#   5              ────●
 #     0   1   2   3   4   5   6`,
     },
     {
       subtitle: 'Tap-delay room',
-      code: `name: hall   # human-readable label (not used in score references)
+      params: [
+        { key: 'levels', desc: 'Amplitude of each echo tap — shape string defining the reverb decay curve.' },
+        { key: 'delays', desc: 'Delay of each tap in milliseconds. "6:0;6,100" spreads 6 taps from 0 ms to 100 ms.' },
+        { key: 'jitter', desc: 'Small random amplitude variation per tap — prevents metallic comb-filter colouration. Separate L/R with "|".' },
+        { key: 'deldiffs', desc: 'Per-channel arrival offset in seconds — "0.008|0.014" = 8 ms L, 14 ms R. Makes echo times differ slightly for stereo width.' },
+      ],
+      code: `name: hall
 
-levels: "6:90;1,60;4,20;6,5"
-# Amplitude of each echo tap — defines the reverb decay curve.
-# Higher = louder reflections; shape controls how fast the reverb fades.
-
-delays: "6:0;6,100"
-# Delay of each tap in milliseconds.
-# "6:0;6,100" spreads 6 taps evenly from 0 ms to 100 ms.
-
-jitter: "1:0.12"
-# Small random amplitude variation per tap — prevents metallic comb-filter
-# colouration from evenly spaced taps. Separate L/R: "1:0.12|1:0.18"
-
-deldiffs: "0.008|0.014"
-# Per-channel arrival offset in seconds (L: 8ms, R: 14ms).
-# Makes left and right echo times differ slightly → stereo width.`,
+levels:   "6:90;1,60;4,20;6,5"
+delays:   "6:0;6,100"
+jitter:   "1:0.12"
+deldiffs: "0.008|0.014"`,
     },
     {
       subtitle: 'Freeverb — algorithmic reverb',
-      code: `# A classic plate-style reverb: parallel comb filters → all-pass diffusers.
-# Produces smooth, dense decay without explicit tap configuration.
-# Use this for natural-sounding ambience; use tap-delay for distinct echoes.
-
-type: freeverb
-
-room_size:    0.76  # reverb decay length (0–1)
-                     # 0.3 = tight room   0.7 = medium hall   0.9 = cathedral
-damping:      0.45  # high-frequency absorption (0–1)
-                     # 0.0 = bright (highs sustain as long as lows)
-                     # 0.9 = very dark / padded-studio sound
-wet:          0.22  # reverb mix level (0–1)
-                     # 0.1 = subtle ambience   0.3 = noticeable   0.7 = very wet
-width:        1.0   # stereo spread of the reverb tail (0=mono, 1=full stereo)
-pre_delay_ms: 10    # ms before reverb starts after the direct sound
-                     # 0 = immediate   10 = natural separation   50 = slapback`,
+      text: 'A classic plate-style reverb: parallel comb filters into all-pass diffusers. Produces smooth, dense decay without explicit tap configuration. Use for natural ambience; use tap-delay for distinct echoes.',
+      params: [
+        { key: 'room_size', desc: 'Reverb decay length (0–1) — 0.3 = tight room, 0.7 = medium hall, 0.9 = cathedral.' },
+        { key: 'damping', desc: 'High-frequency absorption (0–1) — 0.0 = bright highs sustain, 0.9 = dark padded-studio sound.' },
+        { key: 'wet', desc: 'Reverb mix level (0–1) — 0.1 = subtle, 0.3 = noticeable, 0.7 = very wet.' },
+        { key: 'width', desc: 'Stereo spread of the reverb tail — 0 = mono, 1 = full stereo.' },
+        { key: 'pre_delay_ms', desc: 'Milliseconds before reverb starts after the direct sound — 0 = immediate, 10 = natural, 50 = slapback.' },
+      ],
+      code: `type: freeverb
+room_size:    0.76
+damping:      0.45
+wet:          0.22
+width:        1.0
+pre_delay_ms: 10`,
     },
   ],
 }
@@ -358,12 +344,29 @@ export const HelpDialog: Component<HelpDialogProps> = (props) => {
               <p class="help-intro">{s.intro}</p>
               <For each={s.blocks}>
                 {(b) => (
-                  <>
+                  <div class="help-block">
                     <Show when={b.subtitle}>
                       <p class="help-subtitle">{b.subtitle}</p>
                     </Show>
-                    <pre><code>{b.code}</code></pre>
-                  </>
+                    <Show when={b.text}>
+                      <p class="help-text">{b.text}</p>
+                    </Show>
+                    <Show when={b.params && b.params.length > 0}>
+                      <dl class="help-params">
+                        <For each={b.params}>
+                          {(p) => (
+                            <>
+                              <dt>{p.key}</dt>
+                              <dd>{p.desc}</dd>
+                            </>
+                          )}
+                        </For>
+                      </dl>
+                    </Show>
+                    <Show when={b.code}>
+                      <pre><code>{b.code}</code></pre>
+                    </Show>
+                  </div>
                 )}
               </For>
             </section>
