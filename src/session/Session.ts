@@ -53,6 +53,7 @@ export class Session {
   private readonly setBuffer: (v: MixResult | null) => void
   private readonly setDiagnostics: (v: RenderDiagnostic[]) => void
   private controller: AbortController | null = null
+  private lastScoreId: string | null = null
 
   constructor(audioContextFactory: () => AudioContext) {
     const [editLock, setEditLock] = createSignal(false)
@@ -129,6 +130,10 @@ export class Session {
       const { head } = parseScore(scoreFile.body)
       const mix = await mixOnly(plan, head, { room })
 
+      if (scoreFile.id !== this.lastScoreId) {
+        this.player.resetLoopPoints()
+        this.lastScoreId = scoreFile.id
+      }
       this.player.loadBuffer(mix)
       this.setBuffer(mix)
       this.setDiagnostics([])
