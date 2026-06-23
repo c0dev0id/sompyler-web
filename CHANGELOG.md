@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **All 9 Oxygène instruments rebuilt from FluidR3_GM2.sf2 source data only** — no TiMidity-rendered WAV, no hand-tuned values. Each instrument derives envelope timings from SF2 volume-envelope generators (timecents → seconds), PROFILE from loop-region FFT, AMP from `initialAttenuation` centibels, and VCF/LFO from SF2 filter/modulation generators:
+  - **kalimba**: replaced near-pure-sine TimGM6mb model with GM108 Koto (FluidR3) — rich 24-harmonic PROFILE (H2/H3/H5 ≈100 RDFS), plucked 0.29s decay
+  - **synbrass**: VCF filter sweep now wired — 500 Hz → 5039 Hz via mod envelope (instant attack); AMP 0.35→0.5
+  - **strings**: VCF at 5549 Hz (previously missing); release instant per SF2; LFO moved inside character block
+  - **ensemble**: sustain decays to 0 in 0.1s — this is a "strings hit" articulation, not a sustained pad; AMP 0.10→0.354
+  - **bowedpad**: AMP 0.08→0.158; release instant per SF2; invented 0.18 Hz tremolo LFO removed (no LFO in SF2)
+  - **melody**: rebuilt from GM25 Nylon Guitar FluidR3 loop FFT — replaces TimGM6mb STFT; irregular guitar spectrum with dip at H6–H8
+  - **tambourine**: AMP 0.18→0.5; SF2 envelope is pass-through (all phases ≈0.001s); sample carries the transient
+  - **seashore**: AMP 0.06→0.375; 1.96s attack, 4.46s shaped decay (hold 2.67s then fade); instant release
+  - **bass**: AMP 0.70→0.5 (initialAttn=0); PROFILE and envelope unchanged
+
+- `sf2_to_spli.py` fixed: vibrato now emits as `LFO: "…:pitch"` string instead of a comment; LFO delay uses `[brackets]` syntax; VCF emitted even when mod-envelope sweep is present; GM percussion bank (bank=128) supported via `drum:NOTE` argument
+
 - **Second-pass STFT instrument analysis** using a reusable analysis script (`analyze_instrument.py`, 4096-frame Hann window, 512-hop, parabolic interpolation for sub-bin accuracy). All six pitched instruments now use per-frame harmonic tracking to select the true mid-sustain window rather than a single FFT snapshot:
   - **synstrings**: previous PROFILE used a late-sustain window (H2=36%). Corrected to mid-sustain: H2=21.9, H3=18.5, H4=12.4 (much more modest). Six harmonics (H2, H5–H9) that build after the loudness peak now have per-partial `A:` overrides — each attack time derived as `A_partial = 1.5s × (V_sustained / V_at_peak)`, so the measured onset ratio is reproduced exactly at global-attack completion. String inharmonicities added: H7(−8c), H8(+14c), H9(+17c), H11(−8c).
   - **synbrass**: previous PROFILE came from a 3-window analysis with a very narrow sustain window (0.27s). Replaced with a stable 1.0s average across the mid-swell (1.5–2.5s): H2 67→80, H6 8.2→13.6, H8 8.9→14.0, H10 7.1→13.3, H11 5.2→11.1. Six harmonics now carry measured inharmonicities: H2(+9c), H4(+6c), H5(+7c), H6(+10c), H8(+6c), H11(+12c).
