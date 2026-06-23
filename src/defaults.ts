@@ -543,41 +543,41 @@ character:
   FM: "1[100:1;0.1,0;1,0];3+90"
 `
 
-const OXYGENE_BASS = `# bass: Fretless Bass (GM36 / TimGM6mb), C2. Partials from TiMidity STFT (4096-frame).
-# H2 strong, H4-H5 prominent. H5 32.6→29 corrected by STFT vs single-window.
-# H8 has +5c inharmonicity (fretless string stretch).
+const OXYGENE_BASS = `# bass: Fretless Bass (GM36 / FluidR3_GM2.sf2). PROFILE from loop FFT.
+# H3 (63.8) > H2 (58.7) — characteristic fretless growl from strong 3rd harmonic.
+# H8–H16 plateau (~30 RDFS) gives the sustained upper-harmonic richness of fretless.
+# Envelope: instant attack, 3s decay to silence (plucked, no sustain), 1.8s release.
 character:
   AMP: 0.70
   O: sine
-  A: "0.008:1,100"
-  S: "0.04:100;1,80"
-  R: "0.15:100;1,0"
+  A: "0.001:1,100"
+  S: "3.0:100;1,0"
+  R: "1.8:100;1,0"
   PROFILE:
-    - 100
-    - 70
-    - 20
+    - 100.0
+    - 58.7
+    - 63.8
+    - 42.0
+    - 32.9
     - 23.6
-    - 29
-    - 14.5
-    - 14.5
-    - V: 16.6
-      D: 5
-    - 10.8
-    - 4.0
-    - 3.9
-    - 2.0
-    - 0.9
-    - 0.4
-    - 0.4
-    - 0.2
-    - 0.2
-    - 0.1
-    - 0.1
-    - 0.1
-    - 0.1
-    - 0.1
-    - 0.0
-    - 0.0
+    - 23.2
+    - 30.4
+    - 31.0
+    - 30.5
+    - 25.0
+    - 32.6
+    - 30.0
+    - 29.3
+    - 30.7
+    - 33.0
+    - 26.1
+    - 25.5
+    - 28.0
+    - 23.6
+    - 22.3
+    - 25.7
+    - 26.1
+    - 23.3
 `
 
 const OXYGENE_KALIMBA = `# kalimba: Kalimba (GM108 / TimGM6mb). Pure sine sustain.
@@ -600,179 +600,124 @@ character:
   PROFILE: [100, 0.2, 0.1, 0.03, 0.04, 0, 0.02]
 `
 
-const OXYGENE_SYNBRASS = `# synbrass: Jarre-style Moog/ARP synth brass. Fast attack, full harmonic spectrum.
-# PROFILE shaped toward a filtered sawtooth: H3–H8 are audible mid harmonics,
-# not the near-silence the TiMidity STFT suggested. Odd harmonics (H3,H5,H7)
-# intentionally kept strong for the characteristic brass buzz and edge.
-# D: values retained from STFT tracking (H2+9c, H4+6c, H5+7c, H6+10c, H8+6c, H11+12c).
+const OXYGENE_SYNBRASS = `# synbrass: Synth Brass 2 (GM64 / FluidR3_GM2.sf2). PROFILE from loop FFT.
+# Sample 'Sbrass C4(L)' is a pre-filtered synth brass tone at open-filter state.
+# H2 = H1 in amplitude — the fundamental and octave are equally strong, giving
+# the physical "gut vibration" presence of brass. H3–H7 all 65–89 RDFS.
+# SF2 uses a filter sweep (500 Hz → 5 kHz with mod env) for the attack swell;
+# we model the sustained open-filter state via PROFILE.
+# Envelope: instant attack, brief hold, full sustain, 1s release (SF2-accurate).
 character:
   O: sine
   AMP: 0.35
-  A: "0.02:1,100"
-  S: "0.001:100;1,88"
-  R: "0.40:100;1,0"
+  A: "0.001:1,100"
+  S: "0.025:100;1,100"
+  R: "1.0:100;1,0"
   PROFILE:
-    - 100
-    - V: 85
-      D: 9
-    - 80
-    - V: 74
-      D: 6
-    - V: 72
-      D: 7
-    - V: 67
-      D: 10
-    - 64
-    - V: 61
-      D: 6
-    - 57
-    - 54
-    - V: 51
-      D: 12
-    - 48
-    - 44
-    - 41
-    - 38
-    - 35
-    - 32
-    - 29
-    - 26
-    - 23
-    - 20
-    - 18
-    - 16
-    - 14
+    - 100.0
+    - 100.0
+    - 88.8
+    - 76.4
+    - 75.3
+    - 73.4
+    - 71.0
+    - 64.8
+    - 63.5
+    - 65.2
+    - 62.7
+    - 53.9
+    - 57.5
+    - 58.6
+    - 62.6
+    - 43.8
+    - 55.2
+    - 43.8
+    - 56.1
+    - 49.5
+    - 54.6
+    - 53.3
+    - 48.1
+    - 42.4
 `
 
-const OXYGENE_STRINGS = `# strings: SynString 2 (GM52 / TimGM6mb), C3. Partials from TiMidity STFT mid-sustain.
-# TiMidity peak at 3.78s. Global A=1.5s compresses the swell.
-# H2/H5-H9 build after the loudness peak; per-partial A: derived as
-# A_partial = 1.5 × (V_mid_sustain / V_at_peak) to match the measured ratio.
-# D: for H7(-8c), H8(+14c), H9(+17c), H11(-8c): string inharmonicities.
+const OXYGENE_STRINGS = `# strings: Synth Strings 2 (GM52 / FluidR3_GM2.sf2).
+# Sample 'saw-fb-110' is a feedback sawtooth oscillator — confirmed by name and
+# by FFT: PROFILE matches 1/n sawtooth within 3-4 RDFS across all harmonics.
+# Using O:sawtooth directly is simpler, accurate, and gives the cold synthetic
+# string-synth character (not acoustic bowed strings).
+# Vibrato from SF2: 8.18 Hz, -15 cents depth, 0.37s delay (not yet wired as LFO).
+# Envelope: instant attack, full sustain, 1.2s release (SF2-accurate).
 character:
-  O: sine
-  AMP: 0.12
-  A: "1.5:1,100"
-  S: "0.001:100;1,88"
+  O: sawtooth
+  AMP: 0.20
+  A: "0.001:1,100"
+  S: "0.001:100;1,100"
   R: "1.20:100;1,0"
-  PROFILE:
-    - 100
-    - V: 21.9
-      A: "3.2:1,100"
-    - 18.5
-    - 12.4
-    - V: 13.8
-      A: "3.3:1,100"
-    - V: 9.9
-      A: "3.7:1,100"
-    - V: 8.3
-      A: "4.2:1,100"
-      D: -8
-    - V: 7.0
-      A: "3.6:1,100"
-      D: 14
-    - V: 6.2
-      A: "3.9:1,100"
-      D: 17
-    - 4.7
-    - V: 6.1
-      D: -8
-    - 4.9
-    - 4.5
-    - 3.8
-    - 3.9
-    - 2.9
-    - 2.8
-    - 3.1
-    - 2.7
-    - 2.4
-    - 2.3
-    - 1.6
-    - 1.2
-    - 1.3
 `
 
-const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / TimGM6mb), C4. Partials from TiMidity STFT.
-# H1 decays faster than H2/H4/H8 — post-peak sustain heavily weighted toward
-# octave and 4th harmonic (gives the "ensemble warmth" quality).
-# Attack shortened to not drag the beat (TiMidity peak at 0.52s, we use 0.08s).
-# D: from STFT tracking: H4+14c and H11-18c are real inharmonicities;
-# H5(-8c) and H6(-7c) add ensemble roughness.
+const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / FluidR3_GM2.sf2). PROFILE from loop FFT.
+# Sample 'Strings C#5L' — a full string section recording. H1–H5 all at 100 RDFS
+# (equal amplitude), then gradual rolloff from H6. The flat low-harmonic spectrum
+# gives the ensemble its characteristic dense, full-bodied wall of sound.
+# Envelope: instant attack (SF2: no swell), full sustain, 1.5s release.
 character:
   O: sine
   AMP: 0.10
-  A: "0.08:1,100"
-  S: "0.001:100;1,85"
+  A: "0.001:1,100"
+  S: "0.001:100;1,100"
   R: "1.50:100;1,0"
   PROFILE:
-    - 100
-    - 56
-    - 18.5
-    - V: 26
-      D: 14
-    - V: 13
-      D: -8
-    - V: 11
-      D: -7
-    - 7.5
-    - 15
-    - 7.2
-    - 9.8
-    - V: 5.4
-      D: -18
-    - 3.0
-    - 1.8
-    - 2.6
-    - 2.6
-    - 1.1
-    - 1.4
-    - 1.0
-    - 0.5
-    - 0.4
-    - 0.2
-    - 0.1
-    - 0.0
-    - 0.1
+    - 100.0
+    - 100.0
+    - 100.0
+    - 100.0
+    - 100.0
+    - 91.2
+    - 89.4
+    - 80.4
+    - 72.8
+    - 89.0
+    - 93.1
+    - 86.5
+    - 94.2
+    - 88.1
+    - 86.0
+    - 86.4
+    - 85.8
+    - 82.7
+    - 83.3
+    - 79.4
+    - 73.7
+    - 72.5
+    - 63.6
+    - 59.9
 `
 
-const OXYGENE_BOWEDPAD = `# bowedpad: Pad 5 Bowed (GM93 / TimGM6mb), C4. Partials from TiMidity STFT.
-# H4 above H1 (105%). Rich mid-range (H5-H11 all 7-24%). Dense pad texture.
-# D: from STFT tracking: H9 notably sharp (+26c), H8 sharp (+10c), H4/H5 smaller.
+const OXYGENE_BOWEDPAD = `# bowedpad: Bowed Glass (GM93 / FluidR3_GM2.sf2).
+# Sample 'Bowed Glass' is a single-cycle loop with flat spectrum — all harmonics
+# at equal amplitude. The timbre is entirely shaped by VCF at 1720 Hz with
+# high resonance (Q=0.9 / 0 cB in SF2), giving the characteristic glassy tone.
+# Envelope: instant attack (SF2), full sustain, kept 2s release for smooth pads.
 character:
   O: sine
   AMP: 0.08
-  A: "0.80:1,100"
-  S: "0.001:100;1,90"
+  A: "0.001:1,100"
+  S: "0.001:100;1,100"
   R: "2.00:100;1,0"
+  VCF: "1720;0.90"
   PROFILE:
     - 100
-    - 32
-    - 26.7
-    - V: 105
-      D: 8
-    - V: 24
-      D: 6
-    - 12
-    - 12.4
-    - V: 8.8
-      D: 10
-    - V: 6.9
-      D: 26
-    - 9.4
-    - 10.2
-    - 4.8
-    - 5.4
-    - 5.7
-    - 4.9
-    - 3.9
-    - 3.6
-    - 4.2
-    - 3.6
-    - 3.5
-    - 2.2
-    - 2.0
-    - 1.5
-    - 1.6
+    - 100
+    - 100
+    - 100
+    - 100
+    - 100
+    - 100
+    - 100
+    - 100
+    - 100
+    - 100
+    - 100
   LFO: "0.18@sin;0.08:amp"
 `
 
