@@ -619,35 +619,33 @@ character:
     - 25.7   # H24
 `
 
-const OXYGENE_SYNBRASS = `# synbrass: Synth Brass 2 (GM64 / FluidR3_GM2.sf2). PROFILE from loop FFT.
-# Sample: 'Sbrass C4(L)'  root=60  rate=25000 Hz  loop=29098fr (1163.9ms)
-# H2=H1 — fundamental and octave equal, giving brass "gut vibration" presence.
-# Filter sweep: 500 Hz → 5039 Hz via mod envelope (instant attack, 1s release).
-# PROFILE updated L7: VCF-boost-compensated from TiMidity at G4 (note=67) t=1.5s.
-character:
+const OXYGENE_SYNBRASS = `character:
   O: sine
-  AMP: 0.05
-  A: "0.001:1,100"
-  S: "0.025:100;1,100.0"
-  R: "1.017:100;1,0"
-  VCF: "500;0.89;4539;0.001;1.029"
+  AMP: 0.09
+  A: "0.12:0.1,250;0.5,220;0.8,140;1,100"
+  S: "3.0:100;0.32,60;0.33,155;0.4,120;0.5,2*2;0.65,50;1,100"
+  T: "0.3:150;0.5,130;1,100"
+  R: "0.01:100;0.05,0.7*8;1,0"
+  VCF: "500;0.5;4539;0.001;1.029"
+  LFO: "1.0@sin[1.5];0.8:amp"
+  UNISON: "2;4"
   PROFILE:
     - 100.0  # H1
-    - 100.0  # H2
-    - 94.3   # H3  (L7: VCF-boost-compensated from TiMidity t=1.5)
-    - 88.2   # H4
-    - 87.9   # H5
-    - 85.4   # H6
-    - 79.6   # H7
-    - 76.7   # H8
-    - 75.6   # H9
-    - 67.2   # H10
-    - 68.9   # H11
-    - 61.5   # H12  (L8: K=1.30 observed, still below target)
-    - 56.0   # H13  (L8: further correction)
-    - 65.5   # H14
-    - 61.4   # H15
-    - 64.2   # H16
+    - 92.4   # H2
+    - 98.6   # H3
+    - 87.5   # H4
+    - 81.8   # H5
+    - 83.1   # H6
+    - 65.6   # H7
+    - 65.5   # H8
+    - 64.2   # H9
+    - 58.4   # H10
+    - 61.2   # H11
+    - 53.2   # H12
+    - 65.2   # H13
+    - 57.8   # H14
+    - 67.5   # H15
+    - 62.0   # H16
     - 55.2   # H17
     - 43.8   # H18
     - 56.1   # H19
