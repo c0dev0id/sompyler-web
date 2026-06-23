@@ -68,6 +68,7 @@ const ROOT_KEY_TOKENS = new Set([
   'MORPH',
   'VCF',
   'LFO',
+  'UNISON',
   'VOLUMES',
   'name',
   'source',
