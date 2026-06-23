@@ -390,6 +390,7 @@ html, body, #root {
   border-radius: 2px;
   cursor: pointer;
   overflow: visible;
+  margin: 0 8px;
 }
 
 .seekbar-loop-region {
