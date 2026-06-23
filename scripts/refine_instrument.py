@@ -356,13 +356,29 @@ def print_report(ref_wav: Path, spl_wav: Path,
     print(f"  {'-'*3}  {'-'*9}  {'-'*7}  {'-'*7}  {'-'*6}")
     ref_p = spectral_profile(ref, ref_sr, freq_hz, n_harm, mid_t)
     spl_p = spectral_profile(spl, spl_sr, freq_hz, n_harm, mid_t)
+    spectrum_l1 = 0.0
     for (h, f, r), (_, _, s) in zip(ref_p, spl_p):
         d = s - r
+        spectrum_l1 += abs(d)
         if abs(d) > 5:
             arrow = f"  ← PROFILE[H{h}] {'too high' if d>0 else 'too low'} by {abs(d):.0f} RDFS"
         else:
             arrow = ''
         print(f"  {h:>3}  {f:>9.1f}  {r:>+7.1f}  {s:>+7.1f}  {d:>+6.1f}{arrow}")
+
+    # ── quality score (lower is better; track across iterations) ────────────
+    env_l1 = 0.0
+    for t in points:
+        def at(ts, rs):
+            i = np.searchsorted(ts, t)
+            return rs[min(i, len(rs)-1)] if len(rs) else 0.0
+        env_l1 += abs(to_db(at(spl_t, spl_rms)) - to_db(at(ref_t, ref_rms)))
+    quality = spectrum_l1 + env_l1 + abs(peak_diff_db)
+    print()
+    print(f"QUALITY  L1={quality:.1f}   "
+          f"(spectrum={spectrum_l1:.1f} RDFS, "
+          f"envelope={env_l1:.1f} dB, "
+          f"peak={abs(peak_diff_db):.1f} dB)   ← lower is better")
     print()
 
 
