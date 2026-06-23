@@ -190,9 +190,18 @@ export const Layout: Component<LayoutProps> = (props) => {
 
   onMount(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      if (!(e.ctrlKey || e.metaKey)) return
+      const inEditor = (e.target as Element | null)?.closest?.('.cm-editor') != null
+      if (e.key === 's') {
         e.preventDefault()
         void props.session.startRender()
+      } else if (e.key === 'p') {
+        e.preventDefault()
+        props.session.player.play()
+      } else if (e.key === 'x' && !inEditor) {
+        e.preventDefault()
+        props.session.clearBarMarker()
+        props.session.player.setLoopPoints(0, 0)
       }
     }
     window.addEventListener('keydown', onKeyDown)
