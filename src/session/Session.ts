@@ -177,6 +177,10 @@ export class Session {
     this.setStatus(IDLE_STATUS)
   }
 
+  clearBarMarker(): void {
+    this.markerBar = null
+  }
+
   clearError(): void {
     if (this.renderStatus().state === 'error') {
       this.setStatus(IDLE_STATUS)
