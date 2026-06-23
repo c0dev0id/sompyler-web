@@ -1,5 +1,6 @@
 import { For, Show, type Component } from 'solid-js'
 import type { FileExtension } from '../storage/files'
+import { parseShape, renderShapeString } from '../synth/shape'
 
 // ── Content ────────────────────────────────────────────────────────────────────
 
@@ -10,6 +11,7 @@ interface Block {
   text?: string
   params?: Param[]
   code?: string
+  shapeChart?: string
 }
 
 interface Section {
@@ -275,13 +277,8 @@ const ROOM: Section = {
 "0.10:100;1,85"        # 100ms: 100 → 85
 "0.30:100;0.3,70;1,0"  # 300ms: fast drop, slow fade
 
-"6:90;1,60;4,20;6,5"   # 6-tap room curve:
-#
-#  90 ●
-#  60   ╲
-#  20       ━━━━━●
-#   5              ────●
-#     0   1   2   3   4   5   6`,
+"6:90;1,60;4,20;6,5"  # 6-tap room curve`,
+      shapeChart: '6:90;1,60;4,20;6,5',
     },
     {
       subtitle: 'Tap-delay room',
@@ -316,6 +313,49 @@ width:        1.0
 pre_delay_ms: 10`,
     },
   ],
+}
+
+// ── Shape chart ───────────────────────────────────────────────────────────────
+
+function ShapeChart(props: { shapeString: string }) {
+  const VW = 240, VH = 96
+  const PAD = { left: 26, right: 6, top: 6, bottom: 16 }
+  const pw = VW - PAD.left - PAD.right
+  const ph = VH - PAD.top - PAD.bottom
+
+  const spec = parseShape(props.shapeString)
+  const N = 120
+  const samples = Array.from(renderShapeString(props.shapeString, N))
+
+  const sx = (i: number) => PAD.left + (i / (N - 1)) * pw
+  const sy = (v: number) => PAD.top + (1 - v / 100) * ph
+
+  const polyline = samples.map((v, i) => `${sx(i).toFixed(1)},${sy(v).toFixed(1)}`).join(' ')
+
+  const ctrlPts = spec.points.map(p => ({
+    cx: PAD.left + (p.x / spec.length) * pw,
+    cy: sy(p.y),
+    label: String(Math.round(p.y)),
+  }))
+
+  const xTicks = Array.from({ length: Math.round(spec.length) + 1 }, (_, i) => ({
+    x: PAD.left + (i / spec.length) * pw,
+    label: String(i),
+  }))
+
+  return (
+    <svg viewBox={`0 0 ${VW} ${VH}`} width="100%" class="help-shape-chart" aria-hidden="true">
+      <line x1={PAD.left} y1={PAD.top} x2={PAD.left} y2={PAD.top + ph} stroke="#333" stroke-width="1"/>
+      <line x1={PAD.left} y1={PAD.top + ph} x2={PAD.left + pw} y2={PAD.top + ph} stroke="#333" stroke-width="1"/>
+      <polyline points={polyline} fill="none" stroke="#4a8df0" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+      {ctrlPts.map(p => <circle cx={p.cx} cy={p.cy} r="2.5" fill="#4a8df0"/>)}
+      {ctrlPts.map(p => <text x={PAD.left - 3} y={p.cy + 3.5} text-anchor="end" font-size="8" fill="#666">{p.label}</text>)}
+      {xTicks.map(t => <>
+        <line x1={t.x} y1={PAD.top + ph} x2={t.x} y2={PAD.top + ph + 3} stroke="#333" stroke-width="1"/>
+        <text x={t.x} y={VH - 2} text-anchor="middle" font-size="8" fill="#666">{t.label}</text>
+      </>)}
+    </svg>
+  )
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -376,6 +416,9 @@ export const HelpDialog: Component<HelpDialogProps> = (props) => {
                     </Show>
                     <Show when={b.code}>
                       <pre><code>{b.code}</code></pre>
+                    </Show>
+                    <Show when={b.shapeChart} keyed>
+                      {(s) => <ShapeChart shapeString={s} />}
                     </Show>
                   </div>
                 )}
