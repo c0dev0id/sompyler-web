@@ -49,10 +49,13 @@ stage:
       subtitle: 'Measure settings — _meta block',
       params: [
         { key: 'beats_per_minute', desc: 'Tempo. Multiplied by the stress sub-level count to derive internal ticks per minute.' },
+        { key: 'tempo', desc: 'Shape string for per-tick tempo variation within the measure — Y values in BPM. When present, overrides beats_per_minute for this measure.' },
         { key: 'stress_pattern', desc: 'Accent cycle: 2 = strong beat, 1 = weak, 0 = off-beat. Groups separated by ";" are one beat each — "2,0,1,0" gives 4/4 time.' },
         { key: 'lower_stress_bound', desc: 'Quietest note velocity (0–100).' },
         { key: 'upper_stress_bound', desc: 'Loudest note velocity. A narrow range produces flat dynamics.' },
         { key: 'repeat_unmentioned_voices', desc: 'When true, voices absent from this measure replay their previous measure.' },
+        { key: 'skip', desc: 'skip: true — the measure produces no notes and takes no elapsed time. Useful for conditionally omitting a section.' },
+        { key: 'cut', desc: 'cut: N — drop all notes that start before tick N and shift the remaining offsets left by N.' },
       ],
       code: `_meta:
   beats_per_minute: 120
@@ -69,6 +72,7 @@ stage:
         { key: 'damp=N', desc: 'Extend the release by N extra ticks — the note rings past the score window.' },
         { key: '3,5: pitch dur', desc: 'Comma list — place the same note at multiple tick positions.' },
         { key: '0+2*4: pitch dur', desc: 'Range — start + step × count, producing ticks 0, 2, 4, 6.' },
+        { key: 'voice: true', desc: 'Inherit the full content of this voice from the previous measure.' },
         { key: 'voice: false', desc: 'Silence this voice for the measure.' },
       ],
       code: `voice:
@@ -146,6 +150,19 @@ const INSTRUMENT: Section = {
       D: 7             # +7¢ sharp
 
   SPREAD: [0, 3, -2, 5]`,
+    },
+    {
+      subtitle: 'RAILSBACK_CURVE — piano inharmonicity',
+      text: 'Real piano strings go slightly sharp at both extremes of the keyboard due to string stiffness. RAILSBACK_CURVE models this by applying a per-pitch cent offset across a defined frequency range.',
+      params: [
+        { key: 'lowHz', desc: 'Lowest frequency of the range (e.g. 27.5 = A0, the lowest piano key).' },
+        { key: 'highHz', desc: 'Highest frequency of the range (e.g. 4186 = C8, the highest piano key).' },
+        { key: 'shapeString', desc: 'Cent offset curve across the range. Y values are octave-fraction shifts — 0.02 = +0.02 octave sharp at that key position.' },
+      ],
+      code: `RAILSBACK_CURVE:
+  - 27.5           # lowHz  (A0)
+  - 4186           # highHz (C8)
+  - "0;100,0.02"   # flat in the middle, +0.02 oct sharp at the top`,
     },
     {
       subtitle: 'VCF — resonant low-pass filter',
@@ -285,6 +302,7 @@ const ROOM: Section = {
       params: [
         { key: 'levels', desc: 'Amplitude of each echo tap — shape string defining the reverb decay curve.' },
         { key: 'delays', desc: 'Delay of each tap in milliseconds. "6:0;6,100" spreads 6 taps from 0 ms to 100 ms.' },
+        { key: 'border', desc: 'Optional shape string that scales the reverb tail amplitude — used as a distance-falloff curve.' },
         { key: 'jitter', desc: 'Small random amplitude variation per tap — prevents metallic comb-filter colouration. Separate L/R with "|".' },
         { key: 'deldiffs', desc: 'Per-channel arrival offset in seconds — "0.008|0.014" = 8 ms L, 14 ms R. Makes echo times differ slightly for stereo width.' },
       ],
@@ -299,6 +317,7 @@ deldiffs: "0.008|0.014"`,
       subtitle: 'Freeverb — algorithmic reverb',
       text: 'A classic plate-style reverb: parallel comb filters into all-pass diffusers. Produces smooth, dense decay without explicit tap configuration. Use for natural ambience; use tap-delay for distinct echoes.',
       params: [
+        { key: 'type', desc: 'Must be "freeverb" — selects this room model.' },
         { key: 'room_size', desc: 'Reverb decay length (0–1) — 0.3 = tight room, 0.7 = medium hall, 0.9 = cathedral.' },
         { key: 'damping', desc: 'High-frequency absorption (0–1) — 0.0 = bright highs sustain, 0.9 = dark padded-studio sound.' },
         { key: 'wet', desc: 'Reverb mix level (0–1) — 0.1 = subtle, 0.3 = noticeable, 0.7 = very wet.' },
