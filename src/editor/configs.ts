@@ -2,9 +2,10 @@ import { yaml } from '@codemirror/lang-yaml'
 import { history, defaultKeymap, historyKeymap } from '@codemirror/commands'
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { lintKeymap, lintGutter } from '@codemirror/lint'
-import { EditorState, Prec, type Extension } from '@codemirror/state'
-import { keymap, lineNumbers, highlightActiveLine, highlightSpecialChars } from '@codemirror/view'
+import { EditorState, Prec, RangeSet, RangeSetBuilder, type Extension } from '@codemirror/state'
+import { GutterMarker, keymap, lineNumbers, lineNumberMarkers, highlightActiveLine, highlightSpecialChars } from '@codemirror/view'
 import { tags } from '@lezer/highlight'
+import type { Text } from '@codemirror/state'
 import type { FileExtension } from '../storage/files'
 import { makeLinter, type SemanticLintContext } from './lint'
 import { sompylerHighlight } from './highlight'
@@ -53,6 +54,29 @@ export function extensionsFor(ext: FileExtension, ctx: SemanticLintContext, onBa
   // their CSS color wins over the YAML highlight on the enclosing span.
   const clickHandler = ext === 'spls' ? onBarClick : undefined
   return [...baseExtensions(clickHandler), makeLinter(ext, ctx), Prec.highest(sompylerHighlight(ext))]
+}
+
+class BarHighlightMarker extends GutterMarker {
+  override elementClass = 'cm-bar-highlighted'
+}
+const barHighlightMarker = new BarHighlightMarker()
+
+export function buildBarMarkerSet(doc: Text, bar: number): RangeSet<GutterMarker> {
+  // Find all `---` separator line numbers (1-based).
+  const seps: number[] = []
+  for (let i = 1; i <= doc.lines; i++) {
+    if (/^---\s*$/.test(doc.line(i).text)) seps.push(i)
+  }
+  // Bar N starts at: sep[N-1] line (the `---` itself), or line 1 for bar 0.
+  // The 2-bar window covers bars N and N+1, ending just before sep[N+1].
+  const startLine = bar === 0 ? 1 : (seps[bar - 1] ?? doc.lines)
+  const endLine = seps[bar + 1] !== undefined ? seps[bar + 1]! - 1 : doc.lines
+  const builder = new RangeSetBuilder<GutterMarker>()
+  for (let i = Math.max(1, startLine); i <= Math.min(endLine, doc.lines); i++) {
+    const from = doc.line(i).from
+    builder.add(from, from, barHighlightMarker)
+  }
+  return builder.finish()
 }
 
 export function readOnlyExtension(readOnly: boolean): Extension {

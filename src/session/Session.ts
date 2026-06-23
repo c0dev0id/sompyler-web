@@ -48,28 +48,33 @@ export class Session {
   readonly renderDiagnostics: Accessor<RenderDiagnostic[]>
   readonly player: Player
 
+  readonly markerBar: Accessor<number | null>
+
   private readonly setEditLock: (v: boolean) => void
   private readonly setStatus: (v: RenderStatus) => void
   private readonly setBuffer: (v: MixResult | null) => void
   private readonly setDiagnostics: (v: RenderDiagnostic[]) => void
+  private readonly setMarkerBar: (v: number | null) => void
   private controller: AbortController | null = null
   private lastScoreId: string | null = null
   private barTimes: number[] = []
-  private markerBar: number | null = null
 
   constructor(audioContextFactory: () => AudioContext) {
     const [editLock, setEditLock] = createSignal(false)
     const [status, setStatus] = createSignal<RenderStatus>(IDLE_STATUS)
     const [buffer, setBuffer] = createSignal<MixResult | null>(null)
     const [diagnostics, setDiagnostics] = createSignal<RenderDiagnostic[]>([])
+    const [markerBar, setMarkerBar] = createSignal<number | null>(null)
     this.editLock = editLock
     this.renderStatus = status
     this.currentBuffer = buffer
     this.renderDiagnostics = diagnostics
+    this.markerBar = markerBar
     this.setEditLock = setEditLock
     this.setStatus = setStatus
     this.setBuffer = setBuffer
     this.setDiagnostics = setDiagnostics
+    this.setMarkerBar = setMarkerBar
     this.player = new Player(audioContextFactory)
   }
 
@@ -134,14 +139,15 @@ export class Session {
 
       if (scoreFile.id !== this.lastScoreId) {
         this.player.resetLoopPoints()
-        this.markerBar = null
+        this.setMarkerBar(null)
         this.lastScoreId = scoreFile.id
       }
       this.barTimes = plan.barTimes
       // Re-apply bar markers with updated times after re-render.
-      if (this.markerBar !== null) {
-        const tStart = this.barTimes[this.markerBar] ?? 0
-        const tEnd = this.barTimes[this.markerBar + 2] ?? 0
+      const mb = this.markerBar()
+      if (mb !== null) {
+        const tStart = this.barTimes[mb] ?? 0
+        const tEnd = this.barTimes[mb + 2] ?? 0
         this.player.setLoopPoints(tStart, tEnd)
       }
       this.player.loadBuffer(mix)
@@ -178,7 +184,7 @@ export class Session {
   }
 
   clearBarMarker(): void {
-    this.markerBar = null
+    this.setMarkerBar(null)
   }
 
   clearError(): void {
@@ -194,11 +200,11 @@ export class Session {
    * same bar again clears the markers.
    */
   setBarMarker(barIndex: number): void {
-    if (this.markerBar === barIndex) {
-      this.markerBar = null
+    if (this.markerBar() === barIndex) {
+      this.setMarkerBar(null)
       this.player.setLoopPoints(0, 0)
     } else {
-      this.markerBar = barIndex
+      this.setMarkerBar(barIndex)
       const tStart = this.barTimes[barIndex] ?? 0
       const tEnd = this.barTimes[barIndex + 2] ?? 0
       this.player.setLoopPoints(tStart, tEnd)

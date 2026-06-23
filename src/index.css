@@ -601,6 +601,10 @@ html, body, #root {
 .editor .cm-lineNumbers .cm-gutterElement:hover {
   color: #888;
 }
+.editor .cm-lineNumbers .cm-gutterElement.cm-bar-highlighted {
+  color: #e0c060;
+  font-weight: bold;
+}
 
 /* Sompyler domain tokens */
 .editor .cm-pitch    { color: #4ec9b0; }  /* note names     — teal   */
