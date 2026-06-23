@@ -1,6 +1,6 @@
 import { InstrumentError } from '../errors'
 import type { Instrument } from '../parse/instrument'
-import type { FMSpec, InstrumentSpec, LFOSpec, MorphEntry, PartialDef, RailsbackCurve, VCFSpec } from './sound_generator'
+import type { FMSpec, InstrumentSpec, LFOSpec, MorphEntry, PartialDef, RailsbackCurve, UnisonSpec, VCFSpec } from './sound_generator'
 import { DEFAULT_ENVELOPE, type EnvelopeSpec } from './envelope'
 import type { OscillatorSpec, Waveform } from './oscillator'
 import { parseShape, renderShapeString } from './shape'
@@ -307,6 +307,28 @@ function compileLFOEntry(raw: string): LFOSpec {
   return spec
 }
 
+/**
+ * UNISON: "COUNT;DETUNE_CENTS" — sompyler-web extension (no RFC equivalent).
+ * COUNT is the number of stacked voices; DETUNE_CENTS the max ± offset.
+ * Voices land at linearly-distributed cent offsets. Used to model
+ * SF2 stacked-sample chorus (e.g. FluidR3 Synth Brass 2) without a
+ * chorus DSP — the phase drift between fixed-frequency voices IS the
+ * effect.
+ */
+const UNISON_RX = /^(\d+);(-?[\d.]+)$/
+
+function compileUnison(raw: unknown): UnisonSpec | undefined {
+  if (raw == null) return undefined
+  if (typeof raw !== 'string') throw new InstrumentError(`UNISON must be a string "COUNT;DETUNE_CENTS"`)
+  const m = UNISON_RX.exec(raw.trim())
+  if (!m) throw new InstrumentError(`UNISON: invalid syntax — expected "COUNT;DETUNE_CENTS"`)
+  const count = parseInt(m[1]!, 10)
+  if (!Number.isFinite(count) || count < 1) throw new InstrumentError(`UNISON: count must be >= 1`)
+  const detuneCents = parseFloat(m[2]!)
+  if (!Number.isFinite(detuneCents)) throw new InstrumentError(`UNISON: detune cents must be a number`)
+  return { count, detuneCents }
+}
+
 function compileLFO(raw: unknown): LFOSpec | LFOSpec[] | undefined {
   if (raw == null) return undefined
   if (Array.isArray(raw)) {
@@ -398,6 +420,8 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
   if (vcf) spec.vcf = vcf
   const lfo = compileLFO(root.LFO)
   if (lfo) spec.lfo = lfo
+  const unison = compileUnison(root.UNISON)
+  if (unison) spec.unison = unison
 
   return spec
 }

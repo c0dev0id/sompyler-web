@@ -69,6 +69,23 @@ export interface InstrumentSpec {
   vcf?: VCFSpec
   /** One or more LFOs routed to 'vcf' cutoff or 'amp' output. */
   lfo?: LFOSpec | LFOSpec[]
+  /**
+   * Stacked-voice chorus (sompyler-web extension). Renders the entire
+   * partial bank `count` times with each voice pitch-shifted by a fixed
+   * cent offset, then sums. Voices are linearly distributed in
+   * [-detuneCents, +detuneCents]: odd counts include a 0¢ centre voice,
+   * even counts straddle 0. Models SF2 "stacked sample" patches such as
+   * Synth Brass 2 where the chorus character comes from N fixed-pitch
+   * voices, not a chorus DSP.
+   */
+  unison?: UnisonSpec
+}
+
+export interface UnisonSpec {
+  /** Number of stacked voices (>= 1; 1 is a no-op pass-through). */
+  count: number
+  /** Maximum cent offset from centre — outermost voices land here. */
+  detuneCents: number
 }
 
 export type { FMSpec, LFOSpec, VCFSpec }
@@ -213,33 +230,39 @@ export function renderNote(input: RenderNoteInput): Float32Array {
     (morph && morph.length > 0 && !!input.lengthTicks) ||
     sympartials.some((sp) => sp.devianceMult != null)
 
-  if (hasPerPartialMods) {
-    const spreadMults = computeSpreadMults(spread, sympartials)
-    const timbreAmps = computeTimbreAmps(timbre, sympartials)
-    for (let pi = 0; pi < sympartials.length; pi++) {
-      const sp = sympartials[pi]!
-      const partialFreqHz = baseFreq * sp.freqMult * (spreadMults[pi] ?? 1) * (sp.devianceMult ?? 1)
-      const buf = new Float32Array(totalSamples)
-      if (sp.fm) {
-        const depthEnv = sp.fm.depthEnv
-          ? evaluateShape(sp.fm.depthEnv, totalSamples)
-          : null
-        renderOscillatorFM(buf, sp.oscillator, partialFreqHz, sp.fm, sampleRate, depthEnv)
-      } else if (pitchLFO) {
-        renderOscillatorPitchMod(buf, sp.oscillator, partialFreqHz, sampleRate, pitchLFO, pitchLFODepthCents)
-      } else {
-        renderOscillator(buf, sp.oscillator, partialFreqHz, sampleRate)
+  const voiceOffsets = expandUnisonOffsets(input.instrument.unison)
+  for (const detuneCents of voiceOffsets) {
+    const voiceBaseFreq = detuneCents === 0
+      ? baseFreq
+      : baseFreq * Math.pow(2, detuneCents / 1200)
+    if (hasPerPartialMods) {
+      const spreadMults = computeSpreadMults(spread, sympartials)
+      const timbreAmps = computeTimbreAmps(timbre, sympartials)
+      for (let pi = 0; pi < sympartials.length; pi++) {
+        const sp = sympartials[pi]!
+        const partialFreqHz = voiceBaseFreq * sp.freqMult * (spreadMults[pi] ?? 1) * (sp.devianceMult ?? 1)
+        const buf = new Float32Array(totalSamples)
+        if (sp.fm) {
+          const depthEnv = sp.fm.depthEnv
+            ? evaluateShape(sp.fm.depthEnv, totalSamples)
+            : null
+          renderOscillatorFM(buf, sp.oscillator, partialFreqHz, sp.fm, sampleRate, depthEnv)
+        } else if (pitchLFO) {
+          renderOscillatorPitchMod(buf, sp.oscillator, partialFreqHz, sampleRate, pitchLFO, pitchLFODepthCents)
+        } else {
+          renderOscillator(buf, sp.oscillator, partialFreqHz, sampleRate)
+        }
+        applyEnvelope(buf, sp.envelope, sampleRate, damp)
+        if (morph && morph.length > 0 && input.lengthTicks) {
+          applyMorphToPartial(buf, pi + 1, morph, totalSamples, input.lengthTicks)
+        }
+        const amp = Math.max(0, sp.amp) * (timbreAmps[pi] ?? 1)
+        for (let i = 0; i < totalSamples; i++) out[i] = out[i]! + buf[i]! * amp
       }
-      applyEnvelope(buf, sp.envelope, sampleRate, damp)
-      if (morph && morph.length > 0 && input.lengthTicks) {
-        applyMorphToPartial(buf, pi + 1, morph, totalSamples, input.lengthTicks)
+    } else {
+      for (const sp of sympartials) {
+        renderSympartial(out, sp, voiceBaseFreq, sampleRate, damp)
       }
-      const amp = Math.max(0, sp.amp) * (timbreAmps[pi] ?? 1)
-      for (let i = 0; i < totalSamples; i++) out[i] = out[i]! + buf[i]! * amp
-    }
-  } else {
-    for (const sp of sympartials) {
-      renderSympartial(out, sp, baseFreq, sampleRate, damp)
     }
   }
 
@@ -260,6 +283,21 @@ export function renderNote(input: RenderNoteInput): Float32Array {
     out[i] = x > 1 ? 1 : x < -1 ? -1 : x
   }
   return out
+}
+
+/**
+ * Expand a UnisonSpec into a list of detune-cent offsets, one per voice.
+ * Linear distribution across [-detuneCents, +detuneCents]: odd counts
+ * include a 0¢ centre, even counts straddle 0. Falsy/single-voice
+ * specs collapse to [0] so the render loop runs unchanged once.
+ */
+function expandUnisonOffsets(spec: UnisonSpec | undefined): number[] {
+  if (!spec || spec.count <= 1 || spec.detuneCents === 0) return [0]
+  const offsets = new Array<number>(spec.count)
+  for (let k = 0; k < spec.count; k++) {
+    offsets[k] = spec.detuneCents * ((2 * k) / (spec.count - 1) - 1)
+  }
+  return offsets
 }
 
 /**

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`UNISON: "COUNT;DETUNE_CENTS"` — sompyler-web `.spli` extension** for stacked-voice chorus. Renders the entire partial bank `COUNT` times with each voice pitch-shifted by a linearly-distributed cent offset in `[-DETUNE_CENTS, +DETUNE_CENTS]`. Odd counts include a 0¢ centre voice; even counts straddle 0. Models SF2 stacked-sample patches (e.g. FluidR3 Synth Brass 2) without a chorus DSP — the phase drift between fixed-frequency oscillators IS the effect. Follows the LFO/VCF/FM convention (uppercase keyword, `;`-separated string DSL). Sits between partial summation and the global modulators so VCF/AMP-LFO apply once to the summed voices.
+
 ### Changed
 
 - **10-loop TiMidity/FluidR3 calibration pass** for all 9 Oxygène instruments — each instrument compared envelope-by-envelope and spectrum-by-spectrum against TiMidity SF2 output via `compare_instrument.py`:
