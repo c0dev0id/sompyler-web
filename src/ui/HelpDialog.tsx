@@ -231,6 +231,8 @@ const TUNING: Section = {
         { key: 'tones', desc: 'Custom note names mapped to semitone positions. Merged with built-in Anglo-Saxon names.' },
         { key: 'scales', desc: 'Step sizes in semitones — must sum to tones_per_octave.' },
         { key: 'default_scale', desc: 'Scale used when no scale is specified in the score.' },
+        { key: 'C#4?', desc: 'Off-scale note suffix — snap to the nearest in-scale pitch.' },
+        { key: 'C#4!', desc: 'Off-scale note suffix — play the exact chromatic pitch regardless of scale.' },
       ],
       code: `basics:
   ref_frequency:    440
@@ -246,11 +248,7 @@ scales:
   mj:  "2 2 1 2 2 2 1"   # major
   mn:  "2 1 2 2 1 2 2"   # natural minor
 
-default_scale: mj
-
-# Off-scale notes need an explicit suffix:
-#   C#4?  — snap to nearest in-scale pitch
-#   C#4!  — play exact chromatic pitch`,
+default_scale: mj`,
     },
   ],
 }
