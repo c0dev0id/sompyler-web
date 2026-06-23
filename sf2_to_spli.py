@@ -5,9 +5,12 @@ emit sompyler-compatible .spli YAML.
 
 Usage:
     python3 sf2_to_spli.py /path/to/font.sf2 [gm_number ...]
+    python3 sf2_to_spli.py /path/to/font.sf2 drum:NOTE
 
-    gm_number is 1-based (GM 64 = Synth Brass 2). Defaults to the six
-    Oxygène instruments.
+    gm_number is 1-based (GM 64 = Synth Brass 2).
+    drum:NOTE reads from the GM percussion bank (bank 128, program 0) at
+    the given MIDI note (e.g. drum:54 = Tambourine).
+    Defaults to all Oxygène instruments.
 
 Generator op numbers verified against FluidSynth source + actual SF2 data:
     5=modLfoToPitch  6=vibLfoToPitch  8=filterFc  9=filterQ
@@ -177,7 +180,6 @@ class SF2:
         result = {}
         for i in range(g0, g1):
             g = gens[i]
-            # sampleID is unsigned; store uval for it
             result[g['op']] = g['uval'] if g['op'] == OP['sampleID'] else g['val']
         return result
 
@@ -197,13 +199,11 @@ class SF2:
             if OP['instrument'] not in z:
                 global_gens.update(z)
                 continue
-            # check key range if present
             if OP['keyRange'] in z:
                 lo, hi = decode_range(z[OP['keyRange']])
                 if not (lo <= midi_note <= hi):
                     continue
             return z[OP['instrument']], {**global_gens, **z}
-        # fallback: first zone with instrument link regardless of range
         for bi in range(pb0, pb1):
             z = self._zone_gens(bi, self.pbag, self.pgen)
             if OP['instrument'] in z:
@@ -223,12 +223,10 @@ class SF2:
             if OP['sampleID'] not in z:
                 global_gens.update(z)
                 continue
-            # key range check
             if OP['keyRange'] in z:
                 lo, hi = decode_range(z[OP['keyRange']])
                 if not (lo <= midi_note <= hi):
                     continue
-            # velocity range check
             if OP['velRange'] in z:
                 lo, hi = decode_range(z[OP['velRange']])
                 if not (lo <= midi_vel <= hi):
@@ -237,7 +235,6 @@ class SF2:
             break
 
         if sample_gens is None:
-            # grab first sample zone ignoring ranges
             for bi in range(ib0, ib1):
                 z = self._zone_gens(bi, self.ibag, self.igen)
                 if OP['sampleID'] in z:
@@ -267,7 +264,6 @@ class SF2:
         if len(loop) < 4:
             return []
 
-        # tile to get at least n_cycles periods
         period_samples = rate / f0
         needed_tiles = max(1, math.ceil(n_cycles * period_samples / len(loop)))
         tiled = np.tile(loop, needed_tiles)
@@ -306,7 +302,6 @@ def gens_to_envelope(gens):
 
     a_str = f'{A:.4g}:1,100'
 
-    # S: hold plateau then decay, or just instant hold at sustain level
     no_decay = D < 0.005 or Sv >= 99.9
     if no_decay and H < 0.01:
         s_str = f'0.001:100;1,{Sv:.1f}'
@@ -315,7 +310,6 @@ def gens_to_envelope(gens):
     elif H < 0.01:
         s_str = f'{D:.4g}:100;1,{Sv:.1f}'
     else:
-        # hold then decay
         total = H + D
         hold_frac = H / total
         s_str = (f'{total:.4g}:100;'
@@ -326,12 +320,21 @@ def gens_to_envelope(gens):
     return a_str, s_str, r_str
 
 
-def gens_to_spli(gens, sf2, gm_num, preset_name):
+def lfo_string(freq_hz, delay_s, depth, target):
+    """Build a sompyler LFO string: RATE[@sin][[DELAY]];DEPTH:TARGET"""
+    s = f'{freq_hz:.2f}@sin'
+    if delay_s > 0.05:
+        s += f'[{delay_s:.2f}]'
+    s += f';{depth:.3f}:{target}'
+    return s
+
+
+def gens_to_spli(gens, sf2, label, preset_name, is_drum=False):
     sid = gens.get(OP['sampleID'])
     s = sf2.shdr[sid] if sid is not None else None
 
     lines = [
-        f'# GM {gm_num}: {preset_name}',
+        f'# {label}: {preset_name}',
         f'# Source: FluidR3_GM2.sf2',
     ]
     if s:
@@ -341,22 +344,21 @@ def gens_to_spli(gens, sf2, gm_num, preset_name):
             f'# Loop:   {loop_f} frames ({loop_f / s["rate"] * 1000:.1f} ms)',
         ]
 
-    # filter envelope note
-    fc = gens[OP['filterFc']]
+    fc      = gens[OP['filterFc']]
     menv_fc = gens[OP['modEnvToFilterFc']]
+    fc_hz   = achz(fc)
+
     if fc < 13000:
-        fc_hz = achz(fc)
         if menv_fc:
             peak_hz = achz(fc + menv_fc)
-            lines.append(f'# Filter sweep: {fc_hz:.0f} Hz → {peak_hz:.0f} Hz (mod env); '
-                         f'PROFILE captures open-filter state from loop FFT.')
+            lines.append(f'# Filter sweep: {fc_hz:.0f} Hz → {peak_hz:.0f} Hz via mod envelope')
         else:
             lines.append(f'# Filter: {fc_hz:.0f} Hz fixed')
 
     a_str, s_str, r_str = gens_to_envelope(gens)
 
     attn = gens[OP['initialAttn']]
-    amp  = round(cbl(attn) * 0.5, 3)  # half for mix headroom
+    amp  = round(cbl(attn) * 0.5, 3)
     amp  = max(0.05, amp)
 
     lines += [
@@ -368,31 +370,34 @@ def gens_to_spli(gens, sf2, gm_num, preset_name):
         f'  R: "{r_str}"',
     ]
 
-    # VCF: only if filter is meaningfully active AND no sweep (sweep → use PROFILE)
-    if fc < 12000 and not menv_fc:
-        lines.append(f'  VCF: "{achz(fc):.0f};{min(0.9, cbl(gens[OP["filterQ"]])):.2f}"')
+    # VCF — emit for fixed filter; for sweep, use mod-envelope parameters
+    if fc < 12000:
+        q_lin = min(0.95, cbl(gens[OP['filterQ']]))
+        if menv_fc:
+            # mod envelope parameters for the filter sweep
+            ma = max(0.001, tc(gens[OP['modEnvAttack']]))
+            mr = max(0.001, tc(gens[OP['modEnvRelease']]))
+            sweep_hz = achz(fc + menv_fc) - fc_hz
+            lines.append(f'  VCF: "{fc_hz:.0f};{q_lin:.2f};{sweep_hz:.0f};{ma:.4g};{mr:.4g}"')
+        else:
+            lines.append(f'  VCF: "{fc_hz:.0f};{q_lin:.2f}"')
 
-    # LFO tremolo
+    # LFO tremolo (modLfoToVol)
     mvol = gens[OP['modLfoToVol']]
     if abs(mvol) > 5:
         freq_hz = achz(gens[OP['modLfoFreq']])
         delay   = max(0.0, tc(gens[OP['modLfoDelay']]) - 0.001)
         depth   = cbl(abs(mvol))
-        lfo = f'  LFO: "{freq_hz:.2f}@sin'
-        if delay > 0.05:
-            lfo += f';{delay:.2f}'
-        lfo += f':{depth:.3f}:amp"'
-        lines.append(lfo)
+        lines.append(f'  LFO: "{lfo_string(freq_hz, delay, depth, "amp")}"')
 
-    # vibrato (just note, not implemented as LFO in sompyler yet)
+    # Vibrato (vibLfoToPitch) — emitted as pitch LFO
     vdepth = gens[OP['vibLfoToPitch']]
     if abs(vdepth) > 2:
         vfreq  = achz(gens[OP['vibLfoFreq']])
         vdelay = max(0.0, tc(gens[OP['vibLfoDelay']]) - 0.001)
-        lines.append(f'  # Vibrato: {vfreq:.2f} Hz  depth={vdepth} cents'
-                     + (f'  delay={vdelay:.2f}s' if vdelay > 0.05 else ''))
+        lines.append(f'  LFO: "{lfo_string(vfreq, vdelay, abs(vdepth), "pitch")}"')
 
-    # PROFILE from FFT
+    # PROFILE from loop FFT
     if sid is not None:
         profile = sf2.fft_profile(sid)
         if profile:
@@ -406,14 +411,17 @@ def gens_to_spli(gens, sf2, gm_num, preset_name):
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
-OXYGENE_PROGRAMS = {
-    36: 'Fretless Bass',
-    49: 'String Ensemble 1',
-    52: 'Synth Strings 2',
-    64: 'Synth Brass 2',
-    93: 'Pad 5 (Bowed Glass)',
-    108: 'Koto (used as Kalimba)',
-}
+OXYGENE_PROGRAMS = [
+    ('GM36',   0, 35,  60, 'Fretless Bass'),
+    ('GM49',   0, 48,  60, 'String Ensemble 1'),
+    ('GM52',   0, 51,  60, 'Synth Strings 2'),
+    ('GM64',   0, 63,  60, 'Synth Brass 2'),
+    ('GM93',   0, 92,  60, 'Pad 5 (Bowed Glass)'),
+    ('GM108',  0, 107, 60, 'Koto (Kalimba)'),
+    ('GM25',   0, 24,  60, 'Acoustic Guitar (Nylon)'),
+    ('GM123',  0, 122, 60, 'Seashore'),
+    ('drum54', 128, 0, 54, 'Tambourine (note 54)'),
+]
 
 def main():
     if len(sys.argv) < 2:
@@ -421,22 +429,39 @@ def main():
         sys.exit(1)
 
     path = sys.argv[1]
-    programs = [int(x) for x in sys.argv[2:]] if len(sys.argv) > 2 else list(OXYGENE_PROGRAMS)
+
+    if len(sys.argv) > 2:
+        # parse explicit targets: "GM64" or "drum:54" or plain integer
+        targets = []
+        for arg in sys.argv[2:]:
+            if arg.startswith('drum:'):
+                note = int(arg[5:])
+                targets.append((f'drum{note}', 128, 0, note, f'Drum note {note}'))
+            else:
+                gm = int(arg)
+                targets.append((f'GM{gm}', 0, gm - 1, 60, ''))
+    else:
+        targets = OXYGENE_PROGRAMS
 
     print(f'Loading {path}...', file=sys.stderr)
     sf2 = SF2(path)
     print(f'  {len(sf2.phdr)} presets, {len(sf2.inst)} instruments, '
           f'{len(sf2.shdr)} samples\n', file=sys.stderr)
 
-    for gm in programs:
-        pi = sf2.find_preset(0, gm - 1)
+    for label, bank, program, midi_note, name in targets:
+        pi = sf2.find_preset(bank, program)
+        if pi is None:
+            print(f'ERROR: preset bank={bank} program={program} not found', file=sys.stderr)
+            continue
         ph = sf2.phdr[pi]
-        name = OXYGENE_PROGRAMS.get(gm, ph['name'])
+        if not name:
+            name = ph['name']
 
         print(f'# {"="*56}', file=sys.stderr)
-        print(f'# GM {gm}: {ph["name"]!r}', file=sys.stderr)
+        print(f'# {label}: {ph["name"]!r}  (bank={bank} program={program} note={midi_note})',
+              file=sys.stderr)
 
-        inst_idx, preset_ov = sf2.preset_instrument(pi, midi_note=60)
+        inst_idx, preset_ov = sf2.preset_instrument(pi, midi_note=midi_note)
         if inst_idx is None:
             print(f'  ERROR: no instrument link found', file=sys.stderr)
             continue
@@ -444,8 +469,7 @@ def main():
         iname = sf2.inst[inst_idx]['name']
         print(f'# Instrument: {iname!r}', file=sys.stderr)
 
-        gens = sf2.instrument_gens(inst_idx, midi_note=60, midi_vel=80)
-        # apply preset-level overrides (volume envelope scale, etc.)
+        gens = sf2.instrument_gens(inst_idx, midi_note=midi_note, midi_vel=80)
         for op in (OP['volEnvAttack'], OP['volEnvDecay'], OP['volEnvSustain'],
                    OP['volEnvRelease'], OP['keynumToVolHold'], OP['keynumToVolDecay']):
             if op in preset_ov:
@@ -455,8 +479,21 @@ def main():
         Sv = sustain_rdfs(gens[OP['volEnvSustain']])
         D  = tc(gens[OP['volEnvDecay']])
         R  = max(0.001, tc(gens[OP['volEnvRelease']]))
+        fc = gens[OP['filterFc']]
+        menv = gens[OP['modEnvToFilterFc']]
         print(f'# Envelope: A={A:.3f}s  D={D:.3f}s  S={Sv:.1f}rdfs  R={R:.3f}s',
               file=sys.stderr)
+        if fc < 13000:
+            print(f'# Filter: {achz(fc):.0f} Hz'
+                  + (f'  sweep+{achz(fc+menv)-achz(fc):.0f} Hz' if menv else ''),
+                  file=sys.stderr)
+        vdepth = gens[OP['vibLfoToPitch']]
+        if abs(vdepth) > 2:
+            vfreq  = achz(gens[OP['vibLfoFreq']])
+            vdelay = max(0.0, tc(gens[OP['vibLfoDelay']]) - 0.001)
+            print(f'# Vibrato: {vfreq:.2f} Hz  depth={vdepth}¢'
+                  + (f'  delay={vdelay:.2f}s' if vdelay > 0.05 else ''),
+                  file=sys.stderr)
 
         sid = gens.get(OP['sampleID'])
         if sid is not None:
@@ -467,7 +504,7 @@ def main():
 
         print()
         print(f'# --- {name} ---')
-        print(gens_to_spli(gens, sf2, gm, ph['name']))
+        print(gens_to_spli(gens, sf2, label, name))
         print()
 
 if __name__ == '__main__':
