@@ -855,6 +855,47 @@ html, body, #root {
 .cm-diagnostic-warning { border-left-color: #d4b450; }
 .cm-diagnostic-error   { border-left-color: #ff6b6b; }
 
+/* Search panel — dark theme override */
+.cm-search {
+  background: #252525;
+  border-bottom: 1px solid #444;
+  padding: 4px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+.cm-search input[type="text"] {
+  background: #1a1a1a;
+  border: 1px solid #555;
+  color: #eee;
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+.cm-search input[type="text"]:focus {
+  outline: none;
+  border-color: #888;
+}
+.cm-search label {
+  color: #aaa;
+  font-size: 0.85em;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.cm-search button, .cm-search .cm-button {
+  background: #333;
+  border: 1px solid #555;
+  color: #ccc;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.cm-search button:hover, .cm-search .cm-button:hover {
+  background: #444;
+  border-color: #888;
+}
+
 /* Portrait phones / narrow viewports: single column, stacked top to
    bottom in user-preferred order — player, score, instruments,
    tuning/room. The staging rail stays on the left, narrower. */

@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, onCleanup, Show, type Component } from 'solid-js'
+import { createEffect, createSignal, For, onCleanup, onMount, Show, type Component } from 'solid-js'
 import { Editor } from '../editor/Editor'
 import {
   listProjectFiles,
@@ -187,6 +187,17 @@ export const Layout: Component<LayoutProps> = (props) => {
   )
   const unsubPlayer = props.session.player.onStateChange(setPlayerState)
   onCleanup(unsubPlayer)
+
+  onMount(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault()
+        void props.session.startRender()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    onCleanup(() => window.removeEventListener('keydown', onKeyDown))
+  })
 
   return (
     <div class="quadrants">

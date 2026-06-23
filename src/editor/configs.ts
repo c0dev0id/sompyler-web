@@ -2,6 +2,7 @@ import { yaml } from '@codemirror/lang-yaml'
 import { history, defaultKeymap, historyKeymap } from '@codemirror/commands'
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { lintKeymap, lintGutter } from '@codemirror/lint'
+import { search, searchKeymap, openSearchPanel } from '@codemirror/search'
 import { EditorState, Prec, RangeSet, RangeSetBuilder, type Extension } from '@codemirror/state'
 import { GutterMarker, keymap, lineNumbers, lineNumberMarkers, highlightActiveLine, highlightSpecialChars } from '@codemirror/view'
 import { tags } from '@lezer/highlight'
@@ -43,7 +44,14 @@ export function baseExtensions(onLineNumberClick?: (barIndex: number) => void): 
     history(),
     highlightActiveLine(),
     highlightSpecialChars(),
-    keymap.of([...defaultKeymap, ...historyKeymap, ...lintKeymap]),
+    search({ top: true }),
+    keymap.of([
+      ...searchKeymap,
+      { key: 'Mod-/', run: openSearchPanel },
+      ...defaultKeymap,
+      ...historyKeymap,
+      ...lintKeymap,
+    ]),
     yaml(),
     syntaxHighlighting(darkYamlStyle),
   ]
