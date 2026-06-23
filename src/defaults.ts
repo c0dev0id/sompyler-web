@@ -600,49 +600,48 @@ character:
   PROFILE: [100, 0.2, 0.1, 0.03, 0.04, 0, 0.02]
 `
 
-const OXYGENE_SYNBRASS = `# synbrass: SynBrass 2 (GM64 / TimGM6mb), C4. Partials from TiMidity STFT (1.5–2.5s mid-swell).
-# TiMidity patch peaks at 1.95s (very slow swell). We use a fast attack for
-# the melodic role in the score — Jarre's synth hits crisply on the beat.
-# D: from STFT frequency tracking: H2+9c, H5+7c, H6+10c are the most audible.
-# Harmonics oscillate strongly over time (detuned-layer beating) so PROFILE
-# values are averages across the stable 1.5–2.5s swell window.
+const OXYGENE_SYNBRASS = `# synbrass: Jarre-style Moog/ARP synth brass. Fast attack, full harmonic spectrum.
+# PROFILE shaped toward a filtered sawtooth: H3–H8 are audible mid harmonics,
+# not the near-silence the TiMidity STFT suggested. Odd harmonics (H3,H5,H7)
+# intentionally kept strong for the characteristic brass buzz and edge.
+# D: values retained from STFT tracking (H2+9c, H4+6c, H5+7c, H6+10c, H8+6c, H11+12c).
 character:
   O: sine
-  AMP: 0.20
+  AMP: 0.35
   A: "0.02:1,100"
-  S: "0.001:100;1,75"
+  S: "0.001:100;1,88"
   R: "0.40:100;1,0"
   PROFILE:
     - 100
-    - V: 80.3
+    - V: 85
       D: 9
-    - 52.8
-    - V: 30.7
+    - 80
+    - V: 74
       D: 6
-    - V: 32.1
+    - V: 72
       D: 7
-    - V: 13.6
+    - V: 67
       D: 10
-    - 21.7
-    - V: 14.0
+    - 64
+    - V: 61
       D: 6
-    - 10.4
-    - 13.3
-    - V: 11.1
+    - 57
+    - 54
+    - V: 51
       D: 12
-    - 11.9
-    - 7.6
-    - 5.8
-    - 7.6
-    - 7.7
-    - 6.5
-    - 4.4
-    - 2.7
-    - 3.0
-    - 4.6
-    - 2.4
-    - 1.9
-    - 1.1
+    - 48
+    - 44
+    - 41
+    - 38
+    - 35
+    - 32
+    - 29
+    - 26
+    - 23
+    - 20
+    - 18
+    - 16
+    - 14
 `
 
 const OXYGENE_STRINGS = `# strings: SynString 2 (GM52 / TimGM6mb), C3. Partials from TiMidity STFT mid-sustain.
@@ -793,7 +792,7 @@ const OXYGENE_TAMBOURINE = `# tambourine: Tambourine (GM54 / TimGM6mb), note 54.
 # Envelope: peak at 0s, -40 dB at 0.15s. Total duration 1.19s.
 character:
   O: noise
-  AMP: 0.35
+  AMP: 0.18
   A: "0.001:1,100"
   S: "0.06:100;1,20"
   R: "0.08:100;1,0"
