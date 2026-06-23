@@ -695,7 +695,7 @@ const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / FluidR3_GM2.sf2)
 # L10: AMP raised 0.020→0.035 (sample builds up 7 dB; 0.035 is a compromise).
 character:
   O: sine
-  AMP: 0.2
+  AMP: 0.9
   A: "0.001:1,100"
   S: "0.001:100;1,100"
   R: "1.017:100;1,0"

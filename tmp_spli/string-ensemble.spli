@@ -4,7 +4,7 @@
 # L10: AMP raised 0.020→0.035 (sample builds up 7 dB; 0.035 is a compromise).
 character:
   O: sine
-  AMP: 0.045
+  AMP: 0.9
   A: "0.001:1,100"
   S: "0.001:100;1,100"
   R: "1.017:100;1,0"
