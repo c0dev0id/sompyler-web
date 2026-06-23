@@ -152,6 +152,43 @@ const INSTRUMENT: Section = {
   SPREAD: [0, 3, -2, 5]`,
     },
     {
+      subtitle: 'VOLUMES — per-partial base amplitude',
+      text: 'Sets a REVERSED_DBFS base amplitude for each harmonic slot. When both VOLUMES and PROFILE are present, their values are added before converting to linear amplitude. VOLUMES can be longer than PROFILE — excess slots create implicit partials at the given amplitude.',
+      params: [
+        { key: 'number', desc: 'Base amplitude in REVERSED_DBFS for this slot (100 = full, 0 = silent).' },
+        { key: '"RESOLUTION:SHAPE"', desc: 'Alternative to a plain list: a shape string whose Y values fill the slots.' },
+      ],
+      code: `VOLUMES: [80, 65, 50, 35, 20]   # five partials, loudest H1
+
+# Combined with PROFILE — values add before linear conversion:
+VOLUMES: [80, 60, 40]
+PROFILE: [20, 30, 10]   # effective amplitudes: [100, 90, 50]`,
+    },
+    {
+      subtitle: 'TIMBRE — spectral amplitude shaping',
+      text: 'Applies a frequency-dependent amplitude multiplier across the partial series. The shape is sampled once per partial: position 0 = H1, position N−1 = HN. SPECTRUM_WIDTH sets how many partials the shape covers; partials beyond that receive the last value. Y = 100 is neutral (×1.0), 0 = silent, 50 = half amplitude.',
+      params: [
+        { key: 'SPECTRUM_WIDTH', desc: 'Number of partials the shape spans.' },
+        { key: 'SHAPE', desc: 'Shape string — Y values map to amplitude multipliers (100 = neutral).' },
+      ],
+      code: `TIMBRE: "SPECTRUM_WIDTH:SHAPE"
+
+TIMBRE: "8:100;0.5,60;1,10"   # roll off over 8 harmonics
+TIMBRE: "16:0;0.3,100;1,80"   # boost mid-range, attenuate fundamental and highs`,
+    },
+    {
+      subtitle: 'MORPH — per-partial amplitude envelope',
+      text: 'Applies a time-varying amplitude curve to selected partials, independently of the main envelope. Each entry targets partials by position and multiplies their output by the evaluated shape. Multiple matching entries for the same partial are weight-averaged (weight = parsed shape length).',
+      params: [
+        { key: 'N SHAPE', desc: 'Target the Nth partial (1-indexed). "1 0.5:100;1,0" fades H1 to silence over the note.' },
+        { key: 'Nn SHAPE', desc: 'Target every Nth partial. "2n" = H2, H4, H6…' },
+        { key: 'Nn+M SHAPE', desc: 'Target partials where position mod N equals M. "3n+1" = H1, H4, H7…' },
+      ],
+      code: `MORPH:
+  - "1 0.5:100;1,0"    # H1 fades out over the note duration
+  - "2n 0.3:0;1,100"   # even harmonics fade in over 300 ms`,
+    },
+    {
       subtitle: 'RAILSBACK_CURVE — piano inharmonicity',
       text: 'Real piano strings go slightly sharp at both extremes of the keyboard due to string stiffness. RAILSBACK_CURVE models this by applying a per-pitch cent offset across a defined frequency range.',
       params: [
