@@ -232,6 +232,7 @@ export class Session {
         this.player.setLoopPoints(resolve(barIndex), 0)
       }
     }
+    this.player.restartFromMarkers()
   }
 }
 

@@ -83,6 +83,16 @@ export class Player {
     }
   }
 
+  /** Call after markers are committed. Seeks to loopStart if playing; updates
+   *  pausedAt if paused so next play() resumes from the new start. */
+  restartFromMarkers(): void {
+    if (this.state === 'playing') {
+      this.seek(this.loopStart)
+    } else if (this.state === 'paused') {
+      this.pausedAt = this.loopStart
+    }
+  }
+
   getLoopPoints(): { start: number; end: number } {
     return { start: this.loopStart, end: this.loopEnd }
   }

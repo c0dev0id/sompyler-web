@@ -7,6 +7,7 @@ export interface SeekbarProps {
   isLooping: () => boolean
   onSeek: (t: number) => void
   onSetLoopPoints: (start: number, end: number) => void
+  onLoopPointsCommit: () => void
 }
 
 function formatTime(s: number): string {
@@ -103,6 +104,12 @@ export const Seekbar: Component<SeekbarProps> = (props) => {
     props.onSetLoopPoints(Math.max(0, Math.min(t, effEnd - 0.1)), end)
   }
 
+  function onStartUp(e: PointerEvent): void {
+    if ((e.currentTarget as HTMLElement).hasPointerCapture(e.pointerId)) {
+      props.onLoopPointsCommit()
+    }
+  }
+
   // End marker drag
   function onEndDown(e: PointerEvent): void {
     e.stopPropagation()
@@ -122,6 +129,12 @@ export const Seekbar: Component<SeekbarProps> = (props) => {
     props.onSetLoopPoints(start, newEnd)
   }
 
+  function onEndUp(e: PointerEvent): void {
+    if ((e.currentTarget as HTMLElement).hasPointerCapture(e.pointerId)) {
+      props.onLoopPointsCommit()
+    }
+  }
+
   return (
     <div class="seekbar">
       <div
@@ -137,12 +150,14 @@ export const Seekbar: Component<SeekbarProps> = (props) => {
           ref={(el) => { startMarker = el }}
           onPointerDown={onStartDown}
           onPointerMove={onStartMove}
+          onPointerUp={onStartUp}
         />
         <div
           class="seekbar-marker seekbar-marker-end"
           ref={(el) => { endMarker = el }}
           onPointerDown={onEndDown}
           onPointerMove={onEndMove}
+          onPointerUp={onEndUp}
         />
       </div>
       <span class="seekbar-time" ref={(el) => { timeLabel = el }} />

@@ -249,6 +249,7 @@ export const Layout: Component<LayoutProps> = (props) => {
             isLooping={() => props.session.player.isLoopEnabled()}
             onSeek={(t) => props.session.player.seek(t)}
             onSetLoopPoints={(s, e) => props.session.player.setLoopPoints(s, e)}
+            onLoopPointsCommit={() => props.session.player.restartFromMarkers()}
           />
           <Show when={props.session.renderStatus().state === 'error'}>
             <p class="error">
