@@ -208,38 +208,37 @@ describe('Player', () => {
     expect(ctx.lastSource?.loopEnd).toBe(0)
   })
 
-  it('setLoopPoints seeks to new start when position is before it', () => {
+  it('play() starts from loopStart when pausedAt is before it', () => {
     const ctx = new FakeAudioContext()
     const p = new Player(() => ctx as unknown as AudioContext)
-    p.loadBuffer(makeMix(44100 * 10))  // 10s
-    p.seek(3)
+    p.loadBuffer(makeMix(44100 * 10))  // 10s; pausedAt = 0
+    p.setLoopPoints(3, 8)
     p.play()
-    // position is at 3s (elapsed=0 returns pausedAt); move start to 5s
-    p.setLoopPoints(5, 9)
-    expect(p.getPosition()).toBeCloseTo(5, 4)
+    // elapsed = 0 → getPosition() returns pausedAt, which was clamped to loopStart
+    expect(p.getPosition()).toBeCloseTo(3, 4)
   })
 
-  it('setLoopPoints seeks to loopStart when position is past new end (loop on)', () => {
-    const ctx = new FakeAudioContext()
-    const p = new Player(() => ctx as unknown as AudioContext)
-    p.loadBuffer(makeMix(44100 * 10))
-    p.setLoop(true)
-    p.seek(7)
-    p.play()
-    // position at 7s; shrink end to 5s → should loop back to start (2s)
-    p.setLoopPoints(2, 5)
-    expect(p.getPosition()).toBeCloseTo(2, 4)
-  })
-
-  it('setLoopPoints stops when position is past new end (loop off)', () => {
+  it('non-looping play schedules node.stop() at loopEnd', () => {
     const ctx = new FakeAudioContext()
     const p = new Player(() => ctx as unknown as AudioContext)
     p.loadBuffer(makeMix(44100 * 10))
     p.setLoop(false)
-    p.seek(7)
+    p.setLoopPoints(2, 6)
     p.play()
-    // position at 7s; shrink end to 5s → should stop
-    p.setLoopPoints(2, 5)
-    expect(p.getState()).toBe('stopped')
+    // node.stop() should have been called with ctx.currentTime + (loopEnd - offset)
+    // offset = loopStart = 2; remaining = 6 - 2 = 4; ctx.currentTime = 0 → stop at 4
+    expect(ctx.lastSource?.stop).toHaveBeenCalledWith(4)
+  })
+
+  it('getPosition() clamps to loopEnd when not looping', () => {
+    const ctx = new FakeAudioContext()
+    const p = new Player(() => ctx as unknown as AudioContext)
+    p.loadBuffer(makeMix(44100 * 10))
+    p.setLoop(false)
+    p.setLoopPoints(0, 5)
+    p.seek(3)
+    p.play()
+    ctx.currentTime = 10  // simulate elapsed = 10s; position would be 3+10=13 without clamp
+    expect(p.getPosition()).toBeCloseTo(5, 4)
   })
 })

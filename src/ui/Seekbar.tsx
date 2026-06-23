@@ -53,19 +53,14 @@ export const Seekbar: Component<SeekbarProps> = (props) => {
     playhead.style.left = `${(pos / dur) * 100}%`
     timeLabel.textContent = `${formatTime(pos)} / ${formatTime(dur)}`
 
-    if (looping) {
-      loopRegion.style.display = ''
-      loopRegion.style.left = `${startFrac * 100}%`
-      loopRegion.style.width = `${(endFrac - startFrac) * 100}%`
-      startMarker.style.display = ''
-      startMarker.style.left = `${startFrac * 100}%`
-      endMarker.style.display = ''
-      endMarker.style.left = `${endFrac * 100}%`
-    } else {
-      loopRegion.style.display = 'none'
-      startMarker.style.display = 'none'
-      endMarker.style.display = 'none'
-    }
+    const hasRegion = start > 0 || end > 0
+    loopRegion.style.display = looping && hasRegion ? '' : 'none'
+    loopRegion.style.left = `${startFrac * 100}%`
+    loopRegion.style.width = `${(endFrac - startFrac) * 100}%`
+    startMarker.style.display = ''
+    startMarker.style.left = `${startFrac * 100}%`
+    endMarker.style.display = ''
+    endMarker.style.left = `${endFrac * 100}%`
   }
 
   function rafLoop(): void {

@@ -65,22 +65,12 @@ export class Player {
   }
 
   setLoopPoints(start: number, end: number): void {
-    const active = this.state === 'playing' || this.state === 'paused'
-    const pos = active ? this.getPosition() : 0
     const dur = this.buffer?.duration ?? Infinity
     this.loopStart = Math.max(0, Math.min(start, dur))
     this.loopEnd = end <= 0 ? 0 : Math.min(end, dur)
     if (this.source) {
       this.source.loopStart = this.loopStart
       this.source.loopEnd = this.loopEnd
-    }
-    if (active) {
-      const effEnd = this.loopEnd > 0 ? this.loopEnd : (this.buffer?.duration ?? 0)
-      if (pos < this.loopStart) {
-        this.seek(this.loopStart)
-      } else if (pos > effEnd) {
-        this.loopEnabled ? this.seek(this.loopStart) : this.stop()
-      }
     }
   }
 
@@ -112,7 +102,8 @@ export class Player {
       if (len <= 0) return this.loopStart
       return this.loopStart + ((this.pausedAt - this.loopStart + elapsed) % len)
     }
-    return Math.min(this.pausedAt + elapsed, this.buffer.duration)
+    const effEnd = this.loopEnd > 0 ? this.loopEnd : this.buffer.duration
+    return Math.min(this.pausedAt + elapsed, effEnd)
   }
 
   seek(t: number): void {
@@ -178,6 +169,7 @@ export class Player {
     if (this.state === 'playing') return
     const ctx = this.ensureCtx()
     if (ctx.state === 'suspended') void ctx.resume()
+    if (this.pausedAt < this.loopStart) this.pausedAt = this.loopStart
     this.startSource(this.pausedAt)
     this.transition('playing')
   }
@@ -192,7 +184,8 @@ export class Player {
         ? this.loopStart + ((this.pausedAt - this.loopStart + elapsed) % len)
         : this.loopStart
     } else {
-      this.pausedAt = Math.min(this.pausedAt + elapsed, this.buffer?.duration ?? 0)
+      const effEnd = this.loopEnd > 0 ? this.loopEnd : (this.buffer?.duration ?? 0)
+      this.pausedAt = Math.min(this.pausedAt + elapsed, effEnd)
     }
     this.stopSource()
     this.transition('paused')
@@ -213,9 +206,14 @@ export class Player {
     node.loopEnd = this.loopEnd
     node.connect(this.analyser ?? this.ctx.destination)
     node.start(0, offset)
+    // Web Audio API ignores loopEnd when loop=false; schedule explicit stop.
+    if (!this.loopEnabled && this.loopEnd > 0) {
+      const remaining = this.loopEnd - offset
+      if (remaining > 0) node.stop(this.ctx.currentTime + remaining)
+    }
     node.onended = () => {
       if (this.source === node && !this.loopEnabled) {
-        this.pausedAt = 0
+        this.pausedAt = this.loopStart
         this.transition('stopped')
       }
     }
