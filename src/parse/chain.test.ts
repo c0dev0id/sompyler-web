@@ -122,6 +122,32 @@ describe('expandChainString (S53000)', () => {
     expect(notes[1]).toMatchObject({ pitch: 'B4', offsetTicks: 4 })
   })
 
+  // ── Comma-tail overlength (S53200) ───────────────────────────────────────
+
+  it('"A4_,2" — 1 tick chain advance, 2 ticks of dampTicks', () => {
+    const notes = expandChainString('A4_,2 B4')
+    expect(notes[0]).toMatchObject({ pitch: 'A4', lengthTicks: 2, dampTicks: 2 })
+    expect(notes[1]).toMatchObject({ pitch: 'B4', offsetTicks: 2, dampTicks: 0 })
+  })
+
+  it('"A4_3,2" — 4 tick length, 2 extra damp ticks, B4 starts at tick 4', () => {
+    const notes = expandChainString('A4_3,2 B4')
+    expect(notes[0]).toMatchObject({ pitch: 'A4', lengthTicks: 4, dampTicks: 2 })
+    expect(notes[1]).toMatchObject({ pitch: 'B4', offsetTicks: 4, dampTicks: 0 })
+  })
+
+  it('comma-tail on shift token', () => {
+    // C4 (1 tick), C#4 (2 ticks, 3 damp), D4 starts at tick 1+2=3
+    const notes = expandChainString('C4 +_,3 D4')
+    expect(notes[1]).toMatchObject({ pitch: 'C#4', lengthTicks: 2, dampTicks: 3 })
+    expect(notes[2]).toMatchObject({ pitch: 'D4', offsetTicks: 3 })
+  })
+
+  it('no dampTicks when no comma suffix', () => {
+    const notes = expandChainString('A4_3')
+    expect(notes[0]).toMatchObject({ lengthTicks: 4, dampTicks: 0 })
+  })
+
   it('rest does not break shift accumulation', () => {
     // Shift should survive a rest between operators
     const notes = expandChainString('C4 + . +')

@@ -18,8 +18,8 @@ import { ScoreError } from '../errors'
  * The shift resets whenever an absolute pitch token is encountered.
  *
  * Deferred (S53000 remainder): stress adjustment (`^`), article extension
- * stacks (`:ext`), comma-tail (`,N`), semicolon-overlength (`;N`), paren
- * clusters, repeated-sign notation (`++`, `--`).
+ * stacks (`:ext`), semicolon-overlength (`;N`), paren clusters,
+ * repeated-sign notation (`++`, `--`).
  */
 
 export interface ChainNote {
@@ -27,6 +27,8 @@ export interface ChainNote {
   offScale: '?' | '!' | null
   offsetTicks: number
   lengthTicks: number
+  /** S53200 comma-tail: extra ticks the note sounds past its chain offset. Does not advance the next note. */
+  dampTicks: number
 }
 
 // ── Chromatic transposition helpers ──────────────────────────────────────────
@@ -56,21 +58,25 @@ function transposePitch(base: string, semitones: number): string {
 
 // ── Token helpers ─────────────────────────────────────────────────────────────
 
-function parseLenSuffix(s: string): number {
-  if (!s) return 1
-  if (/^_+$/.test(s)) return 1 + s.length
-  const m = s.match(/^_(\d+)$/)
-  if (m) return 1 + parseInt(m[1]!, 10)
-  throw new ScoreError(`Malformed chain length suffix '${s}'`)
+interface LenSpec { lengthTicks: number; dampTicks: number }
+
+function parseLenSuffix(s: string): LenSpec {
+  if (!s) return { lengthTicks: 1, dampTicks: 0 }
+  const m = s.match(/^(_+|_\d+)(?:,(\d+))?$/)
+  if (!m) throw new ScoreError(`Malformed chain length suffix '${s}'`)
+  const under = m[1]!
+  const lengthTicks = /^_+$/.test(under) ? 1 + under.length : 1 + parseInt(under.slice(1), 10)
+  return { lengthTicks, dampTicks: m[2] ? parseInt(m[2], 10) : 0 }
 }
 
 // Token patterns (checked in order).
+// The length suffix group captures "_N" or "__" followed by an optional ",M" comma-tail (S53200).
 const REPEAT_RX  = /^\*(\d+)$/
 const REST_RX    = /^\.(\d+)?$/
-const RESET_RX   = /^=((?:_+|_\d+)?)$/
-const SHIFT_UP_RX   = /^\+(\d+)?((?:_+|_\d+)?)$/
-const SHIFT_DOWN_RX = /^-(\d+)?((?:_+|_\d+)?)$/
-const PITCH_RX   = /^([A-Ga-g][#b]?\d+)([?!])?((?:_+|_\d+)?)$/
+const RESET_RX   = /^=((?:_+|_\d+)(?:,\d+)?)?$/
+const SHIFT_UP_RX   = /^\+(\d+)?((?:_+|_\d+)(?:,\d+)?)?$/
+const SHIFT_DOWN_RX = /^-(\d+)?((?:_+|_\d+)(?:,\d+)?)?$/
+const PITCH_RX   = /^([A-Ga-g][#b]?\d+)([?!])?((?:_+|_\d+)(?:,\d+)?)?$/
 
 // ── Public API ────────────────────────────────────────────────────────────────
 
@@ -89,6 +95,7 @@ export function expandChainString(raw: string): ChainNote[] {
       pitch: string | null
       offScale: '?' | '!' | null
       lengthTicks: number
+      dampTicks: number
       repeat: number
     }
     const clauses: Clause[] = []
@@ -106,10 +113,10 @@ export function expandChainString(raw: string): ChainNote[] {
         continue
       }
 
-      // . / .N — rest.
+      // . / .N — rest (no dampTicks on rests).
       const restM = token.match(REST_RX)
       if (restM) {
-        clauses.push({ pitch: null, offScale: null, lengthTicks: restM[1] ? parseInt(restM[1], 10) : 1, repeat: 1 })
+        clauses.push({ pitch: null, offScale: null, lengthTicks: restM[1] ? parseInt(restM[1], 10) : 1, dampTicks: 0, repeat: 1 })
         continue
       }
 
@@ -118,7 +125,7 @@ export function expandChainString(raw: string): ChainNote[] {
       if (resetM) {
         if (!basePitch) throw new ScoreError(`'=' used before any base pitch in chain`)
         semiShift = 0
-        clauses.push({ pitch: basePitch, offScale: null, lengthTicks: parseLenSuffix(resetM[1]!), repeat: 1 })
+        clauses.push({ pitch: basePitch, offScale: null, ...parseLenSuffix(resetM[1] ?? ''), repeat: 1 })
         continue
       }
 
@@ -127,7 +134,7 @@ export function expandChainString(raw: string): ChainNote[] {
       if (upM) {
         if (!basePitch) throw new ScoreError(`'+' used before any base pitch in chain`)
         semiShift += upM[1] ? parseInt(upM[1], 10) : 1
-        clauses.push({ pitch: transposePitch(basePitch, semiShift), offScale: null, lengthTicks: parseLenSuffix(upM[2]!), repeat: 1 })
+        clauses.push({ pitch: transposePitch(basePitch, semiShift), offScale: null, ...parseLenSuffix(upM[2] ?? ''), repeat: 1 })
         continue
       }
 
@@ -136,7 +143,7 @@ export function expandChainString(raw: string): ChainNote[] {
       if (downM) {
         if (!basePitch) throw new ScoreError(`'-' used before any base pitch in chain`)
         semiShift -= downM[1] ? parseInt(downM[1], 10) : 1
-        clauses.push({ pitch: transposePitch(basePitch, semiShift), offScale: null, lengthTicks: parseLenSuffix(downM[2]!), repeat: 1 })
+        clauses.push({ pitch: transposePitch(basePitch, semiShift), offScale: null, ...parseLenSuffix(downM[2] ?? ''), repeat: 1 })
         continue
       }
 
@@ -146,7 +153,7 @@ export function expandChainString(raw: string): ChainNote[] {
         basePitch = pitchM[1]!
         semiShift = 0
         const offScale = (pitchM[2] as '?' | '!' | undefined) ?? null
-        clauses.push({ pitch: basePitch, offScale, lengthTicks: parseLenSuffix(pitchM[3]!), repeat: 1 })
+        clauses.push({ pitch: basePitch, offScale, ...parseLenSuffix(pitchM[3] ?? ''), repeat: 1 })
         continue
       }
 
@@ -158,7 +165,7 @@ export function expandChainString(raw: string): ChainNote[] {
     for (const clause of clauses) {
       for (let r = 0; r < clause.repeat; r++) {
         if (clause.pitch !== null) {
-          result.push({ pitch: clause.pitch, offScale: clause.offScale, offsetTicks, lengthTicks: clause.lengthTicks })
+          result.push({ pitch: clause.pitch, offScale: clause.offScale, offsetTicks, lengthTicks: clause.lengthTicks, dampTicks: clause.dampTicks })
         }
         offsetTicks += clause.lengthTicks
       }

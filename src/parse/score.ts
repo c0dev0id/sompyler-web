@@ -493,7 +493,7 @@ export function* walkMeasures(
                   offScale: cn.offScale,
                   lengthTicks: cn.lengthTicks,
                   stress: stressOf(cn.offsetTicks),
-                  damp: 0,
+                  damp: cn.dampTicks,
                   staticArticles: {},
                   shapeArticles: {},
                   continuumArticles: {},
