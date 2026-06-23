@@ -588,7 +588,7 @@ const OXYGENE_KALIMBA = `# kalimba: Koto (GM108 / FluidR3_GM2.sf2). PROFILE from
 # R extended 0.001→0.5s for less abrupt note-off.
 character:
   O: sine
-  AMP: 0.01
+  AMP: 0.005
   A: "0.001:1,100"
   S: "3.0:100;1,100.0"
   R: "0.5:100;1,0"
