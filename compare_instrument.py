@@ -34,6 +34,21 @@ VITE_NODE   = os.path.join(SCRIPT_DIR, 'node_modules/.bin/vite-node')
 RENDER_TS   = os.path.join(SCRIPT_DIR, 'render_spli.ts')
 TIMIDITY    = 'timidity'
 
+# Typical MIDI note per GM program as used in the Oxygène Pt. IV score.
+# Keys are the 'gm' argument string (e.g. '36', 'drum:54').
+# Used as the --note default when the GM program is recognised.
+SCORE_NOTES = {
+    '36':      36,   # Fretless Bass (bass voice)      → C2
+    '108':     60,   # Koto (kalimba voice)            → C4
+    '64':      67,   # Synth Brass 2 (synbrass)        → G4
+    '52':      51,   # Synth Strings 2 (strings)       → Eb3
+    '49':      67,   # String Ensemble 1 (ensemble)    → G4
+    '93':      60,   # Bowed Glass (bowedpad)          → C4
+    '25':      55,   # Nylon Guitar (melody)           → G3
+    'drum:54': 60,   # Tambourine (noise — pitch irrelevant)
+    '123':     60,   # Sea Shore (noise — pitch irrelevant)
+}
+
 # ---------------------------------------------------------------------------
 # MIDI generation (no external dependency — raw bytes)
 # ---------------------------------------------------------------------------
@@ -137,7 +152,8 @@ def main():
     ap.add_argument('sf2',         help='Path to SF2 soundfont file')
     ap.add_argument('gm',          help='GM program 1-based, or drum:NOTE')
     ap.add_argument('--spli',      required=True, help='.spli file to compare')
-    ap.add_argument('--note',      type=int,   default=60,   help='MIDI note (default 60=C4)')
+    ap.add_argument('--note',      type=int,   default=None,
+                    help='MIDI note (default: score-typical note per GM program, else 60=C4)')
     ap.add_argument('--duration',  type=float, default=3.0,  help='Note-on duration (s)')
     ap.add_argument('--damp',      type=float, default=2.0,  help='Release tail (s)')
     ap.add_argument('--velocity',  type=int,   default=80,   help='MIDI velocity')
@@ -154,10 +170,18 @@ def main():
     else:
         gm        = int(args.gm)
         program   = gm - 1
-        midi_note = args.note
         label     = f'GM{gm}'
 
-    freq_hz  = 440.0 * 2 ** ((args.note - 69) / 12)
+    # Resolve note: explicit arg → lookup by GM → fallback 60
+    if args.note is not None:
+        note = args.note
+    else:
+        note = SCORE_NOTES.get(args.gm, 60)
+
+    if not is_drum:
+        midi_note = note
+
+    freq_hz  = 440.0 * 2 ** ((note - 69) / 12)
     mid_time = args.mid_time if args.mid_time is not None else args.duration / 2
 
     with tempfile.TemporaryDirectory() as tmp:
@@ -185,7 +209,7 @@ def main():
         # --- sompyler ---
         print(f'[sompyler] {args.spli}  freq={freq_hz:.1f}Hz …', file=sys.stderr)
         cmd = [VITE_NODE, RENDER_TS,
-               args.spli, str(freq_hz), str(args.duration), spl_path, str(args.damp)]
+               args.spli, str(freq_hz), str(args.duration), spl_path, '0']
         r = subprocess.run(cmd, capture_output=True, text=True, cwd=SCRIPT_DIR)
         if r.returncode != 0 or not os.path.exists(spl_path):
             print(f'render_spli failed:\n{r.stderr}\n{r.stdout}', file=sys.stderr)
@@ -227,12 +251,12 @@ def main():
             rd = to_db(rms_at(ref_t, ref_rms, t))
             sd = to_db(rms_at(spl_t, spl_rms, t))
             diff = sd - rd
-            note = ''
+            flag = ''
             if t == args.duration:
-                note = '  ← note off'
+                flag = '  ← note off'
             elif abs(diff) > 3:
-                note = f'  ← {diff:+.0f} dB'
-            print(f'  {t:>5.2f}  {rd:>9.1f}  {sd:>9.1f}  {diff:>+6.1f}{note}')
+                flag = f'  ← {diff:+.0f} dB'
+            print(f'  {t:>5.2f}  {rd:>9.1f}  {sd:>9.1f}  {diff:>+6.1f}{flag}')
 
         # --- Spectrum ---
         safe_t = max(0, min(mid_time, args.duration - 0.2))

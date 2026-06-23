@@ -1,0 +1,36 @@
+# kalimba: Koto (GM108 / FluidR3_GM2.sf2). PROFILE from loop FFT.
+# Sample: 'Koto C 5(R)'  root=60  rate=44100 Hz  loop=338fr (7.7ms)
+# L10: changed S to flat sustain (sample loops, TiMidity sustains flat).
+# PROFILE updated L10: from TiMidity at C4 (note=60) t=0.3s.
+# R extended 0.001→0.5s for less abrupt note-off.
+character:
+  O: sine
+  AMP: 0.007
+  A: "0.001:1,100"
+  S: "3.0:100;1,100.0"
+  R: "0.5:100;1,0"
+  PROFILE:
+    - 100.0  # H1
+    - 82.5   # H2  (L10: TiMidity t=0.3)
+    - 100.0  # H3
+    - 100.0  # H4
+    - 100.0  # H5
+    - 97.0   # H6
+    - 100.0  # H7
+    - 99.7   # H8
+    - 96.9   # H9
+    - 72.7   # H10
+    - 88.4   # H11
+    - 83.8   # H12
+    - 79.4   # H13
+    - 73.0   # H14
+    - 61.0   # H15
+    - 77.4   # H16
+    - 62.4   # H17
+    - 60.4   # H18
+    - 54.3   # H19
+    - 46.7   # H20
+    - 37.0   # H21
+    - 44.1   # H22
+    - 48.1   # H23
+    - 25.7   # H24

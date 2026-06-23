@@ -1,0 +1,11 @@
+# tambourine: Tambourine (bank=128 note=54 / FluidR3_GM2.sf2). Noise instrument.
+# Sample: 'Tambourine(L)'  root=60  rate=44100 Hz  loop=22640fr (513.4ms)
+# The SF2 envelope is pass-through (all phases ≈0.001s, sustain=0): the sample
+# carries the timbre and transient. O:noise approximates the broadband percussive
+# hit. initialAttn=0 → AMP=0.5.
+character:
+  O: noise
+  AMP: 0.057
+  A: "0.001:1,100"
+  S: "0.5:100;0.1,42;0.2,10;0.4,2.3;1,0.0"
+  R: "0.001:100;1,0"

@@ -1,0 +1,11 @@
+# seashore: Sea Shore (GM123 / FluidR3_GM2.sf2). Noise instrument.
+# Sample: 'Sea Shore'  root=60  rate=44100 Hz  loop=71159fr (1613.6ms)
+# Pre-recorded ocean wash — O:noise approximates the broadband source.
+# SF2 envelope: 1.96s rise, hold 2.67s, decay 1.79s to silence, instant release.
+# Total natural duration ≈ 6.4s. initialAttn≈25cB → AMP=0.375.
+character:
+  O: noise
+  AMP: 0.023
+  A: "0.7:1,100"
+  S: "3.0:100;0.178,22;1,15.0"
+  R: "0.001:100;1,0"

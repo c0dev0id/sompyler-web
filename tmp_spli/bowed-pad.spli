@@ -1,0 +1,36 @@
+# bowedpad: Bowed Glass (GM93 / FluidR3_GM2.sf2).
+# Sample: 'Bowed Glass'  root=60  rate=44100 Hz  loop=252fr (5.7ms)
+# PROFILE updated L1: replaced flat spectrum with TiMidity-measured output at C4.
+# VCF removed — already baked into PROFILE from TiMidity measurement.
+# Envelope: instant attack, full sustain, instant release. initialAttn≈24cB → AMP=0.158.
+character:
+  O: sine
+  AMP: 0.030
+  A: "0.001:1,100"
+  S: "0.011:100;1,100.0"
+  R: "1.5:100;1,0"
+  PROFILE:
+    - 100.0  # H1
+    - 86.4   # H2  (L7: avg of t=0.5/1.5/2.5 TiMidity measurements)
+    - 83.0   # H3  (L8: reduced from 87.7, was 7 RDFS too high)
+    - 94.8   # H4
+    - 82.9   # H5
+    - 78.8   # H6
+    - 78.7   # H7
+    - 76.8   # H8
+    - 74.0   # H9
+    - 75.9   # H10
+    - 76.5   # H11
+    - 72.1   # H12
+    - 68.0   # H13  (L8: reduced from 70.9, was 6 RDFS too high)
+    - 70.3   # H14
+    - 70.6   # H15
+    - 69.0   # H16
+    - 64.0   # H17
+    - 60.0   # H18
+    - 56.0   # H19
+    - 52.0   # H20
+    - 48.0   # H21
+    - 44.0   # H22
+    - 40.0   # H23
+    - 36.0   # H24

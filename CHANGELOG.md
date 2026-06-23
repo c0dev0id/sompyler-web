@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **10-loop TiMidity/FluidR3 calibration pass** for all 9 Oxygène instruments — each instrument compared envelope-by-envelope and spectrum-by-spectrum against TiMidity SF2 output via `compare_instrument.py`:
+  - **bass**: S changed from 3s plucked decay to flat sustain (SF2 sample loops at constant amplitude); PROFILE fully replaced from C2 measurements (H2=95, H5=90 — rich uniform spectrum, not sparse pluck); AMP 0.5→0.025
+  - **kalimba**: same flat-sustain correction; PROFILE replaced from C4 measurements (H3/H4/H5/H7≈100 RDFS — very bright koto timbre); AMP 0.5→0.007; R extended 0.001→0.5s
+  - **melody**: flat-sustain correction; PROFILE replaced from G3 measurements (characteristic dip at H4=52, bright H6–H7=83–84); AMP 0.5→0.042
+  - **synbrass**: PROFILE H3–H16 VCF-boost-compensated — pre-distorted to cancel measured per-harmonic VCF gain K(f) so sompyler output matches TiMidity; AMP 0.5→0.020
+  - **strings**: O:sawtooth replaced with O:sine + measured PROFILE (16 harmonics from TiMidity Eb3); VCF removed (baked into PROFILE); R extended 0.001→1.5s; AMP 0.5→0.040
+  - **ensemble**: PROFILE fully replaced from TiMidity G4 t=1.5s (old H5=100/H7=91 were wrong — actual H5=72/H7=63); S changed to flat sustain; AMP 0.354→0.045 (sample builds up 7 dB over first 0.5s)
+  - **bowedpad**: PROFILE fully replaced from TiMidity C4 measurements (averaged t=0.5/1.5/2.5); VCF removed (baked); R extended 0.001→1.5s; AMP 0.158→0.030
+  - **tambourine**: no change (drum hit too short for meaningful envelope comparison)
+  - **seashore**: no change (O:noise cannot match pre-recorded ocean amplitude variation)
+
 - **All 9 Oxygène instruments rebuilt from FluidR3_GM2.sf2 source data only** — no TiMidity-rendered WAV, no hand-tuned values. Each instrument derives envelope timings from SF2 volume-envelope generators (timecents → seconds), PROFILE from loop-region FFT, AMP from `initialAttenuation` centibels, and VCF/LFO from SF2 filter/modulation generators:
   - **kalimba**: replaced near-pure-sine TimGM6mb model with GM108 Koto (FluidR3) — rich 24-harmonic PROFILE (H2/H3/H5 ≈100 RDFS), plucked 0.29s decay
   - **synbrass**: VCF filter sweep now wired — 500 Hz → 5039 Hz via mod envelope (instant attack); AMP 0.35→0.5

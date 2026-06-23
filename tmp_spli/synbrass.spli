@@ -1,0 +1,37 @@
+# synbrass: Synth Brass 2 (GM64 / FluidR3_GM2.sf2). PROFILE from loop FFT.
+# Sample: 'Sbrass C4(L)'  root=60  rate=25000 Hz  loop=29098fr (1163.9ms)
+# H2=H1 — fundamental and octave equal, giving brass "gut vibration" presence.
+# Filter sweep: 500 Hz → 5039 Hz via mod envelope (instant attack, 1s release).
+# PROFILE from open-filter loop FFT. initialAttn=0 → AMP=0.5.
+character:
+  O: sine
+  AMP: 0.020
+  A: "0.001:1,100"
+  S: "0.025:100;1,100.0"
+  R: "1.017:100;1,0"
+  VCF: "500;0.89;4539;0.001;1.029"
+  PROFILE:
+    - 100.0  # H1
+    - 100.0  # H2
+    - 94.3   # H3  (L7: VCF-boost-compensated from TiMidity t=1.5)
+    - 88.2   # H4
+    - 87.9   # H5
+    - 85.4   # H6
+    - 79.6   # H7
+    - 76.7   # H8
+    - 75.6   # H9
+    - 67.2   # H10
+    - 68.9   # H11
+    - 61.5   # H12  (L8: K=1.30 observed, still below target)
+    - 56.0   # H13  (L8: further correction)
+    - 65.5   # H14
+    - 61.4   # H15
+    - 64.2   # H16
+    - 55.2   # H17
+    - 43.8   # H18
+    - 56.1   # H19
+    - 49.5   # H20
+    - 54.6   # H21
+    - 53.3   # H22
+    - 48.1   # H23
+    - 42.4   # H24

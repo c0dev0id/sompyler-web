@@ -1,0 +1,27 @@
+# ensemble: String Ensemble 1 (GM49 / FluidR3_GM2.sf2).
+# Sample: 'Strings C#5L'  root=60  rate=32000 Hz  loop=30844fr (963.9ms)
+# PROFILE updated L10: from TiMidity at G4 (note=67) t=1.5s.
+# L10: AMP raised 0.020→0.035 (sample builds up 7 dB; 0.035 is a compromise).
+character:
+  O: sine
+  AMP: 0.045
+  A: "0.001:1,100"
+  S: "0.001:100;1,100"
+  R: "1.017:100;1,0"
+  PROFILE:
+    - 100.0  # H1
+    - 86.7   # H2  (L10: from TiMidity t=1.5 note=67)
+    - 81.7   # H3
+    - 83.1   # H4
+    - 72.3   # H5
+    - 73.0   # H6
+    - 62.9   # H7
+    - 71.7   # H8
+    - 73.5   # H9
+    - 71.8   # H10
+    - 69.8   # H11
+    - 56.9   # H12
+    - 59.9   # H13
+    - 59.0   # H14
+    - 55.0   # H15
+    - 48.7   # H16

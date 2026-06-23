@@ -1,0 +1,36 @@
+# melody: Nylon String Guitar (GM25 / FluidR3_GM2.sf2). PROFILE from loop FFT.
+# Sample: 'Nylon B4'  root=60  rate=44100 Hz  loop=357fr (8.1ms)
+# PROFILE updated L10: from TiMidity at G3 (note=55) t=1.5s during flat sustain.
+# L10: changed S to flat sustain (sample loops — flat amplitude throughout note).
+# initialAttn=0 → AMP=0.5; tuned AMP=0.042 (close match at t=0.05).
+character:
+  O: sine
+  AMP: 0.042
+  A: "0.001:1,100"
+  S: "3.0:100;1,100.0"
+  R: "0.001:100;1,0"
+  PROFILE:
+    - 100.0  # H1
+    - 92.6   # H2  (L10: TiMidity t=1.5 note=55 G3)
+    - 88.7   # H3
+    - 52.3   # H4
+    - 64.9   # H5
+    - 82.6   # H6
+    - 84.1   # H7
+    - 69.2   # H8
+    - 58.0   # H9
+    - 75.6   # H10
+    - 69.5   # H11
+    - 68.3   # H12
+    - 49.1   # H13
+    - 55.8   # H14
+    - 62.0   # H15
+    - 54.9   # H16
+    - 45.0   # H17
+    - 38.0   # H18
+    - 32.0   # H19
+    - 27.0   # H20
+    - 22.0   # H21
+    - 18.0   # H22
+    - 14.0   # H23
+    - 11.0   # H24

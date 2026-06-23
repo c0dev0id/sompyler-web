@@ -545,70 +545,70 @@ character:
 
 const OXYGENE_BASS = `# bass: Fretless Bass (GM36 / FluidR3_GM2.sf2). PROFILE from loop FFT.
 # Sample: 'Fretless A3'  root=69  rate=48000 Hz  loop=815fr (17.0ms)
-# H3 (63.8) > H2 (58.7) — characteristic fretless growl. H8–H16 plateau
-# (~25–33 RDFS) gives sustained upper-harmonic richness. Envelope: instant
-# attack, 3s decay to silence (plucked), 1.8s release. initialAttn=0 → AMP=0.5.
+# PROFILE updated L10: from TiMidity at C2 (note=36) during flat sustain.
+# L10: changed S to flat sustain (sample loops — flat amplitude throughout note).
+# AMP reduced 0.047→0.038 to align onset level. R: 1.782s from SF2.
 character:
   O: sine
-  AMP: 0.5
+  AMP: 0.025
   A: "0.001:1,100"
-  S: "3:100;1,0.0"
+  S: "20:100;1,100.0"
   R: "1.782:100;1,0"
   PROFILE:
     - 100.0  # H1
-    - 58.7   # H2
-    - 63.8   # H3
-    - 42.0   # H4
-    - 32.9   # H5
-    - 23.6   # H6
-    - 23.2   # H7
-    - 30.4   # H8
-    - 31.0   # H9
-    - 30.5   # H10
-    - 25.0   # H11
-    - 32.6   # H12
-    - 30.0   # H13
-    - 29.3   # H14
-    - 30.7   # H15
-    - 33.0   # H16
-    - 26.1   # H17
-    - 25.5   # H18
-    - 28.0   # H19
-    - 23.6   # H20
-    - 22.3   # H21
-    - 25.7   # H22
-    - 26.1   # H23
-    - 23.3   # H24
+    - 95.4   # H2  (L10: from TiMidity t=1.0 note=36)
+    - 87.6   # H3
+    - 89.8   # H4
+    - 89.6   # H5
+    - 85.9   # H6
+    - 86.4   # H7
+    - 83.9   # H8
+    - 78.6   # H9
+    - 73.8   # H10
+    - 71.8   # H11
+    - 65.2   # H12
+    - 59.0   # H13
+    - 51.3   # H14
+    - 49.4   # H15
+    - 46.3   # H16
+    - 42.0   # H17
+    - 38.0   # H18
+    - 34.0   # H19
+    - 30.0   # H20
+    - 26.0   # H21
+    - 22.0   # H22
+    - 19.0   # H23
+    - 16.0   # H24
 `
 
 const OXYGENE_KALIMBA = `# kalimba: Koto (GM108 / FluidR3_GM2.sf2). PROFILE from loop FFT.
 # Sample: 'Koto C 5(R)'  root=60  rate=44100 Hz  loop=338fr (7.7ms)
-# Very rich 24-harmonic spectrum — H2/H3/H5 near 100 RDFS, broad high-partial
-# content. Instant attack, 0.29s decay to silence, 1.8s release (plucked).
-# initialAttn=0 → AMP=0.5.
+# L10: changed S to flat sustain (sample loops, TiMidity sustains flat).
+# PROFILE updated L10: from TiMidity at C4 (note=60) t=0.3s.
+# R extended 0.001→0.5s for less abrupt note-off.
 character:
   O: sine
-  AMP: 0.5
+  AMP: 0.007
   A: "0.001:1,100"
-  S: "0.289:100;1,0.0"
-  R: "1.782:100;1,0"
+  S: "3.0:100;1,100.0"
+  R: "0.5:100;1,0"
   PROFILE:
     - 100.0  # H1
-    - 97.5   # H2
+    - 82.5   # H2  (L10: TiMidity t=0.3)
     - 100.0  # H3
-    - 79.5   # H4
-    - 99.8   # H5
-    - 93.5   # H6
-    - 88.0   # H7
-    - 85.4   # H8
-    - 85.3   # H9
-    - 79.0   # H10
-    - 71.5   # H11
-    - 77.9   # H12
-    - 81.3   # H13
-    - 76.4   # H14
-    - 76.8   # H15
-    - 67.8   # H16
+    - 100.0  # H4
+    - 100.0  # H5
+    - 97.0   # H6
+    - 100.0  # H7
+    - 99.7   # H8
+    - 96.9   # H9
+    - 72.7   # H10
+    - 88.4   # H11
+    - 83.8   # H12
+    - 79.4   # H13
+    - 73.0   # H14
+    - 61.0   # H15
+    - 77.4   # H16
     - 62.4   # H17
     - 60.4   # H18
     - 54.3   # H19
@@ -623,10 +623,10 @@ const OXYGENE_SYNBRASS = `# synbrass: Synth Brass 2 (GM64 / FluidR3_GM2.sf2). PR
 # Sample: 'Sbrass C4(L)'  root=60  rate=25000 Hz  loop=29098fr (1163.9ms)
 # H2=H1 — fundamental and octave equal, giving brass "gut vibration" presence.
 # Filter sweep: 500 Hz → 5039 Hz via mod envelope (instant attack, 1s release).
-# PROFILE from open-filter loop FFT. initialAttn=0 → AMP=0.5.
+# PROFILE updated L7: VCF-boost-compensated from TiMidity at G4 (note=67) t=1.5s.
 character:
   O: sine
-  AMP: 0.5
+  AMP: 0.020
   A: "0.001:1,100"
   S: "0.025:100;1,100.0"
   R: "1.017:100;1,0"
@@ -634,20 +634,20 @@ character:
   PROFILE:
     - 100.0  # H1
     - 100.0  # H2
-    - 88.8   # H3
-    - 76.4   # H4
-    - 75.3   # H5
-    - 73.4   # H6
-    - 71.0   # H7
-    - 64.8   # H8
-    - 63.5   # H9
-    - 65.2   # H10
-    - 62.7   # H11
-    - 53.9   # H12
-    - 57.5   # H13
-    - 58.6   # H14
-    - 62.6   # H15
-    - 43.8   # H16
+    - 94.3   # H3  (L7: VCF-boost-compensated from TiMidity t=1.5)
+    - 88.2   # H4
+    - 87.9   # H5
+    - 85.4   # H6
+    - 79.6   # H7
+    - 76.7   # H8
+    - 75.6   # H9
+    - 67.2   # H10
+    - 68.9   # H11
+    - 61.5   # H12  (L8: K=1.30 observed, still below target)
+    - 56.0   # H13  (L8: further correction)
+    - 65.5   # H14
+    - 61.4   # H15
+    - 64.2   # H16
     - 55.2   # H17
     - 43.8   # H18
     - 56.1   # H19
@@ -660,134 +660,138 @@ character:
 
 const OXYGENE_STRINGS = `# strings: Synth Strings 2 (GM52 / FluidR3_GM2.sf2).
 # Sample: 'saw-fb-110'  root=60  rate=44100 Hz  loop=401fr (9.1ms)
-# Feedback sawtooth sample (confirmed by name). O:sawtooth models this directly;
-# no PROFILE needed (sawtooth generates its own 1/n harmonic series).
-# Filter sweep: 5549 Hz → 6745 Hz via mod envelope (instant, 1.8s release).
-# Vibrato: 8.18 Hz, ±15¢, 0.37s delay. initialAttn=0 → AMP=0.5.
+# PROFILE updated L2: replaced O:sawtooth with O:sine + PROFILE from TiMidity at Eb3.
+# VCF removed — baked into PROFILE. Vibrato LFO retained.
+# initialAttn=0 → AMP=0.5. Loop 1 set AMP=0.05; L2 keeps it (power similar).
 character:
-  O: sawtooth
-  AMP: 0.5
+  O: sine
+  AMP: 0.040
   A: "0.001:1,100"
   S: "0.001:100;1,100.0"
-  R: "0.001:100;1,0"
-  VCF: "5549;0.95;1196;0.001;1.782"
+  R: "1.5:100;1,0"
   LFO: "8.18@sin[0.37];15.000:pitch"
+  PROFILE:
+    - 100.0  # H1
+    - 91.4   # H2
+    - 86.4   # H3
+    - 77.6   # H4
+    - 79.4   # H5
+    - 75.9   # H6
+    - 76.4   # H7
+    - 71.8   # H8
+    - 74.0   # H9
+    - 69.7   # H10
+    - 69.9   # H11
+    - 65.1   # H12
+    - 63.4   # H13
+    - 63.6   # H14
+    - 61.9   # H15
+    - 60.4   # H16
 `
 
 const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / FluidR3_GM2.sf2). PROFILE from loop FFT.
 # Sample: 'Strings C#5L'  root=60  rate=32000 Hz  loop=30844fr (963.9ms)
-# H1–H5 all at 100 RDFS, gradual rolloff from H6, dense content up to H24.
-# SF2 envelope: instant attack, 0.1s decay to silence (no sustain), 1s release.
-# This is a "strings hit" articulation — not a sustained pad. initialAttn=30cB → AMP=0.354.
-# Filter sweep 10002→11227 Hz is above hearing — effectively open, no VCF needed.
+# PROFILE updated L10: from TiMidity at G4 (note=67) t=1.5s.
+# L10: AMP raised 0.020→0.035 (sample builds up 7 dB; 0.035 is a compromise).
 character:
   O: sine
-  AMP: 0.354
+  AMP: 0.045
   A: "0.001:1,100"
-  S: "0.1:100;1,0.0"
+  S: "0.001:100;1,100"
   R: "1.017:100;1,0"
   PROFILE:
     - 100.0  # H1
-    - 100.0  # H2
-    - 100.0  # H3
-    - 100.0  # H4
-    - 100.0  # H5
-    - 91.2   # H6
-    - 89.4   # H7
-    - 80.4   # H8
-    - 72.8   # H9
-    - 89.0   # H10
-    - 93.1   # H11
-    - 86.5   # H12
-    - 94.2   # H13
-    - 88.1   # H14
-    - 86.0   # H15
-    - 86.4   # H16
-    - 85.8   # H17
-    - 82.7   # H18
-    - 83.3   # H19
-    - 79.4   # H20
-    - 73.7   # H21
-    - 72.5   # H22
-    - 63.6   # H23
-    - 59.9   # H24
+    - 86.7   # H2  (L10: from TiMidity t=1.5 note=67)
+    - 81.7   # H3
+    - 83.1   # H4
+    - 72.3   # H5
+    - 73.0   # H6
+    - 62.9   # H7
+    - 71.7   # H8
+    - 73.5   # H9
+    - 71.8   # H10
+    - 69.8   # H11
+    - 56.9   # H12
+    - 59.9   # H13
+    - 59.0   # H14
+    - 55.0   # H15
+    - 48.7   # H16
 `
 
 const OXYGENE_BOWEDPAD = `# bowedpad: Bowed Glass (GM93 / FluidR3_GM2.sf2).
 # Sample: 'Bowed Glass'  root=60  rate=44100 Hz  loop=252fr (5.7ms)
-# Single-cycle loop — flat spectrum, all harmonics equal. Timbre entirely from
-# VCF at 1720 Hz fixed (filterQ=0cB). No LFO in SF2. Envelope: instant attack,
-# full sustain, instant release. initialAttn≈24cB → AMP=0.158.
+# PROFILE updated L1: replaced flat spectrum with TiMidity-measured output at C4.
+# VCF removed — already baked into PROFILE from TiMidity measurement.
+# Envelope: instant attack, full sustain, instant release. initialAttn≈24cB → AMP=0.158.
 character:
   O: sine
-  AMP: 0.158
+  AMP: 0.030
   A: "0.001:1,100"
   S: "0.011:100;1,100.0"
-  R: "0.001:100;1,0"
-  VCF: "1720;0.95"
+  R: "1.5:100;1,0"
   PROFILE:
     - 100.0  # H1
-    - 100.0  # H2
-    - 100.0  # H3
-    - 100.0  # H4
-    - 100.0  # H5
-    - 100.0  # H6
-    - 100.0  # H7
-    - 100.0  # H8
-    - 100.0  # H9
-    - 100.0  # H10
-    - 100.0  # H11
-    - 100.0  # H12
-    - 100.0  # H13
-    - 100.0  # H14
-    - 100.0  # H15
-    - 100.0  # H16
-    - 100.0  # H17
-    - 100.0  # H18
-    - 100.0  # H19
-    - 100.0  # H20
-    - 100.0  # H21
-    - 99.2   # H22
-    - 100.0  # H23
-    - 100.0  # H24
+    - 86.4   # H2  (L7: avg of t=0.5/1.5/2.5 TiMidity measurements)
+    - 83.0   # H3  (L8: reduced from 87.7, was 7 RDFS too high)
+    - 94.8   # H4
+    - 82.9   # H5
+    - 78.8   # H6
+    - 78.7   # H7
+    - 76.8   # H8
+    - 74.0   # H9
+    - 75.9   # H10
+    - 76.5   # H11
+    - 72.1   # H12
+    - 68.0   # H13  (L8: reduced from 70.9, was 6 RDFS too high)
+    - 70.3   # H14
+    - 70.6   # H15
+    - 69.0   # H16
+    - 64.0   # H17
+    - 60.0   # H18
+    - 56.0   # H19
+    - 52.0   # H20
+    - 48.0   # H21
+    - 44.0   # H22
+    - 40.0   # H23
+    - 36.0   # H24
 `
 
 const OXYGENE_MELODY = `# melody: Nylon String Guitar (GM25 / FluidR3_GM2.sf2). PROFILE from loop FFT.
 # Sample: 'Nylon B4'  root=60  rate=44100 Hz  loop=357fr (8.1ms)
-# H1–H5 strong (83–100 RDFS), H6–H8 dip, H10+ broad high-partial content.
-# Filter at 10397 Hz — effectively open, no VCF. Instant attack, 1s decay to
-# silence (plucked), 1.8s release. initialAttn=0 → AMP=0.5.
+# PROFILE updated L10: from TiMidity at G3 (note=55) t=1.5s during flat sustain.
+# L10: changed S to flat sustain (sample loops — flat amplitude throughout note).
+# initialAttn=0 → AMP=0.5; tuned AMP=0.042 (close match at t=0.05).
 character:
   O: sine
-  AMP: 0.5
+  AMP: 0.042
   A: "0.001:1,100"
-  S: "1:100;1,0.0"
-  R: "1.782:100;1,0"
+  S: "3.0:100;1,100.0"
+  R: "0.001:100;1,0"
   PROFILE:
     - 100.0  # H1
-    - 92.8   # H2
-    - 98.2   # H3
-    - 91.4   # H4
-    - 83.4   # H5
-    - 58.1   # H6
-    - 37.1   # H7
-    - 26.6   # H8
-    - 27.4   # H9
-    - 40.5   # H10
-    - 37.1   # H11
-    - 41.6   # H12
-    - 40.1   # H13
-    - 43.8   # H14
-    - 41.3   # H15
-    - 36.2   # H16
-    - 33.3   # H17
-    - 33.6   # H18
-    - 23.3   # H19
-    - 43.1   # H20
-    - 38.5   # H21
-    - 38.2   # H22
-    - 30.2   # H23
-    - 28.0   # H24
+    - 92.6   # H2  (L10: TiMidity t=1.5 note=55 G3)
+    - 88.7   # H3
+    - 52.3   # H4
+    - 64.9   # H5
+    - 82.6   # H6
+    - 84.1   # H7
+    - 69.2   # H8
+    - 58.0   # H9
+    - 75.6   # H10
+    - 69.5   # H11
+    - 68.3   # H12
+    - 49.1   # H13
+    - 55.8   # H14
+    - 62.0   # H15
+    - 54.9   # H16
+    - 45.0   # H17
+    - 38.0   # H18
+    - 32.0   # H19
+    - 27.0   # H20
+    - 22.0   # H21
+    - 18.0   # H22
+    - 14.0   # H23
+    - 11.0   # H24
 `
 
 const OXYGENE_TAMBOURINE = `# tambourine: Tambourine (bank=128 note=54 / FluidR3_GM2.sf2). Noise instrument.
