@@ -96,6 +96,36 @@ export function renderOscillator(
 }
 
 /**
+ * Pitch-modulated oscillator: per-sample phase integration where instantaneous
+ * frequency = freqHz × 2^(pitchMod[i] × depthCents / 1200). Used for vibrato.
+ * pitchMod must have length === out.length; values are [-1, 1].
+ */
+export function renderOscillatorPitchMod(
+  out: Float32Array,
+  spec: OscillatorSpec,
+  freqHz: number,
+  sampleRate: number,
+  pitchMod: Float32Array,
+  depthCents: number,
+  phaseStart = 0,
+): number {
+  let phase = phaseStart
+  const log2centsFactor = depthCents / 1200
+  for (let i = 0; i < out.length; i++) {
+    const instFreq = freqHz * Math.pow(2, (pitchMod[i]! ) * log2centsFactor)
+    switch (spec.waveform) {
+      case 'sin':      out[i] = Math.sin(phase * TAU); break
+      case 'square':   out[i] = phase < 0.5 ? 1 : -1; break
+      case 'saw':      out[i] = 2 * phase - 1; break
+      case 'triangle': out[i] = 1 - 4 * Math.abs(Math.round(phase) - phase); break
+      case 'noise':    out[i] = Math.random() * 2 - 1; break
+    }
+    phase = (phase + instFreq / sampleRate) % 1
+  }
+  return phase
+}
+
+/**
  * FM oscillator: per-sample phase integration with a variable instantaneous
  * frequency driven by a modulator. `depthEnvSamples`, if provided, must
  * have length === out.length; it scales `fm.depth` per sample (pre-evaluated

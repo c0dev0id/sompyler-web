@@ -286,7 +286,7 @@ function compileVCF(raw: unknown): VCFSpec | undefined {
  * LFO: "RATE_HZ["@"OSC]["["DELAY_S"]"]";"DEPTH":"TARGET["+"PHASE_DEG]"
  * or a list of such strings for multiple LFOs.
  */
-const LFO_RX = /^([\d.]+)(?:@(\w+))?(?:\[([\d.]+)\])?;([\d.]+):(amp|vcf)(?:\+(\d+))?$/
+const LFO_RX = /^([\d.]+)(?:@(\w+))?(?:\[([\d.]+)\])?;([\d.]+):(amp|vcf|pitch)(?:\+(\d+))?$/
 
 function compileLFOEntry(raw: string): LFOSpec {
   const m = LFO_RX.exec(raw.trim())
@@ -295,7 +295,7 @@ function compileLFOEntry(raw: string): LFOSpec {
   if (!Number.isFinite(rateHz) || rateHz <= 0) throw new InstrumentError(`LFO: rate must be positive`)
   const depth = parseFloat(m[4]!)
   if (!Number.isFinite(depth)) throw new InstrumentError(`LFO: depth must be a number`)
-  const target = m[5] as 'amp' | 'vcf'
+  const target = m[5] as 'amp' | 'vcf' | 'pitch'
   const spec: LFOSpec = { rateHz, depth, target }
   if (m[2]) {
     const wf = m[2] as Waveform

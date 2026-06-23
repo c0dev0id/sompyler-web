@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Pitch vibrato via `LFO: "RATE[@OSC][DELAY];DEPTH:pitch"`. The LFO signal modulates each oscillator's instantaneous frequency per-sample using `freqHz × 2^(signal × depth / 1200)`, matching standard cents-based pitch deviation. Applied pre-summation per partial (not post). Synth Strings now carry the SF2-specified vibrato: 8.18 Hz, ±15 cents, 0.37s delay.
+
 - `tones:` block support in `.splt` tuning files: maps arbitrary note names to semitone positions within an octave, extending (not replacing) the default Anglo-Saxon note table. Enables German notation (`H`, `Cis`, `Dis`, `B`) and other regional naming conventions. Tone name regex widened to accept multi-letter names.
 
 - Per-partial envelope overrides in `PROFILE` entries: complex entries `{V, A, S, T, R, D}` now apply per-partial envelope phases that override (not replace) the root instrument envelope per phase. Missing phases inherit from the root.

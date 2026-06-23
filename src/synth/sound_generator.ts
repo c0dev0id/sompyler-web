@@ -2,7 +2,7 @@ import { DEFAULT_SAMPLE_RATE } from './constants'
 import { DEFAULT_ENVELOPE, applyEnvelope, type EnvelopeSpec } from './envelope'
 import { applyBiquadLPF, type VCFSpec } from './filter'
 import { renderLFO, type LFOSpec } from './lfo'
-import { renderOscillator, renderOscillatorFM, type FMSpec, type OscillatorSpec } from './oscillator'
+import { renderOscillator, renderOscillatorFM, renderOscillatorPitchMod, type FMSpec, type OscillatorSpec } from './oscillator'
 import { evaluateShape } from './shape'
 import { renderSympartial, type SympartialSpec } from './sympartial'
 
@@ -170,9 +170,44 @@ export function renderNote(input: RenderNoteInput): Float32Array {
   const baseFreq = applyRailsback(input.freqHz, input.instrument.railsback)
 
   const { spread, timbre, morph } = input.instrument
+
+  // Collect LFO signals before partial summation so pitchLFO can be routed
+  // per-oscillator (pitch modulation must be applied pre-summation).
+  let vcfLFO: Float32Array | null = null
+  let ampLFO: Float32Array | null = null
+  let pitchLFO: Float32Array | null = null
+  let pitchLFODepthCents = 0
+  if (input.instrument.lfo) {
+    const specs = Array.isArray(input.instrument.lfo)
+      ? input.instrument.lfo
+      : [input.instrument.lfo]
+    for (const lfoSpec of specs) {
+      const signal = renderLFO(lfoSpec, totalSamples, sampleRate)
+      const depth = lfoSpec.depth
+      if (lfoSpec.target === 'vcf') {
+        if (!vcfLFO) vcfLFO = new Float32Array(totalSamples)
+        for (let i = 0; i < totalSamples; i++) vcfLFO[i] = vcfLFO[i]! + signal[i]! * depth
+      } else if (lfoSpec.target === 'pitch') {
+        // Multiple pitch LFOs are uncommon but additive. We accumulate
+        // the signal with the first LFO's depthCents as the scale.
+        if (!pitchLFO) {
+          pitchLFO = signal
+          pitchLFODepthCents = depth
+        } else {
+          // blend subsequent pitch LFOs (scaled to first's depth range)
+          for (let i = 0; i < totalSamples; i++) pitchLFO[i] = pitchLFO[i]! + signal[i]! * (depth / Math.max(1, pitchLFODepthCents))
+        }
+      } else {
+        if (!ampLFO) ampLFO = new Float32Array(totalSamples)
+        for (let i = 0; i < totalSamples; i++) ampLFO[i] = ampLFO[i]! + signal[i]! * depth
+      }
+    }
+  }
+
   const hasFM = sympartials.some((sp) => !!sp.fm)
   const hasPerPartialMods =
     hasFM ||
+    !!pitchLFO ||
     (spread && spread.length > 0) ||
     !!timbre ||
     (morph && morph.length > 0 && !!input.lengthTicks) ||
@@ -190,6 +225,8 @@ export function renderNote(input: RenderNoteInput): Float32Array {
           ? evaluateShape(sp.fm.depthEnv, totalSamples)
           : null
         renderOscillatorFM(buf, sp.oscillator, partialFreqHz, sp.fm, sampleRate, depthEnv)
+      } else if (pitchLFO) {
+        renderOscillatorPitchMod(buf, sp.oscillator, partialFreqHz, sampleRate, pitchLFO, pitchLFODepthCents)
       } else {
         renderOscillator(buf, sp.oscillator, partialFreqHz, sampleRate)
       }
@@ -209,25 +246,6 @@ export function renderNote(input: RenderNoteInput): Float32Array {
   const masterAmp = (input.instrument.amp ?? 1) * input.stress
   if (masterAmp !== 1) {
     for (let i = 0; i < out.length; i++) out[i] = out[i]! * masterAmp
-  }
-  // Accumulate LFO signals per target.
-  let vcfLFO: Float32Array | null = null
-  let ampLFO: Float32Array | null = null
-  if (input.instrument.lfo) {
-    const specs = Array.isArray(input.instrument.lfo)
-      ? input.instrument.lfo
-      : [input.instrument.lfo]
-    for (const lfoSpec of specs) {
-      const signal = renderLFO(lfoSpec, totalSamples, sampleRate)
-      const depth = lfoSpec.depth
-      if (lfoSpec.target === 'vcf') {
-        if (!vcfLFO) vcfLFO = new Float32Array(totalSamples)
-        for (let i = 0; i < totalSamples; i++) vcfLFO[i] = vcfLFO[i]! + signal[i]! * depth
-      } else {
-        if (!ampLFO) ampLFO = new Float32Array(totalSamples)
-        for (let i = 0; i < totalSamples; i++) ampLFO[i] = ampLFO[i]! + signal[i]! * depth
-      }
-    }
   }
   if (input.instrument.vcf) {
     applyBiquadLPF(out, input.instrument.vcf, input.lengthSeconds, damp, sampleRate, vcfLFO)

@@ -645,7 +645,7 @@ const OXYGENE_STRINGS = `# strings: Synth Strings 2 (GM52 / FluidR3_GM2.sf2).
 # by FFT: PROFILE matches 1/n sawtooth within 3-4 RDFS across all harmonics.
 # Using O:sawtooth directly is simpler, accurate, and gives the cold synthetic
 # string-synth character (not acoustic bowed strings).
-# Vibrato from SF2: 8.18 Hz, -15 cents depth, 0.37s delay (not yet wired as LFO).
+# Vibrato from SF2: 8.18 Hz, -15 cents depth, 0.37s delay.
 # Envelope: instant attack, full sustain, 1.2s release (SF2-accurate).
 character:
   O: sawtooth
@@ -653,6 +653,7 @@ character:
   A: "0.001:1,100"
   S: "0.001:100;1,100"
   R: "1.20:100;1,0"
+LFO: "8.18@sin[0.37];15:pitch"
 `
 
 const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / FluidR3_GM2.sf2). PROFILE from loop FFT.

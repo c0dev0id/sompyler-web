@@ -5,13 +5,14 @@ import { renderOscillator, type OscillatorSpec, type Waveform } from './oscillat
  * be routed to the VCF cutoff ('vcf') or to the output amplitude ('amp').
  *
  * depth unit depends on target:
- *   vcf  — Hz added/subtracted from cutoff_hz at LFO peak
- *   amp  — 0..1 amplitude swing (depth=0.3 → ±30% amplitude variation)
+ *   vcf   — Hz added/subtracted from cutoff_hz at LFO peak
+ *   amp   — 0..1 amplitude swing (depth=0.3 → ±30% amplitude variation)
+ *   pitch — cents deviation (depth=15 → ±15 cents vibrato)
  */
 export interface LFOSpec {
   rateHz: number
   depth: number
-  target: 'vcf' | 'amp'
+  target: 'vcf' | 'amp' | 'pitch'
   waveform?: Waveform
   /** Initial phase in turns (0..1). */
   phase?: number
