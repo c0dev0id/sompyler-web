@@ -550,7 +550,7 @@ const OXYGENE_BASS = `# bass: Fretless Bass (GM36 / FluidR3_GM2.sf2). PROFILE fr
 # AMP reduced 0.047→0.038 to align onset level. R: 1.782s from SF2.
 character:
   O: sine
-  AMP: 0.025
+  AMP: 0.2
   A: "0.001:1,100"
   S: "20:100;1,100.0"
   R: "1.782:100;1,0"
@@ -588,7 +588,7 @@ const OXYGENE_KALIMBA = `# kalimba: Koto (GM108 / FluidR3_GM2.sf2). PROFILE from
 # R extended 0.001→0.5s for less abrupt note-off.
 character:
   O: sine
-  AMP: 0.007
+  AMP: 0.01
   A: "0.001:1,100"
   S: "3.0:100;1,100.0"
   R: "0.5:100;1,0"
@@ -626,7 +626,7 @@ const OXYGENE_SYNBRASS = `# synbrass: Synth Brass 2 (GM64 / FluidR3_GM2.sf2). PR
 # PROFILE updated L7: VCF-boost-compensated from TiMidity at G4 (note=67) t=1.5s.
 character:
   O: sine
-  AMP: 0.020
+  AMP: 0.05
   A: "0.001:1,100"
   S: "0.025:100;1,100.0"
   R: "1.017:100;1,0"
@@ -665,7 +665,7 @@ const OXYGENE_STRINGS = `# strings: Synth Strings 2 (GM52 / FluidR3_GM2.sf2).
 # initialAttn=0 → AMP=0.5. Loop 1 set AMP=0.05; L2 keeps it (power similar).
 character:
   O: sine
-  AMP: 0.040
+  AMP: 0.1
   A: "0.001:1,100"
   S: "0.001:100;1,100.0"
   R: "1.5:100;1,0"
@@ -695,7 +695,7 @@ const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / FluidR3_GM2.sf2)
 # L10: AMP raised 0.020→0.035 (sample builds up 7 dB; 0.035 is a compromise).
 character:
   O: sine
-  AMP: 0.045
+  AMP: 0.2
   A: "0.001:1,100"
   S: "0.001:100;1,100"
   R: "1.017:100;1,0"
@@ -725,7 +725,7 @@ const OXYGENE_BOWEDPAD = `# bowedpad: Bowed Glass (GM93 / FluidR3_GM2.sf2).
 # Envelope: instant attack, full sustain, instant release. initialAttn≈24cB → AMP=0.158.
 character:
   O: sine
-  AMP: 0.030
+  AMP: 0.05
   A: "0.001:1,100"
   S: "0.011:100;1,100.0"
   R: "1.5:100;1,0"
@@ -763,7 +763,7 @@ const OXYGENE_MELODY = `# melody: Nylon String Guitar (GM25 / FluidR3_GM2.sf2). 
 # initialAttn=0 → AMP=0.5; tuned AMP=0.042 (close match at t=0.05).
 character:
   O: sine
-  AMP: 0.042
+  AMP: 0.5
   A: "0.001:1,100"
   S: "3.0:100;1,100.0"
   R: "0.001:100;1,0"
@@ -814,7 +814,7 @@ const OXYGENE_SEASHORE = `# seashore: Sea Shore (GM123 / FluidR3_GM2.sf2). Noise
 # Total natural duration ≈ 6.4s. initialAttn≈25cB → AMP=0.375.
 character:
   O: noise
-  AMP: 0.375
+  AMP: 0.1
   A: "1.96:1,100"
   S: "4.46:100;0.599,100;1,0.0"
   R: "0.001:100;1,0"
