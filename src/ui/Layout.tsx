@@ -75,6 +75,7 @@ function EditorPanel(props: {
   emptyMessage: string
   onActiveInstrumentChange?: (name: string | null, body: string | null) => void
   onFileSave?: () => void
+  onBarClick?: (barIndex: number) => void
 }) {
   const [files, setFiles] = createSignal<StoredFile[]>([])
   const [selectedId, setSelectedId] = createSignal<string | null>(null)
@@ -148,6 +149,7 @@ function EditorPanel(props: {
                   }
                 }, 1000)
               }}
+            onBarClick={props.onBarClick}
           />
         )}
       </Show>
@@ -290,6 +292,7 @@ export const Layout: Component<LayoutProps> = (props) => {
           renderDiagnostics={props.session.renderDiagnostics}
           emptyMessage="No score in project. Add a .spls from staging."
           onFileSave={props.onScoreSave}
+          onBarClick={(barIndex) => props.session.setBarMarker(barIndex)}
         />
       </section>
 

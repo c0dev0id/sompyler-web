@@ -22,9 +22,22 @@ const darkYamlStyle = HighlightStyle.define([
   { tag: tags.punctuation,                                         color: '#555555' },
 ])
 
-export function baseExtensions(): Extension[] {
+export function baseExtensions(onLineNumberClick?: (barIndex: number) => void): Extension[] {
+  const lineNumExt = onLineNumberClick
+    ? lineNumbers({
+        domEventHandlers: {
+          click(view, block, _event) {
+            const line = view.state.doc.lineAt(block.from)
+            const text = view.state.doc.sliceString(0, line.to)
+            const barIndex = (text.match(/^---\s*$/gm) ?? []).length
+            onLineNumberClick(barIndex)
+            return true
+          },
+        },
+      })
+    : lineNumbers()
   return [
-    lineNumbers(),
+    lineNumExt,
     lintGutter(),
     history(),
     highlightActiveLine(),
@@ -35,10 +48,11 @@ export function baseExtensions(): Extension[] {
   ]
 }
 
-export function extensionsFor(ext: FileExtension, ctx: SemanticLintContext): Extension[] {
+export function extensionsFor(ext: FileExtension, ctx: SemanticLintContext, onBarClick?: (barIndex: number) => void): Extension[] {
   // Prec.highest makes sompylerHighlight decorations the innermost spans, so
   // their CSS color wins over the YAML highlight on the enclosing span.
-  return [...baseExtensions(), makeLinter(ext, ctx), Prec.highest(sompylerHighlight(ext))]
+  const clickHandler = ext === 'spls' ? onBarClick : undefined
+  return [...baseExtensions(clickHandler), makeLinter(ext, ctx), Prec.highest(sompylerHighlight(ext))]
 }
 
 export function readOnlyExtension(readOnly: boolean): Extension {

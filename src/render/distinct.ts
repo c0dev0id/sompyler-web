@@ -53,6 +53,9 @@ export interface DistinctRenderPlan {
   notes: DistinctNote[]
   totalLengthSeconds: number
   voices: Set<string>
+  /** Start time in seconds for each bar, indexed by measureIndex. Sparse: bars
+   *  with no notes are absent. Used to map score line-number clicks to player positions. */
+  barTimes: number[]
 }
 
 export interface DistinctBuildContext {
@@ -106,6 +109,7 @@ export async function buildDistinctNotes(
    * Used to size the render buffer when notes overflow their bar boundary. */
   let maxNoteEndSeconds = 0
 
+  const barTimes: number[] = []
   const rawNotes: RawNote[] = []
   for (const note of walkMeasures(head, measures)) rawNotes.push(note)
 
@@ -143,6 +147,7 @@ export async function buildDistinctNotes(
       if (metaBlock && typeof metaBlock.offset_seconds === 'number' && metaBlock.offset_seconds > 0) {
         cumLengthSeconds += metaBlock.offset_seconds
       }
+      barTimes[note.measureIndex] = cumLengthSeconds
       if (metaBlock && 'stress_pattern' in metaBlock && typeof metaBlock.stress_pattern === 'string') {
         activeStressPattern = metaBlock.stress_pattern
       }
@@ -285,6 +290,7 @@ export async function buildDistinctNotes(
     notes: Array.from(byKey.values()),
     totalLengthSeconds,
     voices,
+    barTimes,
   }
   log('parse', 'info', `Built distinct-notes plan`, {
     distinct: plan.notes.length,

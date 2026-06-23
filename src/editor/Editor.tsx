@@ -12,6 +12,7 @@ export interface EditorProps {
   readOnly: boolean
   lintContext: SemanticLintContext
   onBodyChange?: (body: string) => void
+  onBarClick?: (barIndex: number) => void
 }
 
 export function Editor(props: EditorProps) {
@@ -24,7 +25,7 @@ export function Editor(props: EditorProps) {
     const state = EditorState.create({
       doc: props.file.body,
       extensions: [
-        ...extensionsFor(props.file.ext as FileExtension, props.lintContext),
+        ...extensionsFor(props.file.ext as FileExtension, props.lintContext, props.onBarClick),
         readOnlyCompartment.of(readOnlyExtension(props.readOnly)),
         EditorView.updateListener.of((u) => {
           if (!u.docChanged) return

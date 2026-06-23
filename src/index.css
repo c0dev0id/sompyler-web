@@ -595,6 +595,12 @@ html, body, #root {
   color: #555;
   border-right: 1px solid #333;
 }
+.editor .cm-lineNumbers .cm-gutterElement {
+  cursor: pointer;
+}
+.editor .cm-lineNumbers .cm-gutterElement:hover {
+  color: #888;
+}
 
 /* Sompyler domain tokens */
 .editor .cm-pitch    { color: #4ec9b0; }  /* note names     — teal   */
