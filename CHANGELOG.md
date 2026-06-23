@@ -46,6 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Tab strip is now properly scrollable on desktop. Tab buttons had `flex-shrink: 1` (flex default), so they silently compressed to fit the container width rather than overflowing it — nothing to scroll. Tabs now hold their natural width (`flex-shrink: 0`, `white-space: nowrap`) and a visible thin scrollbar appears when the strip overflows.
+
 - `PROFILE` partial amplitudes now use the RFC `%dB` logarithmic scale (`10^(-5*(1-V/100))`), matching Python's `log_to_linear` in `sympartial.py`. The previous linear conversion (`V/100`) made upper harmonics up to 3000× too loud relative to the fundamental — at V=3 the error was a factor of ~2100×.
 
 - `SPREAD` frequency model now matches Python's additive position walk. The previous model applied cumulative cents as a multiplier on top of the harmonic number (`k × 2^(cumCents/1200)`). Python's model accumulates a running position counter (`Σ 2^(cumCents_i/1200)`) — so partial k's actual frequency factor is that cumulative sum at slot k, not the harmonic number shifted by cumulative cents. Gaps in the PROFILE (partials at non-consecutive harmonic numbers) are handled correctly by walking the spread counter up to `max(freqMult)` before mapping.
