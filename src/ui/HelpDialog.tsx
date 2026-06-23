@@ -162,8 +162,7 @@ character:
     },
     {
       subtitle: 'LFO — slow cyclic modulation',
-      code: `# Produces slow, repeating movement. Routed to the filter cutoff it creates
-# a wah sweep; routed to amplitude it creates tremolo (volume pulsing).
+      code: `# Produces slow, repeating movement — filter sweep, tremolo, or vibrato.
 
 character:
   LFO: "RATE[@OSC][[DELAY]];DEPTH:TARGET[+PHASE]"
@@ -171,17 +170,21 @@ character:
   # RATE    — cycles per second; 0.2 Hz = one sweep per 5s; 5 Hz = fast tremolo
   # @OSC    — LFO waveform (sin | saw | square | triangle); default sin
   # [DELAY] — fade-in time in seconds; the LFO grows from zero to full depth
-  # DEPTH   — swing amount: Hz for vcf target; fraction 0–1 for amp target
-  # TARGET  — what to modulate: vcf (filter cutoff) or amp (volume)
+  # DEPTH   — swing amount; unit depends on TARGET:
+  #             vcf   — Hz shift applied to filter cutoff
+  #             amp   — fraction 0–1 of amplitude (0.08 = ±8% tremolo)
+  #             pitch — cents deviation (15 = ±15¢ vibrato)
+  # TARGET  — vcf | amp | pitch
   # +PHASE  — starting phase in degrees (0–359); optional
 
-  LFO: "0.5@sin[0.5];200:vcf"  # slow filter wobble, 0.5s fade-in
-  LFO: "3.0@tri;0.08:amp"      # fast tremolo, no fade-in
+  LFO: "0.5@sin[0.5];200:vcf"     # slow filter wobble, 0.5s fade-in
+  LFO: "3.0@tri;0.08:amp"         # fast tremolo, no fade-in
+  LFO: "8.18@sin[0.37];15:pitch"  # vibrato: ±15¢ at 8.18 Hz, 0.37s delay
 
-  # Multiple LFOs:
+  # Multiple LFOs (e.g. tremolo + vibrato together):
   LFO:
-    - "0.5@sin[0.5];200:vcf"
-    - "3.0@tri;0.08:amp"`,
+    - "5.0@sin;0.05:amp"
+    - "6.0@sin[0.5];10:pitch"`,
     },
     {
       subtitle: 'FM — frequency modulation',
