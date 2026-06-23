@@ -182,6 +182,19 @@ LFO:                             # multiple LFOs
   - "6.0@sin[0.5];10:pitch"`,
     },
     {
+      subtitle: 'UNISON — stacked detuned voices',
+      text: 'Renders the note as multiple voices detuned in opposite directions, creating a chorus/ensemble thickening effect. Voices are spread linearly from −detune to +detune cents. An odd count includes a centre voice at 0¢; an even count straddles the centre.',
+      params: [
+        { key: 'COUNT', desc: 'Number of stacked voices. 1 is a no-op. 2–4 is typical for ensemble thickening.' },
+        { key: 'DETUNE_CENTS', desc: 'Maximum cent offset from centre — the outermost voices land at ±this value. 3–5¢ = subtle warmth, 10–20¢ = wide chorus.' },
+      ],
+      code: `UNISON: "COUNT;DETUNE_CENTS"
+
+UNISON: "2;4"   # two voices at −4¢ and +4¢
+UNISON: "3;6"   # three voices: −6¢, 0¢, +6¢
+UNISON: "4;10"  # four voices: −10¢, −3.3¢, +3.3¢, +10¢`,
+    },
+    {
       subtitle: 'FM — frequency modulation',
       text: 'Uses one oscillator (the modulator) to rapidly vary the pitch of the note, creating complex sidebands — metallic, bell-like, or harsh tones not achievable with simple waves.',
       params: [
