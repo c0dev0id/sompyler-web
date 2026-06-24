@@ -899,7 +899,7 @@ stage:
   tambourine: 1|1 0.1 tambourine
   synbrass:  1|1 0.8 synbrass
   strings:   2|1 1.0 synstrings
-  strings1:  2|1 1.0 synstrings
+  strings1:  2|1 1.0 synstrings1
   strings2:  2|1 1.0 synstrings
   ensemble:  1|2 1.2 string-ensemble
   bowedpad:  1|1 1.6 bowed-pad
@@ -5427,6 +5427,7 @@ const SEEDS: Seed[] = [
   { name: 'kalimba',         ext: 'spli', body: OXYGENE_KALIMBA,    inProject: true },
   { name: 'synbrass',        ext: 'spli', body: OXYGENE_SYNBRASS,   inProject: true },
   { name: 'synstrings',      ext: 'spli', body: OXYGENE_STRINGS,    inProject: true },
+  { name: 'synstrings1',    ext: 'spli', body: OXYGENE_STRINGS,    inProject: true },
   { name: 'string-ensemble', ext: 'spli', body: OXYGENE_ENSEMBLE,   inProject: true },
   { name: 'bowed-pad',       ext: 'spli', body: OXYGENE_BOWEDPAD,   inProject: true },
   { name: 'oxygene-melody',  ext: 'spli', body: OXYGENE_MELODY,     inProject: true },
