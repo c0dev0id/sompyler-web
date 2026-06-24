@@ -585,41 +585,18 @@ character:
     - 16.0   # H24
 `
 
-const OXYGENE_KALIMBA = `# kalimba: Koto (GM108 / FluidR3_GM2.sf2). PROFILE from loop FFT.
-# Sample: 'Koto C 5(R)'  root=60  rate=44100 Hz  loop=338fr (7.7ms)
-# PROFILE from TiMidity at C4 (note=60) t=0.23s. S: models plucked decay to silence.
-# R: three-stage release shape for natural note-off.
+const OXYGENE_KALIMBA = `# kalimba: Koto (GM108 / FluidR3_GM2.sf2). Pure-sine sustain loop model.
+# TiMidity's Koto.pat loop (338fr at 44100 Hz) decays to a pure sine tail;
+# PROFILE is H1-only to match. S: decays fast (0.4 s) to a flat 5% floor so
+# the sustained portion is spectrally clean and amplitude-stable.
 character:
   O: sine
   AMP: 0.05
   A: "0.001:1,100"
-  S: "2.5:100;0.03,55*2;0.08,12*2;0.2,2.2;0.5,0.4;1,0.25"
+  S: "0.4:100;0.1,25*2;0.3,6;1,6"
   R: "0.3:100;0.22,65;0.65,55;1,40"
   PROFILE:
     - 100.0  # H1
-    - 100.0  # H2
-    - 100.0  # H3
-    - 83.2   # H4
-    - 100.0  # H5
-    - 89.6   # H6
-    - 85.1   # H7
-    - 91.3   # H8
-    - 91.9   # H9
-    - 86.9   # H10
-    - 80.2   # H11
-    - 81.1   # H12
-    - 91.8   # H13
-    - 81.5   # H14
-    - 81.7   # H15
-    - 65.4   # H16
-    - 62.4   # H17
-    - 60.4   # H18
-    - 54.3   # H19
-    - 46.7   # H20
-    - 37.0   # H21
-    - 44.1   # H22
-    - 48.1   # H23
-    - 25.7   # H24
 `
 
 const OXYGENE_SYNBRASS = `character:
