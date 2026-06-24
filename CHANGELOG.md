@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **AM modulation (RFC §S32116).** `AM:` key in the `character:` block applies amplitude modulation to each partial's oscillator output before the envelope. Uses the same `FREQ[@OSC][SHAPE];MOD:BASE[+PHASE]` format as FM.
+
+- **FM/AM now RFC-conformant (§S32116/§S32117).** Both use the `MOD:BASE` ratio format from the spec instead of the prior non-RFC `DEPTH` scalar. The modulation signal is centered at 1.0 via the Python overdrive formula `o=(m+b)/(m/2+b)`, with max frequency excursion <2× carrier. Kick instruments updated accordingly (sweep now ~1.88× rather than 4× of carrier — the FM formula is bounded below 2×). `FM:` and `AM:` now accept `f`/`F` dynamic flags for ratio-of-carrier and ratio-of-carrier×partial-ordinal respectively.
+
 - **Variation interpolation (RFC §S32300–S32330).** Instrument `character:` blocks with numeric keys now produce smoothly interpolated sounds between boundary specs. At render time the note's pitch (or `stress`/`length` when `ATTR:` says so) is used to linearly blend amp, envelope timings/levels, partial amplitudes, spread, and railsback between the two bracketing compiled specs. Non-interpolatable fields (oscillator waveform, morph, timbre, FM, VCF, LFO, unison) are taken from the lower boundary. Local label overrides and array PROFILE items inside variation entries (as used in `dev/piano.spli`) are fully supported.
 
 - **Oxygène score: all 14 MIDI tracks now represented.** Added hi-hat (tick 2/bar), guiro (tick 9/bar), and castanet (ticks 3+9/bar) from the drums track, running uniformly bar 5–117. Added revcymbal and applause as atmospheric voices triggered at tick 9 on 23 structural bars (bar 4, every-other bar in 18–32 and 60–74, then bars 45/87/93/99/105/111), each swelling 21 ticks into the following bar.
