@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`scripts/validate-score.ts` cross-validation tool.** Run `node_modules/.bin/vite-node scripts/validate-score.ts <score.spls>` to compare note events (pitch Hz, offset seconds, length seconds, stress) between the JS parser and the Python sompyler reference. Uses `scripts/extract-notes.py` for fast first-pass extraction (no audio render). Caught the stressor bug below.
+
 - **AM modulation (RFC §S32116).** `AM:` key in the `character:` block applies amplitude modulation to each partial's oscillator output before the envelope. Uses the same `FREQ[@OSC][SHAPE];MOD:BASE[+PHASE]` format as FM.
 
 - **FM/AM now RFC-conformant (§S32116/§S32117).** Both use the `MOD:BASE` ratio format from the spec instead of the prior non-RFC `DEPTH` scalar. The modulation signal is centered at 1.0 via the Python overdrive formula `o=(m+b)/(m/2+b)`, with max frequency excursion <2× carrier. Kick instruments updated accordingly (sweep now ~1.88× rather than 4× of carrier — the FM formula is bounded below 2×). `FM:` and `AM:` now accept `f`/`F` dynamic flags for ratio-of-carrier and ratio-of-carrier×partial-ordinal respectively.
@@ -24,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`UNISON: "COUNT;DETUNE_CENTS"` — sompyler-web `.spli` extension** for stacked-voice chorus. Renders the entire partial bank `COUNT` times with each voice pitch-shifted by a linearly-distributed cent offset in `[-DETUNE_CENTS, +DETUNE_CENTS]`. Odd counts include a 0¢ centre voice; even counts straddle 0. Models SF2 stacked-sample patches (e.g. FluidR3 Synth Brass 2) without a chorus DSP — the phase drift between fixed-frequency oscillators IS the effect. Follows the LFO/VCF/FM convention (uppercase keyword, `;`-separated string DSL). Sits between partial summation and the global modulators so VCF/AMP-LFO apply once to the summed voices.
 
 ### Fixed
+
+- **Stressor hierarchical levels now match Python.** `buildStressor()` was flat-concatenating `;`-separated stress levels and cycling over the combined array. The correct behaviour (matching `Sompyler/score/stressor.py`) multiplies normalised weights per level: stress at tick t = ∏(level[i][t_at_i] / max[i]). For `2,0,1,0;1,0`, tick 2 (beat weight = 0, sub-beat weight = 1): JS wrongly computed 0.925; Python correctly gives 0.85.
 
 - **S46192 `cut` semantics now correct in the distinct-notes renderer.** Positive `cut` shifts all note offsets left by the cut amount and shortens bar duration by `abs(cut)`; negative `cut` shortens bar duration only (no offset shift). The prior implementation used `barTicks - cut` for bar length, doubling the bar for negative cuts, and did not subtract the positive-cut offset from note positions.
 
