@@ -541,7 +541,7 @@ const OXYGENE_KICK = `# oxygene-kick.spli — FM kick drum with pitch sweep.
 # sweeping carrier from ~4× base down to base in first ~50 ms.
 character:
   O: sine
-  AMP: 0.85
+  AMP: 1
   A: "0.002:1,100"
   S: "0.001:100;1,100"
   R: "0.28:100;1,0"
