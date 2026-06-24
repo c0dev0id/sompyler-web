@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **InstrumentPreview note-on truncated plucked instruments.** The preview's note duration was hard-coded as `attack + max(0.05, attack/2) + release` with `dampSeconds: 0`, ignoring the `S:` decay shape's length. Plucked instruments (kalimba, etc.) encode their character in the multi-second `S:` curve, so the preview only played the first ~50 ms of it and then released — instrument sounded clipped vs. the WAV rendered by `scripts/refine_instrument.py`. Fix: parse the `S:` shape length and use it as a floor for the sustain hold; add a fixed 2 s damp tail so the release shape rings out. Score renders are unaffected (they already pass per-note `lengthSeconds` and `dampSeconds`).
 
-- **Oxygène intro seashore felt forced to ring out.** The instrument's `R:` is 0.001 s (instant), so each bar's seashore C4 hit a still-loud sustain level and dropped to silence in 1 ms — audible as an unnatural cutoff. Added `damp=12` to the bar-1 mapping note (carries to every subsequent bar via `repeat_unmentioned_voices: true`); the existing release shape now stretches over a full bar (~2 s), and each bar's note overlaps with the next bar's attack for continuous ocean flow.
+- **Oxygène intro seashore felt forced to ring out.** The instrument's `R:` is 0.001 s (instant), so each bar's seashore C4 hit a still-loud sustain level and dropped to silence in 1 ms — audible as an unnatural cutoff. Added `damp=24` to the bar-1 mapping note (carries to every subsequent bar via `repeat_unmentioned_voices: true`); the existing release shape now stretches over two bars (~4 s), and each bar's note overlaps with the next two bars' attacks for continuous ocean flow.
 
 ### Changed
 
