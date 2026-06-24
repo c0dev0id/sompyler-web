@@ -33,6 +33,8 @@ export interface LayoutProps {
   session: Session
   refreshSignal: () => number
   onScoreSave?: () => void
+  instrFocusId?: () => string | null
+  tuningFocusId?: () => string | null
 }
 
 function TabStrip(props: {
@@ -78,6 +80,7 @@ function EditorPanel(props: {
   onFileSave?: () => void
   onBarClick?: (barIndex: number) => void
   markerBar?: () => number | null
+  focusId?: () => string | null
 }) {
   const [files, setFiles] = createSignal<StoredFile[]>([])
   const [selectedId, setSelectedId] = createSignal<string | null>(null)
@@ -105,6 +108,12 @@ function EditorPanel(props: {
   })
 
   const selectedFile = () => files().find((f) => f.id === selectedId()) ?? null
+
+  createEffect(() => {
+    const id = props.focusId?.()
+    if (!id) return
+    if (files().some((f) => f.id === id)) setSelectedId(id)
+  })
 
   createEffect(() => {
     const f = selectedFile()
@@ -309,6 +318,7 @@ export const Layout: Component<LayoutProps> = (props) => {
             setPreviewName(name)
             setPreviewBody(body)
           }}
+          focusId={props.instrFocusId}
         />
       </section>
 
@@ -338,6 +348,7 @@ export const Layout: Component<LayoutProps> = (props) => {
           instrumentNames={instrumentNames}
           renderDiagnostics={props.session.renderDiagnostics}
           emptyMessage="No tuning / room files in project."
+          focusId={props.tuningFocusId}
         />
       </section>
     </div>

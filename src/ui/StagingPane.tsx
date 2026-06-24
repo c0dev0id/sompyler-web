@@ -13,6 +13,7 @@ import { resetDatabase } from '../storage/db'
 import { parseScore } from '../parse/score'
 import { log } from '../debug'
 import { StagingHelpDialog } from './StagingHelpDialog'
+import { FileViewModal } from './FileViewModal'
 
 const COLLAPSED_PREF_KEY = 'staging.collapsed'
 
@@ -41,6 +42,8 @@ export interface StagingPaneProps {
   /** Called when the set of in-project files may have changed. */
   onChange: () => void
   mutationsDisabled: boolean
+  /** Called when a filename in the active project is clicked — switch editor focus to it. */
+  onFocusFile?: (name: string, ext: FileExtension) => void
 }
 
 function getScoreRefs(body: string): Record<'spli' | 'splr' | 'splt', Set<string>> {
@@ -65,6 +68,7 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
   const [newName, setNewName] = createSignal('')
   const [newExt, setNewExt] = createSignal<FileExtension>('spli')
   const [expanded, setExpanded] = createSignal(new Set<string>())
+  const [viewFile, setViewFile] = createSignal<StoredFile | null>(null)
   let fileInput: HTMLInputElement | undefined
   let nameInput: HTMLInputElement | undefined
   let helpDialog: HTMLDialogElement | undefined
@@ -280,6 +284,7 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
   }
 
   return (
+    <>
     <aside class={`staging ${collapsed() ? 'collapsed' : ''}`}>
       <header>
         <button onClick={toggleCollapsed} aria-label="Toggle staging">
@@ -334,7 +339,11 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
                       <For each={deps}>
                         {(f) => (
                           <li class={`tree-dep${f.inProject ? ' in-project' : ''}`}>
-                            <span class="filename">{f.name}.{f.ext}</span>
+                            <span
+                              class="filename filename-link"
+                              title={f.inProject ? 'Switch editor to this file' : 'View / edit file'}
+                              onClick={() => f.inProject ? props.onFocusFile?.(f.name, f.ext) : setViewFile(f)}
+                            >{f.name}.{f.ext}</span>
                             <div class="actions">
                               <button
                                 onClick={() => void toggleInProject(f)}
@@ -391,7 +400,11 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
                     <For each={grouped().unreferenced}>
                       {(f) => (
                         <li class={`tree-dep${f.inProject ? ' in-project' : ''}`}>
-                          <span class="filename">{f.name}.{f.ext}</span>
+                          <span
+                            class="filename filename-link"
+                            title="View / edit file"
+                            onClick={() => setViewFile(f)}
+                          >{f.name}.{f.ext}</span>
                           <div class="actions">
                             <button
                               onClick={() => void toggleInProject(f)}
@@ -488,5 +501,15 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
         </div>
       </Show>
     </aside>
+    <Show when={viewFile()} keyed>
+      {(f) => (
+        <FileViewModal
+          file={f}
+          onClose={() => setViewFile(null)}
+          onSaved={async () => { await refresh(); props.onChange() }}
+        />
+      )}
+    </Show>
+    </>
   )
 }
