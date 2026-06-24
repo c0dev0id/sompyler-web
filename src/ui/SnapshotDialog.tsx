@@ -1,4 +1,4 @@
-import { createResource, For, Show, type Component } from 'solid-js'
+import { createMemo, createResource, For, Show, type Component } from 'solid-js'
 import { getSnapshots, type Snapshot } from '../storage/snapshots'
 
 interface SnapshotDialogProps {
@@ -113,6 +113,9 @@ export const SnapshotDialog: Component<SnapshotDialogProps> = (props) => {
     if (!id) return []
     return getSnapshots(id)
   })
+  const visibleSnapshots = createMemo(() =>
+    (snapshots() ?? []).filter((s) => s.body !== props.currentBody())
+  )
 
   return (
     <dialog
@@ -127,10 +130,10 @@ export const SnapshotDialog: Component<SnapshotDialogProps> = (props) => {
       <div class="help-body snap-body">
         <Show when={!snapshots.loading} fallback={<p class="snap-no-diff">Loading…</p>}>
           <Show
-            when={(snapshots() ?? []).filter((s) => s.body !== props.currentBody()).length > 0}
+            when={visibleSnapshots().length > 0}
             fallback={<p class="snap-no-diff">No snapshots yet — snapshots are taken on each render.</p>}
           >
-            <For each={(snapshots() ?? []).filter((s) => s.body !== props.currentBody())}>
+            <For each={visibleSnapshots()}>
               {(snap) => (
                 <SnapshotCard
                   snap={snap}

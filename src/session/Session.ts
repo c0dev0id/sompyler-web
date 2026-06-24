@@ -152,9 +152,7 @@ export class Session {
         const tEnd = this.barTimes[mb + 2] ?? 0
         this.player.setLoopPoints(tStart, tEnd)
       }
-      for (const f of projectFiles) {
-        await takeSnapshot(f.id, f.body)
-      }
+      await Promise.all(projectFiles.map((f) => takeSnapshot(f.id, f.body)))
       this.player.loadBuffer(mix)
       this.setBuffer(mix)
       this.setDiagnostics([])

@@ -80,7 +80,7 @@ function EditorPanel(props: {
   emptyMessage: string
   onActiveInstrumentChange?: (name: string | null, body: string | null) => void
   onFileSave?: () => void
-  onFlushReady?: (flush: () => Promise<void>) => void
+  onFlushReady?: (flush: (() => Promise<void>) | null) => void
   onBarClick?: (barIndex: number, metaLine?: number) => void
   markerBar?: () => number | null
   focusId?: () => string | null
@@ -201,10 +201,11 @@ export const Layout: Component<LayoutProps> = (props) => {
   const [instrumentNames, setInstrumentNames] = createSignal<Set<string>>(new Set())
   const [previewName, setPreviewName] = createSignal<string | null>(null)
   const [previewBody, setPreviewBody] = createSignal<string | null>(null)
-  // Flush functions registered by each active Editor; called before every render
-  // so pending autosave debounces are written to IndexedDB before loadProject reads them.
-  const editorFlushes = new Set<() => Promise<void>>()
-  const flushAll = async () => { await Promise.all([...editorFlushes].map((f) => f())) }
+  // One slot per EditorPanel — updated on editor mount, cleared on unmount.
+  let flushInstr: (() => Promise<void>) | undefined
+  let flushScore: (() => Promise<void>) | undefined
+  let flushTuning: (() => Promise<void>) | undefined
+  const flushAll = async () => { await Promise.all([flushInstr, flushScore, flushTuning].flatMap((f) => f ? [f()] : [])) }
   const startRender = () => void props.session.startRender(flushAll)
   createEffect(() => {
     props.refreshSignal()
@@ -351,7 +352,7 @@ export const Layout: Component<LayoutProps> = (props) => {
             setPreviewName(name)
             setPreviewBody(body)
           }}
-          onFlushReady={(flush) => editorFlushes.add(flush)}
+          onFlushReady={(f) => { flushInstr = f ?? undefined }}
           focusId={props.instrFocusId}
         />
       </section>
@@ -367,7 +368,7 @@ export const Layout: Component<LayoutProps> = (props) => {
           renderDiagnostics={props.session.renderDiagnostics}
           emptyMessage="No score in project. Add a .spls from staging."
           onFileSave={props.onScoreSave}
-          onFlushReady={(flush) => editorFlushes.add(flush)}
+          onFlushReady={(f) => { flushScore = f ?? undefined }}
           onBarClick={(barIndex, metaLine) => props.session.setBarMarker(barIndex, metaLine)}
           markerBar={props.session.markerBar}
         />
@@ -383,7 +384,7 @@ export const Layout: Component<LayoutProps> = (props) => {
           instrumentNames={instrumentNames}
           renderDiagnostics={props.session.renderDiagnostics}
           emptyMessage="No tuning / room files in project."
-          onFlushReady={(flush) => editorFlushes.add(flush)}
+          onFlushReady={(f) => { flushTuning = f ?? undefined }}
           focusId={props.tuningFocusId}
         />
         <LogPane />

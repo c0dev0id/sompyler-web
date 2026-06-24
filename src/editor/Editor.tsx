@@ -16,7 +16,7 @@ export interface EditorProps {
   markerBar?: () => number | null
   restoreBody?: () => string | null
   onBodyRestored?: () => void
-  onFlushReady?: (flush: () => Promise<void>) => void
+  onFlushReady?: (flush: (() => Promise<void>) | null) => void
 }
 
 export function Editor(props: EditorProps) {
@@ -80,6 +80,7 @@ export function Editor(props: EditorProps) {
   })
 
   onCleanup(() => {
+    props.onFlushReady?.(null)
     autosaver.flush()
     view?.destroy()
   })
