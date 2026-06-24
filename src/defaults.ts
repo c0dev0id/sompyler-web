@@ -502,6 +502,9 @@ name: free field
 type: free-field
 `
 
+const PYTHON_CORE_TUNING = `core: python
+`
+
 const ALLE_MEINE_ENTCHEN = `title: Alle meine Entchen
 composer: trad.
 stage:
@@ -3534,6 +3537,7 @@ character:
 const OXYGENE4OLD = `title: 'oxygene-part-iv'
 # From oxygene-part-iv.mid
 # Time: 12/8  BPM: 115.0  Ticks/measure: 12
+tuning_config: oxygene4old/python-core
 stage:
     kick:     1|1  0.3  oxygene4old/kick
     claves:   2|1  0.2  oxygene4old/claves
@@ -5450,7 +5454,8 @@ const SEEDS: Seed[] = [
   { name: 'oxygene-plate',  ext: 'splr', body: OXYGENE_PLATE_ROOM, inProject: true },
 
   // oxygene4old — original Python Sompyler source (RFC character: format).
-  { name: 'oxygene4old',          ext: 'spls', body: OXYGENE4OLD,          inProject: false },
+  { name: 'oxygene4old',             ext: 'spls', body: OXYGENE4OLD,          inProject: false },
+  { name: 'oxygene4old/python-core', ext: 'splt', body: PYTHON_CORE_TUNING,   inProject: false },
   { name: 'oxygene4old/kick',     ext: 'spli', body: OXYGENE4OLD_KICK,     inProject: false },
   { name: 'oxygene4old/claves',   ext: 'spli', body: OXYGENE4OLD_CLAVES,   inProject: false },
   { name: 'oxygene4old/cymbal',   ext: 'spli', body: OXYGENE4OLD_CYMBAL,   inProject: false },
