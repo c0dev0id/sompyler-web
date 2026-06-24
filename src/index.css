@@ -606,6 +606,8 @@ html, body, #root {
   color: #555;
   border-right: 1px solid #333;
 }
+.editor .cm-activeLine { background: #202020; }
+.editor .cm-activeLineGutter { background: #202020; }
 .editor .cm-lineNumbers .cm-gutterElement {
   cursor: pointer;
 }
