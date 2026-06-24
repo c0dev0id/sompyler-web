@@ -259,28 +259,40 @@ function readMeta(metaBlock: Record<string, unknown> | undefined, fallback: Meas
 }
 
 /**
- * Build a stress-per-tick table for the measure from the `stress_pattern`
- * meta field. Format: groups separated by `;`, each group a comma-separated
- * list of weights mapped linearly onto the upper/lower bound range.
- * (Simplified port of `Sompyler/score/stressor.py::Stressor.of`.)
+ * Build a stress-per-tick table from the `stress_pattern` meta field.
  *
- * Returns a function `(tick) → stress in [lower, upper]`.
+ * Pattern format: `outer,weights;inner,weights;...` where `;` introduces
+ * hierarchical subdivision (each outer beat is divided into N inner sub-beats).
+ * The stress at tick t is the PRODUCT of the normalised weight at each level,
+ * mapped onto [lower, upper]. This matches Python Stressor.of() exactly:
+ * inner sub-beats inherit the range [0, outer_beat_weight] and scale within it.
+ *
+ * Port of `Sompyler/score/stressor.py::Stressor.of`.
  */
 function buildStressor(meta: MeasureMeta): (tick: number) => number {
   const lo = meta.lowerStressBound
   const hi = meta.upperStressBound
-  if (!meta.stressPattern) {
-    return () => hi / 100
+  if (!meta.stressPattern) return () => hi / 100
+
+  const levels = meta.stressPattern.split(';').map((g) => g.split(',').map(Number))
+  if (levels.length === 0 || levels[0]!.length === 0) return () => hi / 100
+
+  // innerLen[i] = product of group lengths from level i+1 to the end.
+  // Used to extract the index into level i from an absolute tick offset.
+  const innerLen: number[] = new Array(levels.length)
+  innerLen[levels.length - 1] = 1
+  for (let i = levels.length - 2; i >= 0; i--) {
+    innerLen[i] = innerLen[i + 1]! * levels[i + 1]!.length
   }
-  const groups = meta.stressPattern.split(';').map((g) => g.split(',').map(Number))
-  const flat: number[] = []
-  for (const group of groups) flat.push(...group)
-  if (flat.length === 0) return () => hi / 100
-  const maxLevel = Math.max(...flat, 1)
+  const maxAt = levels.map((g) => Math.max(...g, 1))
+
   return (tick: number) => {
-    const level = flat[tick % flat.length] ?? 0
-    const scaled = lo + ((hi - lo) * level) / maxLevel
-    return scaled / 100
+    let product = 1.0
+    for (let i = 0; i < levels.length; i++) {
+      const idx = Math.floor(tick / innerLen[i]!) % levels[i]!.length
+      product *= levels[i]![idx]! / maxAt[i]!
+    }
+    return (lo + (hi - lo) * product) / 100
   }
 }
 
