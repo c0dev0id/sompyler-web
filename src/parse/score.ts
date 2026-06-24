@@ -20,7 +20,7 @@ import { Tuner } from './tuning'
 
 export interface ScoreHead {
   title?: string
-  author?: string
+  composer?: string
   /** voice name → "channels|? volume instrument" stage spec */
   stage: Record<string, StageVoice>
   meta?: Record<string, unknown>
@@ -328,7 +328,7 @@ export function parseScore(body: string): { head: ScoreHead; measures: unknown[]
   const result: ScoreHead = {
     stage,
     title: typeof head.title === 'string' ? head.title : undefined,
-    author: typeof head.author === 'string' ? head.author : undefined,
+    composer: typeof head.composer === 'string' ? head.composer : undefined,
     meta: typeof head.meta === 'object' && head.meta !== null ? (head.meta as Record<string, unknown>) : undefined,
     tuningConfig: typeof head.tuning_config === 'string' ? head.tuning_config : undefined,
     room: typeof head.room === 'string' ? head.room : undefined,

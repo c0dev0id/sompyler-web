@@ -50,7 +50,7 @@ export {
 // =====================================================================
 //
 const PACHELBEL = `title: Pachelbel — Canon in D
-author: Johann Pachelbel (arr. for Sompyler)
+composer: Johann Pachelbel (arr. for Sompyler)
 stage:
   cello:   1|1 1.2 cello
   violin1: 2|1 0.6 violin
@@ -345,7 +345,7 @@ violin3:
 // Solo-piano variant — railsback + damp demo, same melodic material.
 // =====================================================================
 const PACHELBEL_PIANO = `title: Pachelbel — solo piano variant
-author: Johann Pachelbel (arr. for Sompyler)
+composer: Johann Pachelbel (arr. for Sompyler)
 stage:
   piano: 1|1 0.4 piano
 tuning_config: tones_euro
@@ -503,7 +503,7 @@ type: free-field
 `
 
 const ALLE_MEINE_ENTCHEN = `title: Alle meine Entchen
-author: trad.
+composer: trad.
 stage:
   piano: 1|1 0 dev/piano
 ---
@@ -890,7 +890,7 @@ character:
 `
 
 const OXYGENE = `title: Oxygène Pt. IV
-author: Jean-Michel Jarre (1976)
+composer: Jean-Michel Jarre (1976)
 stage:
   seashore:  1|1 1.8 seashore
   kalimba:   1|1 0.2 kalimba

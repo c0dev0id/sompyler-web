@@ -30,13 +30,13 @@ const SCORE: Section = {
       subtitle: 'File header',
       text: 'Opens the file with metadata and the stage layout that positions voices in the stereo field.',
       params: [
-        { key: 'title / author', desc: 'Descriptive labels — not used during rendering.' },
+        { key: 'title / composer', desc: 'Descriptive labels — not used during rendering.' },
         { key: 'tuning_config', desc: 'Name of a .splt file that maps note names to frequencies.' },
         { key: 'room', desc: 'Name of a .splr reverb file. Omit for a dry sound.' },
         { key: 'stage', desc: 'Places each voice. Value format: "L|R  distance  instrument" — L|R = pan ratio (1|1 = centre, 2|1 = left, 1|2 = right); distance = reverb send (0.0 = dry, 1.0 = fully wet); instrument = name of a .spli file.' },
       ],
       code: `title: Song Title
-author: Artist Name
+composer: Artist Name
 tuning_config: tones_euro
 room: hall
 
