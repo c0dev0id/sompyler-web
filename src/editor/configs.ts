@@ -31,7 +31,10 @@ export function baseExtensions(onLineNumberClick?: (barIndex: number) => void): 
           click(view, block, _event) {
             const line = view.state.doc.lineAt(block.from)
             const text = view.state.doc.sliceString(0, line.to)
-            const barIndex = (text.match(/^---\s*$/gm) ?? []).length
+            // Count `---` separators above the click. Zero = click in the head
+            // block above the first bar; treat as a click on bar 1 so the loop
+            // window is predictable instead of straddling head + bar 1.
+            const barIndex = (text.match(/^---\s*$/gm) ?? []).length || 1
             onLineNumberClick(barIndex)
             return true
           },

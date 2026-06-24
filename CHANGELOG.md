@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Oxygène intro seashore felt forced to ring out.** The instrument's `R:` is 0.001 s (instant), so each bar's seashore C4 hit a still-loud sustain level and dropped to silence in 1 ms — audible as an unnatural cutoff. Added `damp=24` to the bar-1 mapping note (carries to every subsequent bar via `repeat_unmentioned_voices: true`); the existing release shape now stretches over two bars (~4 s), and each bar's note overlaps with the next two bars' attacks for continuous ocean flow.
 
+- **Score-editor gutter click in the head region was unpredictable.** Clicking a line number above the first `---` separator produced `barIndex=0`, which `buildBarMarkerSet` rendered as a "head + first bar" hybrid window. The handler now clamps that case to `barIndex=1`, so meta-area clicks behave the same as a click on the first bar.
+
 ### Changed
 
 - **10-loop TiMidity/FluidR3 calibration pass** for all 9 Oxygène instruments — each instrument compared envelope-by-envelope and spectrum-by-spectrum against TiMidity SF2 output via `compare_instrument.py`:
