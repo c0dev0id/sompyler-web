@@ -904,6 +904,11 @@ stage:
   ensemble:  1|2 1.2 string-ensemble
   bowedpad:  1|1 1.6 bowed-pad
   melody:    1|1 0.4 oxygene-melody
+  hi-hat:    1|1 0.1 hi-hat
+  guiro:     1|1 0.1 guiro
+  castanet:  1|1 0.1 castanet
+  revcymbal: 1|1 1.0 reverse-cymbal
+  applause:  1|1 1.5 applause
 tuning_config: tones_euro
 room: oxygene-plate
 ---
@@ -918,6 +923,8 @@ seashore:
   0: C4 12 damp=24
 strings1: false
 strings2: false
+revcymbal: false
+applause: false
 ---
 # bar 2 — kalimba fade-in begins (very quiet)
 _meta:
@@ -934,6 +941,10 @@ _meta:
   repeat_unmentioned_voices: true
 kalimba: false
 bass: ".11 G1"
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 5 — drums + bass + kalimba enter; Cm pattern A
 _meta:
@@ -941,6 +952,11 @@ _meta:
 bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 tambourine: "C4 *9 . C4 *2"
+hi-hat: ".2 C4"
+guiro: ".9 C4"
+castanet: ".3 C4 .5 C4"
+revcymbal: false
+applause: false
 kick: "C1_ .4 C1_"
 ---
 # bar 6 — Cm pattern B
@@ -1088,6 +1104,10 @@ strings1:
   6: Eb4 3
   8: G4 4
   11: C4 12
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 19 — Cm B variant
 _meta:
@@ -1097,6 +1117,8 @@ synbrass: false
 strings: false
 ensemble: false
 strings1: false
+revcymbal: false
+applause: false
 ---
 # bar 20 — Cm A
 _meta:
@@ -1116,6 +1138,10 @@ strings1:
   6: Eb4 2
   8: G4 4
   11: C4 12
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 21 — Cm B
 _meta:
@@ -1125,6 +1151,8 @@ synbrass: false
 strings: false
 ensemble: false
 strings1: false
+revcymbal: false
+applause: false
 ---
 # bar 22 — Gm
 _meta:
@@ -1145,6 +1173,10 @@ strings1:
   6: G4 2
   8: A4 4
   11: D4 12
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 23 — Gm
 _meta:
@@ -1154,6 +1186,8 @@ synbrass: false
 strings: false
 ensemble: false
 strings1: false
+revcymbal: false
+applause: false
 ---
 # bar 24 — Fm; SynBrass Fm run
 _meta:
@@ -1172,6 +1206,10 @@ strings1:
   2: G4 2
   3: F4 2
   5: C4 8
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 25 — Fm descending run
 _meta:
@@ -1199,6 +1237,8 @@ strings1:
   2: G4 2
   3: F4 2
   5: C4 8
+revcymbal: false
+applause: false
 ---
 # bar 26 — Cm A
 _meta:
@@ -1219,6 +1259,10 @@ strings1:
   6: Eb4 3
   8: G4 4
   11: C4 12
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 27 — Cm B
 _meta:
@@ -1228,6 +1272,8 @@ synbrass: false
 strings: false
 ensemble: false
 strings1: false
+revcymbal: false
+applause: false
 ---
 # bar 28 — Cm A
 _meta:
@@ -1247,6 +1293,10 @@ strings1:
   6: Eb4 2
   8: G4 4
   11: C4 12
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 29 — Cm B
 _meta:
@@ -1256,6 +1306,8 @@ synbrass: false
 strings: false
 ensemble: false
 strings1: false
+revcymbal: false
+applause: false
 ---
 # bar 30 — Gm
 _meta:
@@ -1276,6 +1328,10 @@ strings1:
   6: G4 2
   8: A4 4
   11: D4 12
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 31 — Gm
 _meta:
@@ -1285,6 +1341,8 @@ synbrass: false
 strings: false
 ensemble: false
 strings1: false
+revcymbal: false
+applause: false
 ---
 # bar 32 — Fm; SynBrass Fm
 _meta:
@@ -1303,6 +1361,10 @@ strings1:
   2: G4 2
   3: F4 2
   5: C4 8
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 33 — Fm descending run
 _meta:
@@ -1331,6 +1393,8 @@ strings1:
   2: G4 2
   3: F4 2
   5: C4 7
+revcymbal: false
+applause: false
 ---
 # bar 34 — BowedPad + SynString2-B enter; Cm; Kalimba silent
 _meta:
@@ -1623,6 +1687,10 @@ melody:
   4: G3 2
   5: F3 2
   6: C4 6
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 46 — Cm A; 6-bar cycle repeats
 _meta:
@@ -1648,6 +1716,8 @@ bowedpad:
   3: C4 21
   6: Eb4 18
 melody: "Eb4;6 D4 Eb4 C4_ G3_6"
+revcymbal: false
+applause: false
 ---
 # bar 47 — Cm B; melody repeats
 _meta:
@@ -1901,6 +1971,10 @@ strings1:
   6: Eb4 3
   8: G4 4
   11: C4 12
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 61 — Cm B variant
 _meta:
@@ -1909,6 +1983,8 @@ bass: "C2_2 Bb1_ C2_2 C2 Bb1 G1 Bb1"
 strings: false
 ensemble: false
 strings1: false
+revcymbal: false
+applause: false
 ---
 # bar 62 — Cm A
 _meta:
@@ -1927,6 +2003,10 @@ strings1:
   6: Eb4 2
   8: G4 4
   11: C4 12
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 63 — Cm B
 _meta:
@@ -1935,6 +2015,8 @@ bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
 strings: false
 ensemble: false
 strings1: false
+revcymbal: false
+applause: false
 ---
 # bar 64 — Gm
 _meta:
@@ -1954,6 +2036,10 @@ strings1:
   6: G4 2
   8: A4 4
   11: D4 12
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 65 — Gm
 _meta:
@@ -1962,6 +2048,8 @@ bass: "D2_2 C2_ D2_2 D2 C2_ A1"
 strings: false
 ensemble: false
 strings1: false
+revcymbal: false
+applause: false
 ---
 # bar 66 — Fm
 _meta:
@@ -1979,6 +2067,10 @@ strings1:
   2: G4 2
   3: F4 2
   5: C4 8
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 67 — Fm descending
 _meta:
@@ -2005,6 +2097,8 @@ strings1:
   2: G4 2
   3: F4 2
   5: C4 8
+revcymbal: false
+applause: false
 ---
 # bar 68 — Cm A
 _meta:
@@ -2024,6 +2118,10 @@ strings1:
   6: Eb4 3
   8: G4 4
   11: C4 12
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 69 — Cm B
 _meta:
@@ -2032,6 +2130,8 @@ bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
 strings: false
 ensemble: false
 strings1: false
+revcymbal: false
+applause: false
 ---
 # bar 70 — Cm B variant
 _meta:
@@ -2050,6 +2150,10 @@ strings1:
   6: Eb4 2
   8: G4 4
   11: C4 12
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 71 — Cm B
 _meta:
@@ -2058,6 +2162,8 @@ bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
 strings: false
 ensemble: false
 strings1: false
+revcymbal: false
+applause: false
 ---
 # bar 72 — Gm
 _meta:
@@ -2077,6 +2183,10 @@ strings1:
   6: G4 2
   8: A4 4
   11: D4 12
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 73 — Gm
 _meta:
@@ -2085,6 +2195,8 @@ bass: "D2_2 C2_ D2_2 D2 C2_ A1"
 strings: false
 ensemble: false
 strings1: false
+revcymbal: false
+applause: false
 ---
 # bar 74 — Fm
 _meta:
@@ -2102,6 +2214,10 @@ strings1:
   2: G4 2
   3: F4 2
   5: C4 8
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 75 — Fm descending
 _meta:
@@ -2129,6 +2245,8 @@ strings1:
   2: G4 2
   3: F4 2
   5: C4 7
+revcymbal: false
+applause: false
 ---
 # bar 76 — SynString2-B high arpeggios resume; BowedPad resumes; Cm
 _meta:
@@ -2421,6 +2539,10 @@ melody:
   4: G3 2
   5: F3 2
   6: C4 6
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 88 — Cm A; melody with fill at t=8
 _meta:
@@ -2446,6 +2568,8 @@ bowedpad:
   3: C4 21
   6: Eb4 18
 melody: "Eb4;6 D4 Eb4 C4_ G3_2 Eb4_2 G3"
+revcymbal: false
+applause: false
 ---
 # bar 89 — Cm B; melody with ornaments
 _meta:
@@ -2600,6 +2724,10 @@ melody:
   4: F4 2
   6: A4 2
   8: F4 4
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 94 — Cm; melody high Cm phrase
 _meta:
@@ -2625,6 +2753,8 @@ bowedpad:
   3: C4 21
   6: Eb4 18
 melody: "Eb5;6 D5 Eb5 C5_ G4_2 Eb5_2 G4"
+revcymbal: false
+applause: false
 ---
 # bar 95 — Cm; melody ornament
 _meta:
@@ -2769,6 +2899,10 @@ strings2:
   5: C6 7
 bowedpad: false
 melody: "A4_;6 G4 F4_ C5_2 F4_3"
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 100 — Cm; melody high Cm
 _meta:
@@ -2794,6 +2928,8 @@ bowedpad:
   3: C4 21
   6: Eb4 18
 melody: "Eb5;6 D5 Eb5 C5_ G4_2 Eb5_2 G4"
+revcymbal: false
+applause: false
 ---
 # bar 101 — Cm; melody ornament
 _meta:
@@ -2918,6 +3054,10 @@ strings2:
   5: C6 7
 bowedpad: false
 melody: "A4;6 G4 A4 F4_ C5_2 F4_3"
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 106 — Cm; melody Cm with fill
 _meta:
@@ -2943,6 +3083,8 @@ bowedpad:
   3: C4 21
   6: Eb4 18
 melody: "Eb4;6 D4 Eb4 C4_ G3_2 Eb4_2 G3"
+revcymbal: false
+applause: false
 ---
 # bar 107 — Cm; melody ornament run
 _meta:
@@ -3095,6 +3237,10 @@ melody:
   5: F3 1
   6: C4 3
   8: F3 4
+revcymbal:
+  9: C4 21
+applause:
+  9: C4 21
 ---
 # bar 112 — Cm; melody high Cm phrase (last cycle)
 _meta:
@@ -3120,6 +3266,8 @@ bowedpad:
   3: C4 21
   6: Eb4 18
 melody: "Eb5;6 D5 Eb5 C5_ G4_2 Eb5_2 G4"
+revcymbal: false
+applause: false
 ---
 # bar 113 — Cm; melody ornament
 _meta:
