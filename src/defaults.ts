@@ -1306,7 +1306,7 @@ ensemble:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb4 D4 Eb4 C4_ G3_6"
+melody: "Eb4;6 D4 Eb4 C4_ G3_6"
 ---
 # bar 41 — Cm B; melody repeats
 _meta:
@@ -1321,7 +1321,7 @@ ensemble:
   4: C5 1
   5: G5 7
 bowedpad: false
-melody: "Eb4 D4 Eb4 C4_ G3_6"
+melody: "Eb4;6 D4 Eb4 C4_ G3_6"
 ---
 # bar 42 — Gm; melody Gm phrase
 _meta:
@@ -1340,7 +1340,7 @@ bowedpad:
   0: G3 1
   3: Bb3 21
   6: D4 18
-melody: "Bb3 A3 Bb3 G3_ D3_6"
+melody: "Bb3;6 A3 Bb3 G3_ D3_6"
 ---
 # bar 43 — Gm; melody repeats
 _meta:
@@ -1355,7 +1355,7 @@ ensemble:
   4: D5 1
   5: Bb5 7
 bowedpad: false
-melody: "Bb3 A3 Bb3 G3_ D3_6"
+melody: "Bb3;6 A3 Bb3 G3_ D3_6"
 ---
 # bar 44 — Fm; melody Fm phrase
 _meta:
@@ -1374,7 +1374,7 @@ bowedpad:
   0: A3 24
   3: C4 21
   6: F4 18
-melody: "A3 G3 F3 F3_ C4_6"
+melody: "A3;6 G3 F3 F3_ C4_6"
 ---
 # bar 45 — Fm descending run; melody variant
 _meta:
@@ -1425,7 +1425,7 @@ ensemble:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb4 D4 Eb4 C4_ G3_6"
+melody: "Eb4;6 D4 Eb4 C4_ G3_6"
 ---
 # bar 47 — Cm B; melody repeats
 _meta:
@@ -1440,7 +1440,7 @@ ensemble:
   4: C5 1
   5: G5 7
 bowedpad: false
-melody: "Eb4 D4 Eb4 C4_ G3_6"
+melody: "Eb4;6 D4 Eb4 C4_ G3_6"
 ---
 # bar 48 — Gm; melody Gm
 _meta:
@@ -1459,7 +1459,7 @@ bowedpad:
   0: G3 1
   3: Bb3 21
   6: D4 18
-melody: "Bb3 A3 Bb3 G3_ D3_6"
+melody: "Bb3;6 A3 Bb3 G3_ D3_6"
 ---
 # bar 49 — Gm; melody repeats
 _meta:
@@ -1474,7 +1474,7 @@ ensemble:
   4: D5 1
   5: Bb5 7
 bowedpad: false
-melody: "Bb3 A3 Bb3 G3_ D3_6"
+melody: "Bb3;6 A3 Bb3 G3_ D3_6"
 ---
 # bar 50 — Fm; melody Fm
 _meta:
@@ -1493,7 +1493,7 @@ bowedpad:
   0: A3 24
   3: C4 24
   6: F4 24
-melody: "A3 G3 F3 F3_ C4_6"
+melody: "A3;6 G3 F3 F3_ C4_6"
 ---
 # bar 51 — Fm descending; melody variant
 _meta:
@@ -1917,7 +1917,7 @@ ensemble:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb4 D4 Eb4 C4_ G3_6"
+melody: "Eb4;6 D4 Eb4 C4_ G3_6"
 ---
 # bar 83 — Cm B; melody repeats
 _meta:
@@ -1932,7 +1932,7 @@ ensemble:
   4: C5 1
   5: G5 7
 bowedpad: false
-melody: "Eb4 D4 Eb4 C4_ G3_6"
+melody: "Eb4;6 D4 Eb4 C4_ G3_6"
 ---
 # bar 84 — Gm; melody Gm
 _meta:
@@ -1951,7 +1951,7 @@ bowedpad:
   0: G3 1
   3: Bb3 21
   6: D4 18
-melody: "Bb3 A3 Bb3 G3_ D3_6"
+melody: "Bb3;6 A3 Bb3 G3_ D3_6"
 ---
 # bar 85 — Gm; melody repeats
 _meta:
@@ -1966,7 +1966,7 @@ ensemble:
   4: D5 1
   5: Bb5 7
 bowedpad: false
-melody: "Bb3 A3 Bb3 G3_ D3_6"
+melody: "Bb3;6 A3 Bb3 G3_ D3_6"
 ---
 # bar 86 — Fm; melody Fm
 _meta:
@@ -1985,7 +1985,7 @@ bowedpad:
   0: A3 24
   3: C4 21
   6: F4 18
-melody: "A3 G3 F3 F3_ C4_6"
+melody: "A3;6 G3 F3 F3_ C4_6"
 ---
 # bar 87 — Fm descending; melody extended variant
 _meta:
@@ -2036,7 +2036,7 @@ ensemble:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb4 D4 Eb4 C4_ G3_2 Eb4_2 G3"
+melody: "Eb4;6 D4 Eb4 C4_ G3_2 Eb4_2 G3"
 ---
 # bar 89 — Cm B; melody with ornaments
 _meta:
@@ -2129,7 +2129,7 @@ bowedpad:
   0: A3 24
   3: C4 21
   6: F4 18
-melody: "A3_ F3_ A3_ C4_ A3_ C4_"
+melody: "A3_;6 F3_ A3_ C4_ A3_ C4_"
 ---
 # bar 93 — Fm; melody high run
 _meta:
@@ -2173,7 +2173,7 @@ ensemble:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb5 D5 Eb5 C5_ G4_2 Eb5_2 G4"
+melody: "Eb5;6 D5 Eb5 C5_ G4_2 Eb5_2 G4"
 ---
 # bar 95 — Cm; melody ornament
 _meta:
@@ -2188,7 +2188,7 @@ ensemble:
   4: C5 1
   5: G5 7
 bowedpad: false
-melody: "Eb5_ G4 D5_ C5_2 G4_3"
+melody: "Eb5_;6 G4 D5_ C5_2 G4_3"
 ---
 # bar 96 — Gm; melody high Gm phrase
 _meta:
@@ -2256,7 +2256,7 @@ bowedpad:
   0: A3 24
   3: C4 21
   6: F4 18
-melody: "A4 G4 F4 F4_ C5_2 F4_2 F4"
+melody: "A4;6 G4 F4 F4_ C5_2 F4_2 F4"
 ---
 # bar 99 — Fm descending; melody
 _meta:
@@ -2282,7 +2282,7 @@ ensemble:
   4: F5 1
   5: C6 7
 bowedpad: false
-melody: "A4_ G4 F4_ C5_2 F4_3"
+melody: "A4_;6 G4 F4_ C5_2 F4_3"
 ---
 # bar 100 — Cm; melody high Cm
 _meta:
@@ -2300,7 +2300,7 @@ ensemble:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb5 D5 Eb5 C5_ G4_2 Eb5_2 G4"
+melody: "Eb5;6 D5 Eb5 C5_ G4_2 Eb5_2 G4"
 ---
 # bar 101 — Cm; melody ornament
 _meta:
@@ -2315,7 +2315,7 @@ ensemble:
   4: C5 1
   5: G5 7
 bowedpad: false
-melody: "Eb5_ G4 D5_ C5_2 G4_2 G4"
+melody: "Eb5_;6 G4 D5_ C5_2 G4_2 G4"
 ---
 # bar 102 — Gm; melody elaborate Gm variation
 _meta:
@@ -2334,7 +2334,7 @@ bowedpad:
   0: G3 1
   3: Bb3 21
   6: D4 18
-melody: "D5 C5 Bb4 D5 C5 Bb4 D5_ G4_2 G4"
+melody: "D5;6 C5 Bb4 D5 C5 Bb4 D5_ G4_2 G4"
 ---
 # bar 103 — Gm; melody variation
 _meta:
@@ -2349,7 +2349,7 @@ ensemble:
   4: D5 1
   5: Bb5 7
 bowedpad: false
-melody: "D5 C5 D5 Bb4_ G4_2 D5 C5_ Bb4"
+melody: "D5;6 C5 D5 Bb4_ G4_2 D5 C5_ Bb4"
 ---
 # bar 104 — Fm; melody Fm
 _meta:
@@ -2368,7 +2368,7 @@ bowedpad:
   0: A3 24
   3: C4 21
   6: F4 18
-melody: "A4_ G4 F4_ C5_2 F4_2 F4"
+melody: "A4_;6 G4 F4_ C5_2 F4_2 F4"
 ---
 # bar 105 — Fm; melody ornament
 _meta:
@@ -2389,7 +2389,7 @@ ensemble:
   4: F5 1
   5: C6 7
 bowedpad: false
-melody: "A4 G4 A4 F4_ C5_2 F4_3"
+melody: "A4;6 G4 A4 F4_ C5_2 F4_3"
 ---
 # bar 106 — Cm; melody Cm with fill
 _meta:
@@ -2407,7 +2407,7 @@ ensemble:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb4 D4 Eb4 C4_ G3_2 Eb4_2 G3"
+melody: "Eb4;6 D4 Eb4 C4_ G3_2 Eb4_2 G3"
 ---
 # bar 107 — Cm; melody ornament run
 _meta:
@@ -2422,7 +2422,7 @@ ensemble:
   4: C5 1
   5: G5 7
 bowedpad: false
-melody: "Eb4 D4 C4 Eb4 D4 C4 Eb4_ G3_2 G3"
+melody: "Eb4;6 D4 C4 Eb4 D4 C4 Eb4_ G3_2 G3"
 ---
 # bar 108 — Gm; melody Gm with fill
 _meta:
@@ -2490,7 +2490,7 @@ bowedpad:
   0: A3 24
   3: C4 21
   6: F4 18
-melody: "A3 G3 F3 F3_ C4_2 F3_2 F3"
+melody: "A3;6 G3 F3 F3_ C4_2 F3_2 F3"
 ---
 # bar 111 — Fm; melody extended run
 _meta:
@@ -2542,7 +2542,7 @@ ensemble:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb5 D5 Eb5 C5_ G4_2 Eb5_2 G4"
+melody: "Eb5;6 D5 Eb5 C5_ G4_2 Eb5_2 G4"
 ---
 # bar 113 — Cm; melody ornament
 _meta:
@@ -2557,7 +2557,7 @@ ensemble:
   4: C5 1
   5: G5 7
 bowedpad: false
-melody: "Eb5_ G4 D5_ C5_2 G4_2 G4"
+melody: "Eb5_;6 G4 D5_ C5_2 G4_2 G4"
 ---
 # bar 114 — Gm; melody Gm
 _meta:
@@ -2576,7 +2576,7 @@ bowedpad:
   0: G3 1
   3: Bb3 21
   6: D4 18
-melody: "D5 C5 Bb4 D5 C5 Bb4 D5_ G4_2 G4"
+melody: "D5;6 C5 Bb4 D5 C5 Bb4 D5_ G4_2 G4"
 ---
 # bar 115 — Gm; melody variation
 _meta:
@@ -2591,7 +2591,7 @@ ensemble:
   4: D5 1
   5: Bb5 7
 bowedpad: false
-melody: "D5 C5 D5 Bb4_ G4_2 D5 C5_ Bb4"
+melody: "D5;6 C5 D5 Bb4_ G4_2 D5 C5_ Bb4"
 ---
 # bar 116 — Fm; fade out begins; melody Fm final
 _meta:
@@ -2609,7 +2609,7 @@ ensemble:
 bowedpad:
   3: C4 9
   6: F4 6
-melody: "A4_ G4 F4_ C5_2 F4_2 F4"
+melody: "A4_;6 G4 F4_ C5_2 F4_2 F4"
 ---
 # bar 117 — fade to silence
 _meta:
@@ -2641,7 +2641,7 @@ bowedpad:
   6: F4 4
 tambourine: false
 kick: false
-melody: "A4 G4 A4 F4_ C5_2 F4_3"`
+melody: "A4;6 G4 A4 F4_ C5_2 F4_3"`
 
 // =====================================================================
 // oxygene4old — original Python Sompyler source files (RFC character: format)
