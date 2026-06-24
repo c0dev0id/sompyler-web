@@ -146,8 +146,10 @@ function EditorPanel(props: {
             </span>
           )}
         </Show>
-        <button class="help-btn" title="Version history" onClick={() => { setSnapshotTrigger(selectedId()); snapshotDialog?.showModal() }}>⏱</button>
-        <button class="help-btn" title="Syntax reference" onClick={() => helpDialog?.showModal()}>?</button>
+        <div class="pane-actions">
+          <button class="help-btn" title="Version history" onClick={() => { setSnapshotTrigger(selectedId()); snapshotDialog?.showModal() }}>⏱</button>
+          <button class="help-btn" title="Syntax reference" onClick={() => helpDialog?.showModal()}>?</button>
+        </div>
       </header>
       <HelpDialog exts={props.exts} ref={(el) => { helpDialog = el }} />
       <SnapshotDialog

@@ -734,6 +734,18 @@ html, body, #root {
   cursor: pointer;
 }
 
+/* Groups pane-header action buttons (⏱ + ?) so they stay visually adjacent */
+.pane-actions {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  margin-left: auto;
+}
+
+.pane-actions .help-btn {
+  margin-left: 0;
+}
+
 /* Help button in pane headers */
 .help-btn {
   background: transparent;
