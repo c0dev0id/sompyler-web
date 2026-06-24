@@ -764,9 +764,9 @@ const OXYGENE_MELODY = `# melody: Nylon String Guitar (GM25 / FluidR3_GM2.sf2). 
 # initialAttn=0 → AMP=0.5; tuned AMP=0.042 (close match at t=0.05).
 character:
   O: sine
-  AMP: 0.5
+  AMP: 0.9
   A: "0.001:1,100"
-  S: "3.0:100;1,100.0"
+  S: "3.0:100;0.017,0;0.10,0;0.333,2;0.85,3;1,1.1"
   R: "0.001:100;1,0"
   PROFILE:
     - 100.0  # H1
