@@ -5696,6 +5696,7 @@ const SEEDS: Seed[] = [
   { name: 'dev/flute', ext: 'spli', body: STARTER_FLUTE, inProject: false },
   { name: 'dev/kick', ext: 'spli', body: STARTER_KICK, inProject: false },
   { name: 'free-field', ext: 'splr', body: STARTER_FREE_FIELD, inProject: false },
+  { name: 'python-core', ext: 'splt', body: PYTHON_CORE_TUNING, inProject: false },
   { name: 'alle_meine_entchen', ext: 'spls', body: ALLE_MEINE_ENTCHEN, inProject: false },
 ]
 
