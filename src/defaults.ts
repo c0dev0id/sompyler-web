@@ -696,27 +696,29 @@ const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / FluidR3_GM2.sf2)
 # L10: AMP raised 0.020→0.035 (sample builds up 7 dB; 0.035 is a compromise).
 character:
   O: sine
-  AMP: 0.9
-  A: "0.001:1,100"
-  S: "0.001:100;1,100"
-  R: "1.017:100;1,0"
+  AMP: 0.13
+  A: "2.0:1;0.05,40;0.15,70;0.5,90;1,100"
+  S: "0.001:100;1,85"
+  R: "0.001:100;0.05,50;0.1,15;0.2,2;0.3,0.5;0.5,0.05;1,0"
+  LFO: "0.5@sin[0];0.1:amp"
+  UNISON: "3;6"
   PROFILE:
     - 100.0  # H1
-    - 86.7   # H2  (L10: from TiMidity t=1.5 note=67)
-    - 81.7   # H3
-    - 83.1   # H4
-    - 72.3   # H5
-    - 73.0   # H6
-    - 62.9   # H7
-    - 71.7   # H8
-    - 73.5   # H9
-    - 71.8   # H10
-    - 69.8   # H11
-    - 56.9   # H12
-    - 59.9   # H13
+    - 97.6   # H2
+    - 94.0   # H3
+    - 100.0  # H4
+    - 85.6   # H5
+    - 84.7   # H6
+    - 78.8   # H7
+    - 74.7   # H8
+    - 77.6   # H9
+    - 69.4   # H10
+    - 63.6   # H11
+    - 63.8   # H12
+    - 63.0   # H13
     - 59.0   # H14
-    - 55.0   # H15
-    - 48.7   # H16
+    - 59.1   # H15
+    - 52.6   # H16
 `
 
 const OXYGENE_BOWEDPAD = `# bowedpad: Bowed Glass (GM93 / FluidR3_GM2.sf2).
