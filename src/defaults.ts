@@ -591,7 +591,7 @@ const OXYGENE_KALIMBA = `# kalimba: Koto (GM108 / FluidR3_GM2.sf2). PROFILE from
 # R: three-stage release shape for natural note-off.
 character:
   O: sine
-  AMP: 0.5
+  AMP: 0.05
   A: "0.001:1,100"
   S: "2.5:100;0.03,55*2;0.08,12*2;0.2,2.2;0.5,0.4;1,0.25"
   R: "0.3:100;0.22,65;0.65,55;1,40"
