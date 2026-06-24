@@ -92,6 +92,8 @@ export async function buildDistinctNotes(
   /** S46170 active elasticks pattern (stressor format), if any. Inherited. */
   /** Active stress pattern (RFC §S46120). Used to convert beats_per_minute → ticks/min. */
   let activeStressPattern = '1'
+  /** S46192 positive-cut offset shift for the current bar. 0 for no-cut or negative-cut bars. */
+  let activeCutOffset = 0
   let activeElasticksPattern: string | undefined
   /** S46180 active elasticks shape string. Clears when elasticksPattern changes. */
   let activeElasticksShape: string | undefined
@@ -151,7 +153,10 @@ export async function buildDistinctNotes(
       if (metaBlock && 'stress_pattern' in metaBlock && typeof metaBlock.stress_pattern === 'string') {
         activeStressPattern = metaBlock.stress_pattern
       }
-      if (metaBlock && 'beats_per_minute' in metaBlock) {
+      if (metaBlock && 'ticks_per_minute' in metaBlock) {
+        activeTicksPerMinute = Number(metaBlock.ticks_per_minute)
+        activeTempoShape = undefined
+      } else if (metaBlock && 'beats_per_minute' in metaBlock) {
         activeTicksPerMinute = Number(metaBlock.beats_per_minute) * stressorSubCumlen(activeStressPattern)
         activeTempoShape = undefined
       }
@@ -187,10 +192,13 @@ export async function buildDistinctNotes(
           activeTickSeconds[t]! *= elasticks[t]!
         }
       }
-      // Bar length = ticks_per_measure if set, otherwise stressorCumlen —
+      // Bar length = ticks_per_measure if set, otherwise stressorCumlen −
       // matching Python sompyler's Measure.length = stressor.cumlen (measure.py:230).
+      // S46192: cut reduces the bar's elapsed time by the skipped prefix.
       // Notes that overflow the bar bleed into the next bar's time without
       // stretching the current bar's reported duration.
+      const cut = metaBlock && typeof metaBlock.cut === 'number' ? metaBlock.cut : 0
+      activeCutOffset = Math.max(cut, 0)
       const barTicks = activeMeasureTicks > 0
         ? activeMeasureTicks
         : stressorCumlen(activeStressPattern)
@@ -198,12 +206,12 @@ export async function buildDistinctNotes(
         activeTickSeconds,
         activeTicksPerMinute,
         0,
-        barTicks,
+        barTicks - Math.abs(cut),
       )
     }
 
     const offsetSeconds =
-      tickRangeSeconds(activeTickSeconds, activeTicksPerMinute, 0, note.offsetTicks) +
+      tickRangeSeconds(activeTickSeconds, activeTicksPerMinute, 0, note.offsetTicks - activeCutOffset) +
       cumLengthSeconds
     const lengthSeconds = tickRangeSeconds(
       activeTickSeconds,

@@ -233,7 +233,9 @@ function readMeta(metaBlock: Record<string, unknown> | undefined, fallback: Meas
   if (!metaBlock) return fallback
   const next: MeasureMeta = { ...fallback }
   if ('stress_pattern' in metaBlock) next.stressPattern = String(metaBlock.stress_pattern)
-  if ('beats_per_minute' in metaBlock) {
+  if ('ticks_per_minute' in metaBlock) {
+    next.ticksPerMinute = Number(metaBlock.ticks_per_minute)
+  } else if ('beats_per_minute' in metaBlock) {
     const sp = next.stressPattern ?? '1'
     next.ticksPerMinute = Number(metaBlock.beats_per_minute) * stressorSubCumlen(sp)
   }
