@@ -51,11 +51,11 @@ describe('conformance: starter Pachelbel Canon in D', () => {
     expect(plan.voices.has('violin2')).toBe(true)
     expect(plan.voices.has('violin3')).toBe(true)
 
-    // 10 measures × 4 s at tpm=120 + ritardando in m11–m12.
-    // Lower bound = 10 × 4 = 40 s (no ritardando).
-    // Upper bound = 12 × 4 = 48 s (no ritardando — slower in practice).
-    expect(plan.totalLengthSeconds).toBeGreaterThan(40)
-    expect(plan.totalLengthSeconds).toBeLessThan(60)
+    // stress_pattern "2,0,1,0;1,0;1,0;1,0" → stressorCumlen = 32 ticks/bar.
+    // beats_per_minute: 15 × sub_cumlen(8) = 120 tpm → 32/2 = 16 s/bar.
+    // 10 full measures × 16 s = 160 s; m11–m12 ritardando (120→55 tpm) adds ~60 s.
+    expect(plan.totalLengthSeconds).toBeGreaterThan(160)
+    expect(plan.totalLengthSeconds).toBeLessThan(280)
 
     // Canonic + ostinato → distinct notes << occurrences. The cache hit
     // ratio is the core perf contract of the showcase.

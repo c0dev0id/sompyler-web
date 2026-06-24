@@ -38,14 +38,15 @@ describe('conformance: slow_piano-all-keys-cmaj.spls (rich piano)', () => {
     })
     // Anchors — Python YAML walk on `test_examples/slow_piano-all-keys-cmaj.spls`:
     //   1 voice (piano), 9 measures, 52 distinct (pitch, length) tuples,
-    //   52 note occurrences (each tone unique), total length 66 ticks
-    //   at ticks_per_minute=100 → 39.6 seconds.
+    //   52 note occurrences (each tone unique), total length 60 ticks
+    //   at ticks_per_minute=100 → 36.0 seconds.
+    //   (Cut bars: m0 cut=6→2 ticks, m8 cut=-7→1 tick; remaining 7×8=56 ticks.)
     expect(plan.voices.size).toBe(1)
     expect(plan.voices.has('piano')).toBe(true)
     const occurrences = plan.notes.reduce((s, n) => s + n.occurrences.length, 0)
     expect(occurrences).toBe(52)
     expect(plan.notes.length).toBe(52)
-    expect(plan.totalLengthSeconds).toBeCloseTo(39.6, 4)
+    expect(plan.totalLengthSeconds).toBeCloseTo(36.0, 4)
   })
 
   it('matches the normalised distinct-notes snapshot (self-regression)', async () => {

@@ -11,7 +11,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "0",
-          "offsetSeconds": 3.6,
+          "offsetSeconds": 0,
           "offsetTicks": 6,
           "voice": "piano",
         },
@@ -26,7 +26,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "0",
-          "offsetSeconds": 4.2,
+          "offsetSeconds": 0.6,
           "offsetTicks": 7,
           "voice": "piano",
         },
@@ -41,7 +41,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "1",
-          "offsetSeconds": 4.8,
+          "offsetSeconds": 1.2,
           "offsetTicks": 0,
           "voice": "piano",
         },
@@ -56,7 +56,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "1",
-          "offsetSeconds": 6,
+          "offsetSeconds": 2.4,
           "offsetTicks": 2,
           "voice": "piano",
         },
@@ -71,7 +71,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "1",
-          "offsetSeconds": 6.6,
+          "offsetSeconds": 3,
           "offsetTicks": 3,
           "voice": "piano",
         },
@@ -86,7 +86,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "1",
-          "offsetSeconds": 7.2,
+          "offsetSeconds": 3.6,
           "offsetTicks": 4,
           "voice": "piano",
         },
@@ -101,7 +101,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "1",
-          "offsetSeconds": 7.8,
+          "offsetSeconds": 4.2,
           "offsetTicks": 5,
           "voice": "piano",
         },
@@ -116,7 +116,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "1",
-          "offsetSeconds": 8.4,
+          "offsetSeconds": 4.8,
           "offsetTicks": 6,
           "voice": "piano",
         },
@@ -131,7 +131,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "1",
-          "offsetSeconds": 9,
+          "offsetSeconds": 5.4,
           "offsetTicks": 7,
           "voice": "piano",
         },
@@ -146,7 +146,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "2",
-          "offsetSeconds": 9.6,
+          "offsetSeconds": 6,
           "offsetTicks": 0,
           "voice": "piano",
         },
@@ -161,7 +161,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "2",
-          "offsetSeconds": 10.8,
+          "offsetSeconds": 7.2,
           "offsetTicks": 2,
           "voice": "piano",
         },
@@ -176,7 +176,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "2",
-          "offsetSeconds": 11.4,
+          "offsetSeconds": 7.8,
           "offsetTicks": 3,
           "voice": "piano",
         },
@@ -191,7 +191,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "2",
-          "offsetSeconds": 12,
+          "offsetSeconds": 8.4,
           "offsetTicks": 4,
           "voice": "piano",
         },
@@ -206,7 +206,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "2",
-          "offsetSeconds": 12.6,
+          "offsetSeconds": 9,
           "offsetTicks": 5,
           "voice": "piano",
         },
@@ -221,7 +221,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "2",
-          "offsetSeconds": 13.2,
+          "offsetSeconds": 9.6,
           "offsetTicks": 6,
           "voice": "piano",
         },
@@ -236,7 +236,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "2",
-          "offsetSeconds": 13.8,
+          "offsetSeconds": 10.2,
           "offsetTicks": 7,
           "voice": "piano",
         },
@@ -251,7 +251,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "3",
-          "offsetSeconds": 14.4,
+          "offsetSeconds": 10.8,
           "offsetTicks": 0,
           "voice": "piano",
         },
@@ -266,7 +266,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "3",
-          "offsetSeconds": 15.6,
+          "offsetSeconds": 12,
           "offsetTicks": 2,
           "voice": "piano",
         },
@@ -281,7 +281,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "3",
-          "offsetSeconds": 16.2,
+          "offsetSeconds": 12.6,
           "offsetTicks": 3,
           "voice": "piano",
         },
@@ -296,7 +296,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "3",
-          "offsetSeconds": 16.8,
+          "offsetSeconds": 13.2,
           "offsetTicks": 4,
           "voice": "piano",
         },
@@ -311,7 +311,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "3",
-          "offsetSeconds": 17.4,
+          "offsetSeconds": 13.8,
           "offsetTicks": 5,
           "voice": "piano",
         },
@@ -326,7 +326,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "3",
-          "offsetSeconds": 18,
+          "offsetSeconds": 14.4,
           "offsetTicks": 6,
           "voice": "piano",
         },
@@ -341,7 +341,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "3",
-          "offsetSeconds": 18.6,
+          "offsetSeconds": 15,
           "offsetTicks": 7,
           "voice": "piano",
         },
@@ -356,7 +356,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "4",
-          "offsetSeconds": 19.2,
+          "offsetSeconds": 15.6,
           "offsetTicks": 0,
           "voice": "piano",
         },
@@ -371,7 +371,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "4",
-          "offsetSeconds": 20.4,
+          "offsetSeconds": 16.8,
           "offsetTicks": 2,
           "voice": "piano",
         },
@@ -386,7 +386,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "4",
-          "offsetSeconds": 21,
+          "offsetSeconds": 17.4,
           "offsetTicks": 3,
           "voice": "piano",
         },
@@ -401,7 +401,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "4",
-          "offsetSeconds": 21.6,
+          "offsetSeconds": 18,
           "offsetTicks": 4,
           "voice": "piano",
         },
@@ -416,7 +416,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "4",
-          "offsetSeconds": 22.2,
+          "offsetSeconds": 18.6,
           "offsetTicks": 5,
           "voice": "piano",
         },
@@ -431,7 +431,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "4",
-          "offsetSeconds": 22.8,
+          "offsetSeconds": 19.2,
           "offsetTicks": 6,
           "voice": "piano",
         },
@@ -446,7 +446,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "4",
-          "offsetSeconds": 23.4,
+          "offsetSeconds": 19.8,
           "offsetTicks": 7,
           "voice": "piano",
         },
@@ -461,7 +461,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "5",
-          "offsetSeconds": 24,
+          "offsetSeconds": 20.4,
           "offsetTicks": 0,
           "voice": "piano",
         },
@@ -476,7 +476,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "5",
-          "offsetSeconds": 25.2,
+          "offsetSeconds": 21.6,
           "offsetTicks": 2,
           "voice": "piano",
         },
@@ -491,7 +491,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "5",
-          "offsetSeconds": 25.8,
+          "offsetSeconds": 22.2,
           "offsetTicks": 3,
           "voice": "piano",
         },
@@ -506,7 +506,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "5",
-          "offsetSeconds": 26.4,
+          "offsetSeconds": 22.8,
           "offsetTicks": 4,
           "voice": "piano",
         },
@@ -521,7 +521,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "5",
-          "offsetSeconds": 27,
+          "offsetSeconds": 23.4,
           "offsetTicks": 5,
           "voice": "piano",
         },
@@ -536,7 +536,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "5",
-          "offsetSeconds": 27.6,
+          "offsetSeconds": 24,
           "offsetTicks": 6,
           "voice": "piano",
         },
@@ -551,7 +551,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "5",
-          "offsetSeconds": 28.2,
+          "offsetSeconds": 24.6,
           "offsetTicks": 7,
           "voice": "piano",
         },
@@ -566,7 +566,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "6",
-          "offsetSeconds": 28.8,
+          "offsetSeconds": 25.2,
           "offsetTicks": 0,
           "voice": "piano",
         },
@@ -581,7 +581,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "6",
-          "offsetSeconds": 30,
+          "offsetSeconds": 26.4,
           "offsetTicks": 2,
           "voice": "piano",
         },
@@ -596,7 +596,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "6",
-          "offsetSeconds": 30.6,
+          "offsetSeconds": 27,
           "offsetTicks": 3,
           "voice": "piano",
         },
@@ -611,7 +611,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "6",
-          "offsetSeconds": 31.2,
+          "offsetSeconds": 27.6,
           "offsetTicks": 4,
           "voice": "piano",
         },
@@ -626,7 +626,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "6",
-          "offsetSeconds": 31.8,
+          "offsetSeconds": 28.2,
           "offsetTicks": 5,
           "voice": "piano",
         },
@@ -641,7 +641,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "6",
-          "offsetSeconds": 32.4,
+          "offsetSeconds": 28.8,
           "offsetTicks": 6,
           "voice": "piano",
         },
@@ -656,7 +656,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "6",
-          "offsetSeconds": 33,
+          "offsetSeconds": 29.4,
           "offsetTicks": 7,
           "voice": "piano",
         },
@@ -671,7 +671,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "7",
-          "offsetSeconds": 33.6,
+          "offsetSeconds": 30,
           "offsetTicks": 0,
           "voice": "piano",
         },
@@ -686,7 +686,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "7",
-          "offsetSeconds": 34.8,
+          "offsetSeconds": 31.2,
           "offsetTicks": 2,
           "voice": "piano",
         },
@@ -701,7 +701,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "7",
-          "offsetSeconds": 35.4,
+          "offsetSeconds": 31.8,
           "offsetTicks": 3,
           "voice": "piano",
         },
@@ -716,7 +716,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "7",
-          "offsetSeconds": 36,
+          "offsetSeconds": 32.4,
           "offsetTicks": 4,
           "voice": "piano",
         },
@@ -731,7 +731,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "7",
-          "offsetSeconds": 36.6,
+          "offsetSeconds": 33,
           "offsetTicks": 5,
           "voice": "piano",
         },
@@ -746,7 +746,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "7",
-          "offsetSeconds": 37.2,
+          "offsetSeconds": 33.6,
           "offsetTicks": 6,
           "voice": "piano",
         },
@@ -761,7 +761,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "7",
-          "offsetSeconds": 37.8,
+          "offsetSeconds": 34.2,
           "offsetTicks": 7,
           "voice": "piano",
         },
@@ -776,7 +776,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
       "occurrences": [
         {
           "measure": "8",
-          "offsetSeconds": 38.4,
+          "offsetSeconds": 34.8,
           "offsetTicks": 0,
           "voice": "piano",
         },
@@ -786,7 +786,7 @@ exports[`conformance: slow_piano-all-keys-cmaj.spls (rich piano) > matches the n
     },
   ],
   "occurrenceCount": 52,
-  "totalLengthSeconds": 39.6,
+  "totalLengthSeconds": 36,
   "voices": [
     "piano",
   ],
