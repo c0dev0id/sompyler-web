@@ -22,5 +22,5 @@ for _key in _WEB_ONLY_KEYS:
     _character.pop(_key, None)
 
 _inst = _Instrument(_definition)
-_pcm = _inst.render_tone(_freq_hz, _duration_s, _stress)
+_pcm = _inst.render_tone(_freq_hz, _duration_s, _stress * 100)
 _pcm.tolist()
