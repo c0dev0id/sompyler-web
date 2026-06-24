@@ -44,6 +44,8 @@ export interface StagingPaneProps {
   mutationsDisabled: boolean
   /** Called when a filename in the active project is clicked — switch editor focus to it. */
   onFocusFile?: (name: string, ext: FileExtension) => void
+  /** Called after a zip or file import completes — signals that a new project was loaded. */
+  onProjectLoad?: () => void
 }
 
 function getScoreRefs(body: string): Record<'spli' | 'splr' | 'splt', Set<string>> {
@@ -238,6 +240,7 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
     }
     input.value = ''
     await refresh()
+    props.onProjectLoad?.()
     props.onChange()
   }
 

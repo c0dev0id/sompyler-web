@@ -38,6 +38,7 @@ export const App: Component = () => {
         onChange={bumpRefresh}
         mutationsDisabled={session.editLock()}
         onFocusFile={handleFocusFile}
+        onProjectLoad={() => session.resetForNewProject()}
       />
       <Layout
         session={session}

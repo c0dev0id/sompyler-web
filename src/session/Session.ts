@@ -272,6 +272,20 @@ export class Session {
     this.setStatus(IDLE_STATUS)
   }
 
+  /** Call when a new project is loaded (e.g. zip import). Clears the current
+   *  render so stale audio baked with old room/tuning settings does not play. */
+  resetForNewProject(): void {
+    this.cancelRender()
+    this.player.clearBuffer()
+    this.player.resetLoopPoints()
+    this.setBuffer(null)
+    this.setDiagnostics([])
+    this.setMarkerBar(null)
+    this.barTimes = []
+    this.lastScoreId = null
+    log('session', 'info', 'Session reset for new project')
+  }
+
   clearBarMarker(): void {
     this.setMarkerBar(null)
   }
