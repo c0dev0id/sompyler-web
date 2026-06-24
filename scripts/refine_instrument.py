@@ -401,6 +401,9 @@ def main():
                     help='Harmonics to compare  [16]')
     ap.add_argument('--json',     action='store_true',
                     help='Emit machine-readable preamble for the skill driver')
+    ap.add_argument('--pitch',    default=None,
+                    help='Override pitch token (e.g. C4) — use when instrument is '
+                         'not yet wired into a score')
     args = ap.parse_args()
 
     if not VITE_NODE.exists():
@@ -413,7 +416,10 @@ def main():
     if not seed:
         sys.exit(f"no spli seed named {args.instrument!r} in defaults.ts")
 
-    score_name, voice, pitch_tok = find_first_use(args.instrument, seeds)
+    if args.pitch:
+        score_name, voice, pitch_tok = '<manual>', '<manual>', args.pitch
+    else:
+        score_name, voice, pitch_tok = find_first_use(args.instrument, seeds)
     midi_note = pitch_to_midi(pitch_tok)
     freq_hz   = 440.0 * 2 ** ((midi_note - 69) / 12.0)
 

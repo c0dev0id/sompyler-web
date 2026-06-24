@@ -3,7 +3,7 @@
  *
  * In-project (loads automatically):
  *   - `oxygene.spls` — Jean-Michel Jarre "Oxygène Pt. IV" (1976), full 117-bar transcription.
- *   - `filtered-bass/oxygene-kick/kalimba/synbrass/synstrings/string-ensemble/bowed-pad/oxygene-melody/tambourine/seashore.spli`
+ *   - `filtered-bass/oxygene-kick/kalimba/synbrass/synstrings/synstrings1/string-ensemble/bowed-pad/oxygene-melody/tambourine/seashore/hi-hat/guiro/castanet/reverse-cymbal/applause.spli`
  *   - `tones_euro.splt` — equal-temperament tuning.
  *   - `oxygene-plate.splr` — Freeverb plate reverb.
  *
@@ -40,6 +40,12 @@ export {
   OXYGENE_MELODY as OXYGENE_MELODY,
   OXYGENE_TAMBOURINE as OXYGENE_TAMBOURINE,
   OXYGENE_SEASHORE as OXYGENE_SEASHORE,
+  OXYGENE_HIHAT as OXYGENE_HIHAT,
+  OXYGENE_GUIRO as OXYGENE_GUIRO,
+  OXYGENE_CASTANET as OXYGENE_CASTANET,
+  OXYGENE_SYNSTRINGS1 as OXYGENE_SYNSTRINGS1,
+  OXYGENE_REVERSE_CYMBAL as OXYGENE_REVERSE_CYMBAL,
+  OXYGENE_APPLAUSE as OXYGENE_APPLAUSE,
 }
 
 // =====================================================================
@@ -822,6 +828,98 @@ character:
   R: "0.001:100;0.1,15*2;0.3,4;0.75,5*3;1,0"
   LFO: "0.8@sin[0];0.15:amp"
   VCF: "1200;0.2;0;0;0"
+`
+
+
+const OXYGENE_HIHAT = `# hi-hat: Open Hi-Hat (bank=128 note=46 / FluidR3_GM2.sf2). Noise instrument.
+# Sample: 'Hi-Hat Half-Open(L)'  root=60  rate=44100 Hz  loop=2205fr (50ms)
+# SF2 envelope: fast attack, medium-fast decay to near silence. Metallic click+wash.
+# initialAttn=0 -> AMP=0.3.
+character:
+  O: noise
+  AMP: 0.3
+  A: "0.001:1,100"
+  S: "0.3:100;0.08,55;0.20,20;0.50,5;1,0.5"
+  R: "0.05:100;1,0"
+`
+
+const OXYGENE_GUIRO = `# guiro: Guiro (bank=128 note=74 / FluidR3_GM2.sf2). Noise instrument.
+# Sample: 'Guiro Up(L)'  root=60  rate=44100 Hz
+# SF2 envelope: medium-fast decay, scraping texture. initialAttn=0 -> AMP=0.5.
+character:
+  O: noise
+  AMP: 0.5
+  A: "0.001:1,100"
+  S: "0.4:100;0.10,60;0.30,20;0.70,3;1,0"
+  R: "0.05:100;1,0"
+`
+
+const OXYGENE_CASTANET = `# castanet: Castanet (bank=128 note=85 / FluidR3_GM2.sf2). Noise instrument.
+# Sample: 'Castanet'  root=60  rate=44100 Hz
+# SF2 envelope: very short, sharp click. initialAttn=0 -> AMP=0.6.
+character:
+  O: noise
+  AMP: 0.6
+  A: "0.001:1,100"
+  S: "0.15:100;0.05,50;0.12,8;1,0"
+  R: "0.01:100;1,0"
+`
+
+const OXYGENE_SYNSTRINGS1 = `# synstrings1: Synth Strings 1 (GM51 / FluidR3_GM2.sf2).
+# Sample: 'SynStrings 1'  root=60  rate=44100 Hz
+# PROFILE: placeholder -- pending FFT measurement.
+# initialAttn=0 -> AMP=0.2.
+character:
+  O: sine
+  AMP: 0.2
+  A: "0.001:1,100"
+  S: "0.001:100;1,100.0"
+  R: "0.5:100;0.04,90;0.2,15;0.4,2;0.6,0.1;1,0"
+  LFO:
+    - "8.18@sin[0.37];15.000:pitch"
+    - "1.0@sin[0];0.15:amp"
+  UNISON: "2;3"
+  PROFILE:
+    - 100.0  # H1
+    - 90.0   # H2
+    - 85.0   # H3
+    - 80.0   # H4
+    - 75.0   # H5
+    - 65.0   # H6
+    - 70.0   # H7
+    - 65.0   # H8
+    - 62.0   # H9
+    - 60.0   # H10
+    - 58.0   # H11
+    - 60.0   # H12
+    - 55.0   # H13
+    - 52.0   # H14
+    - 54.0   # H15
+    - 50.0   # H16
+`
+
+const OXYGENE_REVERSE_CYMBAL = `# reverse-cymbal: Reverse Cymbal (GM119 / FluidR3_GM2.sf2). Noise instrument.
+# Sample: 'Rev.Cymbal'  root=60  rate=44100 Hz
+# A reverse cymbal: amplitude builds during note-on, then cuts at note-off.
+# initialAttn=0 -> AMP=0.5.
+character:
+  O: noise
+  AMP: 0.5
+  A: "2.5:0;0.15,5;0.40,25;0.70,70;1,100"
+  S: "0.001:100;1,100"
+  R: "0.3:100;0.1,30;0.4,5;1,0"
+`
+
+const OXYGENE_APPLAUSE = `# applause: Applause (GM126 / FluidR3_GM2.sf2). Noise instrument.
+# Sample: 'Applause'  root=60  rate=44100 Hz
+# Crowd clapping: builds up with slow attack, sustained noise.
+# initialAttn=0 -> AMP=0.4.
+character:
+  O: noise
+  AMP: 0.4
+  A: "1.5:0;0.10,5;0.35,30;0.70,75;1,100"
+  S: "0.001:100;1,100"
+  R: "1.0:100;0.2,60;0.5,20;1,0"
 `
 
 const OXYGENE = `title: Oxygène Pt. IV
@@ -4673,9 +4771,15 @@ const SEEDS: Seed[] = [
   { name: 'string-ensemble', ext: 'spli', body: OXYGENE_ENSEMBLE,   inProject: true },
   { name: 'bowed-pad',       ext: 'spli', body: OXYGENE_BOWEDPAD,   inProject: true },
   { name: 'oxygene-melody',  ext: 'spli', body: OXYGENE_MELODY,     inProject: true },
-  { name: 'tambourine',      ext: 'spli', body: OXYGENE_TAMBOURINE, inProject: true },
-  { name: 'seashore',        ext: 'spli', body: OXYGENE_SEASHORE,   inProject: true },
-  { name: 'tones_euro',      ext: 'splt', body: STARTER_TUNING,     inProject: true },
+  { name: 'tambourine',       ext: 'spli', body: OXYGENE_TAMBOURINE,     inProject: true },
+  { name: 'seashore',         ext: 'spli', body: OXYGENE_SEASHORE,       inProject: true },
+  { name: 'hi-hat',           ext: 'spli', body: OXYGENE_HIHAT,          inProject: true },
+  { name: 'guiro',            ext: 'spli', body: OXYGENE_GUIRO,          inProject: true },
+  { name: 'castanet',         ext: 'spli', body: OXYGENE_CASTANET,       inProject: true },
+  { name: 'synstrings1',      ext: 'spli', body: OXYGENE_SYNSTRINGS1,    inProject: true },
+  { name: 'reverse-cymbal',   ext: 'spli', body: OXYGENE_REVERSE_CYMBAL, inProject: true },
+  { name: 'applause',         ext: 'spli', body: OXYGENE_APPLAUSE,       inProject: true },
+  { name: 'tones_euro',       ext: 'splt', body: STARTER_TUNING,         inProject: true },
   { name: 'oxygene-plate',  ext: 'splr', body: OXYGENE_PLATE_ROOM, inProject: true },
 
   // oxygene4old — original Python Sompyler source (RFC character: format).
