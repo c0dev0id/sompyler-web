@@ -12,6 +12,7 @@ import { packZip, unpackZip } from '../storage/zip'
 import { resetDatabase } from '../storage/db'
 import { parseScore } from '../parse/score'
 import { log } from '../debug'
+import { StagingHelpDialog } from './StagingHelpDialog'
 
 const COLLAPSED_PREF_KEY = 'staging.collapsed'
 
@@ -66,6 +67,7 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
   const [expanded, setExpanded] = createSignal(new Set<string>())
   let fileInput: HTMLInputElement | undefined
   let nameInput: HTMLInputElement | undefined
+  let helpDialog: HTMLDialogElement | undefined
 
   function toggleExpanded(id: string) {
     setExpanded((s) => {
@@ -285,8 +287,10 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
         </button>
         <Show when={!collapsed()}>
           <h3>Files</h3>
+          <button class="help-btn" title="How the file browser works" onClick={() => helpDialog?.showModal()}>?</button>
         </Show>
       </header>
+      <StagingHelpDialog ref={(el) => { helpDialog = el }} />
       <Show when={!collapsed()}>
         <div class="staging-body">
           <ul class="staging-tree">
