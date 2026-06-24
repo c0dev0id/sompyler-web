@@ -2,8 +2,25 @@ import { createEffect, createSignal, onCleanup, type Component } from 'solid-js'
 import { loadInstrument } from '../parse/instrument'
 import { compileInstrument } from '../synth/compile'
 import { renderNote } from '../synth/sound_generator'
-import { DEFAULT_ENVELOPE } from '../synth/envelope'
+import { DEFAULT_ENVELOPE, type EnvelopeSpec } from '../synth/envelope'
+import { parseShape } from '../synth/shape'
 import { DEFAULT_SAMPLE_RATE } from '../synth/constants'
+
+const PREVIEW_DAMP_SECONDS = 2
+
+function previewTiming(env: EnvelopeSpec): { lengthSeconds: number; dampSeconds: number } {
+  // Plucked instruments encode their character in the S: decay shape; preview
+  // must hold note-on long enough to traverse it, or you only hear the attack.
+  let decayLen = 0
+  if (env.decayShape) {
+    try { decayLen = parseShape(env.decayShape).length } catch { /* ignore malformed */ }
+  }
+  const sustainHold = Math.max(0.05, env.attack * 0.5, decayLen)
+  return {
+    lengthSeconds: env.attack + sustainHold + env.release,
+    dampSeconds: PREVIEW_DAMP_SECONDS,
+  }
+}
 
 interface InstrumentPreviewProps {
   name: () => string | null
@@ -60,9 +77,8 @@ export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
       lastHz = hz
       const spec = lastSpec
       const env = spec.envelope ?? DEFAULT_ENVELOPE
-      const sustainHold = Math.max(0.05, env.attack * 0.5)
-      const totalSeconds = env.attack + sustainHold + env.release
-      const samples = renderNote({ instrument: spec, freqHz: hz, stress: 1, lengthSeconds: totalSeconds, dampSeconds: 0 })
+      const { lengthSeconds, dampSeconds } = previewTiming(env)
+      const samples = renderNote({ instrument: spec, freqHz: hz, stress: 1, lengthSeconds, dampSeconds })
       lastSamples = samples
       drawWaveform(samples)
     }
@@ -135,9 +151,8 @@ export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
         const spec = compileInstrument(instr)
         lastSpec = spec
         const env = spec.envelope ?? DEFAULT_ENVELOPE
-        const sustainHold = Math.max(0.05, env.attack * 0.5)
-        const totalSeconds = env.attack + sustainHold + env.release
-        const samples = renderNote({ instrument: spec, freqHz: lastHz, stress: 1, lengthSeconds: totalSeconds, dampSeconds: 0 })
+        const { lengthSeconds, dampSeconds } = previewTiming(env)
+        const samples = renderNote({ instrument: spec, freqHz: lastHz, stress: 1, lengthSeconds, dampSeconds })
         if (run !== currentRun) return
         lastSamples = samples
         setHasSamples(true)

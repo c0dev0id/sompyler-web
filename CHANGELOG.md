@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **`UNISON: "COUNT;DETUNE_CENTS"` — sompyler-web `.spli` extension** for stacked-voice chorus. Renders the entire partial bank `COUNT` times with each voice pitch-shifted by a linearly-distributed cent offset in `[-DETUNE_CENTS, +DETUNE_CENTS]`. Odd counts include a 0¢ centre voice; even counts straddle 0. Models SF2 stacked-sample patches (e.g. FluidR3 Synth Brass 2) without a chorus DSP — the phase drift between fixed-frequency oscillators IS the effect. Follows the LFO/VCF/FM convention (uppercase keyword, `;`-separated string DSL). Sits between partial summation and the global modulators so VCF/AMP-LFO apply once to the summed voices.
 
+### Fixed
+
+- **InstrumentPreview note-on truncated plucked instruments.** The preview's note duration was hard-coded as `attack + max(0.05, attack/2) + release` with `dampSeconds: 0`, ignoring the `S:` decay shape's length. Plucked instruments (kalimba, etc.) encode their character in the multi-second `S:` curve, so the preview only played the first ~50 ms of it and then released — instrument sounded clipped vs. the WAV rendered by `scripts/refine_instrument.py`. Fix: parse the `S:` shape length and use it as a floor for the sustain hold; add a fixed 2 s damp tail so the release shape rings out. Score renders are unaffected (they already pass per-note `lengthSeconds` and `dampSeconds`).
+
 ### Changed
 
 - **10-loop TiMidity/FluidR3 calibration pass** for all 9 Oxygène instruments — each instrument compared envelope-by-envelope and spectrum-by-spectrum against TiMidity SF2 output via `compare_instrument.py`:
