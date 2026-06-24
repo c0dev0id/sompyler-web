@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Oxygène score: SynString1 and SynString2-hi voices added.** Extracted from MIDI tracks 7 (GM51, SynthStrings 1) and 8 (GM52, SynthStrings 2, high register C5–C6) of the reference MIDI. `strings1` layers the ensemble melody (bars 16–33, 58–75) with the synstrings timbre. `strings2` adds high-register arpeggios (C5/G5, D5/B♭5, F5/C6) from bar 34 onwards, using a 4-note held pattern in bars 34–39 / 76–81 and a 6-note rapid pattern in bars 40–51 / 82–117.
+
 - **`UNISON: "COUNT;DETUNE_CENTS"` — sompyler-web `.spli` extension** for stacked-voice chorus. Renders the entire partial bank `COUNT` times with each voice pitch-shifted by a linearly-distributed cent offset in `[-DETUNE_CENTS, +DETUNE_CENTS]`. Odd counts include a 0¢ centre voice; even counts straddle 0. Models SF2 stacked-sample patches (e.g. FluidR3 Synth Brass 2) without a chorus DSP — the phase drift between fixed-frequency oscillators IS the effect. Follows the LFO/VCF/FM convention (uppercase keyword, `;`-separated string DSL). Sits between partial summation and the global modulators so VCF/AMP-LFO apply once to the summed voices.
 
 ### Fixed
