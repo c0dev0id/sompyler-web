@@ -721,32 +721,33 @@ character:
 
 const OXYGENE_BOWEDPAD = `# bowedpad: Bowed Glass (GM93 / FluidR3_GM2.sf2).
 # Sample: 'Bowed Glass'  root=60  rate=44100 Hz  loop=252fr (5.7ms)
-# PROFILE updated L1: replaced flat spectrum with TiMidity-measured output at C4.
+# PROFILE updated L1+: TiMidity C4 spectrum; H2/H5 trimmed. QUALITY L1=6.3.
 # VCF removed — already baked into PROFILE from TiMidity measurement.
-# Envelope: instant attack, full sustain, instant release. initialAttn≈24cB → AMP=0.158.
+# LFO 0.9Hz amp tremolo (phase+108°, delay=0.5s) models bow ripple. S: steepened.
 character:
   O: sine
-  AMP: 0.05
-  A: "0.001:1,100"
-  S: "0.011:100;1,100.0"
-  R: "1.5:100;1,0"
+  AMP: 0.3
+  A: "0.175:12;1,100"
+  S: "0.3:100;0.08,68;1,40"
+  R: "0.01:100;0.18,1;0.48,4;1,0"
+  LFO: "0.9@sin[0.5];0.16:amp+108"
   PROFILE:
     - 100.0  # H1
-    - 86.4   # H2  (L7: avg of t=0.5/1.5/2.5 TiMidity measurements)
-    - 83.0   # H3  (L8: reduced from 87.7, was 7 RDFS too high)
-    - 94.8   # H4
-    - 82.9   # H5
-    - 78.8   # H6
-    - 78.7   # H7
-    - 76.8   # H8
-    - 74.0   # H9
-    - 75.9   # H10
-    - 76.5   # H11
-    - 72.1   # H12
-    - 68.0   # H13  (L8: reduced from 70.9, was 6 RDFS too high)
-    - 70.3   # H14
-    - 70.6   # H15
-    - 69.0   # H16
+    - 100.4  # H2  (was 86.4, +14 correction; +0.4 spectrum trim)
+    - 94.2   # H3  (was 83.0, +11.2 correction)
+    - 86.8   # H4  (was 94.8, -8.0 correction)
+    - 100.9  # H5  (was 82.9, +18.0 correction; +0.9 spectrum trim)
+    - 71.0   # H6  (was 78.8, -7.8 correction)
+    - 67.9   # H7  (was 78.7, -10.8 correction)
+    - 66.0   # H8  (was 76.8, -10.8 correction)
+    - 56.8   # H9  (was 74.0, -17.2 correction)
+    - 53.0   # H10 (was 75.9, -22.9 correction)
+    - 46.2   # H11 (was 76.5, -30.3 correction)
+    - 49.2   # H12 (was 72.1, -22.9 correction)
+    - 57.2   # H13 (was 68.0, -10.8 correction)
+    - 47.6   # H14 (was 70.3, -22.7 correction)
+    - 76.5   # H15 (was 70.6, +5.9 correction)
+    - 52.4   # H16 (was 69.0, -16.6 correction)
     - 64.0   # H17
     - 60.0   # H18
     - 56.0   # H19
