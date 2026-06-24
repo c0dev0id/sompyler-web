@@ -847,7 +847,7 @@ _meta:
   lower_stress_bound: 70
   upper_stress_bound: 90
 seashore:
-  0: C4 12
+  0: C4 12 damp=12
 ---
 # bar 2 — kalimba fade-in begins (very quiet)
 _meta:
