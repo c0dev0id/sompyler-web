@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **ensemble**: PROFILE fully replaced from TiMidity G4 t=1.5s (old H5=100/H7=91 were wrong — actual H5=72/H7=63); S changed to flat sustain; AMP 0.354→0.045 (sample builds up 7 dB over first 0.5s)
   - **bowedpad**: PROFILE fully replaced from TiMidity C4 measurements (averaged t=0.5/1.5/2.5); VCF removed (baked); R extended 0.001→1.5s; AMP 0.158→0.030
   - **tambourine**: no change (drum hit too short for meaningful envelope comparison)
-  - **seashore**: no change (O:noise cannot match pre-recorded ocean amplitude variation)
+  - **seashore**: shaped wave-wash envelope (non-monotonic A:/S:/R: with multiplicity-weighted dips) plus 0.8 Hz amp LFO for slow undulation; VCF cutoff 5000→1200 Hz with Q 0.2 shifts spectral centroid from "hiss" to "ocean rumble" (real ocean concentrates energy <1 kHz); AMP 0.1→0.5 compensates for the lowered cutoff. Single-band only — discussed dual hiss+rumble (UNISON/per-partial VCF/two-voice stage) and concluded it's a score-level concern.
 
 - **All 9 Oxygène instruments rebuilt from FluidR3_GM2.sf2 source data only** — no TiMidity-rendered WAV, no hand-tuned values. Each instrument derives envelope timings from SF2 volume-envelope generators (timecents → seconds), PROFILE from loop-region FFT, AMP from `initialAttenuation` centibels, and VCF/LFO from SF2 filter/modulation generators:
   - **kalimba**: replaced near-pure-sine TimGM6mb model with GM108 Koto (FluidR3) — rich 24-harmonic PROFILE (H2/H3/H5 ≈100 RDFS), plucked 0.29s decay
