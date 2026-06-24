@@ -180,6 +180,20 @@ describe('expandChainString (S53000)', () => {
     expect(notes[2]).toMatchObject({ pitch: 'D4', offsetTicks: 5, dampTicks: 1 })
   })
 
+  it('bare ",N" damp suffix — no underscore needed', () => {
+    const notes = expandChainString('Eb4,3 F4')
+    expect(notes[0]).toMatchObject({ pitch: 'Eb4', lengthTicks: 1, dampTicks: 3 })
+    expect(notes[1]).toMatchObject({ pitch: 'F4', offsetTicks: 1 })
+  })
+
+  it('bare ";N" semidamp suffix propagates to following notes', () => {
+    // Eb4;6 → length=1, semidamp=6, targetEnd=0+1+6=7
+    // G4 at tick 1, length=1 → auto-damp=7-(1+1)=5 so both release at tick 7
+    const notes = expandChainString('Eb4;6 G4')
+    expect(notes[0]).toMatchObject({ pitch: 'Eb4', lengthTicks: 1, dampTicks: 6 })
+    expect(notes[1]).toMatchObject({ pitch: 'G4', offsetTicks: 1, dampTicks: 5 })
+  })
+
   it('rest does not break shift accumulation', () => {
     // Shift should survive a rest between operators
     const notes = expandChainString('C4 + . +')

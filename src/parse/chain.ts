@@ -65,6 +65,9 @@ interface LenSpec { lengthTicks: number; dampTicks: number; isSemidamp: boolean 
 
 function parseLenSuffix(s: string): LenSpec {
   if (!s) return { lengthTicks: 1, dampTicks: 0, isSemidamp: false }
+  // Bare damp/semidamp without length extension: ",N" or ";N"
+  const bareM = s.match(/^([,;])(\d+)$/)
+  if (bareM) return { lengthTicks: 1, dampTicks: parseInt(bareM[2]!, 10), isSemidamp: bareM[1] === ';' }
   const m = s.match(/^(_+|_\d+)(?:([,;])(\d+))?$/)
   if (!m) throw new ScoreError(`Malformed chain length suffix '${s}'`)
   const under = m[1]!
@@ -76,10 +79,11 @@ function parseLenSuffix(s: string): LenSpec {
 // Length suffix: "_N" or "__" followed by an optional ",M" comma-tail or ";M" semidamp (S53200).
 const REPEAT_RX  = /^\*(\d+)$/
 const REST_RX    = /^\.(\d+)?$/
-const RESET_RX   = /^=((?:_+|_\d+)(?:[,;]\d+)?)?$/
-const SHIFT_UP_RX   = /^\+(\d+)?((?:_+|_\d+)(?:[,;]\d+)?)?$/
-const SHIFT_DOWN_RX = /^-(\d+)?((?:_+|_\d+)(?:[,;]\d+)?)?$/
-const PITCH_RX   = /^([A-Ga-g][#b]?\d+)([?!])?((?:_+|_\d+)(?:[,;]\d+)?)?$/
+const LEN_SUFFIX = /(?:_+|_\d+)(?:[,;]\d+)?|[,;]\d+/
+const RESET_RX   = new RegExp(`^=(${LEN_SUFFIX.source})?$`)
+const SHIFT_UP_RX   = new RegExp(`^\\+(\\d+)?(${LEN_SUFFIX.source})?$`)
+const SHIFT_DOWN_RX = new RegExp(`^-(\\d+)?(${LEN_SUFFIX.source})?$`)
+const PITCH_RX   = new RegExp(`^([A-Ga-g][#b]?\\d+)([?!])?(${LEN_SUFFIX.source})?$`)
 
 // ── Public API ────────────────────────────────────────────────────────────────
 
