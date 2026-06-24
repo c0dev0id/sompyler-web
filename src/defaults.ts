@@ -834,6 +834,7 @@ stage:
   tambourine: 1|1 0.1 tambourine
   synbrass:  1|1 0.8 synbrass
   strings:   2|1 1.0 synstrings
+  strings1:  2|1 1.0 synstrings
   ensemble:  1|2 1.2 string-ensemble
   bowedpad:  1|1 1.6 bowed-pad
   melody:    1|1 0.4 oxygene-melody
@@ -849,6 +850,7 @@ _meta:
   upper_stress_bound: 90
 seashore:
   0: C4 12 damp=24
+strings1: false
 ---
 # bar 2 — kalimba fade-in begins (very quiet)
 _meta:
