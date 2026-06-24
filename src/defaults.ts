@@ -821,7 +821,6 @@ character:
   R: "0.001:100;0.1,15*2;0.3,4;0.75,5*3;1,0"
   LFO: "0.8@sin[0];0.15:amp"
   VCF: "1200;0.2;0;0;0"
-  UNISON: "3;6"
 `
 
 const OXYGENE = `title: Oxygène Pt. IV
