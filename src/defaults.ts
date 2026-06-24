@@ -532,7 +532,7 @@ const OXYGENE_PLATE_ROOM = `# oxygene-plate.splr — Freeverb plate reverb for O
 type: freeverb
 room_size: 0.76
 damping: 0.45
-wet: 0.6
+wet: 0.4
 pre_delay_ms: 10
 `
 
