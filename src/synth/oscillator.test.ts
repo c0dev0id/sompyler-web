@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { renderOscillator, renderOscillatorFM } from './oscillator'
+import { applyAM, renderOscillator, renderOscillatorFM } from './oscillator'
 
 describe('renderOscillator', () => {
   it('produces a sine wave with the expected period', () => {
@@ -48,23 +48,25 @@ describe('renderOscillator', () => {
   })
 })
 
-describe('renderOscillatorFM', () => {
-  it('depth=0 produces identical output to plain renderOscillator', () => {
+describe('renderOscillatorFM (RFC §S32117)', () => {
+  it('modShare=0 produces identical output to plain renderOscillator', () => {
+    // modShare=0 → modulation formula collapses to 1.0 for any mosc/e
     const plain = new Float32Array(1000)
     const fmBuf = new Float32Array(1000)
     renderOscillator(plain, { waveform: 'sin' }, 440, 44100)
-    renderOscillatorFM(fmBuf, { waveform: 'sin' }, 440, { freqHz: 1, depth: 0 }, 44100, null)
+    renderOscillatorFM(fmBuf, { waveform: 'sin' }, 440,
+      { freqHz: 1, modShare: 0, baseShare: 1 }, 44100, null)
     for (let i = 0; i < 1000; i++) {
       expect(fmBuf[i]).toBeCloseTo(plain[i]!, 5)
     }
   })
 
-  it('positive depth modifies the output relative to unmodulated carrier', () => {
+  it('positive modShare modifies the output relative to unmodulated carrier', () => {
     const plain = new Float32Array(1000)
     const fmBuf = new Float32Array(1000)
     renderOscillator(plain, { waveform: 'sin' }, 440, 44100)
     renderOscillatorFM(fmBuf, { waveform: 'sin' }, 440,
-      { freqHz: 10, depth: 2, initPhase: 0.25 }, 44100, null)
+      { freqHz: 10, modShare: 2, baseShare: 1, initPhase: 0.25 }, 44100, null)
     let maxDiff = 0
     for (let i = 0; i < 1000; i++) {
       maxDiff = Math.max(maxDiff, Math.abs((plain[i] ?? 0) - (fmBuf[i] ?? 0)))
@@ -76,7 +78,7 @@ describe('renderOscillatorFM', () => {
     const withNull = new Float32Array(1000)
     const withOnes = new Float32Array(1000)
     const ones = new Float32Array(1000).fill(1)
-    const fm = { freqHz: 5, depth: 1 }
+    const fm = { freqHz: 5, modShare: 1, baseShare: 1 }
     renderOscillatorFM(withNull, { waveform: 'sin' }, 220, fm, 44100, null)
     renderOscillatorFM(withOnes, { waveform: 'sin' }, 220, fm, 44100, ones)
     for (let i = 0; i < 1000; i++) {
@@ -84,16 +86,15 @@ describe('renderOscillatorFM', () => {
     }
   })
 
-  it('frequency sweep: more zero-crossings at start than end when depthEnv decays', () => {
-    // depth=5, initPhase=0.25 (modulator at peak), decaying envelope:
-    // early samples run at ~6× carrier freq; late samples run near carrier.
+  it('frequency sweep: more zero-crossings at start than end when modulator at opposite phases', () => {
+    // 0.5 Hz modulator at initPhase=+90° (peak): starts at ~1.9× carrier,
+    // reaches near-minimum around t=0.9s → dramatic zero-crossing count difference.
+    // RFC formula max ≈ 2× carrier (m>>b), so early/late ratio can exceed 2.
     const SR = 22050
     const N = SR  // 1 second
     const buf = new Float32Array(N)
-    const depthEnv = new Float32Array(N)
-    for (let i = 0; i < N; i++) depthEnv[i] = 1 - i / N  // linear 1→0
     renderOscillatorFM(buf, { waveform: 'sin' }, 100,
-      { freqHz: 0.1, depth: 5, initPhase: 0.25 }, SR, depthEnv)
+      { freqHz: 0.5, modShare: 20, baseShare: 1, initPhase: 0.25 }, SR, null)
     const tenth = Math.floor(N / 10)
     let early = 0, late = 0
     for (let i = 1; i < tenth; i++) {
@@ -102,7 +103,37 @@ describe('renderOscillatorFM', () => {
     for (let i = N - tenth + 1; i < N; i++) {
       if ((buf[i - 1]! >= 0) !== (buf[i]! >= 0)) late++
     }
-    // At start: ~600 Hz → ~120 crossings; at end: ~100 Hz → ~20 crossings
+    // Early: ~190 Hz → ~38 crossings; late: ~10 Hz → ~2 crossings
     expect(early).toBeGreaterThan(late * 2)
+  })
+})
+
+describe('applyAM (RFC §S32116)', () => {
+  it('modShare=0 leaves buffer unchanged', () => {
+    const buf = new Float32Array(500)
+    renderOscillator(buf, { waveform: 'sin' }, 440, 44100)
+    const before = buf.slice()
+    applyAM(buf, { freqHz: 5, modShare: 0, baseShare: 1 }, 440, 44100, null)
+    for (let i = 0; i < buf.length; i++) {
+      expect(buf[i]).toBeCloseTo(before[i]!, 5)
+    }
+  })
+
+  it('positive modShare modulates amplitude', () => {
+    const buf = new Float32Array(500)
+    buf.fill(1)
+    applyAM(buf, { freqHz: 2, modShare: 3, baseShare: 1, initPhase: 0.25 }, 440, 44100, null)
+    // At initPhase=0.25 (sin peak), AM factor = o = (3+1)/(3/2+1) = 1.6
+    // buf[0] should be ~1.6
+    expect(buf[0]).toBeCloseTo(1.6, 2)
+  })
+
+  it('depthEnv=0 collapses AM factor to 1 (no modulation)', () => {
+    const buf = new Float32Array(500)
+    buf.fill(1)
+    const zeros = new Float32Array(500)
+    applyAM(buf, { freqHz: 5, modShare: 5, baseShare: 1, initPhase: 0.25 }, 440, 44100, zeros)
+    // When e=0: modulate = o*(m/2+b)/(m+b) = 1 for any mosc
+    for (const v of buf) expect(v).toBeCloseTo(1, 5)
   })
 })

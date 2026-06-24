@@ -1,6 +1,6 @@
 import { InstrumentError } from '../errors'
 import type { Instrument } from '../parse/instrument'
-import type { FMSpec, InstrumentSpec, LFOSpec, MorphEntry, PartialDef, RailsbackCurve, UnisonSpec, VCFSpec, VariationAttr, VariationEntry, VariationSet } from './sound_generator'
+import type { AMSpec, FMSpec, InstrumentSpec, LFOSpec, MorphEntry, PartialDef, RailsbackCurve, UnisonSpec, VCFSpec, VariationAttr, VariationEntry, VariationSet } from './sound_generator'
 import { DEFAULT_ENVELOPE, type EnvelopeSpec } from './envelope'
 import type { OscillatorSpec, Waveform } from './oscillator'
 import { parseShape, renderShapeString } from './shape'
@@ -225,31 +225,43 @@ function compileTimbre(raw: unknown): string | undefined {
 }
 
 /**
- * FM: "FREQ["f"/"F"]["@"OSC]["["SHAPE"]"]";"DEPTH["+"INIT_DEG]"
- * RFC §S32117. FREQ in Hz (suffix "f"/"F" for dynamic). DEPTH is the peak
- * frequency-deviation ratio. INIT_DEG is modulator start phase in degrees.
+ * RFC §S32116 (AM) / §S32117 (FM):
+ *   "FREQ["f"/"F"]["@"OSC]["["SHAPE"]"]";"MOD":"BASE["+"/"−"INIT_DEG]"
+ * FREQ: modulator Hz (absolute, or ratio of carrier with "f"/"F").
+ * MOD:BASE: depth ratio (e.g. "3:1" → strong modulation; "0:1" → none).
+ * INIT_DEG: modulator start phase in degrees (optional, signed).
  */
-const FM_RX = /^([\d.]+)([fF])?(?:@(\w+))?(?:\[([^\]]+)\])?;([\d.]+)(?:\+(\d+))?$/
+const MOD_RX = /^([\d.]+)([fF])?(?:@(\w+))?(?:\[([^\]]+)\])?;(\d+):(\d+)([+-]\d+)?$/
 
-function compileFM(raw: unknown): FMSpec | undefined {
+function compileModulation(raw: unknown, key: string): FMSpec | undefined {
   if (raw == null) return undefined
-  if (typeof raw !== 'string') throw new InstrumentError(`FM must be a string`)
-  const m = FM_RX.exec(raw.trim())
-  if (!m) throw new InstrumentError(`FM: invalid syntax — expected "FREQ[@OSC][SHAPE];DEPTH[+PHASE_DEG]"`)
+  if (typeof raw !== 'string') throw new InstrumentError(`${key} must be a string`)
+  const m = MOD_RX.exec(raw.trim())
+  if (!m) throw new InstrumentError(`${key}: invalid syntax — expected "FREQ[@OSC][SHAPE];MOD:BASE[+PHASE_DEG]"`)
   const freqHz = parseFloat(m[1]!)
-  if (!Number.isFinite(freqHz) || freqHz <= 0) throw new InstrumentError(`FM: frequency must be positive`)
-  const depth = parseFloat(m[5]!)
-  if (!Number.isFinite(depth) || depth < 0) throw new InstrumentError(`FM: depth must be non-negative`)
-  const spec: FMSpec = { freqHz, depth }
-  if (m[2]) spec.dynamic = true
+  if (!Number.isFinite(freqHz) || freqHz <= 0) throw new InstrumentError(`${key}: frequency must be positive`)
+  const modShare = parseInt(m[5]!, 10)
+  const baseShare = parseInt(m[6]!, 10)
+  if (modShare < 0) throw new InstrumentError(`${key}: MOD must be non-negative`)
+  if (baseShare <= 0) throw new InstrumentError(`${key}: BASE must be positive`)
+  const spec: FMSpec = { freqHz, modShare, baseShare }
+  if (m[2]) spec.dynamic = m[2] as 'f' | 'F'
   if (m[3]) {
     const wf = m[3] as Waveform
-    if (!WAVEFORMS.has(wf)) throw new InstrumentError(`FM: unknown waveform '${m[3]}'`)
+    if (!WAVEFORMS.has(wf)) throw new InstrumentError(`${key}: unknown waveform '${m[3]}'`)
     spec.waveform = wf
   }
   if (m[4]) spec.depthEnv = m[4]
-  if (m[6]) spec.initPhase = parseInt(m[6], 10) / 360
+  if (m[7]) spec.initPhase = parseInt(m[7], 10) / 360
   return spec
+}
+
+function compileFM(raw: unknown): FMSpec | undefined {
+  return compileModulation(raw, 'FM')
+}
+
+function compileAM(raw: unknown): AMSpec | undefined {
+  return compileModulation(raw, 'AM')
 }
 
 /**
@@ -390,6 +402,8 @@ function compileRoot(raw: Record<string, unknown>): InstrumentSpec {
   if (timbre) spec.timbre = timbre
   const morph = compileMorph(raw.MORPH)
   if (morph) spec.morph = morph
+  const am = compileAM(raw.AM)
+  if (am) spec.am = am
   const fm = compileFM(raw.FM)
   if (fm) spec.fm = fm
   const vcf = compileVCF(raw.VCF)

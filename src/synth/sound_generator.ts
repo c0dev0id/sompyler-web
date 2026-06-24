@@ -2,7 +2,7 @@ import { DEFAULT_SAMPLE_RATE } from './constants'
 import { DEFAULT_ENVELOPE, applyEnvelope, type EnvelopeSpec } from './envelope'
 import { applyBiquadLPF, type VCFSpec } from './filter'
 import { renderLFO, type LFOSpec } from './lfo'
-import { renderOscillator, renderOscillatorFM, renderOscillatorPitchMod, type FMSpec, type OscillatorSpec } from './oscillator'
+import { applyAM, renderOscillator, renderOscillatorFM, renderOscillatorPitchMod, type AMSpec, type FMSpec, type OscillatorSpec } from './oscillator'
 import { evaluateShape } from './shape'
 import { renderSympartial, type SympartialSpec } from './sympartial'
 
@@ -83,6 +83,11 @@ export interface InstrumentSpec {
    * If any partial has FM, the per-partial rendering path is always used.
    */
   fm?: FMSpec
+  /**
+   * Top-level AM default, inherited by partials that don't specify their own.
+   * Multiplies each partial's oscillator output before the amplitude envelope.
+   */
+  am?: AMSpec
   /** Resonant low-pass filter applied to the summed output. */
   vcf?: VCFSpec
   /** One or more LFOs routed to 'vcf' cutoff or 'amp' output. */
@@ -108,7 +113,7 @@ export interface UnisonSpec {
   detuneCents: number
 }
 
-export type { FMSpec, LFOSpec, VCFSpec }
+export type { AMSpec, FMSpec, LFOSpec, VCFSpec }
 
 /**
  * Pre-rendered railsback curve. `curve[i]` is the octave shift applied
@@ -149,6 +154,8 @@ export interface PartialDef {
   envelope?: EnvelopeSpec
   /** Per-partial FM; overrides InstrumentSpec.fm if set. */
   fm?: FMSpec
+  /** Per-partial AM; overrides InstrumentSpec.am if set. */
+  am?: AMSpec
   /** D: frequency deviance in cents from the harmonic series (S32130). */
   devianceCents?: number
 }
@@ -290,6 +297,7 @@ function resolveSympartials(spec: InstrumentSpec): SympartialSpec[] {
     freqMult: p.freqMult ?? 1,
     amp: p.amp ?? 1,
     fm: p.fm ?? spec.fm,
+    am: p.am ?? spec.am,
     devianceMult: p.devianceCents ? Math.pow(2, p.devianceCents / 1200) : undefined,
   }))
 }
@@ -367,9 +375,8 @@ export function renderNote(input: RenderNoteInput): Float32Array {
     }
   }
 
-  const hasFM = sympartials.some((sp) => !!sp.fm)
   const hasPerPartialMods =
-    hasFM ||
+    sympartials.some((sp) => !!sp.fm || !!sp.am) ||
     !!pitchLFO ||
     (spread && spread.length > 0) ||
     !!timbre ||
@@ -392,11 +399,15 @@ export function renderNote(input: RenderNoteInput): Float32Array {
           const depthEnv = sp.fm.depthEnv
             ? evaluateShape(sp.fm.depthEnv, totalSamples)
             : null
-          renderOscillatorFM(buf, sp.oscillator, partialFreqHz, sp.fm, sampleRate, depthEnv)
+          renderOscillatorFM(buf, sp.oscillator, partialFreqHz, sp.fm, sampleRate, depthEnv, 0, sp.freqMult)
         } else if (pitchLFO) {
           renderOscillatorPitchMod(buf, sp.oscillator, partialFreqHz, sampleRate, pitchLFO, pitchLFODepthCents)
         } else {
           renderOscillator(buf, sp.oscillator, partialFreqHz, sampleRate)
+        }
+        if (sp.am) {
+          const amDepthEnv = sp.am.depthEnv ? evaluateShape(sp.am.depthEnv, totalSamples) : null
+          applyAM(buf, sp.am, partialFreqHz, sampleRate, amDepthEnv, sp.freqMult)
         }
         applyEnvelope(buf, sp.envelope, sampleRate, damp)
         if (morph && morph.length > 0 && input.lengthTicks) {

@@ -294,22 +294,22 @@ describe('FM synthesis', () => {
     instrument: { envelope: { attack: 0, release: 0, sustainLevel: 1 } },
   }
 
-  it('fm depth=0 produces the same output as no FM', () => {
+  it('fm modShare=0 produces the same output as no FM', () => {
     const noFm = renderNote({ ...base, instrument: { ...base.instrument } })
     const zeroDepth = renderNote({
       ...base,
-      instrument: { ...base.instrument, fm: { freqHz: 1, depth: 0 } },
+      instrument: { ...base.instrument, fm: { freqHz: 1, modShare: 0, baseShare: 1 } },
     })
     for (let i = 0; i < noFm.length; i++) {
       expect(zeroDepth[i]).toBeCloseTo(noFm[i]!, 5)
     }
   })
 
-  it('fm with positive depth produces output that differs from no FM', () => {
+  it('fm with positive modShare produces output that differs from no FM', () => {
     const noFm = renderNote({ ...base })
     const withFm = renderNote({
       ...base,
-      instrument: { ...base.instrument, fm: { freqHz: 20, depth: 2, initPhase: 0.25 } },
+      instrument: { ...base.instrument, fm: { freqHz: 20, modShare: 2, baseShare: 1, initPhase: 0.25 } },
     })
     let maxDiff = 0
     for (let i = 0; i < noFm.length; i++) {
@@ -321,16 +321,15 @@ describe('FM synthesis', () => {
   it('top-level fm inherits to the default single partial', () => {
     const withTopLevel = renderNote({
       ...base,
-      instrument: { ...base.instrument, fm: { freqHz: 10, depth: 1 } },
+      instrument: { ...base.instrument, fm: { freqHz: 10, modShare: 1, baseShare: 1 } },
     })
     const withPartialLevel = renderNote({
       ...base,
       instrument: {
         ...base.instrument,
-        partials: [{ freqMult: 1, amp: 1, fm: { freqHz: 10, depth: 1 } }],
+        partials: [{ freqMult: 1, amp: 1, fm: { freqHz: 10, modShare: 1, baseShare: 1 } }],
       },
     })
-    // Both should produce identical output (same FM spec applied to same partial)
     for (let i = 0; i < withTopLevel.length; i++) {
       expect(withPartialLevel[i]).toBeCloseTo(withTopLevel[i]!, 5)
     }
@@ -339,14 +338,14 @@ describe('FM synthesis', () => {
   it('per-partial fm overrides top-level fm', () => {
     const topLevel = renderNote({
       ...base,
-      instrument: { ...base.instrument, fm: { freqHz: 5, depth: 2 } },
+      instrument: { ...base.instrument, fm: { freqHz: 5, modShare: 2, baseShare: 1 } },
     })
     const perPartial = renderNote({
       ...base,
       instrument: {
         ...base.instrument,
-        fm: { freqHz: 5, depth: 2 },
-        partials: [{ freqMult: 1, amp: 1, fm: { freqHz: 50, depth: 4 } }],
+        fm: { freqHz: 5, modShare: 2, baseShare: 1 },
+        partials: [{ freqMult: 1, amp: 1, fm: { freqHz: 50, modShare: 4, baseShare: 1 } }],
       },
     })
     let maxDiff = 0
@@ -358,11 +357,12 @@ describe('FM synthesis', () => {
 
   it('fm depthEnv=shape string decays frequency over time', () => {
     // Shape "1:1;1,0" = linear decay from 1 to 0.
-    // Early samples run at higher frequency than late samples.
+    // initPhase=0.25 (modulator at peak), modulator at 0.5 Hz: by t=0.9s
+    // the modulator approaches trough → very low instFreq → few zero crossings.
     const SR = 44100
     const instrFM = {
       ...base.instrument,
-      fm: { freqHz: 1, depth: 5, initPhase: 0.25, depthEnv: '1:1;1,0' },
+      fm: { freqHz: 0.5, modShare: 20, baseShare: 1, initPhase: 0.25 },
     }
     const buf = renderNote({ ...base, freqHz: 100, lengthSeconds: 1, sampleRate: SR, instrument: instrFM })
     const tenth = Math.floor(buf.length / 10)

@@ -2,11 +2,9 @@ import { TAU } from './constants'
 
 /**
  * Phase 3 oscillator primitives. Reference:
- * `Sompyler/synthesizer/oscillator.py:Oscillator`. The Python port supports
- * waveshaping, AM/FM modulation, frequency variation; we ship the four basic
- * waveforms and FM modulation.
+ * `Sompyler/synthesizer/oscillator.py:Oscillator`.
  *
- * Spec: RFC §S32119-waveshape.
+ * Spec: RFC §S32116 (AM), §S32117 (FM), §S32119 (waveshape).
  */
 
 export type Waveform = 'sin' | 'square' | 'saw' | 'triangle' | 'noise'
@@ -18,34 +16,36 @@ export interface OscillatorSpec {
 }
 
 /**
- * Frequency-modulation spec. The modulator oscillator varies the carrier's
- * instantaneous frequency each sample.
+ * RFC §S32116 / §S32117 modulation spec (shared by AM and FM).
  *
- * Instantaneous freq = max(1, carrierHz × (1 + depth × depthScale × modVal))
- * where depthScale comes from a pre-evaluated depth envelope (if any).
+ * Format: `FREQ["f"/"F"][@OSC]["["SHAPE"]"]";"MOD":"BASE["+"PHASE_DEG]`
+ *
+ * Modulation signal = o × (m × (e×mosc + 1) / 2 + b) / (m + b)
+ * where m=modShare, b=baseShare, o=(m+b)/(m/2+b), e=depthEnv sample (0…1),
+ * mosc=modulator waveform sample (−1…1). Center (mosc=0, e=1) = 1.0.
+ *
+ * For FM: instFreq = max(1, carrierHz × modSignal).
+ * For AM: sample *= modSignal.
  */
-export interface FMSpec {
+export interface ModulationSpec {
   /** Modulator waveform (default: 'sin'). */
   waveform?: Waveform
-  /** Modulator frequency in Hz; or ratio of carrier freq when dynamic=true. */
+  /** Modulator frequency. Absolute Hz when dynamic is unset; ratio when 'f'/'F'. */
   freqHz: number
-  /** When true, freqHz is a ratio of the carrier frequency. */
-  dynamic?: boolean
-  /**
-   * Peak frequency deviation as fraction of the carrier.
-   * depth=3 means at peak the carrier plays at 4× its base frequency.
-   * Instantaneous frequency is clamped to ≥ 1 Hz.
-   */
-  depth: number
-  /** Modulator start phase in turns (0.25 puts a sin at its positive peak). */
+  /** 'f' = ratio of carrier; 'F' = ratio of carrier × partial ordinal. */
+  dynamic?: 'f' | 'F'
+  /** RFC MOD value — modulation depth part of the MOD:BASE ratio. */
+  modShare: number
+  /** RFC BASE value — base (unmodulated floor) part of the MOD:BASE ratio. */
+  baseShare: number
+  /** Modulator start phase in turns (0.25 = sin at positive peak). */
   initPhase?: number
-  /**
-   * Shape string evaluated once per note to produce per-sample depth
-   * multipliers. Pre-evaluated by the caller (Shape → Float32Array); stored
-   * here as the raw string for serialisation. Default: constant 1.0.
-   */
+  /** Optional depth-envelope shape string; pre-evaluated to Float32Array by caller. */
   depthEnv?: string
 }
+
+export type FMSpec = ModulationSpec
+export type AMSpec = ModulationSpec
 
 /**
  * Render `samples` of a continuous wave at frequency `freqHz` into the
@@ -112,7 +112,7 @@ export function renderOscillatorPitchMod(
   let phase = phaseStart
   const log2centsFactor = depthCents / 1200
   for (let i = 0; i < out.length; i++) {
-    const instFreq = freqHz * Math.pow(2, (pitchMod[i]! ) * log2centsFactor)
+    const instFreq = freqHz * Math.pow(2, (pitchMod[i]!) * log2centsFactor)
     switch (spec.waveform) {
       case 'sin':      out[i] = Math.sin(phase * TAU); break
       case 'square':   out[i] = phase < 0.5 ? 1 : -1; break
@@ -126,13 +126,57 @@ export function renderOscillatorPitchMod(
 }
 
 /**
- * FM oscillator: per-sample phase integration with a variable instantaneous
- * frequency driven by a modulator. `depthEnvSamples`, if provided, must
- * have length === out.length; it scales `fm.depth` per sample (pre-evaluated
- * by the caller using the Shape module so oscillator.ts stays dep-free).
+ * Compute the RFC Modulation signal: per-sample multiplier array.
  *
- * Returns the carrier phase (in turns) after the last sample, suitable for
- * chaining segments without discontinuities.
+ * RFC §S32117 formula (Python Modulation.modulate, overdrive=True):
+ *   o = (m + b) / (m/2 + b)              — normalises center to 1.0
+ *   signal[i] = o × (m×(e×mosc + 1)/2 + b) / (m + b)
+ *
+ * For FM: instFreq = max(1, carrierHz × signal[i]).
+ * For AM: sample *= signal[i].
+ */
+function renderModulation(
+  spec: ModulationSpec,
+  baseFreqHz: number,
+  totalSamples: number,
+  sampleRate: number,
+  depthEnvSamples: Float32Array | null,
+  partialOrdinal: number,
+): Float32Array {
+  const modFreqHz = spec.dynamic === 'F'
+    ? spec.freqHz * baseFreqHz * partialOrdinal
+    : spec.dynamic === 'f'
+    ? spec.freqHz * baseFreqHz
+    : spec.freqHz
+  const modStep = modFreqHz / sampleRate
+  const wf = spec.waveform ?? 'sin'
+  let modPhase = spec.initPhase ?? 0
+  const m = spec.modShare
+  const b = spec.baseShare
+  const o = (m + b) / (m / 2 + b)
+  const mb = m + b
+  const sig = new Float32Array(totalSamples)
+  for (let i = 0; i < totalSamples; i++) {
+    let mosc: number
+    switch (wf) {
+      case 'sin':      mosc = Math.sin(modPhase * TAU); break
+      case 'square':   mosc = modPhase < 0.5 ? 1 : -1; break
+      case 'saw':      mosc = 2 * modPhase - 1; break
+      case 'triangle': mosc = 1 - 4 * Math.abs(Math.round(modPhase) - modPhase); break
+      default:         mosc = Math.sin(modPhase * TAU); break
+    }
+    const e = depthEnvSamples ? (depthEnvSamples[i] ?? 1) : 1
+    sig[i] = o * (m * (e * mosc + 1) / 2 + b) / mb
+    modPhase = (modPhase + modStep) % 1
+  }
+  return sig
+}
+
+/**
+ * FM oscillator: per-sample phase integration with frequency driven by the
+ * RFC §S32117 modulation signal.
+ *
+ * Returns the carrier phase (in turns) after the last sample.
  */
 export function renderOscillatorFM(
   out: Float32Array,
@@ -142,26 +186,11 @@ export function renderOscillatorFM(
   sampleRate: number,
   depthEnvSamples: Float32Array | null,
   phaseStart = 0,
+  partialOrdinal = 1,
 ): number {
-  const modFreqHz = fm.dynamic ? fm.freqHz * carrierFreqHz : fm.freqHz
-  const modStep = modFreqHz / sampleRate
-  const modWaveform = fm.waveform ?? 'sin'
-  let modPhase = fm.initPhase ?? 0
+  const modSig = renderModulation(fm, carrierFreqHz, out.length, sampleRate, depthEnvSamples, partialOrdinal)
   let phase = phaseStart
-
   for (let i = 0; i < out.length; i++) {
-    let modVal: number
-    switch (modWaveform) {
-      case 'sin':      modVal = Math.sin(modPhase * TAU); break
-      case 'square':   modVal = modPhase < 0.5 ? 1 : -1; break
-      case 'saw':      modVal = 2 * modPhase - 1; break
-      case 'triangle': modVal = 1 - 4 * Math.abs(Math.round(modPhase) - modPhase); break
-      default:         modVal = Math.sin(modPhase * TAU); break
-    }
-
-    const depthScale = depthEnvSamples ? (depthEnvSamples[i] ?? 1) : 1
-    const instFreq = Math.max(1, carrierFreqHz * (1 + fm.depth * depthScale * modVal))
-
     switch (carrierSpec.waveform) {
       case 'sin':      out[i] = Math.sin(phase * TAU); break
       case 'square':   out[i] = phase < 0.5 ? 1 : -1; break
@@ -169,10 +198,24 @@ export function renderOscillatorFM(
       case 'triangle': out[i] = 1 - 4 * Math.abs(Math.round(phase) - phase); break
       case 'noise':    out[i] = Math.random() * 2 - 1; break
     }
-
+    const instFreq = Math.max(1, carrierFreqHz * modSig[i]!)
     phase = (phase + instFreq / sampleRate) % 1
-    modPhase = (modPhase + modStep) % 1
   }
-
   return phase
+}
+
+/**
+ * AM: multiply the buffer in-place by the RFC §S32116 modulation signal.
+ * Applied after oscillator rendering, before the amplitude envelope.
+ */
+export function applyAM(
+  out: Float32Array,
+  spec: AMSpec,
+  baseFreqHz: number,
+  sampleRate: number,
+  depthEnvSamples: Float32Array | null,
+  partialOrdinal = 1,
+): void {
+  const modSig = renderModulation(spec, baseFreqHz, out.length, sampleRate, depthEnvSamples, partialOrdinal)
+  for (let i = 0; i < out.length; i++) out[i]! *= modSig[i]!
 }

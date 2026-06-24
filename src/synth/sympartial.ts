@@ -1,5 +1,5 @@
 import { applyEnvelope, type EnvelopeSpec } from './envelope'
-import { renderOscillator, type FMSpec, type OscillatorSpec } from './oscillator'
+import { renderOscillator, type AMSpec, type FMSpec, type OscillatorSpec } from './oscillator'
 
 /**
  * Sympartial = a single harmonic partial of an instrument's voice.
@@ -22,11 +22,13 @@ export interface SympartialSpec {
   amp: number
   /** FM spec; when set, the per-partial path in renderNote uses renderOscillatorFM. */
   fm?: FMSpec
+  /** AM spec; multiplies oscillator output before envelope. */
+  am?: AMSpec
   /** Pre-computed 2^(D_cents/1200); applied at freq calculation after spread. */
   devianceMult?: number
 }
 
-export type { FMSpec }
+export type { AMSpec, FMSpec }
 
 export function renderSympartial(
   out: Float32Array,

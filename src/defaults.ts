@@ -469,15 +469,15 @@ const STARTER_FLUTE = `character:
 // the carrier begins at 4× its base frequency and sweeps to base in the first
 // 10% of the note. Score notes at a low pitch (C1 = 32.7 Hz) for best thump.
 // Shape "100:1;0.1,0;1,0": depth decays 1→0 over the first 10% then stays 0.
-export const STARTER_KICK = `# dev/kick.spli — FM kick drum with pitch sweep.
-# Score at C1 (32.7 Hz). Carrier sweeps C3 → C1 in first ~50 ms of a 500 ms note.
+export const STARTER_KICK = `# dev/kick.spli — FM kick drum with pitch sweep (RFC §S32117).
+# Score at C1 (32.7 Hz). FM 15:1 +90 sweeps carrier from ~62 Hz to C1 in first ~50 ms.
 character:
   O: sine
   AMP: 0.90
   A: "0.002:1,100"
   S: "0.001:100;1,100"
   R: "0.3:100;1,0"
-  FM: "1[100:1;0.1,0;1,0];3+90"
+  FM: "1[100:1;0.1,0;1,0];15:1+90"
 `
 
 // Subset port of lib/tones_euro_de+en.splt — basics block (Tuner.config) plus
@@ -536,16 +536,16 @@ wet: 0.6
 pre_delay_ms: 10
 `
 
-const OXYGENE_KICK = `# oxygene-kick.spli — FM kick drum with pitch sweep.
-# Score at C1 (32.7 Hz). FM +90 starts modulator at peak,
-# sweeping carrier from ~4× base down to base in first ~50 ms.
+const OXYGENE_KICK = `# oxygene-kick.spli — FM kick drum with pitch sweep (RFC §S32117).
+# Score at C1 (32.7 Hz). FM 15:1 +90 starts modulator at positive peak,
+# sweeping carrier from ~1.88× base (~62 Hz) down to base in first ~50 ms.
 character:
   O: sine
   AMP: 1
   A: "0.002:1,100"
   S: "0.001:100;1,100"
   R: "0.28:100;1,0"
-  FM: "1[100:1;0.1,0;1,0];3+90"
+  FM: "1[100:1;0.1,0;1,0];15:1+90"
 `
 
 const OXYGENE_BASS = `# bass: Fretless Bass (GM36 / FluidR3_GM2.sf2). PROFILE from loop FFT.

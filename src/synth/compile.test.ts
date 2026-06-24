@@ -180,22 +180,39 @@ describe('compileInstrument', () => {
     expect(() => compileInstrument(i)).toThrow(/railsback bounds invalid/)
   })
 
-  it('compiles FM: string in character block', async () => {
+  it('compiles FM: string in character block (RFC §S32117)', async () => {
     const i = await loadInstrument(
       'dev/kick',
       `character:
   O: sine
   A: "0.002:1,100"
   R: "0.3:100;1,0"
-  FM: "1[100:1;1,0];3+90"
+  FM: "1[100:1;1,0];15:1+90"
 `,
     )
     const spec = compileInstrument(i)
     expect(spec.fm).toBeTruthy()
     expect(spec.fm!.freqHz).toBe(1)
-    expect(spec.fm!.depth).toBe(3)
+    expect(spec.fm!.modShare).toBe(15)
+    expect(spec.fm!.baseShare).toBe(1)
     expect(spec.fm!.initPhase).toBeCloseTo(0.25, 5)
     expect(spec.fm!.depthEnv).toBe('100:1;1,0')
+  })
+
+  it('compiles AM: string in character block (RFC §S32116)', async () => {
+    const i = await loadInstrument(
+      'dev/am',
+      `character:
+  O: sine
+  AM: "2f@sin;3:1"
+`,
+    )
+    const spec = compileInstrument(i)
+    expect(spec.am).toBeTruthy()
+    expect(spec.am!.freqHz).toBe(2)
+    expect(spec.am!.dynamic).toBe('f')
+    expect(spec.am!.modShare).toBe(3)
+    expect(spec.am!.baseShare).toBe(1)
   })
 
   it('rejects FM: with invalid syntax', async () => {
@@ -203,8 +220,8 @@ describe('compileInstrument', () => {
     expect(() => compileInstrument(i)).toThrow(/FM/)
   })
 
-  it('rejects FM: with invalid syntax when depth is negative', async () => {
-    const i = await loadInstrument('bad', 'character:\n  O: sine\n  FM: "1;-1"')
+  it('rejects FM: with negative BASE', async () => {
+    const i = await loadInstrument('bad', 'character:\n  O: sine\n  FM: "1;3:0"')
     expect(() => compileInstrument(i)).toThrow(/FM/)
   })
 

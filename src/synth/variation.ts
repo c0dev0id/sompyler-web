@@ -59,6 +59,7 @@ export const ROOT_KEY_TOKENS = new Set([
   'T',
   'R',
   'O',
+  'AM',
   'FM',
   'AMP',
   'PROFILE',
