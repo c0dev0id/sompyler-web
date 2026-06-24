@@ -815,7 +815,7 @@ const OXYGENE_SEASHORE = `# seashore: Sea Shore (GM123 / FluidR3_GM2.sf2). Noise
 # Total natural duration ≈ 6.4s. initialAttn≈25cB → AMP=0.375.
 character:
   O: noise
-  AMP: 0.5
+  AMP: 0.25
   A: "0.5:0;0.1,3*3;0.3,25;0.6,65;1,100"
   S: "2.5:100;0.2,25;0.4,45*5;0.8,65;1,65"
   R: "0.001:100;0.1,15*2;0.3,4;0.75,5*3;1,0"
