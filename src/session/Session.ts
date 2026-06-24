@@ -1,6 +1,7 @@
 import { createSignal, type Accessor } from 'solid-js'
 import { log } from '../debug'
 import { listProjectFiles, type StoredFile } from '../storage/files'
+import { takeSnapshot } from '../storage/snapshots'
 import { loadInstrument } from '../parse/instrument'
 import { Tuner } from '../parse/tuning'
 import { buildDistinctNotes } from '../render/distinct'
@@ -149,6 +150,9 @@ export class Session {
         const tStart = this.barTimes[mb] ?? 0
         const tEnd = this.barTimes[mb + 2] ?? 0
         this.player.setLoopPoints(tStart, tEnd)
+      }
+      for (const f of await listProjectFiles()) {
+        await takeSnapshot(f.id, f.body)
       }
       this.player.loadBuffer(mix)
       this.setBuffer(mix)

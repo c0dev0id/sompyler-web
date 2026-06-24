@@ -1098,6 +1098,72 @@ html, body, #root {
 .log-entry.log-error { color: #c75a5a; }
 .log-entry.log-info  { color: #aaa; }
 
+/* Snapshot / version-history dialog */
+.snap-dialog {
+  max-width: min(760px, 92vw);
+}
+
+.snap-body {
+  gap: 0.6rem;
+}
+
+.snap-card {
+  border: 1px solid #333;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.snap-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.35rem 0.6rem;
+  background: #252525;
+  border-bottom: 1px solid #333;
+}
+
+.snap-ts {
+  font-size: 12px;
+  color: #bbb;
+}
+
+.snap-restore {
+  font-size: 11px;
+  padding: 0.15rem 0.5rem;
+  background: #2a3a2a;
+  border: 1px solid #3a5a3a;
+  border-radius: 3px;
+  color: #8bc88b;
+  cursor: pointer;
+}
+
+.snap-restore:hover {
+  background: #354535;
+}
+
+.snap-no-diff {
+  font-size: 12px;
+  color: #666;
+  padding: 0.4rem 0.6rem;
+  margin: 0;
+}
+
+.snap-diff {
+  margin: 0;
+  padding: 0.3rem 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  overflow-x: auto;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.diff-same { color: #555; padding: 0 0.6rem; white-space: pre; }
+.diff-del  { color: #c75a5a; background: #2a1a1a; padding: 0 0.6rem; white-space: pre; }
+.diff-add  { color: #5cb85c; background: #1a2a1a; padding: 0 0.6rem; white-space: pre; }
+.diff-ellipsis { color: #444; padding: 0 0.6rem; font-style: italic; }
+
 /* Portrait phones / narrow viewports: single column, stacked top to
    bottom in user-preferred order — player, score, instruments,
    tuning/room. The staging rail stays on the left, narrower. */

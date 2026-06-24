@@ -13,6 +13,7 @@ import { InstrumentPreview } from './InstrumentPreview'
 import type { TransportState } from '../player/Player'
 import { HelpDialog } from './HelpDialog'
 import { PlayerHelpDialog } from './PlayerHelpDialog'
+import { SnapshotDialog } from './SnapshotDialog'
 import { LogPane } from './LogPane'
 import { Seekbar } from './Seekbar'
 import { firstInstrumentPitchHz } from '../parse/score'
@@ -98,8 +99,11 @@ function EditorPanel(props: {
     null,
     { equals: (a: StoredFile | null, b: StoredFile | null) => a?.id === b?.id },
   )
+  // equals:false so re-triggering the same snapshot body still fires the effect.
+  const [restoreBody, setRestoreBody] = createSignal<string | null>(null, { equals: false })
   let previewTimer = 0
   let helpDialog: HTMLDialogElement | undefined
+  let snapshotDialog: HTMLDialogElement | undefined
   onCleanup(() => clearTimeout(previewTimer))
 
   createEffect(() => {
@@ -138,9 +142,19 @@ function EditorPanel(props: {
             </span>
           )}
         </Show>
+        <button class="help-btn" title="Version history" onClick={() => snapshotDialog?.showModal()}>⏱</button>
         <button class="help-btn" title="Syntax reference" onClick={() => helpDialog?.showModal()}>?</button>
       </header>
       <HelpDialog exts={props.exts} ref={(el) => { helpDialog = el }} />
+      <SnapshotDialog
+        fileId={() => selectedId()}
+        currentBody={() => {
+          const f = selectedFile()
+          return f ? (liveBody.get(f.id) ?? f.body) : ''
+        }}
+        ref={(el) => { snapshotDialog = el }}
+        onRestore={(body) => setRestoreBody(body)}
+      />
       <Show when={files().length > 1}>
         <TabStrip files={files()} selected={selectedId()} onSelect={setSelectedId} />
       </Show>
@@ -158,6 +172,8 @@ function EditorPanel(props: {
               renderDiagnostics: props.renderDiagnostics,
             }}
             markerBar={props.markerBar}
+            restoreBody={restoreBody}
+            onBodyRestored={() => setRestoreBody(null)}
             onBodyChange={(body) => {
                 liveBody.set(f.id, body)
                 clearTimeout(previewTimer)

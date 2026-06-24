@@ -1,5 +1,5 @@
 import { yaml } from '@codemirror/lang-yaml'
-import { history, defaultKeymap, historyKeymap } from '@codemirror/commands'
+import { defaultKeymap } from '@codemirror/commands'
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { lintKeymap, lintGutter } from '@codemirror/lint'
 import { search, searchKeymap } from '@codemirror/search'
@@ -45,14 +45,12 @@ export function baseExtensions(onLineNumberClick?: (barIndex: number, metaLine?:
   return [
     lineNumExt,
     lintGutter(),
-    history(),
     highlightActiveLine(),
     highlightSpecialChars(),
     search({ top: true }),
     keymap.of([
       ...searchKeymap,
       ...defaultKeymap,
-      ...historyKeymap,
       ...lintKeymap,
     ]),
     yaml(),

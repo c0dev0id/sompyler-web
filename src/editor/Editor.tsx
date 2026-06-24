@@ -2,7 +2,6 @@ import { onCleanup, onMount, createEffect } from 'solid-js'
 import { EditorState, Compartment, RangeSet } from '@codemirror/state'
 import { EditorView, lineNumberMarkers, type GutterMarker } from '@codemirror/view'
 import { forceLinting } from '@codemirror/lint'
-import { historyField } from '@codemirror/commands'
 import type { FileExtension, StoredFile } from '../storage/files'
 import { makeAutosaver } from './autosave'
 import { extensionsFor, readOnlyExtension, buildBarMarkerSet } from './configs'
@@ -15,6 +14,8 @@ export interface EditorProps {
   onBodyChange?: (body: string) => void
   onBarClick?: (barIndex: number, metaLine?: number) => void
   markerBar?: () => number | null
+  restoreBody?: () => string | null
+  onBodyRestored?: () => void
 }
 
 export function Editor(props: EditorProps) {
@@ -32,19 +33,12 @@ export function Editor(props: EditorProps) {
       EditorView.updateListener.of((u) => {
         if (!u.docChanged) return
         const body = u.state.doc.toString()
-        const history = u.state.toJSON({ history: historyField }).history
-        autosaver.schedule(body, props.file.inProject, history)
+        autosaver.schedule(body, props.file.inProject)
         props.onBodyChange?.(body)
       }),
     ]
 
-    const state = props.file.history
-      ? EditorState.fromJSON(
-          { doc: props.file.body, history: props.file.history },
-          { extensions },
-          { history: historyField },
-        )
-      : EditorState.create({ doc: props.file.body, extensions })
+    const state = EditorState.create({ doc: props.file.body, extensions })
 
     view = new EditorView({ state, parent: host })
   })
@@ -70,6 +64,17 @@ export function Editor(props: EditorProps) {
       ? buildBarMarkerSet(view.state.doc, bar)
       : RangeSet.empty as RangeSet<GutterMarker>
     view.dispatch({ effects: markerBarCompartment.reconfigure(lineNumberMarkers.of(rangeSet)) })
+  })
+
+  createEffect(() => {
+    const body = props.restoreBody?.()
+    if (body == null || !view) return
+    view.dispatch({
+      changes: { from: 0, to: view.state.doc.length, insert: body },
+      selection: { anchor: 0 },
+      scrollIntoView: true,
+    })
+    props.onBodyRestored?.()
   })
 
   onCleanup(() => {
