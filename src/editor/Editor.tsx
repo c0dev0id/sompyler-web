@@ -13,7 +13,7 @@ export interface EditorProps {
   readOnly: boolean
   lintContext: SemanticLintContext
   onBodyChange?: (body: string) => void
-  onBarClick?: (barIndex: number) => void
+  onBarClick?: (barIndex: number, metaLine?: number) => void
   markerBar?: () => number | null
 }
 

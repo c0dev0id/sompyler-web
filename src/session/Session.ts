@@ -199,7 +199,14 @@ export class Session {
    * Single click sets a 2-bar window (bar N to bar N+2). Clicking the
    * same bar again clears the markers.
    */
-  setBarMarker(barIndex: number): void {
+  setBarMarker(barIndex: number, metaLine?: number): void {
+    if (this.barTimes.length === 0) {
+      log('session', 'info', 'Render project before setting start/stop markers')
+      return
+    }
+    if (metaLine !== undefined) {
+      log('session', 'info', `No bar found at score position ${metaLine}. Falling back to first bar.`)
+    }
     if (this.markerBar() === barIndex) {
       this.setMarkerBar(null)
       this.player.setLoopPoints(0, 0)

@@ -24,7 +24,7 @@ const darkYamlStyle = HighlightStyle.define([
   { tag: tags.punctuation,                                         color: '#555555' },
 ])
 
-export function baseExtensions(onLineNumberClick?: (barIndex: number) => void): Extension[] {
+export function baseExtensions(onLineNumberClick?: (barIndex: number, metaLine?: number) => void): Extension[] {
   const lineNumExt = onLineNumberClick
     ? lineNumbers({
         domEventHandlers: {
@@ -32,10 +32,11 @@ export function baseExtensions(onLineNumberClick?: (barIndex: number) => void): 
             const line = view.state.doc.lineAt(block.from)
             const text = view.state.doc.sliceString(0, line.to)
             // Count `---` separators above the click. Zero = click in the head
-            // block above the first bar; treat as a click on bar 1 so the loop
-            // window is predictable instead of straddling head + bar 1.
-            const barIndex = (text.match(/^---\s*$/gm) ?? []).length || 1
-            onLineNumberClick(barIndex)
+            // block above the first bar; pass the line number so the caller can
+            // log a "no bar found" message.
+            const sepCount = (text.match(/^---\s*$/gm) ?? []).length
+            const barIndex = sepCount || 1
+            onLineNumberClick(barIndex, sepCount === 0 ? line.number : undefined)
             return true
           },
         },
@@ -59,7 +60,7 @@ export function baseExtensions(onLineNumberClick?: (barIndex: number) => void): 
   ]
 }
 
-export function extensionsFor(ext: FileExtension, ctx: SemanticLintContext, onBarClick?: (barIndex: number) => void): Extension[] {
+export function extensionsFor(ext: FileExtension, ctx: SemanticLintContext, onBarClick?: (barIndex: number, metaLine?: number) => void): Extension[] {
   // Prec.highest makes sompylerHighlight decorations the innermost spans, so
   // their CSS color wins over the YAML highlight on the enclosing span.
   const clickHandler = ext === 'spls' ? onBarClick : undefined

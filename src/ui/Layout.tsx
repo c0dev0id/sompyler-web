@@ -79,7 +79,7 @@ function EditorPanel(props: {
   emptyMessage: string
   onActiveInstrumentChange?: (name: string | null, body: string | null) => void
   onFileSave?: () => void
-  onBarClick?: (barIndex: number) => void
+  onBarClick?: (barIndex: number, metaLine?: number) => void
   markerBar?: () => number | null
   focusId?: () => string | null
 }) {
@@ -162,7 +162,7 @@ function EditorPanel(props: {
                   }
                 }, 1000)
               }}
-            onBarClick={props.onBarClick}
+            onBarClick={(barIndex, metaLine) => props.onBarClick?.(barIndex, metaLine)}
           />
         )}
       </Show>
@@ -334,7 +334,7 @@ export const Layout: Component<LayoutProps> = (props) => {
           renderDiagnostics={props.session.renderDiagnostics}
           emptyMessage="No score in project. Add a .spls from staging."
           onFileSave={props.onScoreSave}
-          onBarClick={(barIndex) => props.session.setBarMarker(barIndex)}
+          onBarClick={(barIndex, metaLine) => props.session.setBarMarker(barIndex, metaLine)}
           markerBar={props.session.markerBar}
         />
       </section>
