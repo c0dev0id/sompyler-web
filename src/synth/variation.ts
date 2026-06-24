@@ -52,7 +52,7 @@ export interface CharacterBlock {
   attr: string
 }
 
-const ROOT_KEY_TOKENS = new Set([
+export const ROOT_KEY_TOKENS = new Set([
   'ATTR',
   'A',
   'S',

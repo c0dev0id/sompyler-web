@@ -1,10 +1,10 @@
 import { InstrumentError } from '../errors'
 import type { Instrument } from '../parse/instrument'
-import type { FMSpec, InstrumentSpec, LFOSpec, MorphEntry, PartialDef, RailsbackCurve, UnisonSpec, VCFSpec } from './sound_generator'
+import type { FMSpec, InstrumentSpec, LFOSpec, MorphEntry, PartialDef, RailsbackCurve, UnisonSpec, VCFSpec, VariationAttr, VariationEntry, VariationSet } from './sound_generator'
 import { DEFAULT_ENVELOPE, type EnvelopeSpec } from './envelope'
 import type { OscillatorSpec, Waveform } from './oscillator'
 import { parseShape, renderShapeString } from './shape'
-import { parseCharacterBlock, validateVariationGraph } from './variation'
+import { parseCharacterBlock, validateVariationGraph, ROOT_KEY_TOKENS, type CharacterEntry } from './variation'
 
 const RAILSBACK_KEYS = 88
 
@@ -371,14 +371,91 @@ function compileMorph(raw: unknown): MorphEntry[] | undefined {
   })
 }
 
+/** Compile a single merged character-block object into an InstrumentSpec. */
+function compileRoot(raw: Record<string, unknown>): InstrumentSpec {
+  const spec: InstrumentSpec = {}
+  if (raw.AMP != null) spec.amp = Number(raw.AMP)
+  const osc = compileOscillator(raw.O)
+  if (osc) spec.oscillator = osc
+  const env = compileRfcEnvelope(raw.A, raw.S, raw.T, raw.R)
+  if (env) spec.envelope = env
+  const volumes = compileVolumes(raw.VOLUMES)
+  const partials = compileProfile(raw.PROFILE, { A: raw.A, S: raw.S, T: raw.T, R: raw.R }, volumes)
+  if (partials) spec.partials = partials
+  const railsback = compileRailsback(raw.RAILSBACK_CURVE)
+  if (railsback) spec.railsback = railsback
+  const spread = compileSpread(raw.SPREAD)
+  if (spread) spec.spread = spread
+  const timbre = compileTimbre(raw.TIMBRE)
+  if (timbre) spec.timbre = timbre
+  const morph = compileMorph(raw.MORPH)
+  if (morph) spec.morph = morph
+  const fm = compileFM(raw.FM)
+  if (fm) spec.fm = fm
+  const vcf = compileVCF(raw.VCF)
+  if (vcf) spec.vcf = vcf
+  const lfo = compileLFO(raw.LFO)
+  if (lfo) spec.lfo = lfo
+  const unison = compileUnison(raw.UNISON)
+  if (unison) spec.unison = unison
+  return spec
+}
+
+/**
+ * Merge root + variation override spec, pre-processing PROFILE before handing
+ * to compileRoot:
+ *  - Local label defs embedded in the variation spec (non-numeric, non-root-token
+ *    keys) override root labels for PROFILE resolution, then are stripped out so
+ *    compileRoot only receives recognised character-block keys.
+ *  - "V labelname" string items → resolved to { V, ...label.spec }.
+ *  - List items in PROFILE → flattened inline (each element becomes a separate
+ *    consecutive partial, mirroring Python's variation.py behaviour).
+ */
+function resolveVariationSpec(
+  root: Record<string, unknown>,
+  varSpec: Record<string, unknown>,
+  labels: Map<string, CharacterEntry>,
+): Record<string, unknown> {
+  // Split varSpec into recognised character-block keys and local label overrides.
+  const localLabels = new Map(labels)
+  const cleanVarSpec: Record<string, unknown> = {}
+  for (const [key, value] of Object.entries(varSpec)) {
+    if (ROOT_KEY_TOKENS.has(key) || Number.isFinite(Number(key))) {
+      cleanVarSpec[key] = value
+    } else {
+      const obj = asObj(value)
+      if (obj) localLabels.set(key, { key, spec: obj, isVariation: false, variationValue: NaN })
+    }
+  }
+
+  const merged: Record<string, unknown> = { ...root, ...cleanVarSpec }
+
+  if (Array.isArray(merged.PROFILE)) {
+    const flatProfile: unknown[] = []
+    for (const item of merged.PROFILE as unknown[]) {
+      if (Array.isArray(item)) {
+        for (const sub of item) flatProfile.push(sub)
+      } else if (typeof item === 'string') {
+        const space = item.indexOf(' ')
+        const v = space !== -1 ? Number(item.slice(0, space)) : NaN
+        const label = Number.isFinite(v) ? localLabels.get(item.slice(space + 1).trim()) : undefined
+        flatProfile.push(label ? { V: v, ...label.spec } : item)
+      } else {
+        flatProfile.push(item)
+      }
+    }
+    merged.PROFILE = flatProfile
+  }
+
+  return merged
+}
+
 export function compileInstrument(instr: Instrument): InstrumentSpec {
   const obj = asObj(instr.parsed)
   if (!obj) {
     throw new InstrumentError(`Instrument '${instr.name}' is not a YAML mapping`)
   }
   // S32122 — validate variation graph (cycle detection) before anything else.
-  // Throws InstrumentError with a "Circular dependencies …" message that
-  // the editor lint surfaces inline (R6).
   let character = parseCharacterBlock(instr.parsed)
   try {
     validateVariationGraph(character)
@@ -392,36 +469,19 @@ export function compileInstrument(instr: Instrument): InstrumentSpec {
     throw cause
   }
 
-  // S32110/S32130–S32135: all character-block root keys (uppercase) take
-  // precedence over their flat-format equivalents (lowercase top-level keys).
-  const root = character.root
+  const spec = compileRoot(character.root)
 
-  const spec: InstrumentSpec = {}
-  if (root.AMP != null) spec.amp = Number(root.AMP)
-  const osc = compileOscillator(root.O)
-  if (osc) spec.oscillator = osc
-  const env = compileRfcEnvelope(root.A, root.S, root.T, root.R)
-  if (env) spec.envelope = env
-  const volumes = compileVolumes(root.VOLUMES)
-  const partials = compileProfile(root.PROFILE, { A: root.A, S: root.S, T: root.T, R: root.R }, volumes)
-  if (partials) spec.partials = partials
-  const railsback = compileRailsback(root.RAILSBACK_CURVE)
-  if (railsback) spec.railsback = railsback
-
-  const spread = compileSpread(root.SPREAD)
-  if (spread) spec.spread = spread
-  const timbre = compileTimbre(root.TIMBRE)
-  if (timbre) spec.timbre = timbre
-  const morph = compileMorph(root.MORPH)
-  if (morph) spec.morph = morph
-  const fm = compileFM(root.FM)
-  if (fm) spec.fm = fm
-  const vcf = compileVCF(root.VCF)
-  if (vcf) spec.vcf = vcf
-  const lfo = compileLFO(root.LFO)
-  if (lfo) spec.lfo = lfo
-  const unison = compileUnison(root.UNISON)
-  if (unison) spec.unison = unison
+  // S32300–S32330: compile each variation boundary spec (root merged with
+  // variation overrides) and attach as a VariationSet for runtime interpolation.
+  if (character.variations.length > 0) {
+    const VALID_ATTRS: ReadonlySet<string> = new Set(['pitch', 'stress', 'length'])
+    const attr = (VALID_ATTRS.has(character.attr) ? character.attr : 'pitch') as VariationAttr
+    const entries: VariationEntry[] = character.variations.map((v) => ({
+      value: v.variationValue,
+      spec: compileRoot(resolveVariationSpec(character.root, v.spec, character.labels)),
+    }))
+    spec.variations = { attr, entries } satisfies VariationSet
+  }
 
   return spec
 }

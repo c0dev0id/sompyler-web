@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { renderNote, applyRailsback, type RailsbackCurve, type MorphEntry } from './sound_generator'
+import { renderNote, resolveVariation, applyRailsback, type InstrumentSpec, type RailsbackCurve, type MorphEntry } from './sound_generator'
 
 describe('renderNote', () => {
   it('returns a buffer of the requested duration', () => {
@@ -407,5 +407,100 @@ describe('applyRailsback (S32136)', () => {
     for (let i = 0; i < 88; i++) curve[i] = (i % 10) * 0.001
     const rb: RailsbackCurve = { lowHz: 27.5, highHz: 4186, curve }
     expect(applyRailsback(440, rb)).toBe(applyRailsback(440, rb))
+  })
+})
+
+describe('resolveVariation (RFC §S32300–S32330)', () => {
+  const specA: InstrumentSpec = { amp: 0.2, envelope: { attack: 0.01, sustainLevel: 0.8, release: 0.1 } }
+  const specB: InstrumentSpec = { amp: 0.8, envelope: { attack: 0.1, sustainLevel: 0.4, release: 0.5 } }
+  const inst: InstrumentSpec = {
+    variations: { attr: 'pitch', entries: [{ value: 100, spec: specA }, { value: 200, spec: specB }] },
+  }
+  const note = (hz: number) => ({ freqHz: hz, stress: 1, lengthSeconds: 0.1 })
+
+  it('returns instrument unchanged when no variations', () => {
+    const plain: InstrumentSpec = { amp: 0.5 }
+    expect(resolveVariation(plain, note(440))).toBe(plain)
+  })
+
+  it('returns first spec when pitch is below first boundary', () => {
+    expect(resolveVariation(inst, note(50))).toBe(specA)
+  })
+
+  it('returns last spec when pitch is above last boundary', () => {
+    expect(resolveVariation(inst, note(300))).toBe(specB)
+  })
+
+  it('returns first spec exactly at first boundary', () => {
+    expect(resolveVariation(inst, note(100))).toBe(specA)
+  })
+
+  it('returns last spec exactly at last boundary', () => {
+    expect(resolveVariation(inst, note(200))).toBe(specB)
+  })
+
+  it('interpolates amp at midpoint (t=0.5)', () => {
+    const mid = resolveVariation(inst, note(150))
+    // 0.2 + 0.5 * (0.8 - 0.2) = 0.5
+    expect(mid.amp).toBeCloseTo(0.5, 5)
+  })
+
+  it('interpolates envelope scalars at midpoint', () => {
+    const mid = resolveVariation(inst, note(150))
+    expect(mid.envelope?.attack).toBeCloseTo(0.055, 5)       // (0.01+0.1)/2
+    expect(mid.envelope?.sustainLevel).toBeCloseTo(0.6, 5)   // (0.8+0.4)/2
+    expect(mid.envelope?.release).toBeCloseTo(0.3, 5)        // (0.1+0.5)/2
+  })
+
+  it('interpolates partial amp across a gap (missing partial → amp 0)', () => {
+    const a: InstrumentSpec = { partials: [{ freqMult: 1, amp: 1 }] }
+    const b: InstrumentSpec = { partials: [{ freqMult: 1, amp: 0 }, { freqMult: 2, amp: 1 }] }
+    const vi: InstrumentSpec = {
+      variations: { attr: 'pitch', entries: [{ value: 100, spec: a }, { value: 200, spec: b }] },
+    }
+    const mid = resolveVariation(vi, note(150))
+    expect(mid.partials![0]!.amp).toBeCloseTo(0.5, 5)  // lerp(1, 0, 0.5)
+    expect(mid.partials![1]!.amp).toBeCloseTo(0.5, 5)  // lerp(0, 1, 0.5)
+  })
+
+  it('interpolates spread arrays, extending with zeros for shorter side', () => {
+    const a: InstrumentSpec = { spread: [10, 20] }
+    const b: InstrumentSpec = { spread: [30] }
+    const vi: InstrumentSpec = {
+      variations: { attr: 'pitch', entries: [{ value: 0, spec: a }, { value: 100, spec: b }] },
+    }
+    const mid = resolveVariation(vi, note(50))
+    expect(mid.spread![0]).toBeCloseTo(20, 5)   // (10+30)/2
+    expect(mid.spread![1]).toBeCloseTo(10, 5)   // (20+0)/2
+  })
+
+  it('routes by stress when attr is stress', () => {
+    const si: InstrumentSpec = {
+      variations: { attr: 'stress', entries: [{ value: 0, spec: { amp: 0 } }, { value: 1, spec: { amp: 1 } }] },
+    }
+    const res = resolveVariation(si, { freqHz: 440, stress: 0.75, lengthSeconds: 0.1 })
+    expect(res.amp).toBeCloseTo(0.75, 5)
+  })
+
+  it('routes by length when attr is length', () => {
+    const li: InstrumentSpec = {
+      variations: { attr: 'length', entries: [{ value: 0, spec: { amp: 0.2 } }, { value: 1, spec: { amp: 0.8 } }] },
+    }
+    const res = resolveVariation(li, { freqHz: 440, stress: 1, lengthSeconds: 0.25 })
+    expect(res.amp).toBeCloseTo(0.35, 5)  // 0.2 + 0.25*(0.8-0.2)
+  })
+})
+
+describe('renderNote with variations (RFC §S32300)', () => {
+  it('produces different output for notes at different variation boundaries', () => {
+    const instLow: InstrumentSpec = { amp: 0.1, envelope: { attack: 0, sustainLevel: 1, release: 0 } }
+    const instHigh: InstrumentSpec = { amp: 0.9, envelope: { attack: 0, sustainLevel: 1, release: 0 } }
+    const vi: InstrumentSpec = {
+      variations: { attr: 'pitch', entries: [{ value: 100, spec: instLow }, { value: 1000, spec: instHigh }] },
+    }
+    const rms = (buf: Float32Array) => Math.sqrt(buf.reduce((s, v) => s + v * v, 0) / buf.length)
+    const low = renderNote({ instrument: vi, freqHz: 100, stress: 1, lengthSeconds: 0.05, sampleRate: 8000 })
+    const high = renderNote({ instrument: vi, freqHz: 1000, stress: 1, lengthSeconds: 0.05, sampleRate: 8000 })
+    expect(rms(high)).toBeGreaterThan(rms(low) * 4)
   })
 })

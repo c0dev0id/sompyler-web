@@ -6,6 +6,10 @@ import { renderOscillator, renderOscillatorFM, renderOscillatorPitchMod, type FM
 import { evaluateShape } from './shape'
 import { renderSympartial, type SympartialSpec } from './sympartial'
 
+function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * t
+}
+
 /**
  * Top-level instrument → PCM rendering. Reference:
  * `Sompyler/synthesizer/sound_generator.py:SoundGenerator`.
@@ -29,6 +33,20 @@ export interface MorphEntry {
   remainder: number
   weight: number
   shape: string
+}
+
+export interface VariationEntry {
+  /** Boundary value (Hz / stress / seconds) at which this spec applies. */
+  value: number
+  spec: InstrumentSpec
+}
+
+export type VariationAttr = 'pitch' | 'stress' | 'length'
+
+export interface VariationSet {
+  attr: VariationAttr
+  /** Boundary specs, sorted ascending by value. */
+  entries: VariationEntry[]
 }
 
 export interface InstrumentSpec {
@@ -79,6 +97,8 @@ export interface InstrumentSpec {
    * voices, not a chorus DSP.
    */
   unison?: UnisonSpec
+  /** RFC §S32300–S32330: per-attribute interpolation across variation boundaries. */
+  variations?: VariationSet
 }
 
 export interface UnisonSpec {
@@ -133,6 +153,131 @@ export interface PartialDef {
   devianceCents?: number
 }
 
+// ---------------------------------------------------------------------------
+// RFC §S32300–S32330: variation interpolation
+// ---------------------------------------------------------------------------
+
+function interpolateEnvelope(a: EnvelopeSpec | undefined, b: EnvelopeSpec | undefined, t: number): EnvelopeSpec | undefined {
+  if (!a && !b) return undefined
+  const la = a ?? DEFAULT_ENVELOPE
+  const lb = b ?? DEFAULT_ENVELOPE
+  const env: EnvelopeSpec = {
+    attack: lerp(la.attack, lb.attack, t),
+    sustainLevel: lerp(la.sustainLevel, lb.sustainLevel, t),
+    release: lerp(la.release, lb.release, t),
+  }
+  const decay = lerp(la.decay ?? 0, lb.decay ?? 0, t)
+  if (decay > 0) env.decay = decay
+  const tail = lerp(la.tail ?? 0, lb.tail ?? 0, t)
+  if (tail > 0) env.tail = tail
+  // Shape strings drive bezier curves; full curve interpolation is not implemented — take left's.
+  if (la.attackShape) env.attackShape = la.attackShape
+  if (la.decayShape) env.decayShape = la.decayShape
+  if (la.releaseShape) env.releaseShape = la.releaseShape
+  if (la.tailShape) env.tailShape = la.tailShape
+  return env
+}
+
+function interpolatePartials(a: PartialDef[] | undefined, b: PartialDef[] | undefined, t: number): PartialDef[] | undefined {
+  if (!a && !b) return undefined
+  const la = a ?? []
+  const lb = b ?? []
+  const count = Math.max(la.length, lb.length)
+  if (count === 0) return undefined
+  return Array.from({ length: count }, (_, i) => {
+    const pa = la[i]
+    const pb = lb[i]
+    const def: PartialDef = {
+      freqMult: pa?.freqMult ?? pb?.freqMult ?? (i + 1),
+      amp: lerp(pa?.amp ?? 0, pb?.amp ?? 0, t),
+    }
+    if (pa?.devianceCents != null || pb?.devianceCents != null) {
+      def.devianceCents = lerp(pa?.devianceCents ?? 0, pb?.devianceCents ?? 0, t)
+    }
+    if (pa?.envelope || pb?.envelope) {
+      def.envelope = interpolateEnvelope(pa?.envelope, pb?.envelope, t)
+    }
+    // Non-interpolatable per-partial fields: take left's.
+    if (pa?.oscillator) def.oscillator = pa.oscillator
+    if (pa?.fm) def.fm = pa.fm
+    return def
+  })
+}
+
+function interpolateNumberArrays(a: number[] | undefined, b: number[] | undefined, t: number): number[] | undefined {
+  if (!a && !b) return undefined
+  const la = a ?? []
+  const lb = b ?? []
+  const count = Math.max(la.length, lb.length)
+  if (count === 0) return undefined
+  return Array.from({ length: count }, (_, i) => lerp(la[i] ?? 0, lb[i] ?? 0, t))
+}
+
+function interpolateRailsback(a: RailsbackCurve | undefined, b: RailsbackCurve | undefined, t: number): RailsbackCurve | undefined {
+  if (!a && !b) return undefined
+  if (!b) return a
+  if (!a) return b
+  const curve = new Float32Array(a.curve.length)
+  for (let i = 0; i < a.curve.length; i++) curve[i] = lerp(a.curve[i] ?? 0, b.curve[i] ?? 0, t)
+  return { lowHz: lerp(a.lowHz, b.lowHz, t), highHz: lerp(a.highHz, b.highHz, t), curve }
+}
+
+function interpolateSpecs(a: InstrumentSpec, b: InstrumentSpec, t: number): InstrumentSpec {
+  const result: InstrumentSpec = {
+    // Non-interpolatable: take left's (fall back to right if left absent).
+    oscillator: a.oscillator ?? b.oscillator,
+    timbre: a.timbre ?? b.timbre,
+    morph: a.morph ?? b.morph,
+    fm: a.fm ?? b.fm,
+    vcf: a.vcf ?? b.vcf,
+    lfo: a.lfo ?? b.lfo,
+    unison: a.unison ?? b.unison,
+  }
+  if (a.amp != null || b.amp != null) result.amp = lerp(a.amp ?? 1, b.amp ?? 1, t)
+  const env = interpolateEnvelope(a.envelope, b.envelope, t)
+  if (env) result.envelope = env
+  const partials = interpolatePartials(a.partials, b.partials, t)
+  if (partials) result.partials = partials
+  const spread = interpolateNumberArrays(a.spread, b.spread, t)
+  if (spread) result.spread = spread
+  const railsback = interpolateRailsback(a.railsback, b.railsback, t)
+  if (railsback) result.railsback = railsback
+  return result
+}
+
+/**
+ * RFC §S32300–S32330: resolve the effective InstrumentSpec for a note by
+ * interpolating between the two bracketing variation boundaries.
+ *
+ * - Before the first boundary → first boundary spec (no interpolation).
+ * - After the last boundary → last boundary spec (no interpolation).
+ * - Between two boundaries → linear blend weighted by position in that range.
+ */
+export function resolveVariation(
+  instrument: InstrumentSpec,
+  note: Pick<RenderNoteInput, 'freqHz' | 'stress' | 'lengthSeconds'>,
+): InstrumentSpec {
+  const { variations } = instrument
+  if (!variations || variations.entries.length === 0) return instrument
+
+  const attrVal =
+    variations.attr === 'stress' ? note.stress :
+    variations.attr === 'length' ? note.lengthSeconds :
+    note.freqHz  // 'pitch' and default
+
+  const { entries } = variations
+  if (attrVal <= entries[0]!.value) return entries[0]!.spec
+  if (attrVal >= entries[entries.length - 1]!.value) return entries[entries.length - 1]!.spec
+
+  let li = 0
+  for (let i = 0; i < entries.length - 1; i++) {
+    if (attrVal <= entries[i + 1]!.value) { li = i; break }
+  }
+  const left = entries[li]!
+  const right = entries[li + 1]!
+  return interpolateSpecs(left.spec, right.spec, (attrVal - left.value) / (right.value - left.value))
+}
+
 function resolveSympartials(spec: InstrumentSpec): SympartialSpec[] {
   const defaultOsc: OscillatorSpec = spec.oscillator ?? { waveform: 'sin' }
   const defaultEnv: EnvelopeSpec = spec.envelope ?? DEFAULT_ENVELOPE
@@ -183,10 +328,11 @@ export function renderNote(input: RenderNoteInput): Float32Array {
     Math.round((input.lengthSeconds + damp) * sampleRate),
   )
   const out = new Float32Array(totalSamples)
-  const sympartials = resolveSympartials(input.instrument)
-  const baseFreq = applyRailsback(input.freqHz, input.instrument.railsback)
+  const instrument = resolveVariation(input.instrument, input)
+  const sympartials = resolveSympartials(instrument)
+  const baseFreq = applyRailsback(input.freqHz, instrument.railsback)
 
-  const { spread, timbre, morph } = input.instrument
+  const { spread, timbre, morph } = instrument
 
   // Collect LFO signals before partial summation so pitchLFO can be routed
   // per-oscillator (pitch modulation must be applied pre-summation).
@@ -194,10 +340,10 @@ export function renderNote(input: RenderNoteInput): Float32Array {
   let ampLFO: Float32Array | null = null
   let pitchLFO: Float32Array | null = null
   let pitchLFODepthCents = 0
-  if (input.instrument.lfo) {
-    const specs = Array.isArray(input.instrument.lfo)
-      ? input.instrument.lfo
-      : [input.instrument.lfo]
+  if (instrument.lfo) {
+    const specs = Array.isArray(instrument.lfo)
+      ? instrument.lfo
+      : [instrument.lfo]
     for (const lfoSpec of specs) {
       const signal = renderLFO(lfoSpec, totalSamples, sampleRate)
       const depth = lfoSpec.depth
@@ -230,7 +376,7 @@ export function renderNote(input: RenderNoteInput): Float32Array {
     (morph && morph.length > 0 && !!input.lengthTicks) ||
     sympartials.some((sp) => sp.devianceMult != null)
 
-  const voiceOffsets = expandUnisonOffsets(input.instrument.unison)
+  const voiceOffsets = expandUnisonOffsets(instrument.unison)
   for (const detuneCents of voiceOffsets) {
     const voiceBaseFreq = detuneCents === 0
       ? baseFreq
@@ -266,12 +412,12 @@ export function renderNote(input: RenderNoteInput): Float32Array {
     }
   }
 
-  const masterAmp = (input.instrument.amp ?? 1) * input.stress
+  const masterAmp = (instrument.amp ?? 1) * input.stress
   if (masterAmp !== 1) {
     for (let i = 0; i < out.length; i++) out[i] = out[i]! * masterAmp
   }
-  if (input.instrument.vcf) {
-    applyBiquadLPF(out, input.instrument.vcf, input.lengthSeconds, damp, sampleRate, vcfLFO)
+  if (instrument.vcf) {
+    applyBiquadLPF(out, instrument.vcf, input.lengthSeconds, damp, sampleRate, vcfLFO)
   }
   if (ampLFO) {
     for (let i = 0; i < totalSamples; i++) out[i] = out[i]! * (1 + ampLFO[i]!)
