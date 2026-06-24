@@ -545,32 +545,31 @@ character:
 
 const OXYGENE_BASS = `# bass: Fretless Bass (GM36 / FluidR3_GM2.sf2). PROFILE from loop FFT.
 # Sample: 'Fretless A3'  root=69  rate=48000 Hz  loop=815fr (17.0ms)
-# PROFILE updated L10: from TiMidity at C2 (note=36) during flat sustain.
-# L10: changed S to flat sustain (sample loops — flat amplitude throughout note).
-# AMP reduced 0.047→0.038 to align onset level. R: 1.782s from SF2.
+# PROFILE from TiMidity at C2 (note=36) t=0.23s. S: models 13 dB string decay.
+# R: fast drop + 0.6s tail. AMP tuned to match TiMidity onset level.
 character:
   O: sine
-  AMP: 0.2
+  AMP: 0.7
   A: "0.001:1,100"
-  S: "20:100;1,100.0"
-  R: "1.782:100;1,0"
+  S: "2.999:100;0.10,68;0.20,50;0.50,32;1,13"
+  R: "0.001:100;0.03,1.8*6;0.6,2.5;1,0"
   PROFILE:
     - 100.0  # H1
-    - 95.4   # H2  (L10: from TiMidity t=1.0 note=36)
-    - 87.6   # H3
-    - 89.8   # H4
-    - 89.6   # H5
-    - 85.9   # H6
-    - 86.4   # H7
-    - 83.9   # H8
-    - 78.6   # H9
-    - 73.8   # H10
-    - 71.8   # H11
-    - 65.2   # H12
+    - 90.1   # H2
+    - 89.5   # H3
+    - 87.4   # H4
+    - 87.2   # H5
+    - 83.1   # H6
+    - 78.0   # H7
+    - 82.1   # H8
+    - 77.4   # H9
+    - 70.1   # H10
+    - 69.5   # H11
+    - 67.0   # H12
     - 59.0   # H13
-    - 51.3   # H14
-    - 49.4   # H15
-    - 46.3   # H16
+    - 59.1   # H14
+    - 51.7   # H15
+    - 44.7   # H16
     - 42.0   # H17
     - 38.0   # H18
     - 34.0   # H19
@@ -583,32 +582,31 @@ character:
 
 const OXYGENE_KALIMBA = `# kalimba: Koto (GM108 / FluidR3_GM2.sf2). PROFILE from loop FFT.
 # Sample: 'Koto C 5(R)'  root=60  rate=44100 Hz  loop=338fr (7.7ms)
-# L10: changed S to flat sustain (sample loops, TiMidity sustains flat).
-# PROFILE updated L10: from TiMidity at C4 (note=60) t=0.3s.
-# R extended 0.001→0.5s for less abrupt note-off.
+# PROFILE from TiMidity at C4 (note=60) t=0.23s. S: models plucked decay to silence.
+# R: three-stage release shape for natural note-off.
 character:
   O: sine
-  AMP: 0.005
+  AMP: 0.5
   A: "0.001:1,100"
-  S: "3.0:100;1,100.0"
-  R: "0.5:100;1,0"
+  S: "2.5:100;0.03,55*2;0.08,12*2;0.2,2.2;0.5,0.4;1,0.25"
+  R: "0.3:100;0.22,65;0.65,55;1,40"
   PROFILE:
     - 100.0  # H1
-    - 82.5   # H2  (L10: TiMidity t=0.3)
+    - 100.0  # H2
     - 100.0  # H3
-    - 100.0  # H4
+    - 83.2   # H4
     - 100.0  # H5
-    - 97.0   # H6
-    - 100.0  # H7
-    - 99.7   # H8
-    - 96.9   # H9
-    - 72.7   # H10
-    - 88.4   # H11
-    - 83.8   # H12
-    - 79.4   # H13
-    - 73.0   # H14
-    - 61.0   # H15
-    - 77.4   # H16
+    - 89.6   # H6
+    - 85.1   # H7
+    - 91.3   # H8
+    - 91.9   # H9
+    - 86.9   # H10
+    - 80.2   # H11
+    - 81.1   # H12
+    - 91.8   # H13
+    - 81.5   # H14
+    - 81.7   # H15
+    - 65.4   # H16
     - 62.4   # H17
     - 60.4   # H18
     - 54.3   # H19
