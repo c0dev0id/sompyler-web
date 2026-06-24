@@ -26,6 +26,7 @@ export async function putFile(
     body: file.body,
     inProject: file.inProject,
     mtime: file.mtime ?? Date.now(),
+    ...(file.history !== undefined && { history: file.history }),
   }
   const store = await txStore(FILES_STORE, 'readwrite')
   await wrapRequest(store.put(record))

@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, onCleanup, onMount, Show, type Component } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show, type Component } from 'solid-js'
 import { Editor } from '../editor/Editor'
 import {
   listProjectFiles,
@@ -90,6 +90,14 @@ function EditorPanel(props: {
   // the new Editor would mount with the stale body from the files() snapshot
   // instead of the already-saved (but not re-fetched) IndexedDB content.
   const liveBody = new Map<string, string>()
+  // Stabilise by file id so that refreshing the files() array (same id,
+  // new object reference) does not destroy and recreate the editor — only
+  // an actual tab switch (different id) does.
+  const selectedFile = createMemo(
+    () => files().find((f) => f.id === selectedId()) ?? null,
+    null,
+    { equals: (a: StoredFile | null, b: StoredFile | null) => a?.id === b?.id },
+  )
   let previewTimer = 0
   let helpDialog: HTMLDialogElement | undefined
   onCleanup(() => clearTimeout(previewTimer))
@@ -107,8 +115,6 @@ function EditorPanel(props: {
       }
     })()
   })
-
-  const selectedFile = () => files().find((f) => f.id === selectedId()) ?? null
 
   createEffect(() => {
     const id = props.focusId?.()
