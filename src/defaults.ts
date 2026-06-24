@@ -3,7 +3,7 @@
  *
  * In-project (loads automatically):
  *   - `oxygene.spls` — Jean-Michel Jarre "Oxygène Pt. IV" (1976), full 117-bar transcription.
- *   - `filtered-bass/oxygene-kick/kalimba/synbrass/synstrings/synstrings1/string-ensemble/bowed-pad/oxygene-melody/tambourine/seashore/hi-hat/guiro/castanet/reverse-cymbal/applause.spli`
+ *   - `filtered-bass/oxygene-kick/kalimba/synbrass/synstrings/string-ensemble/bowed-pad/oxygene-melody/tambourine/seashore/hi-hat/guiro/castanet/reverse-cymbal/applause.spli`
  *   - `tones_euro.splt` — equal-temperament tuning.
  *   - `oxygene-plate.splr` — Freeverb plate reverb.
  *
@@ -43,7 +43,6 @@ export {
   OXYGENE_HIHAT as OXYGENE_HIHAT,
   OXYGENE_GUIRO as OXYGENE_GUIRO,
   OXYGENE_CASTANET as OXYGENE_CASTANET,
-  OXYGENE_SYNSTRINGS1 as OXYGENE_SYNSTRINGS1,
   OXYGENE_REVERSE_CYMBAL as OXYGENE_REVERSE_CYMBAL,
   OXYGENE_APPLAUSE as OXYGENE_APPLAUSE,
 }
@@ -865,38 +864,6 @@ character:
   R: "0.01:100;1,0"
 `
 
-const OXYGENE_SYNSTRINGS1 = `# synstrings1: Synth Strings 1 (GM51 / FluidR3_GM2.sf2).
-# Sample: 'SynStrings 1'  root=60  rate=44100 Hz
-# PROFILE: placeholder -- pending FFT measurement.
-# initialAttn=0 -> AMP=0.2.
-character:
-  O: sine
-  AMP: 0.2
-  A: "0.001:1,100"
-  S: "0.001:100;1,100.0"
-  R: "0.5:100;0.04,90;0.2,15;0.4,2;0.6,0.1;1,0"
-  LFO:
-    - "8.18@sin[0.37];15.000:pitch"
-    - "1.0@sin[0];0.15:amp"
-  UNISON: "2;3"
-  PROFILE:
-    - 100.0  # H1
-    - 90.0   # H2
-    - 85.0   # H3
-    - 80.0   # H4
-    - 75.0   # H5
-    - 65.0   # H6
-    - 70.0   # H7
-    - 65.0   # H8
-    - 62.0   # H9
-    - 60.0   # H10
-    - 58.0   # H11
-    - 60.0   # H12
-    - 55.0   # H13
-    - 52.0   # H14
-    - 54.0   # H15
-    - 50.0   # H16
-`
 
 const OXYGENE_REVERSE_CYMBAL = `# reverse-cymbal: Reverse Cymbal (GM119 / FluidR3_GM2.sf2). Noise instrument.
 # Sample: 'Rev.Cymbal'  root=60  rate=44100 Hz
@@ -933,6 +900,7 @@ stage:
   synbrass:  1|1 0.8 synbrass
   strings:   2|1 1.0 synstrings
   strings1:  2|1 1.0 synstrings
+  strings2:  2|1 1.0 synstrings
   ensemble:  1|2 1.2 string-ensemble
   bowedpad:  1|1 1.6 bowed-pad
   melody:    1|1 0.4 oxygene-melody
@@ -949,6 +917,7 @@ _meta:
 seashore:
   0: C4 12 damp=24
 strings1: false
+strings2: false
 ---
 # bar 2 — kalimba fade-in begins (very quiet)
 _meta:
@@ -1071,6 +1040,11 @@ ensemble:
   2: G4 2
   3: F4 2
   5: C4 8
+strings1:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
 ---
 # bar 17 — Fm descending run bass; pad continues
 _meta:
@@ -1089,6 +1063,11 @@ ensemble:
   2: G4 2
   3: F4 2
   5: C4 8
+strings1:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
 ---
 # bar 18 — Cm A; 8-bar cycle starts
 _meta:
@@ -1103,6 +1082,12 @@ ensemble:
   6: Eb4 3
   8: G4 4
   11: C4 12
+strings1:
+  0: C5 5
+  5: G4 1
+  6: Eb4 3
+  8: G4 4
+  11: C4 12
 ---
 # bar 19 — Cm B variant
 _meta:
@@ -1111,6 +1096,7 @@ bass: "C2_2 Bb1_ C2_2 C2 Bb1 G1 Bb1"
 synbrass: false
 strings: false
 ensemble: false
+strings1: false
 ---
 # bar 20 — Cm A
 _meta:
@@ -1124,6 +1110,12 @@ ensemble:
   6: Eb4 2
   8: G4 4
   11: C4 12
+strings1:
+  0: C5 5
+  5: G4 2
+  6: Eb4 2
+  8: G4 4
+  11: C4 12
 ---
 # bar 21 — Cm B
 _meta:
@@ -1132,6 +1124,7 @@ bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
 synbrass: false
 strings: false
 ensemble: false
+strings1: false
 ---
 # bar 22 — Gm
 _meta:
@@ -1146,6 +1139,12 @@ ensemble:
   6: G4 2
   8: A4 4
   11: D4 12
+strings1:
+  0: Bb4 5
+  5: A4 2
+  6: G4 2
+  8: A4 4
+  11: D4 12
 ---
 # bar 23 — Gm
 _meta:
@@ -1154,6 +1153,7 @@ bass: "D2_2 C2_ D2_2 D2 C2_ A1"
 synbrass: false
 strings: false
 ensemble: false
+strings1: false
 ---
 # bar 24 — Fm; SynBrass Fm run
 _meta:
@@ -1163,6 +1163,11 @@ kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 synbrass: "A4 . G4 F4 . C4_5"
 strings: "F3_23; A3_23"
 ensemble:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
+strings1:
   0: A4 2
   2: G4 2
   3: F4 2
@@ -1189,6 +1194,11 @@ ensemble:
   2: G4 2
   3: F4 2
   5: C4 8
+strings1:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
 ---
 # bar 26 — Cm A
 _meta:
@@ -1203,6 +1213,12 @@ ensemble:
   6: Eb4 3
   8: G4 4
   11: C4 12
+strings1:
+  0: C5 5
+  5: G4 1
+  6: Eb4 3
+  8: G4 4
+  11: C4 12
 ---
 # bar 27 — Cm B
 _meta:
@@ -1211,6 +1227,7 @@ bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
 synbrass: false
 strings: false
 ensemble: false
+strings1: false
 ---
 # bar 28 — Cm A
 _meta:
@@ -1224,6 +1241,12 @@ ensemble:
   6: Eb4 2
   8: G4 4
   11: C4 12
+strings1:
+  0: C5 5
+  5: G4 2
+  6: Eb4 2
+  8: G4 4
+  11: C4 12
 ---
 # bar 29 — Cm B
 _meta:
@@ -1232,6 +1255,7 @@ bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
 synbrass: false
 strings: false
 ensemble: false
+strings1: false
 ---
 # bar 30 — Gm
 _meta:
@@ -1246,6 +1270,12 @@ ensemble:
   6: G4 2
   8: A4 4
   11: D4 12
+strings1:
+  0: Bb4 5
+  5: A4 2
+  6: G4 2
+  8: A4 4
+  11: D4 12
 ---
 # bar 31 — Gm
 _meta:
@@ -1254,6 +1284,7 @@ bass: "D2_2 C2_ D2_2 D2 C2_ A1"
 synbrass: false
 strings: false
 ensemble: false
+strings1: false
 ---
 # bar 32 — Fm; SynBrass Fm
 _meta:
@@ -1263,6 +1294,11 @@ kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 synbrass: "A4 . G4 F4 . C4_5"
 strings: "F3_23; A3_23"
 ensemble:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
+strings1:
   0: A4 2
   2: G4 2
   3: F4 2
@@ -1290,6 +1326,11 @@ ensemble:
   2: G4 2
   3: F4 2
   5: C4 7
+strings1:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 7
 ---
 # bar 34 — BowedPad + SynString2-B enter; Cm; Kalimba silent
 _meta:
@@ -1305,6 +1346,12 @@ ensemble:
   3: G5 1
   4: C5 1
   5: G5 7
+strings1: false
+strings2:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 8
 bowedpad:
   3: C4 21
   6: Eb4 18
@@ -1321,6 +1368,11 @@ ensemble:
   3: G5 1
   4: C5 1
   5: G5 7
+strings2:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 8
 bowedpad: false
 ---
 # bar 36 — Gm; BowedPad Gm
@@ -1335,6 +1387,11 @@ ensemble:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
+strings2:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 8
 bowedpad:
   0: G3 1
   3: Bb3 21
@@ -1352,6 +1409,11 @@ ensemble:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
+strings2:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 8
 bowedpad: false
 ---
 # bar 38 — Fm; BowedPad Fm
@@ -1366,6 +1428,11 @@ ensemble:
   3: C6 1
   4: F5 1
   5: C6 7
+strings2:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 8
 bowedpad:
   0: A3 24
   3: C4 21
@@ -1389,6 +1456,11 @@ ensemble:
   3: C6 1
   4: F5 1
   5: C6 7
+strings2:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 8
 bowedpad: false
 ---
 # bar 40 — Melody enters; Cm A; Kalimba resumes
@@ -1398,6 +1470,13 @@ bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 strings: "Eb3_23; C3_23"
 ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+strings2:
   0: C5 1
   1: G5 1
   2: C5 1
@@ -1421,6 +1500,13 @@ ensemble:
   3: G5 1
   4: C5 1
   5: G5 7
+strings2:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
 bowedpad: false
 melody: "Eb4;6 D4 Eb4 C4_ G3_6"
 ---
@@ -1431,6 +1517,13 @@ bass: "D2_2 C2_ D2_ . D2 C2_ A1"
 kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
 strings: "D3_23; Bb3_23; D4_23"
 ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+strings2:
   0: D5 1
   1: Bb5 1
   2: D5 1
@@ -1455,6 +1548,13 @@ ensemble:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
+strings2:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
 bowedpad: false
 melody: "Bb3;6 A3 Bb3 G3_ D3_6"
 ---
@@ -1465,6 +1565,13 @@ bass: "F2_2 Eb2_ C2_2 F2 Eb2_"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 strings: "F3_23; A3_23; F4_23"
 ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+strings2:
   0: F5 1
   1: C6 1
   2: F5 1
@@ -1500,6 +1607,13 @@ ensemble:
   3: C6 1
   4: F5 1
   5: C6 7
+strings2:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
 bowedpad: false
 melody:
   0: A3 1
@@ -1523,6 +1637,13 @@ ensemble:
   3: G5 1
   4: C5 1
   5: G5 7
+strings2:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
 bowedpad:
   3: C4 21
   6: Eb4 18
@@ -1540,6 +1661,13 @@ ensemble:
   3: G5 1
   4: C5 1
   5: G5 7
+strings2:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
 bowedpad: false
 melody: "Eb4;6 D4 Eb4 C4_ G3_6"
 ---
@@ -1550,6 +1678,13 @@ bass: "D2_2 C2_ D2_ . D2 C2_ A1"
 kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
 strings: "D3_23; Bb3_23; D4_23"
 ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+strings2:
   0: D5 1
   1: Bb5 1
   2: D5 1
@@ -1574,6 +1709,13 @@ ensemble:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
+strings2:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
 bowedpad: false
 melody: "Bb3;6 A3 Bb3 G3_ D3_6"
 ---
@@ -1584,6 +1726,13 @@ bass: "F2_2 Eb2_ C2_2 F2 Eb2_"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 strings: "F3_23; A3_23; F4_23"
 ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+strings2:
   0: F5 1
   1: C6 1
   2: F5 1
@@ -1619,6 +1768,13 @@ ensemble:
   3: C6 1
   4: F5 1
   5: C6 7
+strings2:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
 bowedpad: false
 melody:
   0: A3 2
@@ -1638,6 +1794,7 @@ ensemble:
   6: Eb4 3
   8: G4 4
   11: C4 12
+strings2: false
 bowedpad: false
 melody: false
 ---
@@ -1698,6 +1855,11 @@ ensemble:
   2: G4 2
   3: F4 2
   5: C4 8
+strings1:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
 ---
 # bar 59 — Fm descending
 _meta:
@@ -1715,6 +1877,11 @@ ensemble:
   2: G4 2
   3: F4 2
   5: C4 8
+strings1:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
 ---
 # bar 60 — Cm A
 _meta:
@@ -1728,6 +1895,12 @@ ensemble:
   6: Eb4 3
   8: G4 4
   11: C4 12
+strings1:
+  0: C5 5
+  5: G4 1
+  6: Eb4 3
+  8: G4 4
+  11: C4 12
 ---
 # bar 61 — Cm B variant
 _meta:
@@ -1735,6 +1908,7 @@ _meta:
 bass: "C2_2 Bb1_ C2_2 C2 Bb1 G1 Bb1"
 strings: false
 ensemble: false
+strings1: false
 ---
 # bar 62 — Cm A
 _meta:
@@ -1747,6 +1921,12 @@ ensemble:
   6: Eb4 2
   8: G4 4
   11: C4 12
+strings1:
+  0: C5 5
+  5: G4 2
+  6: Eb4 2
+  8: G4 4
+  11: C4 12
 ---
 # bar 63 — Cm B
 _meta:
@@ -1754,6 +1934,7 @@ _meta:
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
 strings: false
 ensemble: false
+strings1: false
 ---
 # bar 64 — Gm
 _meta:
@@ -1767,6 +1948,12 @@ ensemble:
   6: G4 2
   8: A4 4
   11: D4 12
+strings1:
+  0: Bb4 5
+  5: A4 2
+  6: G4 2
+  8: A4 4
+  11: D4 12
 ---
 # bar 65 — Gm
 _meta:
@@ -1774,6 +1961,7 @@ _meta:
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
 strings: false
 ensemble: false
+strings1: false
 ---
 # bar 66 — Fm
 _meta:
@@ -1782,6 +1970,11 @@ bass: "F2_2 Eb2_ C2_2 F2 Eb2_ C2_"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 strings: "F3_23; A3_23"
 ensemble:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
+strings1:
   0: A4 2
   2: G4 2
   3: F4 2
@@ -1807,6 +2000,11 @@ ensemble:
   2: G4 2
   3: F4 2
   5: C4 8
+strings1:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
 ---
 # bar 68 — Cm A
 _meta:
@@ -1820,6 +2018,12 @@ ensemble:
   6: Eb4 3
   8: G4 4
   11: C4 12
+strings1:
+  0: C5 5
+  5: G4 1
+  6: Eb4 3
+  8: G4 4
+  11: C4 12
 ---
 # bar 69 — Cm B
 _meta:
@@ -1827,6 +2031,7 @@ _meta:
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
 strings: false
 ensemble: false
+strings1: false
 ---
 # bar 70 — Cm B variant
 _meta:
@@ -1839,6 +2044,12 @@ ensemble:
   6: Eb4 2
   8: G4 4
   11: C4 12
+strings1:
+  0: C5 5
+  5: G4 2
+  6: Eb4 2
+  8: G4 4
+  11: C4 12
 ---
 # bar 71 — Cm B
 _meta:
@@ -1846,6 +2057,7 @@ _meta:
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
 strings: false
 ensemble: false
+strings1: false
 ---
 # bar 72 — Gm
 _meta:
@@ -1859,6 +2071,12 @@ ensemble:
   6: G4 2
   8: A4 4
   11: D4 12
+strings1:
+  0: Bb4 5
+  5: A4 2
+  6: G4 2
+  8: A4 4
+  11: D4 12
 ---
 # bar 73 — Gm
 _meta:
@@ -1866,6 +2084,7 @@ _meta:
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
 strings: false
 ensemble: false
+strings1: false
 ---
 # bar 74 — Fm
 _meta:
@@ -1874,6 +2093,11 @@ bass: "F2_2 Eb2_ C2_2 F2 Eb2_"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 strings: "F3_23; A3_23"
 ensemble:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 8
+strings1:
   0: A4 2
   2: G4 2
   3: F4 2
@@ -1900,6 +2124,11 @@ ensemble:
   2: G4 2
   3: F4 2
   5: C4 7
+strings1:
+  0: A4 2
+  2: G4 2
+  3: F4 2
+  5: C4 7
 ---
 # bar 76 — SynString2-B high arpeggios resume; BowedPad resumes; Cm
 _meta:
@@ -1914,6 +2143,11 @@ ensemble:
   3: G5 1
   4: C5 1
   5: G5 7
+strings2:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 8
 bowedpad:
   3: C4 21
   6: Eb4 18
@@ -1930,6 +2164,11 @@ ensemble:
   3: G5 1
   4: C5 1
   5: G5 7
+strings2:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 8
 bowedpad: false
 ---
 # bar 78 — Gm; BowedPad Gm
@@ -1945,6 +2184,11 @@ ensemble:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
+strings2:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 8
 bowedpad:
   0: G3 1
   3: Bb3 21
@@ -1962,6 +2206,11 @@ ensemble:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
+strings2:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 8
 bowedpad: false
 ---
 # bar 80 — Fm; BowedPad Fm
@@ -1977,6 +2226,11 @@ ensemble:
   3: C6 1
   4: F5 1
   5: C6 7
+strings2:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 8
 bowedpad:
   0: A3 24
   3: C4 21
@@ -2000,6 +2254,11 @@ ensemble:
   3: C6 1
   4: F5 1
   5: C6 7
+strings2:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 8
 bowedpad: false
 ---
 # bar 82 — Melody returns with elaborate variations; Cm A
@@ -2009,6 +2268,13 @@ bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 strings: "Eb3_23; C3_23"
 ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+strings2:
   0: C5 1
   1: G5 1
   2: C5 1
@@ -2032,6 +2298,13 @@ ensemble:
   3: G5 1
   4: C5 1
   5: G5 7
+strings2:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
 bowedpad: false
 melody: "Eb4;6 D4 Eb4 C4_ G3_6"
 ---
@@ -2042,6 +2315,13 @@ bass: "D2_2 C2_ D2_ . D2 C2_ A1"
 kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
 strings: "D3_23; Bb3_23; D4_23"
 ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+strings2:
   0: D5 1
   1: Bb5 1
   2: D5 1
@@ -2066,6 +2346,13 @@ ensemble:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
+strings2:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
 bowedpad: false
 melody: "Bb3;6 A3 Bb3 G3_ D3_6"
 ---
@@ -2076,6 +2363,13 @@ bass: "F2_2 Eb2_ C2_2 F2 Eb2_"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 strings: "F3_23; A3_23; F4_23"
 ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+strings2:
   0: F5 1
   1: C6 1
   2: F5 1
@@ -2111,6 +2405,13 @@ ensemble:
   3: C6 1
   4: F5 1
   5: C6 7
+strings2:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
 bowedpad: false
 melody:
   0: A3 1
@@ -2134,6 +2435,13 @@ ensemble:
   3: G5 1
   4: C5 1
   5: G5 7
+strings2:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
 bowedpad:
   3: C4 21
   6: Eb4 18
@@ -2145,6 +2453,13 @@ _meta:
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
 strings: false
 ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+strings2:
   0: C5 1
   1: G5 1
   2: C5 1
@@ -2169,6 +2484,13 @@ bass: "D2_2 C2_ D2_ . D2 C2_ A1"
 kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
 strings: "D3_23; Bb3_23; D4_23"
 ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+strings2:
   0: D5 1
   1: Bb5 1
   2: D5 1
@@ -2202,6 +2524,13 @@ ensemble:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
+strings2:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
 bowedpad: false
 melody:
   0: Bb3 1
@@ -2220,6 +2549,13 @@ bass: "F2_2 Eb2_ C2_2 F2 Eb2_ C2_"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 strings: "F3_23; A3_23; F4_23"
 ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+strings2:
   0: F5 1
   1: C6 1
   2: F5 1
@@ -2250,6 +2586,13 @@ ensemble:
   3: C6 1
   4: F5 1
   5: C6 7
+strings2:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
 bowedpad: false
 melody:
   0: F4 2
@@ -2265,6 +2608,13 @@ bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 strings: "Eb3_23; C3_23"
 ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+strings2:
   0: C5 1
   1: G5 1
   2: C5 1
@@ -2288,6 +2638,13 @@ ensemble:
   3: G5 1
   4: C5 1
   5: G5 7
+strings2:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
 bowedpad: false
 melody: "Eb5_;6 G4 D5_ C5_2 G4_3"
 ---
@@ -2298,6 +2655,13 @@ bass: "D2_2 C2_ D2_ . D2 C2_ A1"
 kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
 strings: "D3_23; Bb3_23; D4_23"
 ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+strings2:
   0: D5 1
   1: Bb5 1
   2: D5 1
@@ -2329,6 +2693,13 @@ ensemble:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
+strings2:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
 bowedpad: false
 melody:
   0: Bb4 1
@@ -2347,6 +2718,13 @@ bass: "F2_2 Eb2_ C2_2 F2 Eb2_"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 strings: "F3_23; A3_23; F4_23"
 ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+strings2:
   0: F5 1
   1: C6 1
   2: F5 1
@@ -2382,6 +2760,13 @@ ensemble:
   3: C6 1
   4: F5 1
   5: C6 7
+strings2:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
 bowedpad: false
 melody: "A4_;6 G4 F4_ C5_2 F4_3"
 ---
@@ -2392,6 +2777,13 @@ bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 strings: "Eb3_23; C3_23"
 ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+strings2:
   0: C5 1
   1: G5 1
   2: C5 1
@@ -2415,6 +2807,13 @@ ensemble:
   3: G5 1
   4: C5 1
   5: G5 7
+strings2:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
 bowedpad: false
 melody: "Eb5_;6 G4 D5_ C5_2 G4_2 G4"
 ---
@@ -2425,6 +2824,13 @@ bass: "D2_2 C2_ D2_ . D2 C2_ A1"
 kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
 strings: "D3_23; Bb3_23; D4_23"
 ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+strings2:
   0: D5 1
   1: Bb5 1
   2: D5 1
@@ -2449,6 +2855,13 @@ ensemble:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
+strings2:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
 bowedpad: false
 melody: "D5;6 C5 D5 Bb4_ G4_2 D5 C5_ Bb4"
 ---
@@ -2459,6 +2872,13 @@ bass: "F2_2 Eb2_ C2_2 F2 Eb2_ C2_"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 strings: "F3_23; A3_23; F4_23"
 ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+strings2:
   0: F5 1
   1: C6 1
   2: F5 1
@@ -2489,6 +2909,13 @@ ensemble:
   3: C6 1
   4: F5 1
   5: C6 7
+strings2:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
 bowedpad: false
 melody: "A4;6 G4 A4 F4_ C5_2 F4_3"
 ---
@@ -2499,6 +2926,13 @@ bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 strings: "Eb3_23; C3_23"
 ensemble:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
+strings2:
   0: C5 1
   1: G5 1
   2: C5 1
@@ -2522,6 +2956,13 @@ ensemble:
   3: G5 1
   4: C5 1
   5: G5 7
+strings2:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
 bowedpad: false
 melody: "Eb4;6 D4 C4 Eb4 D4 C4 Eb4_ G3_2 G3"
 ---
@@ -2532,6 +2973,13 @@ bass: "D2_2 C2_ D2_ . D2 C2_ A1"
 kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
 strings: "D3_23; Bb3_23; D4_23"
 ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+strings2:
   0: D5 1
   1: Bb5 1
   2: D5 1
@@ -2563,6 +3011,13 @@ ensemble:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
+strings2:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
 bowedpad: false
 melody:
   0: D4 1
@@ -2581,6 +3036,13 @@ bass: "F2_2 Eb2_ C2_2 F2 Eb2_"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 strings: "F3_23; A3_23; F4_23"
 ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+strings2:
   0: F5 1
   1: C6 1
   2: F5 1
@@ -2616,6 +3078,13 @@ ensemble:
   3: C6 1
   4: F5 1
   5: C6 7
+strings2:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
 bowedpad: false
 melody:
   0: A3 1
@@ -2640,6 +3109,13 @@ ensemble:
   3: G5 1
   4: C5 1
   5: G5 7
+strings2:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
 bowedpad:
   3: C4 21
   6: Eb4 18
@@ -2657,6 +3133,13 @@ ensemble:
   3: G5 1
   4: C5 1
   5: G5 7
+strings2:
+  0: C5 1
+  1: G5 1
+  2: C5 1
+  3: G5 1
+  4: C5 1
+  5: G5 7
 bowedpad: false
 melody: "Eb5_;6 G4 D5_ C5_2 G4_2 G4"
 ---
@@ -2667,6 +3150,13 @@ bass: "D2_2 C2_ D2_ . D2 C2_ A1"
 kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
 strings: "D3_23; Bb3_23; D4_23"
 ensemble:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
+strings2:
   0: D5 1
   1: Bb5 1
   2: D5 1
@@ -2691,6 +3181,13 @@ ensemble:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
+strings2:
+  0: D5 1
+  1: Bb5 1
+  2: D5 1
+  3: Bb5 1
+  4: D5 1
+  5: Bb5 7
 bowedpad: false
 melody: "D5;6 C5 D5 Bb4_ G4_2 D5 C5_ Bb4"
 ---
@@ -2701,6 +3198,13 @@ bass: "F2_2 Eb2_ C2_2 F2 Eb2_"
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 strings: "F3_11; A3_11; F4_11"
 ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+strings2:
   0: F5 1
   1: C6 1
   2: F5 1
@@ -2730,6 +3234,13 @@ bass:
 kalimba: false
 strings: false
 ensemble:
+  0: F5 1
+  1: C6 1
+  2: F5 1
+  3: C6 1
+  4: F5 1
+  5: C6 7
+strings2:
   0: F5 1
   1: C6 1
   2: F5 1
@@ -4776,7 +5287,6 @@ const SEEDS: Seed[] = [
   { name: 'hi-hat',           ext: 'spli', body: OXYGENE_HIHAT,          inProject: true },
   { name: 'guiro',            ext: 'spli', body: OXYGENE_GUIRO,          inProject: true },
   { name: 'castanet',         ext: 'spli', body: OXYGENE_CASTANET,       inProject: true },
-  { name: 'synstrings1',      ext: 'spli', body: OXYGENE_SYNSTRINGS1,    inProject: true },
   { name: 'reverse-cymbal',   ext: 'spli', body: OXYGENE_REVERSE_CYMBAL, inProject: true },
   { name: 'applause',         ext: 'spli', body: OXYGENE_APPLAUSE,       inProject: true },
   { name: 'tones_euro',       ext: 'splt', body: STARTER_TUNING,         inProject: true },
