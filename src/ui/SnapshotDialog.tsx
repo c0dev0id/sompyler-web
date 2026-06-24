@@ -13,13 +13,17 @@ type DiffLine = { type: 'same' | 'del' | 'add'; text: string }
 function diffLines(from: string, to: string): DiffLine[] | null {
   const a = from.split('\n')
   const b = to.split('\n')
-  if (a.length * b.length > 60_000) return null  // too large — skip diff
-
   const m = a.length, n = b.length
-  const dp: number[][] = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0))
+  if (m * n > 4_000_000) return null  // ~2000×2000 lines max; beyond that skip diff
+
+  // Flat Int32Array DP table — avoids nested-array overhead for large files.
+  const w = n + 1
+  const dp = new Int32Array((m + 1) * w)
   for (let i = 1; i <= m; i++)
     for (let j = 1; j <= n; j++)
-      dp[i]![j] = a[i - 1] === b[j - 1] ? dp[i - 1]![j - 1]! + 1 : Math.max(dp[i - 1]![j]!, dp[i]![j - 1]!)
+      dp[i * w + j] = a[i - 1] === b[j - 1]
+        ? dp[(i - 1) * w + (j - 1)]! + 1
+        : Math.max(dp[(i - 1) * w + j]!, dp[i * w + (j - 1)]!)
 
   const result: DiffLine[] = []
   let i = m, j = n
@@ -27,7 +31,7 @@ function diffLines(from: string, to: string): DiffLine[] | null {
     if (i > 0 && j > 0 && a[i - 1] === b[j - 1]) {
       result.unshift({ type: 'same', text: a[i - 1]! })
       i--; j--
-    } else if (j > 0 && (i === 0 || dp[i]![j - 1]! >= dp[i - 1]![j]!)) {
+    } else if (j > 0 && (i === 0 || dp[i * w + (j - 1)]! >= dp[(i - 1) * w + j]!)) {
       result.unshift({ type: 'add', text: b[j - 1]! })
       j--
     } else {
