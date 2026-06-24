@@ -337,7 +337,12 @@ export const Layout: Component<LayoutProps> = (props) => {
             isPlaying={() => playerState() === 'playing'}
           />
         </div>
-        <InstrumentPreview name={previewName} body={previewBody} resolveHz={resolveHz} />
+        <InstrumentPreview
+          name={previewName}
+          body={previewBody}
+          resolveHz={resolveHz}
+          onSoloRender={() => { const n = previewName(); if (n) void props.session.startSoloRender(n) }}
+        />
       </section>
 
       {/* Top-right: instruments */}

@@ -35,6 +35,8 @@ export interface RenderAllOptions {
   sampleRate?: number
   onProgress?: (progress: RenderProgress) => void
   signal?: AbortSignal
+  /** When true, skip orphan sweep after rendering (preserves cache for a subsequent full render). */
+  skipOrphanSweep?: boolean
 }
 
 export interface RenderProgress {
@@ -163,14 +165,13 @@ export async function renderAll(
       return { total, cacheHits, rendered, orphansRemoved: 0, diagnostics }
     }
 
+    if (opts.skipOrphanSweep) {
+      log('render', 'info', `Render complete (orphan sweep skipped)`, { total, cacheHits, rendered })
+      return { total, cacheHits, rendered, orphansRemoved: 0, diagnostics }
+    }
     const keep = new Set(plan.notes.map((n) => n.key))
     const orphansRemoved = await orphanSweep(keep)
-    log('render', 'info', `Render complete`, {
-      total,
-      cacheHits,
-      rendered,
-      orphansRemoved,
-    })
+    log('render', 'info', `Render complete`, { total, cacheHits, rendered, orphansRemoved })
     return { total, cacheHits, rendered, orphansRemoved, diagnostics }
   } finally {
     opts.signal?.removeEventListener('abort', cancel)

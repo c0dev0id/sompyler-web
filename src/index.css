@@ -478,7 +478,13 @@ html, body, #root {
   color: #666;
 }
 
-.preview-play {
+.preview-controls {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.preview-play,
+.preview-solo {
   padding: 0.1rem 0.4rem;
   font-size: 10px;
   background: #2a2a2a;
@@ -489,12 +495,14 @@ html, body, #root {
   line-height: 1;
 }
 
-.preview-play:disabled {
+.preview-play:disabled,
+.preview-solo:disabled {
   opacity: 0.35;
   cursor: default;
 }
 
-.preview-play:not(:disabled):hover {
+.preview-play:not(:disabled):hover,
+.preview-solo:not(:disabled):hover {
   background: #333;
 }
 

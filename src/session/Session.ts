@@ -176,6 +176,92 @@ export class Session {
     }
   }
 
+  async startSoloRender(instrumentName: string, flushEditors?: () => Promise<void>): Promise<void> {
+    if (this.renderStatus().state !== 'idle' && this.renderStatus().state !== 'error') {
+      this.cancelRender()
+    }
+    const controller = new AbortController()
+    this.controller = controller
+    this.setEditLock(true)
+    this.setStatus({ state: 'rendering', progress: { done: 0, total: 0, cacheHits: 0 } })
+
+    try {
+      await flushEditors?.()
+      const { scoreFile, instruments, room } = await loadProject()
+
+      const tuner = new Tuner()
+      const fullPlan = await buildDistinctNotes(scoreFile.body, { tuner, instruments })
+      const soloNotes = fullPlan.notes.filter((n) => n.instrumentName === instrumentName)
+      const soloPlan = { ...fullPlan, notes: soloNotes }
+
+      this.setStatus({
+        state: 'rendering',
+        progress: { done: 0, total: soloNotes.length, cacheHits: 0 },
+      })
+
+      const renderResult = await renderAll(soloPlan, {
+        workerFactory: createSynthWorker,
+        instruments,
+        compileInstrument,
+        signal: controller.signal,
+        skipOrphanSweep: true,
+        onProgress: (p) => {
+          this.setStatus({
+            state: 'rendering',
+            progress: { done: p.done, total: p.total, cacheHits: p.cacheHits, lastKey: p.lastKey },
+          })
+        },
+      })
+
+      if (controller.signal.aborted) {
+        log('session', 'info', 'Solo render aborted; keeping previous buffer')
+        return
+      }
+
+      if (renderResult.diagnostics.length > 0) {
+        this.setDiagnostics(renderResult.diagnostics)
+        const first = renderResult.diagnostics[0]!
+        this.setStatus({
+          ...IDLE_STATUS,
+          state: 'error',
+          errorMessage: `${renderResult.diagnostics.length} note(s) failed to render — ${first.message}`,
+        })
+        return
+      }
+
+      this.setStatus({ ...this.renderStatus(), state: 'mixing' })
+      const { head } = parseScore(scoreFile.body)
+      const mix = await mixOnly(soloPlan, head, { room })
+
+      this.barTimes = fullPlan.barTimes
+      const mb = this.markerBar()
+      if (mb !== null) {
+        const tStart = this.barTimes[mb] ?? 0
+        const tEnd = this.barTimes[mb + 2] ?? 0
+        this.player.setLoopPoints(tStart, tEnd)
+      }
+      this.player.loadBuffer(mix)
+      this.setBuffer(mix)
+      this.setDiagnostics([])
+      this.setStatus(IDLE_STATUS)
+      log('session', 'info', `Solo render complete for '${instrumentName}'`)
+    } catch (e) {
+      if (controller.signal.aborted) {
+        log('session', 'info', 'Solo render aborted by user')
+      } else {
+        log('session', 'error', `Solo render failed: ${(e as Error).message}`)
+        this.setStatus({
+          ...IDLE_STATUS,
+          state: 'error',
+          errorMessage: (e as Error).message,
+        })
+      }
+    } finally {
+      this.setEditLock(false)
+      if (this.controller === controller) this.controller = null
+    }
+  }
+
   cancelRender(): void {
     if (this.controller) {
       log('session', 'info', 'Cancelling in-flight render')

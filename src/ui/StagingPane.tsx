@@ -44,6 +44,8 @@ export interface StagingPaneProps {
   mutationsDisabled: boolean
   /** Called when a filename in the active project is clicked — switch editor focus to it. */
   onFocusFile?: (name: string, ext: FileExtension) => void
+  /** Called when the user clicks Solo on an instrument in the file-view modal. */
+  onSoloRender?: (name: string) => void
 }
 
 function getScoreRefs(body: string): Record<'spli' | 'splr' | 'splt', Set<string>> {
@@ -507,6 +509,7 @@ export const StagingPane: Component<StagingPaneProps> = (props) => {
           file={f}
           onClose={() => setViewFile(null)}
           onSaved={async () => { await refresh(); props.onChange() }}
+          onSoloRender={f.ext === 'spli' ? () => props.onSoloRender?.(f.name) : undefined}
         />
       )}
     </Show>

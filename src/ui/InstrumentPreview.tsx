@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onCleanup, type Component } from 'solid-js'
+import { createEffect, createSignal, onCleanup, Show, type Component } from 'solid-js'
 import { loadInstrument } from '../parse/instrument'
 import { compileInstrument } from '../synth/compile'
 import { renderNote } from '../synth/sound_generator'
@@ -28,6 +28,8 @@ interface InstrumentPreviewProps {
   body: () => string | null
   /** Called at play-time to get the current pitch from the score. */
   resolveHz: () => Promise<number>
+  /** When provided, renders a Solo button that triggers a full score render for this instrument only. */
+  onSoloRender?: () => void
 }
 
 export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
@@ -177,13 +179,25 @@ export const InstrumentPreview: Component<InstrumentPreviewProps> = (props) => {
     <div class="instrument-preview">
       <div class="preview-header">
         <span class="preview-label" ref={labelEl} />
-        <button
-          class="preview-play"
-          onClick={() => (isPlaying() ? stop() : void play())}
-          disabled={!hasSamples()}
-        >
-          {isPlaying() ? '■' : '▶'}
-        </button>
+        <div class="preview-controls">
+          <button
+            class="preview-play"
+            onClick={() => (isPlaying() ? stop() : void play())}
+            disabled={!hasSamples()}
+          >
+            {isPlaying() ? '■' : '▶'}
+          </button>
+          <Show when={props.onSoloRender != null}>
+            <button
+              class="preview-solo"
+              onClick={props.onSoloRender}
+              disabled={!hasSamples()}
+              title="Render this instrument in isolation and load into player"
+            >
+              Solo
+            </button>
+          </Show>
+        </div>
       </div>
       <canvas ref={canvas} />
     </div>
