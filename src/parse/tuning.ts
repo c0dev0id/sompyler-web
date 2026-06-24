@@ -97,6 +97,8 @@ export interface ParsedTuning {
   config: Partial<TunerConfig>
   scales: Record<string, Scale>
   defaultScaleName?: string
+  /** `python` routes rendering through the Pyodide/Python-sompyler engine. */
+  core?: 'python'
 }
 
 /**
@@ -192,7 +194,8 @@ export function parseTuning(body: string): ParsedTuning {
   if (defaultScaleName && !(defaultScaleName in scales)) {
     throw new TuningError(`default_scale '${defaultScaleName}' is not declared in scales`)
   }
-  return { config, scales, defaultScaleName }
+  const core = doc.core === 'python' ? 'python' as const : undefined
+  return { config, scales, defaultScaleName, core }
 }
 
 export interface FrequencyOpts {

@@ -11,7 +11,9 @@ import { createSynthWorker } from '../render/workerClient'
 import { compileInstrument } from '../synth/compile'
 import { parseScore } from '../parse/score'
 import { parseRoom, parseFreeverbRoom, type RoomBody, type FreeverbBody } from '../parse/room'
+import { parseTuning } from '../parse/tuning'
 import { Player } from '../player/Player'
+import { renderAllPython } from '../render/renderAllPython'
 
 /**
  * Phase 6 / R3: thin coordinator that owns the three pieces of cross-domain
@@ -95,7 +97,7 @@ export class Session {
 
     try {
       await flushEditors?.()
-      const { scoreFile, projectFiles, instruments, room } = await loadProject()
+      const { scoreFile, projectFiles, instruments, room, core } = await loadProject()
 
       const tuner = new Tuner()
       const plan = await buildDistinctNotes(scoreFile.body, { tuner, instruments })
@@ -104,18 +106,22 @@ export class Session {
         progress: { done: 0, total: plan.notes.length, cacheHits: 0 },
       })
 
-      const renderResult = await renderAll(plan, {
-        workerFactory: createSynthWorker,
-        instruments,
-        compileInstrument,
-        signal: controller.signal,
-        onProgress: (p) => {
-          this.setStatus({
-            state: 'rendering',
-            progress: { done: p.done, total: p.total, cacheHits: p.cacheHits, lastKey: p.lastKey },
+      const onProgress = (p: { done: number; total: number; cacheHits: number; lastKey?: string }) => {
+        this.setStatus({
+          state: 'rendering',
+          progress: { done: p.done, total: p.total, cacheHits: p.cacheHits, lastKey: p.lastKey },
+        })
+      }
+
+      const renderResult = core === 'python'
+        ? await renderAllPython(plan, { instruments, signal: controller.signal, onProgress })
+        : await renderAll(plan, {
+            workerFactory: createSynthWorker,
+            instruments,
+            compileInstrument,
+            signal: controller.signal,
+            onProgress,
           })
-        },
-      })
 
       if (controller.signal.aborted) {
         log('session', 'info', 'Render aborted by user; keeping previous buffer')
@@ -187,7 +193,7 @@ export class Session {
 
     try {
       await flushEditors?.()
-      const { scoreFile, instruments, room } = await loadProject()
+      const { scoreFile, instruments, room, core } = await loadProject()
 
       const tuner = new Tuner()
       const fullPlan = await buildDistinctNotes(scoreFile.body, { tuner, instruments })
@@ -199,19 +205,28 @@ export class Session {
         progress: { done: 0, total: soloNotes.length, cacheHits: 0 },
       })
 
-      const renderResult = await renderAll(soloPlan, {
-        workerFactory: createSynthWorker,
-        instruments,
-        compileInstrument,
-        signal: controller.signal,
-        skipOrphanSweep: true,
-        onProgress: (p) => {
-          this.setStatus({
-            state: 'rendering',
-            progress: { done: p.done, total: p.total, cacheHits: p.cacheHits, lastKey: p.lastKey },
+      const soloOnProgress = (p: { done: number; total: number; cacheHits: number; lastKey?: string }) => {
+        this.setStatus({
+          state: 'rendering',
+          progress: { done: p.done, total: p.total, cacheHits: p.cacheHits, lastKey: p.lastKey },
+        })
+      }
+
+      const renderResult = core === 'python'
+        ? await renderAllPython(soloPlan, {
+            instruments,
+            signal: controller.signal,
+            skipOrphanSweep: true,
+            onProgress: soloOnProgress,
           })
-        },
-      })
+        : await renderAll(soloPlan, {
+            workerFactory: createSynthWorker,
+            instruments,
+            compileInstrument,
+            signal: controller.signal,
+            skipOrphanSweep: true,
+            onProgress: soloOnProgress,
+          })
 
       if (controller.signal.aborted) {
         log('session', 'info', 'Solo render aborted; keeping previous buffer')
@@ -328,6 +343,7 @@ interface LoadedProject {
   projectFiles: StoredFile[]
   instruments: Map<string, Awaited<ReturnType<typeof loadInstrument>>>
   room: RoomBody | FreeverbBody | null
+  core?: 'python'
 }
 
 async function loadProject(): Promise<LoadedProject> {
@@ -346,5 +362,8 @@ async function loadProject(): Promise<LoadedProject> {
   // Try tap model first (has `levels:`), then freeverb (`type: freeverb`).
   const roomFile = projectFiles.find((f) => f.ext === 'splr')
   const room = roomFile ? (parseRoom(roomFile.body) ?? parseFreeverbRoom(roomFile.body)) : null
-  return { scoreFile, projectFiles, instruments, room }
+  // Optional tuning file — if absent, defaults apply and core stays JS.
+  const tuningFile = projectFiles.find((f) => f.ext === 'splt')
+  const core = tuningFile ? parseTuning(tuningFile.body).core : undefined
+  return { scoreFile, projectFiles, instruments, room, core }
 }

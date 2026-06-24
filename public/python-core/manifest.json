@@ -1,0 +1,22 @@
+{
+  "files": [
+    "render_note.py",
+    "Sompyler/__init__.py",
+    "Sompyler/limits.py",
+    "Sompyler/syntaxtracer.py",
+    "Sompyler/orchestra/__init__.py",
+    "Sompyler/orchestra/instrument/__init__.py",
+    "Sompyler/orchestra/instrument/combinators.py",
+    "Sompyler/orchestra/instrument/protopartial.py",
+    "Sompyler/orchestra/instrument/variation.py",
+    "Sompyler/synthesizer/__init__.py",
+    "Sompyler/synthesizer/envelope.py",
+    "Sompyler/synthesizer/modulation.py",
+    "Sompyler/synthesizer/oscillator.py",
+    "Sompyler/synthesizer/sympartial.py",
+    "Sompyler/synthesizer/sound_generator.py",
+    "Sompyler/synthesizer/shape/__init__.py",
+    "Sompyler/synthesizer/shape/bezier_gradient.py",
+    "Sompyler/synthesizer/shape/point.py"
+  ]
+}

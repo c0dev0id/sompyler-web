@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Variation interpolation (RFC §S32300–S32330).** Instrument `character:` blocks with numeric keys now produce smoothly interpolated sounds between boundary specs. At render time the note's pitch (or `stress`/`length` when `ATTR:` says so) is used to linearly blend amp, envelope timings/levels, partial amplitudes, spread, and railsback between the two bracketing compiled specs. Non-interpolatable fields (oscillator waveform, morph, timbre, FM, VCF, LFO, unison) are taken from the lower boundary. Local label overrides and array PROFILE items inside variation entries (as used in `dev/piano.spli`) are fully supported.
 
+- **Python dual-core rendering via Pyodide.** Add `core: python` to a project's `.splt` tuning file to route synthesis through the reference Python sompyler engine running in WebAssembly. On first render, Pyodide (~30 MB) loads lazily from CDN; subsequent renders reuse the cached interpreter. sompyler-web-only extensions (`LFO:`, `VCF:`, `UNISON:`) are stripped before passing instruments to Python. The Python source tree lives in `public/python-core/` and is mounted into Pyodide's virtual filesystem at render time.
+
 - **Oxygène score: all 14 MIDI tracks now represented.** Added hi-hat (tick 2/bar), guiro (tick 9/bar), and castanet (ticks 3+9/bar) from the drums track, running uniformly bar 5–117. Added revcymbal and applause as atmospheric voices triggered at tick 9 on 23 structural bars (bar 4, every-other bar in 18–32 and 60–74, then bars 45/87/93/99/105/111), each swelling 21 ticks into the following bar.
 
 - **Oxygène score: SynString1 and SynString2-hi voices added.** Extracted from MIDI tracks 7 (GM51, SynthStrings 1) and 8 (GM52, SynthStrings 2, high register C5–C6) of the reference MIDI. `strings1` layers the ensemble melody (bars 16–33, 58–75) with the synstrings timbre. `strings2` adds high-register arpeggios (C5/G5, D5/B♭5, F5/C6) from bar 34 onwards, using a 4-note held pattern in bars 34–39 / 76–81 and a 6-note rapid pattern in bars 40–51 / 82–117.
@@ -22,6 +24,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`UNISON: "COUNT;DETUNE_CENTS"` — sompyler-web `.spli` extension** for stacked-voice chorus. Renders the entire partial bank `COUNT` times with each voice pitch-shifted by a linearly-distributed cent offset in `[-DETUNE_CENTS, +DETUNE_CENTS]`. Odd counts include a 0¢ centre voice; even counts straddle 0. Models SF2 stacked-sample patches (e.g. FluidR3 Synth Brass 2) without a chorus DSP — the phase drift between fixed-frequency oscillators IS the effect. Follows the LFO/VCF/FM convention (uppercase keyword, `;`-separated string DSL). Sits between partial summation and the global modulators so VCF/AMP-LFO apply once to the summed voices.
 
 ### Fixed
+
+- **S46192 `cut` semantics now correct in the distinct-notes renderer.** Positive `cut` shifts all note offsets left by the cut amount and shortens bar duration by `abs(cut)`; negative `cut` shortens bar duration only (no offset shift). The prior implementation used `barTicks - cut` for bar length, doubling the bar for negative cuts, and did not subtract the positive-cut offset from note positions.
+
+- **`ticks_per_minute` recognised as the primary RFC §S46140 tempo key.** Previously only `beats_per_minute` was handled; `ticks_per_minute` was silently ignored and the score walker kept the default tempo.
+
+- **`OXYGENE_KALIMBA` default instrument fixed.** The previous 2.5 s `S:` decay on a 2 s note caused `applyEnvelope` to clamp all segments proportionally, eliminating the flat sustain phase. The note rendered as a pure decay ramp to near-silence, failing the TiMidity conformance checks (h1 < 0.001; amplitude drift 16.7×). New design: 0.4 s plucked decay to a flat 6% sustain floor; single-harmonic PROFILE (pure sine) matching TiMidity's looped pure-sine tail.
 
 - **Tab switch slowness caused by SnapshotDialog.** Version history snapshots were fetched from IndexedDB and their LCS diffs computed on every tab switch (reactive `createResource` tracking `selectedId`). Diffs are now only computed when the user explicitly opens the dialog via the ⏱ button.
 
