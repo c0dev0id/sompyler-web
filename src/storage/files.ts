@@ -9,6 +9,7 @@ export interface StoredFile {
   body: string
   inProject: boolean
   mtime: number
+  history?: unknown
 }
 
 function makeId(name: string, ext: FileExtension): string {

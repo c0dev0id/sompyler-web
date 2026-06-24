@@ -13,12 +13,12 @@ export function makeAutosaver(
   ext: FileExtension,
   delayMs: number = DEFAULT_DELAY_MS,
 ): {
-  schedule: (body: string, inProject: boolean) => void
+  schedule: (body: string, inProject: boolean, history: unknown) => void
   flush: () => Promise<void>
   cancel: () => void
 } {
   let timer: ReturnType<typeof setTimeout> | undefined
-  let pending: { body: string; inProject: boolean } | undefined
+  let pending: { body: string; inProject: boolean; history: unknown } | undefined
   let inFlight: Promise<StoredFile> | undefined
 
   async function write() {
@@ -27,7 +27,7 @@ export function makeAutosaver(
     pending = undefined
     timer = undefined
     try {
-      inFlight = putFile({ name, ext, body: snapshot.body, inProject: snapshot.inProject })
+      inFlight = putFile({ name, ext, body: snapshot.body, inProject: snapshot.inProject, history: snapshot.history })
       await inFlight
     } catch (err) {
       log('storage', 'error', `Autosave failed for ${name}.${ext}`, err)
@@ -36,8 +36,8 @@ export function makeAutosaver(
     }
   }
 
-  function schedule(body: string, inProject: boolean): void {
-    pending = { body, inProject }
+  function schedule(body: string, inProject: boolean, history: unknown): void {
+    pending = { body, inProject, history }
     if (timer !== undefined) clearTimeout(timer)
     timer = setTimeout(write, delayMs)
   }

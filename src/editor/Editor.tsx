@@ -2,6 +2,7 @@ import { onCleanup, onMount, createEffect } from 'solid-js'
 import { EditorState, Compartment, RangeSet } from '@codemirror/state'
 import { EditorView, lineNumberMarkers, type GutterMarker } from '@codemirror/view'
 import { forceLinting } from '@codemirror/lint'
+import { historyField } from '@codemirror/commands'
 import type { FileExtension, StoredFile } from '../storage/files'
 import { makeAutosaver } from './autosave'
 import { extensionsFor, readOnlyExtension, buildBarMarkerSet } from './configs'
@@ -24,20 +25,27 @@ export function Editor(props: EditorProps) {
   const autosaver = makeAutosaver(props.file.name, props.file.ext)
 
   onMount(() => {
-    const state = EditorState.create({
-      doc: props.file.body,
-      extensions: [
-        ...extensionsFor(props.file.ext as FileExtension, props.lintContext, props.onBarClick),
-        readOnlyCompartment.of(readOnlyExtension(props.readOnly)),
-        markerBarCompartment.of(lineNumberMarkers.of(RangeSet.empty as RangeSet<GutterMarker>)),
-        EditorView.updateListener.of((u) => {
-          if (!u.docChanged) return
-          const body = u.state.doc.toString()
-          autosaver.schedule(body, props.file.inProject)
-          props.onBodyChange?.(body)
-        }),
-      ],
-    })
+    const extensions = [
+      ...extensionsFor(props.file.ext as FileExtension, props.lintContext, props.onBarClick),
+      readOnlyCompartment.of(readOnlyExtension(props.readOnly)),
+      markerBarCompartment.of(lineNumberMarkers.of(RangeSet.empty as RangeSet<GutterMarker>)),
+      EditorView.updateListener.of((u) => {
+        if (!u.docChanged) return
+        const body = u.state.doc.toString()
+        const history = u.state.toJSON({ history: historyField }).history
+        autosaver.schedule(body, props.file.inProject, history)
+        props.onBodyChange?.(body)
+      }),
+    ]
+
+    const state = props.file.history
+      ? EditorState.fromJSON(
+          { doc: props.file.body, history: props.file.history },
+          { extensions },
+          { history: historyField },
+        )
+      : EditorState.create({ doc: props.file.body, extensions })
+
     view = new EditorView({ state, parent: host })
   })
 
