@@ -447,13 +447,217 @@ delays: "120:0;30,40;120,80"
 border: "120:0;120,100"
 `
 
-const STARTER_PIANO = `character:
-  O: sine
-  AMP: 0.5
-  A: "0.005:1,100"
-  S: "0.001:100;1,70"
-  R: "0.4:100;1,0"
-  PROFILE: [100, 50, 25, 12]
+const STARTER_PIANO = `name: Piano
+source: >
+    Below data is based on following article, especially regarding the
+    sounds of lowest C (C1) and the G1-4 keys:
+
+    E. D. Blackham: "Klaviere", in: Die Physik der Musikinstrumente,
+    Verständliche Forschung. 2. Aufl. Heidelberg; Berlin : Spektrum
+    Akad. Verl., 1998
+    — ISBN 3-8274-0291-3
+
+    The data of the Railsback curve (octave stretch) has been taken from:
+    Giordano, N. J.: Physics of the Piano, Oxford Univ. Press 2010, p. 61
+    – ISBN: 987-0-19-954602-2
+
+    Gradual mix-ins of "bumpslope", "smoothslope" and "fhdown" sustain phases
+    are applied in order to make the sound more and more percussive and to
+    serve the fundamental tone increasing dominance in the long run.
+
+character:
+  - ATTR: pitch
+    O: sine
+    R: .10:100;2,78;3,0
+    A: '.24:1,91;2,97;3,100'
+
+    # Properties below will be referenced by '@edb65pNN'
+    edb65p01:
+        A: '.24:1,91;2,97;3,100'
+        S: '8:100;5,93;8,90;9,83;15,83;16,93;18,93;19,83;100,63'
+    edb65p02:
+        A: '.16:1,71;2,100'
+        S: '8:100;8,97;23,85;26,70;27,64;100,44'
+    edb65p03:
+        A: '.16:1,76;2,100'
+        S: '8:100;6,91;9,79;12,93;22,96;24,70;25,78;26,70;100,50'
+    edb65p04:
+        A: '.32:1,75;2,95;4,100'
+        S: '8:100;5,98;6,88;7,97;20,80;21,70;22,74;23,70;100,50'
+    edb65p05:
+        A: '.16:1,73;2,100'
+        S: '8:100;6,87;7,78;8,76;9,89;16,100;22,94;23,77;24,69;100,49'
+    edb65p10:
+        A: '.40:1,86;2,99;3,98;4,99;5,100'
+        S: '8:100;2,97;9,99;10,96;12,100;13,94;16,99;19,96;20,86;100,66'
+    edb65p15:
+        A: '.16:1,61;2,98;3,100'
+        S: '8:100;2,100;5,97;12,83;13,85;16,86;17,82;19,84;22,79;24,61;100,41'
+    edb65p20:
+        A: '.16:1,89;2,100'
+        S: '8:100;1,97;2,100;4,88;7,99;13,93;14,89;100,69'
+    edb65p25:
+        A: '.16:1,80;2,100'
+        S: '8:100;4,89;8,85;9,80;15,85;16,81;100,61'
+    fhdown:
+        S: '4.0:100;1,100;2,50;3,65;4,60;5,30;8,25;20,24'
+    bumpslope:
+        S: 5:100;1,92;2,65;4,60!;5,87;6,85;13,83;20,80;31,76;39,73
+    smoothslope:
+        S: '5:100;3,107;15,98;24,95;25,95;26,92;27,85;31,75;32,72;75,65'
+    fhrocket:
+        A: '0.003:1,15;4,95;5,100'
+    fhrocket2:
+        A: '0.03:1,95;2,98;10,100'
+    SPREAD: [
+        1, 2, 3, 4, 5, 6, 6, 7, 7, 8, 9, 9, 10, 10, 11, 12, 11, 13,
+        13, 13, 14, 14, 15, 15, 15, 17, 16, 17, 17, 18, 18, 19, 19, 20
+        ]
+
+    RAILSBACK_CURVE: [27, 4187, '-8+240;0,0;1,8;2,8;13,8;14,8;15,16']
+
+    27:
+      # Copy of 49Hz variation, TO REPLACE by more appropriate data when found
+      # in literature (as of now, just a plain guess by FH)
+      PROFILE:
+      - "74 edb65p01"
+      - "83 edb65p02"
+      - "100 edb65p03"
+      - "86 edb65p04"
+      - "82 edb65p05"
+      - [80, 86, 72, 81]
+      - "91 edb65p10"
+      - [87, 93, 90, 96]
+      - "88 edb65p15"
+      - 77
+      - 0 # no original value, assumption
+      - 64
+      - 77
+      - "74 edb65p20"
+      - [67, 79, 79, 65]
+      - "62 edb65p25"
+      - [74, 74, 69, 62, 62, 61, 56, 58, 56]
+    49:
+      # Attack like for the C1 key only divided by 4 (guess by FH)
+      edb65p01: { A: '.06:1,91;2,97;3,100' }
+      edb65p02: { A: '.04:1,71;2,100' }
+      edb65p03: { A: '.04:1,76;2,100' }
+      edb65p04: { A: '.08:1,75;2,95;4,100' }
+      edb65p05: { A: '.04:1,73;2,100' }
+      edb65p10: { A: '.10:1,86;2,99;3,98;4,99;5,100' }
+      edb65p15: { A: '.04:1,61;2,98;3,100' }
+      edb65p20: { A: '.04:1,89;2,100' }
+      edb65p25: { A: '.04:1,80;2,100' }
+      PROFILE:
+      - "74 edb65p01"
+      - "83 edb65p02"
+      - "100 edb65p03"
+      - "86 edb65p04"
+      - "82 edb65p05"
+      - [80, 86, 72, 81]
+      - "91 edb65p10"
+      - [87, 93, 90, 96]
+      - "88 edb65p15"
+      - 77
+      - 0 # no original value, assumption
+      - 64
+      - 77
+      - "74 edb65p20"
+      - [67, 79, 79, 65]
+      - "62 edb65p25"
+      - [74, 74, 69, 62, 62, 61, 56, 58, 56]
+    97:
+      PROFILE:
+      - { V: 99, S: { "@edb65p01": 7, "@bumpslope": 2 }, A: { "@edb65p01": 1, "@fhrocket": 10 } }
+      - { V: 100, S: { "@edb65p02": 5, "@smoothslope": 2, "@bumpslope": 1 }, A: { "@edb65p02": 1, "@fhrocket2": 6 } }
+      - { V: 100, S: { "@edb65p03": 6, "@smoothslope": 1, "@bumpslope": 1 }, A: { "@edb65p03": 1, "@fhrocket": 8 } }
+      - { V: 90, S: { "@edb65p03": 5, "@smoothslope": 1, "@bumpslope": 2 }, A: { "@edb65p04": 1, "@fhrocket": 10 } }
+      - { V: 94, S: { "@edb65p05": 4, "@smoothslope": 1, "@bumpslope": 3 }, A: { "@edb65p05": 1, "@fhrocket": 10 } }
+      - [98, 99, 75, 82]
+      - { V: 88, S: { "@edb65p10": 4, "@bumpslope": 2, "@fhdown": 1 }, A: { "@edb65p10": 2, "@fhrocket": 10 } }
+      - [80, 76, 89, 90]
+      - { V: 79, S: { "@edb65p15": 3, "@bumpslope": 1, "@fhdown": 1 }, A: { "@edb65p15": 2, "@fhrocket": 10 } }
+      - [63, 74, 74, 69]
+      - { V: 60, S: { "@edb65p20": 2, "@bumpslope": 1, "@fhdown": 2 }, A: { "@edb65p20": 2, "@fhrocket": 10 } }
+      - [67, 79, 64, 62]
+      - { V: 60, S: { "@edb65p25": 1, "@fhdown": 9 }, A: { "@edb65p25": 2, "@fhrocket": 10 } }
+      - [62, 57, 52, 45] # , 40, 38, 34, 36]
+      # - { V: 36, S: "@fhdown"}
+    196:
+      PROFILE:
+      - { V: 100, S: { "@edb65p01": 5, "@bumpslope": 3 }, A: { "@edb65p01": 1, "@fhrocket": 20 } }
+      - { V: 96, S: { "@edb65p02": 6, "@smoothslope": 3, "@bumpslope": 2 }, A: { "@edb65p02": 1, "@fhrocket2": 8 } }
+      - { V: 98, S: { "@edb65p03": 5, "@smoothslope": 3, "@bumpslope": 2 }, A: { "@edb65p03": 1, "@fhrocket": 12 } }
+      - { V: 86, S: { "@edb65p04": 4, "@smoothslope": 4, "@bumpslope": 3 }, A: { "@edb65p04": 1, "@fhrocket": 16 } }
+      - { V: 85, S: { "@edb65p05": 3, "@bumpslope": 10 }, A: { "@edb65p05": 1, "@fhrocket": 20 } }
+      - [87, 84, 73, 72]
+      - { V: 68, S: { "@edb65p10": 2, "@bumpslope": 3, "@fhdown": 3 }, A: { "@edb65p10": 1, "@fhrocket": 18 } }
+      - [67, 64, 63, 58]
+      - { V: 56, S: { "@edb65p10": 1, "@fhdown": 19 }, A: { "@edb65p15": 1, "@fhrocket": 12 } }
+      - [ 50, 53, 43, 30 ]
+      # - [ 33, 30, 31, 28, 25, 24, 26, 25, 24, 22, 23]
+      # - { V: 22, S: "@fhdown"}
+    392:
+      edb65p10:
+          S: 10:100;2,97;9,99;10,96;12,100;13,94;16,99;19,96;20,86;100,0
+      PROFILE:
+      - { V: 100, S: { "@edb65p01": 7, "@bumpslope": 4 }, A: { "@edb65p01": 1, "@fhrocket": 56 } }
+      - { V: 82, S: { "@edb65p02": 6, "@smoothslope": 4, "@bumpslope": 8 }, A: { "@edb65p02": 1, "@fhrocket2": 16 } }
+      - { V: 88, S: { "@edb65p03": 4, "@smoothslope": 12, "@bumpslope": 8 }, A: { "@edb65p03": 1, "@fhrocket": 20 } }
+      - { V: 71, S: '@bumpslope', A: { "@edb65p04": 1, "@fhrocket": 32 } }
+      - { V: 80, S: "@bumpslope", A: { "@edb65p05": 1, "@fhrocket": 56 } }
+      - [72, 75, 47, 58]
+      - { V: 52, S: { "@edb65p10": 1, "@fhdown": 39 }, A: { "@edb65p10": 1, "@fhrocket": 20 } }
+      # - [50, 45, 38, 32, 27, 22, 23, 25]
+      # - { V: 22, S: "@fhdown"}
+    1568:
+      fhdown:
+          S: '2.0:100;1,100;2,45;3,60;4,48;5,30;8,25;20,24'
+      PROFILE:
+      - { V: 100, S: { "@edb65p01": 2, "@bumpslope": 3 }, A: { "@edb65p01": 1, "@fhrocket": 70 } }
+      - { V: 80, S: { "@edb65p02": 3, "@smoothslope": 20, "@bumpslope": 14 }, A: { "@edb65p02": 1, "@fhrocket2": 25 } }
+      - { V: 85, S: { "@edb65p03": 4, "@smoothslope": 7, "@bumpslope": 12 }, A: { "@edb65p03": 1, "@fhrocket": 30 } }
+      - { V: 65, S: "@bumpslope", A: { "@edb65p04": 1, "@fhrocket": 42 } }
+      - { V: 52, S: "@bumpslope", A: { "@edb65p05": 1, "@fhrocket": 63 } }
+      - [41, 32]
+      - { V: 24, S: { "@edb65p10": 1, "@fhdown": 46 }, A: { "@edb65p10": 1, "@fhrocket": 30 } }
+      # - [21, 17]
+      # - { V: 13, S: "@fhdown"}
+    4187:
+      fhdown:
+          S: '2.0:100;1,100;2,45;3,50;4,48;5,30;8,25;20,24'
+      bumpslope:
+          S: '8:150;1,100;3,70;4,67;5,62;11,62;12,40;13,18;15,17'
+      A: "@fhrocket"
+      PROFILE:
+      - { D: -40, V: 100, S: "1.2:100;1,65;2,45;3,30;4,28", A: "0.05:1,20;2,95!;3,40;4,100" }
+      - 70
+      - V: 35
+        S: "@fhdown"
+      - [ 15, 12, 14, 13, 11 ]
+
+  - ATTR: stress
+    100:
+      MORPH:
+      - 1 1;1,1
+    70:
+      MORPH:
+      - 1 10+1;1,2;2,2!;3,2;4,1;5,1;30,1
+      - 2 1;1,1
+    0:
+      ATTR: length
+      1:
+        MORPH:
+        - 1 5+1;1,2;2,2!;3,2;4,1;5,1;30,1
+        - 2 1;1,1
+        - 5 5+1;1,2;2,2!;3,2;4,1;5,1;30,1
+        - 6 1;1,1
+      0:
+        MORPH:
+        - 1 5+1;1,2;2,2!;3,2;4,1;7,1
+        - 2 1;1,1
+        - 5 5+1;1,2;2,2!;3,2;4,1;7,1
+        - 6 1;1,1
 `
 
 const STARTER_FLUTE = `character:
@@ -506,29 +710,52 @@ const PYTHON_CORE_TUNING = `core: python
 `
 
 const ALLE_MEINE_ENTCHEN = `title: Alle meine Entchen
-composer: trad.
+author: unknown
 stage:
-  piano: 1|1 0 dev/piano
+    piano: 1|1 0 dev/piano
+tuning_config: python-core
 ---
 _meta:
-  stress_pattern: "2,0,1,0;1,0"
-  beats_per_minute: 70
-  lower_stress_bound: 85
-  upper_stress_bound: 100
+    stress_pattern: 2,0,1,0;1,0
+    ticks_per_minute: 140
+    lower_stress_bound: 85
+    upper_stress_bound: 100
 piano:
-  0: C4 1
-  1: D4 1
-  2: E4 1
-  3: F4 1
-  4: G4 2
-  6: G4 2
+    0: C4 1    # Al-
+    1: D4 1    # -le
+    2: E4 1    # mei-
+    3: F4 1    # -ne
+    4: G4 2    # Ent-
+    6: G4 2    # -chen
 ---
 piano:
-  0: A4 1
-  1: A4 1
-  2: A4 1
-  3: A4 1
-  4: G4 4
+    0: A4 1    # schwim-
+    1: A4 1    # -men
+    2: A4 1    # auf
+    3: A4 1    # dem
+    4: G4 4    # See,
+---
+piano:
+    0: A4 1    # schwim-
+    1: A4 1    # -men
+    2: A4 1    # auf
+    3: A4 1    # dem
+    4: G4 4    # See,
+---
+piano:
+    0: F4 1    # Köpf-
+    1: F4 1    # -chen
+    2: F4 1    # in
+    3: F4 1    # das
+    4: E4 2    # Was-
+    6: E4 2    # -ser,
+---
+piano:
+    0: G4 1    # Schwänz-
+    1: G4 1    # -chen
+    2: G4 1    # in
+    3: G4 1    # die
+    4: C4 4    # Höh.
 `
 
 const OXYGENE_PLATE_ROOM = `# oxygene-plate.splr — Freeverb plate reverb for Oxygène Pt. IV.
