@@ -1,6 +1,8 @@
-import { createSignal, onCleanup, onMount, type Component } from 'solid-js'
-import { putFile, type StoredFile } from '../storage/files'
+import { createSignal, onCleanup, onMount, Show, type Component } from 'solid-js'
+import { listProjectFiles, putFile, type StoredFile } from '../storage/files'
 import { Editor } from '../editor/Editor'
+import { InstrumentPreview } from './InstrumentPreview'
+import { firstInstrumentPitchHz } from '../parse/score'
 
 export interface FileViewModalProps {
   file: StoredFile
@@ -12,6 +14,7 @@ export const FileViewModal: Component<FileViewModalProps> = (props) => {
   let dialog: HTMLDialogElement | undefined
   let saveTimer = 0
   const [dirty, setDirty] = createSignal(false)
+  const [previewBody, setPreviewBody] = createSignal(props.file.body)
 
   onMount(() => dialog?.showModal())
   onCleanup(() => clearTimeout(saveTimer))
@@ -22,8 +25,15 @@ export const FileViewModal: Component<FileViewModalProps> = (props) => {
     saveTimer = window.setTimeout(async () => {
       await putFile({ name: props.file.name, ext: props.file.ext, body, inProject: props.file.inProject })
       setDirty(false)
+      setPreviewBody(body)
       props.onSaved()
     }, 800)
+  }
+
+  const resolveHz = async (): Promise<number> => {
+    const files = await listProjectFiles()
+    const score = files.find((f) => f.ext === 'spls')
+    return score ? (firstInstrumentPitchHz(score.body, props.file.name) ?? 440) : 440
   }
 
   function close() {
@@ -51,6 +61,15 @@ export const FileViewModal: Component<FileViewModalProps> = (props) => {
           onBodyChange={handleChange}
         />
       </div>
+      <Show when={props.file.ext === 'spli'}>
+        <div class="file-view-preview">
+          <InstrumentPreview
+            name={() => props.file.name}
+            body={previewBody}
+            resolveHz={resolveHz}
+          />
+        </div>
+      </Show>
     </dialog>
   )
 }
