@@ -13,7 +13,7 @@ function previewTiming(env: EnvelopeSpec): { lengthSeconds: number; dampSeconds:
   if (env.decayShape) {
     try { decayLen = parseShape(env.decayShape).length } catch { /* ignore malformed */ }
   }
-  const sustainHold = Math.max(0.05, env.attack * 0.5, decayLen)
+  const sustainHold = Math.min(2, Math.max(0.05, env.attack * 0.5, decayLen))
   // Cap damp to a small buffer past the instrument's own release — prevents
   // FM/modulated instruments with short envelopes from sweeping endlessly.
   const dampSeconds = Math.min(2, env.release + 0.15)
