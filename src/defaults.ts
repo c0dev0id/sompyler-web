@@ -3,7 +3,7 @@
  *
  * In-project (loads automatically):
  *   - `oxygene.spls` — Jean-Michel Jarre "Oxygène Pt. IV" (1976), full 117-bar transcription.
- *   - `filtered-bass/oxygene-kick/kalimba/synbrass/synstrings/string-ensemble/bowed-pad/oxygene-melody/tambourine/seashore/hi-hat/guiro/castanet/reverse-cymbal/applause.spli`
+ *   - `filtered-bass/oxygene-kick/kalimba/synbrass/synstrings2/synstrings1/string-ensemble/bowed-pad/oxygene-melody/tambourine/seashore/hi-hat/guiro/castanet/reverse-cymbal/applause.spli`
  *   - `tones_euro.splt` — equal-temperament tuning.
  *   - `oxygene-plate.splr` — Freeverb plate reverb.
  *
@@ -659,7 +659,7 @@ const OXYGENE_SYNBRASS = `character:
     - 42.4   # H24
 `
 
-const OXYGENE_STRINGS = `# strings: Synth Strings 2 (GM52 / FluidR3_GM2.sf2).
+const OXYGENE_STRINGS = `# synstrings2: Synth Strings 2 (GM52 / FluidR3_GM2.sf2).
 # Sample: 'saw-fb-110'  root=60  rate=44100 Hz  loop=401fr (9.1ms)
 # PROFILE updated L2: replaced O:sawtooth with O:sine + PROFILE from TiMidity at Eb3.
 # VCF removed — baked into PROFILE. Vibrato LFO retained.
@@ -898,9 +898,9 @@ stage:
   kick:      1|1 0.0 oxygene-kick
   tambourine: 1|1 0.1 tambourine
   synbrass:  1|1 0.8 synbrass
-  strings:   2|1 1.0 synstrings
+  strings:   2|1 1.0 synstrings2
   strings1:  2|1 1.0 synstrings1
-  strings2:  2|1 1.0 synstrings
+  strings2:  2|1 1.0 synstrings2
   ensemble:  1|2 1.2 string-ensemble
   bowedpad:  1|1 1.6 bowed-pad
   melody:    1|1 0.4 oxygene-melody
@@ -5426,7 +5426,7 @@ const SEEDS: Seed[] = [
   { name: 'oxygene-kick',    ext: 'spli', body: OXYGENE_KICK,       inProject: true },
   { name: 'kalimba',         ext: 'spli', body: OXYGENE_KALIMBA,    inProject: true },
   { name: 'synbrass',        ext: 'spli', body: OXYGENE_SYNBRASS,   inProject: true },
-  { name: 'synstrings',      ext: 'spli', body: OXYGENE_STRINGS,    inProject: true },
+  { name: 'synstrings2',     ext: 'spli', body: OXYGENE_STRINGS,    inProject: true },
   { name: 'synstrings1',    ext: 'spli', body: OXYGENE_STRINGS,    inProject: true },
   { name: 'string-ensemble', ext: 'spli', body: OXYGENE_ENSEMBLE,   inProject: true },
   { name: 'bowed-pad',       ext: 'spli', body: OXYGENE_BOWEDPAD,   inProject: true },
