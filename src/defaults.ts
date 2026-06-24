@@ -666,7 +666,7 @@ const OXYGENE_STRINGS = `# strings: Synth Strings 2 (GM52 / FluidR3_GM2.sf2).
 # initialAttn=0 → AMP=0.5. Loop 1 set AMP=0.05; L2 keeps it (power similar).
 character:
   O: sine
-  AMP: 0.2
+  AMP: 0.4
   A: "0.001:1,100"
   S: "0.001:100;1,100.0"
   R: "0.5:100;0.04,90;0.2,15;0.4,2;0.6,0.1;1,0"
