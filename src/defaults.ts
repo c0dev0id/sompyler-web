@@ -871,10 +871,10 @@ const OXYGENE_REVERSE_CYMBAL = `# reverse-cymbal: Reverse Cymbal (GM119 / FluidR
 # initialAttn=0 -> AMP=0.5.
 character:
   O: noise
-  AMP: 0.5
-  A: "2.5:0;0.15,5;0.40,25;0.70,70;1,100"
-  S: "0.001:100;1,100"
-  R: "0.3:100;0.1,30;0.4,5;1,0"
+  AMP: 0.155
+  A: "0.001:1,100"
+  S: "0.7:100;0.286,91;0.43,0.8;0.57,0.3;0.714,0.05;1,0"
+  R: "0.05:100;1,0"
 `
 
 const OXYGENE_APPLAUSE = `# applause: Applause (GM126 / FluidR3_GM2.sf2). Noise instrument.
@@ -883,10 +883,10 @@ const OXYGENE_APPLAUSE = `# applause: Applause (GM126 / FluidR3_GM2.sf2). Noise 
 # initialAttn=0 -> AMP=0.4.
 character:
   O: noise
-  AMP: 0.4
-  A: "1.5:0;0.10,5;0.35,30;0.70,75;1,100"
+  AMP: 0.088
+  A: "3.0:0;0.017,0.1;0.067,0.45;0.167,1.5;0.5,60;0.833,95;1,100"
   S: "0.001:100;1,100"
-  R: "1.0:100;0.2,60;0.5,20;1,0"
+  R: "0.7:100;0.14,2;0.43,0.1;0.7,0.03;1,0"
 `
 
 const OXYGENE = `title: Oxygène Pt. IV
