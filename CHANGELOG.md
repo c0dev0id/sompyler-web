@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Oxygène melody sounded "too plugged" in the song.** Each melody note is 1–2 ticks (54–108 ms at BPM 369 / 12 ticks per measure). The instrument's 3 s S: shape — with a designed dip to silence around x=0.10 followed by a slow rise to y≈3 — was being proportionally clamped by `applyEnvelope` into 50 ms of body, so the audible portion was attack-click → near-silence → handoff to release: a staccato thud. Added semidamp `;6` to the first note of every chain-form melody line; the chain parser propagates a shared release tick to subsequent notes, so each pluck rings ~325 ms past its slot (mid-bar). The instrument character itself is unchanged — the preview already validated it.
 
+- **Filtered-bass and kalimba defaults updated from TiMidity-measured refinements.** Both instruments previously used flat `S:` sustain shapes (sample loops at constant amplitude). Filtered-bass now models the natural fretless-string decay — 13 dB drop over 3 s — with a corrected 24-partial PROFILE from FFT at C2 and a fast-drop release. Kalimba now has a plucked-note decay to near-silence with a three-stage release shape. Both PROFILE tables re-measured.
+
 ### Changed
 
 - **Oxygène score rewritten using chain notation** — sequential voice patterns (bass, kalimba, synbrass, kick, tambourine, melody) converted from offset-key to chain strings. Voices with intentional legato note overlaps (ensemble, bowedpad) remain in offset-key format. The OXYGENE score constant shrank from ~2930 lines to ~1820 lines (38% smaller). No musical change — the chain conversion is lossless, tested by 306 passing unit tests including the full chain parser suite.
