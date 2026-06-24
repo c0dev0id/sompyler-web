@@ -807,8 +807,8 @@ character:
   O: noise
   AMP: 0.5
   A: "0.001:1,100"
-  S: "0.001:100;1,0.0"
-  R: "0.001:100;1,0"
+  S: "0.4:100;0.07,19;0.24,4;0.63,0.4;1,0.03"
+  R: "0.01:100;1,0"
 `
 
 const OXYGENE_SEASHORE = `# seashore: Sea Shore (GM123 / FluidR3_GM2.sf2). Noise instrument.
