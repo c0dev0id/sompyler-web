@@ -6,8 +6,6 @@ import { DEFAULT_ENVELOPE, type EnvelopeSpec } from '../synth/envelope'
 import { parseShape } from '../synth/shape'
 import { DEFAULT_SAMPLE_RATE } from '../synth/constants'
 
-const PREVIEW_DAMP_SECONDS = 2
-
 function previewTiming(env: EnvelopeSpec): { lengthSeconds: number; dampSeconds: number } {
   // Plucked instruments encode their character in the S: decay shape; preview
   // must hold note-on long enough to traverse it, or you only hear the attack.
@@ -16,9 +14,12 @@ function previewTiming(env: EnvelopeSpec): { lengthSeconds: number; dampSeconds:
     try { decayLen = parseShape(env.decayShape).length } catch { /* ignore malformed */ }
   }
   const sustainHold = Math.max(0.05, env.attack * 0.5, decayLen)
+  // Cap damp to a small buffer past the instrument's own release — prevents
+  // FM/modulated instruments with short envelopes from sweeping endlessly.
+  const dampSeconds = Math.min(2, env.release + 0.15)
   return {
     lengthSeconds: env.attack + sustainHold + env.release,
-    dampSeconds: PREVIEW_DAMP_SECONDS,
+    dampSeconds,
   }
 }
 

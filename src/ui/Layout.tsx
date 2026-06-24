@@ -101,6 +101,9 @@ function EditorPanel(props: {
   )
   // equals:false so re-triggering the same snapshot body still fires the effect.
   const [restoreBody, setRestoreBody] = createSignal<string | null>(null, { equals: false })
+  // Snapshot dialog trigger — only fires the resource when the ⏱ button is clicked,
+  // not on every tab switch. equals:false so clicking same file twice re-fetches.
+  const [snapshotTrigger, setSnapshotTrigger] = createSignal<string | null>(null, { equals: false })
   let previewTimer = 0
   let helpDialog: HTMLDialogElement | undefined
   let snapshotDialog: HTMLDialogElement | undefined
@@ -142,12 +145,12 @@ function EditorPanel(props: {
             </span>
           )}
         </Show>
-        <button class="help-btn" title="Version history" onClick={() => snapshotDialog?.showModal()}>⏱</button>
+        <button class="help-btn" title="Version history" onClick={() => { setSnapshotTrigger(selectedId()); snapshotDialog?.showModal() }}>⏱</button>
         <button class="help-btn" title="Syntax reference" onClick={() => helpDialog?.showModal()}>?</button>
       </header>
       <HelpDialog exts={props.exts} ref={(el) => { helpDialog = el }} />
       <SnapshotDialog
-        fileId={() => selectedId()}
+        fileId={snapshotTrigger}
         currentBody={() => {
           const f = selectedFile()
           return f ? (liveBody.get(f.id) ?? f.body) : ''
