@@ -148,6 +148,38 @@ describe('expandChainString (S53000)', () => {
     expect(notes[0]).toMatchObject({ lengthTicks: 4, dampTicks: 0 })
   })
 
+  // ── Semicolon-overlength (S53200) ─────────────────────────────────────────
+
+  it('"A4_3;2 B4 C4" — ;N note gets dampTicks=2 and subsequent notes share the release tick', () => {
+    // A4: offset 0, length 4, damp 2 → sounds until 6; chain advances to 4
+    // B4: offset 4, length 1, auto-damp = max(0, 6-(4+1)) = 1 → sounds until 6
+    // C4: offset 5, length 1, auto-damp = max(0, 6-(5+1)) = 0
+    const notes = expandChainString('A4_3;2 B4 C4')
+    expect(notes[0]).toMatchObject({ pitch: 'A4', lengthTicks: 4, dampTicks: 2 })
+    expect(notes[1]).toMatchObject({ pitch: 'B4', offsetTicks: 4, lengthTicks: 1, dampTicks: 1 })
+    expect(notes[2]).toMatchObject({ pitch: 'C4', offsetTicks: 5, lengthTicks: 1, dampTicks: 0 })
+  })
+
+  it('note already ending past targetEndTick gets dampTicks=0, not negative', () => {
+    // A4_7;2: length=8, damp=2, targetEnd=10; B4_3: length=4, natural end=12 > 10
+    const notes = expandChainString('A4_7;2 B4_3')
+    expect(notes[0]).toMatchObject({ dampTicks: 2 })
+    expect(notes[1]).toMatchObject({ pitch: 'B4', dampTicks: 0 })
+  })
+
+  it('explicit comma-tail on subsequent note overrides auto-damp', () => {
+    // A4_3;4: length=4, damp=4, targetEnd=8; B4_,1 has explicit damp=1, not auto
+    const notes = expandChainString('A4_3;4 B4_,1')
+    expect(notes[1]).toMatchObject({ pitch: 'B4', lengthTicks: 2, dampTicks: 1 })
+  })
+
+  it('semidamp on shift token propagates to following notes', () => {
+    // C4 at 0 (len=1), +_3;2 → C#4 at 1 (len=4, damp=2, targetEnd=7), D4 at 5 (auto-damp=1)
+    const notes = expandChainString('C4 +_3;2 D4')
+    expect(notes[1]).toMatchObject({ pitch: 'C#4', lengthTicks: 4, dampTicks: 2 })
+    expect(notes[2]).toMatchObject({ pitch: 'D4', offsetTicks: 5, dampTicks: 1 })
+  })
+
   it('rest does not break shift accumulation', () => {
     // Shift should survive a rest between operators
     const notes = expandChainString('C4 + . +')
