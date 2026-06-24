@@ -693,6 +693,37 @@ character:
     - 60.4   # H16
 `
 
+const OXYGENE_STRINGS1 = `# strings: Synth Strings 1 (GM51 / FluidR3_GM2.sf2).
+# PROFILE calibrated at A4 against TiMidity FluidR3_GM2 reference.
+character:
+  O: sine
+  AMP: 0.017
+  A: "0.001:1,100"
+  S: "0.001:100;1,100.0"
+  R: "0.5:100;0.04,90;0.2,15;0.4,2;0.6,0.1;1,0"
+  LFO:
+    - "8.18@sin[0.37];15.000:pitch"
+    - "1.0@sin[0];0.15:amp"
+  UNISON: "2;3"
+  PROFILE:
+    - 100.0  # H1
+    - 96.0   # H2
+    - 88.4   # H3
+    - 82.2   # H4
+    - 83.2   # H5
+    - 76.2   # H6
+    - 71.6   # H7
+    - 72.1   # H8
+    - 69.4   # H9
+    - 61.1   # H10
+    - 66.9   # H11
+    - 68.3   # H12
+    - 60.2   # H13
+    - 64.4   # H14
+    - 65.2   # H15
+    - 59.7   # H16
+`
+
 const OXYGENE_ENSEMBLE = `# ensemble: String Ensemble 1 (GM49 / FluidR3_GM2.sf2). PROFILE from loop FFT.
 # Sample: 'Strings C#5L'  root=60  rate=32000 Hz  loop=30844fr (963.9ms)
 # PROFILE updated L10: from TiMidity at G4 (note=67) t=1.5s.
@@ -5427,7 +5458,7 @@ const SEEDS: Seed[] = [
   { name: 'kalimba',         ext: 'spli', body: OXYGENE_KALIMBA,    inProject: true },
   { name: 'synbrass',        ext: 'spli', body: OXYGENE_SYNBRASS,   inProject: true },
   { name: 'synstrings2',     ext: 'spli', body: OXYGENE_STRINGS,    inProject: true },
-  { name: 'synstrings1',    ext: 'spli', body: OXYGENE_STRINGS,    inProject: true },
+  { name: 'synstrings1',     ext: 'spli', body: OXYGENE_STRINGS1,   inProject: true },
   { name: 'string-ensemble', ext: 'spli', body: OXYGENE_ENSEMBLE,   inProject: true },
   { name: 'bowed-pad',       ext: 'spli', body: OXYGENE_BOWEDPAD,   inProject: true },
   { name: 'oxygene-melody',  ext: 'spli', body: OXYGENE_MELODY,     inProject: true },
