@@ -79,7 +79,7 @@ export class Session {
     this.player = new Player(audioContextFactory)
   }
 
-  async startRender(): Promise<void> {
+  async startRender(flushEditors?: () => Promise<void>): Promise<void> {
     // Re-clicking Render while a render is in flight is "preempt" (R4):
     // cancel-then-restart on the same path.
     if (this.renderStatus().state !== 'idle' && this.renderStatus().state !== 'error') {
@@ -94,7 +94,8 @@ export class Session {
     })
 
     try {
-      const { scoreFile, instruments, room } = await loadProject()
+      await flushEditors?.()
+      const { scoreFile, projectFiles, instruments, room } = await loadProject()
 
       const tuner = new Tuner()
       const plan = await buildDistinctNotes(scoreFile.body, { tuner, instruments })
@@ -151,7 +152,7 @@ export class Session {
         const tEnd = this.barTimes[mb + 2] ?? 0
         this.player.setLoopPoints(tStart, tEnd)
       }
-      for (const f of await listProjectFiles()) {
+      for (const f of projectFiles) {
         await takeSnapshot(f.id, f.body)
       }
       this.player.loadBuffer(mix)
@@ -226,6 +227,7 @@ export class Session {
 
 interface LoadedProject {
   scoreFile: StoredFile
+  projectFiles: StoredFile[]
   instruments: Map<string, Awaited<ReturnType<typeof loadInstrument>>>
   room: RoomBody | FreeverbBody | null
 }
@@ -246,5 +248,5 @@ async function loadProject(): Promise<LoadedProject> {
   // Try tap model first (has `levels:`), then freeverb (`type: freeverb`).
   const roomFile = projectFiles.find((f) => f.ext === 'splr')
   const room = roomFile ? (parseRoom(roomFile.body) ?? parseFreeverbRoom(roomFile.body)) : null
-  return { scoreFile, instruments, room }
+  return { scoreFile, projectFiles, instruments, room }
 }

@@ -80,6 +80,7 @@ function EditorPanel(props: {
   emptyMessage: string
   onActiveInstrumentChange?: (name: string | null, body: string | null) => void
   onFileSave?: () => void
+  onFlushReady?: (flush: () => Promise<void>) => void
   onBarClick?: (barIndex: number, metaLine?: number) => void
   markerBar?: () => number | null
   focusId?: () => string | null
@@ -177,6 +178,7 @@ function EditorPanel(props: {
             markerBar={props.markerBar}
             restoreBody={restoreBody}
             onBodyRestored={() => setRestoreBody(null)}
+            onFlushReady={(flush) => props.onFlushReady?.(flush)}
             onBodyChange={(body) => {
                 liveBody.set(f.id, body)
                 clearTimeout(previewTimer)
@@ -199,6 +201,11 @@ export const Layout: Component<LayoutProps> = (props) => {
   const [instrumentNames, setInstrumentNames] = createSignal<Set<string>>(new Set())
   const [previewName, setPreviewName] = createSignal<string | null>(null)
   const [previewBody, setPreviewBody] = createSignal<string | null>(null)
+  // Flush functions registered by each active Editor; called before every render
+  // so pending autosave debounces are written to IndexedDB before loadProject reads them.
+  const editorFlushes = new Set<() => Promise<void>>()
+  const flushAll = async () => { await Promise.all([...editorFlushes].map((f) => f())) }
+  const startRender = () => void props.session.startRender(flushAll)
   createEffect(() => {
     props.refreshSignal()
     void (async () => {
@@ -230,7 +237,7 @@ export const Layout: Component<LayoutProps> = (props) => {
       const inEditor = (e.target as Element | null)?.closest?.('.cm-editor') != null
       if (e.key === 's') {
         e.preventDefault()
-        void props.session.startRender()
+        startRender()
       } else if (e.key === 'p') {
         e.preventDefault()
         props.session.player.play()
@@ -259,7 +266,7 @@ export const Layout: Component<LayoutProps> = (props) => {
           <PlayerHelpDialog ref={(el) => { playerHelpDialog = el }} />
           <div class="transport">
             <button
-              onClick={() => void props.session.startRender()}
+              onClick={() => startRender()}
               disabled={props.session.editLock()}
             >
               Render
@@ -344,6 +351,7 @@ export const Layout: Component<LayoutProps> = (props) => {
             setPreviewName(name)
             setPreviewBody(body)
           }}
+          onFlushReady={(flush) => editorFlushes.add(flush)}
           focusId={props.instrFocusId}
         />
       </section>
@@ -359,6 +367,7 @@ export const Layout: Component<LayoutProps> = (props) => {
           renderDiagnostics={props.session.renderDiagnostics}
           emptyMessage="No score in project. Add a .spls from staging."
           onFileSave={props.onScoreSave}
+          onFlushReady={(flush) => editorFlushes.add(flush)}
           onBarClick={(barIndex, metaLine) => props.session.setBarMarker(barIndex, metaLine)}
           markerBar={props.session.markerBar}
         />
@@ -374,6 +383,7 @@ export const Layout: Component<LayoutProps> = (props) => {
           instrumentNames={instrumentNames}
           renderDiagnostics={props.session.renderDiagnostics}
           emptyMessage="No tuning / room files in project."
+          onFlushReady={(flush) => editorFlushes.add(flush)}
           focusId={props.tuningFocusId}
         />
         <LogPane />

@@ -127,10 +127,10 @@ export const SnapshotDialog: Component<SnapshotDialogProps> = (props) => {
       <div class="help-body snap-body">
         <Show when={!snapshots.loading} fallback={<p class="snap-no-diff">Loading…</p>}>
           <Show
-            when={(snapshots() ?? []).length > 0}
+            when={(snapshots() ?? []).filter((s) => s.body !== props.currentBody()).length > 0}
             fallback={<p class="snap-no-diff">No snapshots yet — snapshots are taken on each render.</p>}
           >
-            <For each={snapshots()}>
+            <For each={(snapshots() ?? []).filter((s) => s.body !== props.currentBody())}>
               {(snap) => (
                 <SnapshotCard
                   snap={snap}

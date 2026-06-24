@@ -16,6 +16,7 @@ export interface EditorProps {
   markerBar?: () => number | null
   restoreBody?: () => string | null
   onBodyRestored?: () => void
+  onFlushReady?: (flush: () => Promise<void>) => void
 }
 
 export function Editor(props: EditorProps) {
@@ -26,6 +27,7 @@ export function Editor(props: EditorProps) {
   const autosaver = makeAutosaver(props.file.name, props.file.ext)
 
   onMount(() => {
+    props.onFlushReady?.(autosaver.flush)
     const extensions = [
       ...extensionsFor(props.file.ext as FileExtension, props.lintContext, props.onBarClick),
       readOnlyCompartment.of(readOnlyExtension(props.readOnly)),
