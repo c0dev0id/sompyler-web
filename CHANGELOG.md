@@ -47,6 +47,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`alle_meine_entchen.spls` upgraded to full song with Python-core tuning.** The previous 2-measure stub is replaced with the complete 5-measure nursery rhyme matching the Python reference fixture exactly. Added `tuning_config: python-core` so rendering routes through the Pyodide Python engine, and switched tempo to `ticks_per_minute: 140` (matching the Python test file). `dev/piano.spli` (STARTER_PIANO) replaced with a physics-based model: per-pitch variation entries at 7 pitch boundaries covering the full 27–4187 Hz piano range, each with measured PROFILE/SPREAD, plus RAILSBACK_CURVE and stress/length MORPH blocks.
+
 - **Oxygène score rewritten using chain notation** — sequential voice patterns (bass, kalimba, synbrass, kick, tambourine, melody) converted from offset-key to chain strings. Voices with intentional legato note overlaps (ensemble, bowedpad) remain in offset-key format. The OXYGENE score constant shrank from ~2930 lines to ~1820 lines (38% smaller). No musical change — the chain conversion is lossless, tested by 306 passing unit tests including the full chain parser suite.
 
 - **Oxygène melody S: shape refined** — sustain control point at `x=0.333` moved from `y=4` to `y=2`, dropping the t=1.0s envelope bump from +3.9 dB to +2.4 dB vs TiMidity G3 reference. QUALITY L1 16.3 → 13.3.
