@@ -13,6 +13,7 @@ import { InstrumentPreview } from './InstrumentPreview'
 import type { TransportState } from '../player/Player'
 import { HelpDialog } from './HelpDialog'
 import { PlayerHelpDialog } from './PlayerHelpDialog'
+import { LogPane } from './LogPane'
 import { Seekbar } from './Seekbar'
 import { firstInstrumentPitchHz } from '../parse/score'
 
@@ -338,7 +339,7 @@ export const Layout: Component<LayoutProps> = (props) => {
         />
       </section>
 
-      {/* Bottom-right: tuning / room */}
+      {/* Bottom-right: tuning / room + log */}
       <section class="quadrant br">
         <EditorPanel
           title="Tuning / Room"
@@ -350,6 +351,7 @@ export const Layout: Component<LayoutProps> = (props) => {
           emptyMessage="No tuning / room files in project."
           focusId={props.tuningFocusId}
         />
+        <LogPane />
       </section>
     </div>
   )
