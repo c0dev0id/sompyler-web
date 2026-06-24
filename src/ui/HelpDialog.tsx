@@ -84,17 +84,25 @@ stage:
     },
     {
       subtitle: 'Chain notation',
-      text: 'Assign a string to a voice for compact sequences. Notes play one per tick unless joined with ";" for chords.',
+      text: 'Assign a string to a voice for compact sequences. Notes play one per tick unless joined with "; " for chords.',
       params: [
         { key: '_N', desc: 'Hold for 1+N ticks — _3 = 4 ticks, _11 = 12 ticks.' },
-        { key: ';', desc: 'Start the next note at the same tick (chord).' },
+        { key: '_N,M', desc: 'Comma-tail: note sounds M extra ticks past its chain length but the next note starts normally.' },
+        { key: '_N;M', desc: 'Semidamp: like ,M but also auto-extends all later notes in the subchain so their releases share the same end tick.' },
+        { key: '; ', desc: 'Subchain separator (note the trailing space) — starts the next note at the same tick, forming a chord.' },
         { key: '.', desc: 'Rest — silence one tick. .3 = three silent ticks.' },
         { key: '+N / -N', desc: 'Shift up or down N semitones from the previous pitch.' },
       ],
-      code: `voice: "C4 E4 G4 C5"             # sequential, one note per tick
-voice: "G3_11; B3_11; D4_11"    # chord, each held 12 ticks
-voice: "C4_3 E4_3 G4_3"         # ascending arpeggio
-voice: "C4_3 .2 +4_3 .2 +3_3"  # rests and interval shifts`,
+      code: `voice: "C4 E4 G4 C5"               # sequential, one note per tick
+voice: "G3_11; B3_11; D4_11"      # chord, each held 12 ticks
+voice: "C4_3 E4_3 G4_3"           # ascending arpeggio
+voice: "C4_3 .2 +4_3 .2 +3_3"    # rests and interval shifts
+
+# Overlength — note rings 2 extra ticks past its chain position:
+voice: "C4_3,2 E4_3"  # C4 sounds 6 ticks; E4 starts at tick 4
+
+# Semidamp — all notes share the same release tick:
+voice: "C4_7;4 E4 G4"  # C4 sounds 12 ticks; E4 and G4 auto-extended to release at tick 12`,
     },
   ],
 }
