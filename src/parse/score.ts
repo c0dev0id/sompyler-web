@@ -340,7 +340,7 @@ export function parseScore(body: string): { head: ScoreHead; measures: unknown[]
   return { head: result, measures: expandMultiMeasures(docs.slice(1)) }
 }
 
-const FIRST_PITCH_RX = /\b([A-Ga-g][#b]?-?\d+)\b/
+const FIRST_PITCH_RX = /\b([A-Ga-g][#b]?-?\d+)/
 
 /**
  * Scan the score body and return the Hz of the first note played by the
