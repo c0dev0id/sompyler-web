@@ -38,7 +38,6 @@ export const App: Component = () => {
         onChange={bumpRefresh}
         mutationsDisabled={session.editLock()}
         onFocusFile={handleFocusFile}
-        onSoloRender={(name) => void session.startSoloRender(name)}
       />
       <Layout
         session={session}

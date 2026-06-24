@@ -8,7 +8,6 @@ export interface FileViewModalProps {
   file: StoredFile
   onClose: () => void
   onSaved: () => void
-  onSoloRender?: () => void
 }
 
 export const FileViewModal: Component<FileViewModalProps> = (props) => {
@@ -68,7 +67,6 @@ export const FileViewModal: Component<FileViewModalProps> = (props) => {
             name={() => props.file.name}
             body={previewBody}
             resolveHz={resolveHz}
-            onSoloRender={props.onSoloRender}
           />
         </div>
       </Show>
