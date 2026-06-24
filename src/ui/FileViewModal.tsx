@@ -1,4 +1,4 @@
-import { createSignal, onCleanup, type Component } from 'solid-js'
+import { createSignal, onCleanup, onMount, type Component } from 'solid-js'
 import { putFile, type StoredFile } from '../storage/files'
 import { Editor } from '../editor/Editor'
 
@@ -13,6 +13,7 @@ export const FileViewModal: Component<FileViewModalProps> = (props) => {
   let saveTimer = 0
   const [dirty, setDirty] = createSignal(false)
 
+  onMount(() => dialog?.showModal())
   onCleanup(() => clearTimeout(saveTimer))
 
   function handleChange(body: string) {
@@ -33,7 +34,7 @@ export const FileViewModal: Component<FileViewModalProps> = (props) => {
   return (
     <dialog
       class="file-view-dialog"
-      ref={(el) => { dialog = el; el.showModal() }}
+      ref={(el) => { dialog = el }}
       onClick={(e) => { if (e.target === dialog) close() }}
       onClose={close}
     >
