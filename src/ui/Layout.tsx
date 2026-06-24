@@ -12,6 +12,7 @@ import { PlayerVisualizer } from './PlayerVisualizer'
 import { InstrumentPreview } from './InstrumentPreview'
 import type { TransportState } from '../player/Player'
 import { HelpDialog } from './HelpDialog'
+import { PlayerHelpDialog } from './PlayerHelpDialog'
 import { Seekbar } from './Seekbar'
 import { firstInstrumentPitchHz } from '../parse/score'
 
@@ -208,6 +209,8 @@ export const Layout: Component<LayoutProps> = (props) => {
     onCleanup(() => window.removeEventListener('keydown', onKeyDown))
   })
 
+  let playerHelpDialog: HTMLDialogElement | undefined
+
   return (
     <div class="quadrants">
       {/* Top-left: transport + Render + waveform + instrument preview */}
@@ -216,7 +219,9 @@ export const Layout: Component<LayoutProps> = (props) => {
           <header class="pane-header">
             <h3 class="pane-title">Player</h3>
             <span class="pane-state">{playerState()}</span>
+            <button class="help-btn" title="Player reference" onClick={() => playerHelpDialog?.showModal()}>?</button>
           </header>
+          <PlayerHelpDialog ref={(el) => { playerHelpDialog = el }} />
           <div class="transport">
             <button
               onClick={() => void props.session.startRender()}
