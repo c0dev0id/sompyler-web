@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Oxygène score rewritten using chain notation** — sequential voice patterns (bass, kalimba, synbrass, kick, tambourine, melody) converted from offset-key to chain strings. Voices with intentional legato note overlaps (ensemble, bowedpad) remain in offset-key format. The OXYGENE score constant shrank from ~2930 lines to ~1820 lines (38% smaller). No musical change — the chain conversion is lossless, tested by 306 passing unit tests including the full chain parser suite.
 
-- **Oxygène melody S: shape refined** — sustain control point at `x=0.333` moved from `y=4` to `y=2`, dropping the t=1.0s envelope bump from +3.9 dB to +2.4 dB vs TiMidity G3 reference. QUALITY L1 16.3 → 13.3. AMP raised 0.5 → 0.9 for song-context mix level (the 0.052 calibration value is solo-render-only; song uses voice-faders + stress modulation).
+- **Oxygène melody S: shape refined** — sustain control point at `x=0.333` moved from `y=4` to `y=2`, dropping the t=1.0s envelope bump from +3.9 dB to +2.4 dB vs TiMidity G3 reference. QUALITY L1 16.3 → 13.3.
 
 - **10-loop TiMidity/FluidR3 calibration pass** for all 9 Oxygène instruments — each instrument compared envelope-by-envelope and spectrum-by-spectrum against TiMidity SF2 output via `compare_instrument.py`:
   - **bass**: S changed from 3s plucked decay to flat sustain (SF2 sample loops at constant amplitude); PROFILE fully replaced from C2 measurements (H2=95, H5=90 — rich uniform spectrum, not sparse pluck); AMP 0.5→0.025
