@@ -218,7 +218,7 @@ class Shape:
                     else:
                         z = 1
                     syntracer("coords", x=x, y=y, z=z, is_sharp=s)
-                    coords.append([ int(x), int(y), int(z), s ])
+                    coords.append([ float(x), float(y), int(z), s ])
             except (ValueError,TypeError) as e:
                 raise ShapeDefinitionError(f"{m0}: illegal syntax") from e
 
