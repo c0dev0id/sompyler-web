@@ -2,7 +2,7 @@
 
 exports[`conformance: alle_meine_entchen.spls > matches the normalised distinct-notes snapshot (self-regression) 1`] = `
 {
-  "distinctNoteCount": 18,
+  "distinctNoteCount": 15,
   "notes": [
     {
       "freq": 261.63,
@@ -62,7 +62,22 @@ exports[`conformance: alle_meine_entchen.spls > matches the normalised distinct-
         },
       ],
       "properties": {},
-      "stress": 0.925,
+      "stress": 0.85,
+    },
+    {
+      "freq": 329.63,
+      "instrument": "dev/piano",
+      "length": 0.8571,
+      "occurrences": [
+        {
+          "measure": "3",
+          "offsetSeconds": 12.8571,
+          "offsetTicks": 6,
+          "voice": "piano",
+        },
+      ],
+      "properties": {},
+      "stress": 0.85,
     },
     {
       "freq": 329.63,
@@ -78,21 +93,6 @@ exports[`conformance: alle_meine_entchen.spls > matches the normalised distinct-
       ],
       "properties": {},
       "stress": 0.925,
-    },
-    {
-      "freq": 329.63,
-      "instrument": "dev/piano",
-      "length": 0.8571,
-      "occurrences": [
-        {
-          "measure": "3",
-          "offsetSeconds": 12.8571,
-          "offsetTicks": 6,
-          "voice": "piano",
-        },
-      ],
-      "properties": {},
-      "stress": 1,
     },
     {
       "freq": 349.23,
@@ -113,6 +113,12 @@ exports[`conformance: alle_meine_entchen.spls > matches the normalised distinct-
         },
         {
           "measure": "3",
+          "offsetSeconds": 11.1429,
+          "offsetTicks": 2,
+          "voice": "piano",
+        },
+        {
+          "measure": "3",
           "offsetSeconds": 11.5714,
           "offsetTicks": 3,
           "voice": "piano",
@@ -120,21 +126,6 @@ exports[`conformance: alle_meine_entchen.spls > matches the normalised distinct-
       ],
       "properties": {},
       "stress": 0.85,
-    },
-    {
-      "freq": 349.23,
-      "instrument": "dev/piano",
-      "length": 0.4286,
-      "occurrences": [
-        {
-          "measure": "3",
-          "offsetSeconds": 11.1429,
-          "offsetTicks": 2,
-          "voice": "piano",
-        },
-      ],
-      "properties": {},
-      "stress": 0.925,
     },
     {
       "freq": 349.23,
@@ -164,6 +155,12 @@ exports[`conformance: alle_meine_entchen.spls > matches the normalised distinct-
         },
         {
           "measure": "4",
+          "offsetSeconds": 14.5714,
+          "offsetTicks": 2,
+          "voice": "piano",
+        },
+        {
+          "measure": "4",
           "offsetSeconds": 15,
           "offsetTicks": 3,
           "voice": "piano",
@@ -175,17 +172,17 @@ exports[`conformance: alle_meine_entchen.spls > matches the normalised distinct-
     {
       "freq": 392,
       "instrument": "dev/piano",
-      "length": 0.4286,
+      "length": 0.8571,
       "occurrences": [
         {
-          "measure": "4",
-          "offsetSeconds": 14.5714,
-          "offsetTicks": 2,
+          "measure": "0",
+          "offsetSeconds": 2.5714,
+          "offsetTicks": 6,
           "voice": "piano",
         },
       ],
       "properties": {},
-      "stress": 0.925,
+      "stress": 0.85,
     },
     {
       "freq": 392,
@@ -239,21 +236,6 @@ exports[`conformance: alle_meine_entchen.spls > matches the normalised distinct-
       "stress": 1,
     },
     {
-      "freq": 392,
-      "instrument": "dev/piano",
-      "length": 0.8571,
-      "occurrences": [
-        {
-          "measure": "0",
-          "offsetSeconds": 2.5714,
-          "offsetTicks": 6,
-          "voice": "piano",
-        },
-      ],
-      "properties": {},
-      "stress": 1,
-    },
-    {
       "freq": 440,
       "instrument": "dev/piano",
       "length": 0.4286,
@@ -262,6 +244,12 @@ exports[`conformance: alle_meine_entchen.spls > matches the normalised distinct-
           "measure": "1",
           "offsetSeconds": 3.8571,
           "offsetTicks": 1,
+          "voice": "piano",
+        },
+        {
+          "measure": "1",
+          "offsetSeconds": 4.2857,
+          "offsetTicks": 2,
           "voice": "piano",
         },
         {
@@ -278,6 +266,12 @@ exports[`conformance: alle_meine_entchen.spls > matches the normalised distinct-
         },
         {
           "measure": "2",
+          "offsetSeconds": 7.7143,
+          "offsetTicks": 2,
+          "voice": "piano",
+        },
+        {
+          "measure": "2",
           "offsetSeconds": 8.1429,
           "offsetTicks": 3,
           "voice": "piano",
@@ -285,27 +279,6 @@ exports[`conformance: alle_meine_entchen.spls > matches the normalised distinct-
       ],
       "properties": {},
       "stress": 0.85,
-    },
-    {
-      "freq": 440,
-      "instrument": "dev/piano",
-      "length": 0.4286,
-      "occurrences": [
-        {
-          "measure": "1",
-          "offsetSeconds": 4.2857,
-          "offsetTicks": 2,
-          "voice": "piano",
-        },
-        {
-          "measure": "2",
-          "offsetSeconds": 7.7143,
-          "offsetTicks": 2,
-          "voice": "piano",
-        },
-      ],
-      "properties": {},
-      "stress": 0.925,
     },
     {
       "freq": 440,

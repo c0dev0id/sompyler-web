@@ -2,7 +2,7 @@
 
 exports[`conformance: starter Pachelbel Canon in D > matches the normalised distinct-notes snapshot (self-regression) 1`] = `
 {
-  "distinctNoteCount": 48,
+  "distinctNoteCount": 45,
   "notes": [
     {
       "freq": 73.42,
@@ -49,7 +49,7 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
       "properties": {
         "dampSeconds": 0.5,
       },
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 98,
@@ -96,7 +96,7 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
       "properties": {
         "dampSeconds": 0.5,
       },
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 98,
@@ -214,7 +214,7 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
       "properties": {
         "dampSeconds": 0.5,
       },
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 110,
@@ -231,7 +231,7 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
       "properties": {
         "dampSeconds": 0.6760563254356384,
       },
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 123.47,
@@ -266,7 +266,7 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
       "properties": {
         "dampSeconds": 0.5,
       },
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 123.47,
@@ -283,7 +283,7 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
       "properties": {
         "dampSeconds": 0.7868852615356445,
       },
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 146.83,
@@ -541,111 +541,6 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
         },
       ],
       "properties": {},
-      "stress": 0.84,
-    },
-    {
-      "freq": 349.23,
-      "instrument": "violin",
-      "length": 0.5,
-      "occurrences": [
-        {
-          "measure": "3",
-          "offsetSeconds": 50.5,
-          "offsetTicks": 5,
-          "voice": "violin1",
-        },
-        {
-          "measure": "4",
-          "offsetSeconds": 67.5,
-          "offsetTicks": 7,
-          "voice": "violin1",
-        },
-        {
-          "measure": "6",
-          "offsetSeconds": 98.5,
-          "offsetTicks": 5,
-          "voice": "violin1",
-        },
-        {
-          "measure": "7",
-          "offsetSeconds": 115.5,
-          "offsetTicks": 7,
-          "voice": "violin1",
-        },
-        {
-          "measure": "9",
-          "offsetSeconds": 146.5,
-          "offsetTicks": 5,
-          "voice": "violin1",
-        },
-        {
-          "measure": "5",
-          "offsetSeconds": 82.5,
-          "offsetTicks": 5,
-          "voice": "violin2",
-        },
-        {
-          "measure": "6",
-          "offsetSeconds": 99.5,
-          "offsetTicks": 7,
-          "voice": "violin2",
-        },
-        {
-          "measure": "8",
-          "offsetSeconds": 130.5,
-          "offsetTicks": 5,
-          "voice": "violin2",
-        },
-        {
-          "measure": "9",
-          "offsetSeconds": 147.5,
-          "offsetTicks": 7,
-          "voice": "violin2",
-        },
-        {
-          "measure": "7",
-          "offsetSeconds": 114.5,
-          "offsetTicks": 5,
-          "voice": "violin3",
-        },
-        {
-          "measure": "8",
-          "offsetSeconds": 131.5,
-          "offsetTicks": 7,
-          "voice": "violin3",
-        },
-      ],
-      "properties": {},
-      "stress": 0.72,
-    },
-    {
-      "freq": 349.23,
-      "instrument": "violin",
-      "length": 0.7273,
-      "occurrences": [
-        {
-          "measure": "10",
-          "offsetSeconds": 162.9584,
-          "offsetTicks": 5,
-          "voice": "violin3",
-        },
-      ],
-      "properties": {},
-      "stress": 0.72,
-    },
-    {
-      "freq": 349.23,
-      "instrument": "violin",
-      "length": 0.8571,
-      "occurrences": [
-        {
-          "measure": "10",
-          "offsetSeconds": 164.4725,
-          "offsetTicks": 7,
-          "voice": "violin1",
-        },
-      ],
-      "properties": {},
       "stress": 0.72,
     },
     {
@@ -679,7 +574,7 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
         },
       ],
       "properties": {},
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 349.23,
@@ -687,9 +582,27 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
       "length": 0.5,
       "occurrences": [
         {
+          "measure": "3",
+          "offsetSeconds": 50.5,
+          "offsetTicks": 5,
+          "voice": "violin1",
+        },
+        {
           "measure": "4",
           "offsetSeconds": 66,
           "offsetTicks": 4,
+          "voice": "violin1",
+        },
+        {
+          "measure": "4",
+          "offsetSeconds": 67.5,
+          "offsetTicks": 7,
+          "voice": "violin1",
+        },
+        {
+          "measure": "6",
+          "offsetSeconds": 98.5,
+          "offsetTicks": 5,
           "voice": "violin1",
         },
         {
@@ -699,9 +612,39 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
           "voice": "violin1",
         },
         {
+          "measure": "7",
+          "offsetSeconds": 115.5,
+          "offsetTicks": 7,
+          "voice": "violin1",
+        },
+        {
+          "measure": "9",
+          "offsetSeconds": 146.5,
+          "offsetTicks": 5,
+          "voice": "violin1",
+        },
+        {
+          "measure": "5",
+          "offsetSeconds": 82.5,
+          "offsetTicks": 5,
+          "voice": "violin2",
+        },
+        {
           "measure": "6",
           "offsetSeconds": 98,
           "offsetTicks": 4,
+          "voice": "violin2",
+        },
+        {
+          "measure": "6",
+          "offsetSeconds": 99.5,
+          "offsetTicks": 7,
+          "voice": "violin2",
+        },
+        {
+          "measure": "8",
+          "offsetSeconds": 130.5,
+          "offsetTicks": 5,
           "voice": "violin2",
         },
         {
@@ -711,14 +654,32 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
           "voice": "violin2",
         },
         {
+          "measure": "9",
+          "offsetSeconds": 147.5,
+          "offsetTicks": 7,
+          "voice": "violin2",
+        },
+        {
+          "measure": "7",
+          "offsetSeconds": 114.5,
+          "offsetTicks": 5,
+          "voice": "violin3",
+        },
+        {
           "measure": "8",
           "offsetSeconds": 130,
           "offsetTicks": 4,
           "voice": "violin3",
         },
+        {
+          "measure": "8",
+          "offsetSeconds": 131.5,
+          "offsetTicks": 7,
+          "voice": "violin3",
+        },
       ],
       "properties": {},
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 349.23,
@@ -733,7 +694,22 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
         },
       ],
       "properties": {},
-      "stress": 0.84,
+      "stress": 0.72,
+    },
+    {
+      "freq": 349.23,
+      "instrument": "violin",
+      "length": 0.7273,
+      "occurrences": [
+        {
+          "measure": "10",
+          "offsetSeconds": 162.9584,
+          "offsetTicks": 5,
+          "voice": "violin3",
+        },
+      ],
+      "properties": {},
+      "stress": 0.72,
     },
     {
       "freq": 349.23,
@@ -748,7 +724,22 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
         },
       ],
       "properties": {},
-      "stress": 0.84,
+      "stress": 0.72,
+    },
+    {
+      "freq": 349.23,
+      "instrument": "violin",
+      "length": 0.8571,
+      "occurrences": [
+        {
+          "measure": "10",
+          "offsetSeconds": 164.4725,
+          "offsetTicks": 7,
+          "voice": "violin1",
+        },
+      ],
+      "properties": {},
+      "stress": 0.72,
     },
     {
       "freq": 349.23,
@@ -937,7 +928,7 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
         },
       ],
       "properties": {},
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 392,
@@ -952,7 +943,7 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
         },
       ],
       "properties": {},
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 392,
@@ -967,7 +958,7 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
         },
       ],
       "properties": {},
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 440,
@@ -994,6 +985,12 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
         },
         {
           "measure": "4",
+          "offsetSeconds": 65,
+          "offsetTicks": 2,
+          "voice": "violin1",
+        },
+        {
+          "measure": "4",
           "offsetSeconds": 66.5,
           "offsetTicks": 5,
           "voice": "violin1",
@@ -1014,6 +1011,12 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
           "measure": "6",
           "offsetSeconds": 99.5,
           "offsetTicks": 7,
+          "voice": "violin1",
+        },
+        {
+          "measure": "7",
+          "offsetSeconds": 113,
+          "offsetTicks": 2,
           "voice": "violin1",
         },
         {
@@ -1060,6 +1063,12 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
         },
         {
           "measure": "6",
+          "offsetSeconds": 97,
+          "offsetTicks": 2,
+          "voice": "violin2",
+        },
+        {
+          "measure": "6",
           "offsetSeconds": 98.5,
           "offsetTicks": 5,
           "voice": "violin2",
@@ -1080,6 +1089,12 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
           "measure": "8",
           "offsetSeconds": 131.5,
           "offsetTicks": 7,
+          "voice": "violin2",
+        },
+        {
+          "measure": "9",
+          "offsetSeconds": 145,
+          "offsetTicks": 2,
           "voice": "violin2",
         },
         {
@@ -1108,6 +1123,12 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
         },
         {
           "measure": "8",
+          "offsetSeconds": 129,
+          "offsetTicks": 2,
+          "voice": "violin3",
+        },
+        {
+          "measure": "8",
           "offsetSeconds": 130.5,
           "offsetTicks": 5,
           "voice": "violin3",
@@ -1117,6 +1138,21 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
           "offsetSeconds": 146.5,
           "offsetTicks": 5,
           "voice": "violin3",
+        },
+      ],
+      "properties": {},
+      "stress": 0.72,
+    },
+    {
+      "freq": 440,
+      "instrument": "violin",
+      "length": 0.5926,
+      "occurrences": [
+        {
+          "measure": "10",
+          "offsetSeconds": 161.0581,
+          "offsetTicks": 2,
+          "voice": "violin1",
         },
       ],
       "properties": {},
@@ -1172,60 +1208,6 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
       ],
       "properties": {},
       "stress": 0.72,
-    },
-    {
-      "freq": 440,
-      "instrument": "violin",
-      "length": 0.5,
-      "occurrences": [
-        {
-          "measure": "4",
-          "offsetSeconds": 65,
-          "offsetTicks": 2,
-          "voice": "violin1",
-        },
-        {
-          "measure": "7",
-          "offsetSeconds": 113,
-          "offsetTicks": 2,
-          "voice": "violin1",
-        },
-        {
-          "measure": "6",
-          "offsetSeconds": 97,
-          "offsetTicks": 2,
-          "voice": "violin2",
-        },
-        {
-          "measure": "9",
-          "offsetSeconds": 145,
-          "offsetTicks": 2,
-          "voice": "violin2",
-        },
-        {
-          "measure": "8",
-          "offsetSeconds": 129,
-          "offsetTicks": 2,
-          "voice": "violin3",
-        },
-      ],
-      "properties": {},
-      "stress": 0.84,
-    },
-    {
-      "freq": 440,
-      "instrument": "violin",
-      "length": 0.5926,
-      "occurrences": [
-        {
-          "measure": "10",
-          "offsetSeconds": 161.0581,
-          "offsetTicks": 2,
-          "voice": "violin1",
-        },
-      ],
-      "properties": {},
-      "stress": 0.84,
     },
     {
       "freq": 440,
@@ -1371,7 +1353,7 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
         },
       ],
       "properties": {},
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 493.88,
@@ -1386,7 +1368,7 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
         },
       ],
       "properties": {},
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 493.88,
@@ -1401,7 +1383,7 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
         },
       ],
       "properties": {},
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 493.88,
@@ -1416,13 +1398,19 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
         },
       ],
       "properties": {},
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 587.33,
       "instrument": "violin",
       "length": 0.5,
       "occurrences": [
+        {
+          "measure": "2",
+          "offsetSeconds": 33,
+          "offsetTicks": 2,
+          "voice": "violin1",
+        },
         {
           "measure": "4",
           "offsetSeconds": 64.5,
@@ -1433,6 +1421,18 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
           "measure": "4",
           "offsetSeconds": 65.5,
           "offsetTicks": 3,
+          "voice": "violin1",
+        },
+        {
+          "measure": "4",
+          "offsetSeconds": 67,
+          "offsetTicks": 6,
+          "voice": "violin1",
+        },
+        {
+          "measure": "5",
+          "offsetSeconds": 81,
+          "offsetTicks": 2,
           "voice": "violin1",
         },
         {
@@ -1448,6 +1448,18 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
           "voice": "violin1",
         },
         {
+          "measure": "7",
+          "offsetSeconds": 115,
+          "offsetTicks": 6,
+          "voice": "violin1",
+        },
+        {
+          "measure": "4",
+          "offsetSeconds": 65,
+          "offsetTicks": 2,
+          "voice": "violin2",
+        },
+        {
           "measure": "6",
           "offsetSeconds": 96.5,
           "offsetTicks": 1,
@@ -1457,6 +1469,18 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
           "measure": "6",
           "offsetSeconds": 97.5,
           "offsetTicks": 3,
+          "voice": "violin2",
+        },
+        {
+          "measure": "6",
+          "offsetSeconds": 99,
+          "offsetTicks": 6,
+          "voice": "violin2",
+        },
+        {
+          "measure": "7",
+          "offsetSeconds": 113,
+          "offsetTicks": 2,
           "voice": "violin2",
         },
         {
@@ -1472,6 +1496,18 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
           "voice": "violin2",
         },
         {
+          "measure": "9",
+          "offsetSeconds": 147,
+          "offsetTicks": 6,
+          "voice": "violin2",
+        },
+        {
+          "measure": "6",
+          "offsetSeconds": 97,
+          "offsetTicks": 2,
+          "voice": "violin3",
+        },
+        {
           "measure": "8",
           "offsetSeconds": 128.5,
           "offsetTicks": 1,
@@ -1481,6 +1517,18 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
           "measure": "8",
           "offsetSeconds": 129.5,
           "offsetTicks": 3,
+          "voice": "violin3",
+        },
+        {
+          "measure": "8",
+          "offsetSeconds": 131,
+          "offsetTicks": 6,
+          "voice": "violin3",
+        },
+        {
+          "measure": "9",
+          "offsetSeconds": 145,
+          "offsetTicks": 2,
           "voice": "violin3",
         },
       ],
@@ -1505,6 +1553,21 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
     {
       "freq": 587.33,
       "instrument": "violin",
+      "length": 0.5926,
+      "occurrences": [
+        {
+          "measure": "10",
+          "offsetSeconds": 161.0581,
+          "offsetTicks": 2,
+          "voice": "violin2",
+        },
+      ],
+      "properties": {},
+      "stress": 0.72,
+    },
+    {
+      "freq": 587.33,
+      "instrument": "violin",
       "length": 0.6316,
       "occurrences": [
         {
@@ -1520,96 +1583,6 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
     {
       "freq": 587.33,
       "instrument": "violin",
-      "length": 0.5,
-      "occurrences": [
-        {
-          "measure": "2",
-          "offsetSeconds": 33,
-          "offsetTicks": 2,
-          "voice": "violin1",
-        },
-        {
-          "measure": "4",
-          "offsetSeconds": 67,
-          "offsetTicks": 6,
-          "voice": "violin1",
-        },
-        {
-          "measure": "5",
-          "offsetSeconds": 81,
-          "offsetTicks": 2,
-          "voice": "violin1",
-        },
-        {
-          "measure": "7",
-          "offsetSeconds": 115,
-          "offsetTicks": 6,
-          "voice": "violin1",
-        },
-        {
-          "measure": "4",
-          "offsetSeconds": 65,
-          "offsetTicks": 2,
-          "voice": "violin2",
-        },
-        {
-          "measure": "6",
-          "offsetSeconds": 99,
-          "offsetTicks": 6,
-          "voice": "violin2",
-        },
-        {
-          "measure": "7",
-          "offsetSeconds": 113,
-          "offsetTicks": 2,
-          "voice": "violin2",
-        },
-        {
-          "measure": "9",
-          "offsetSeconds": 147,
-          "offsetTicks": 6,
-          "voice": "violin2",
-        },
-        {
-          "measure": "6",
-          "offsetSeconds": 97,
-          "offsetTicks": 2,
-          "voice": "violin3",
-        },
-        {
-          "measure": "8",
-          "offsetSeconds": 131,
-          "offsetTicks": 6,
-          "voice": "violin3",
-        },
-        {
-          "measure": "9",
-          "offsetSeconds": 145,
-          "offsetTicks": 2,
-          "voice": "violin3",
-        },
-      ],
-      "properties": {},
-      "stress": 0.84,
-    },
-    {
-      "freq": 587.33,
-      "instrument": "violin",
-      "length": 0.5926,
-      "occurrences": [
-        {
-          "measure": "10",
-          "offsetSeconds": 161.0581,
-          "offsetTicks": 2,
-          "voice": "violin2",
-        },
-      ],
-      "properties": {},
-      "stress": 0.84,
-    },
-    {
-      "freq": 587.33,
-      "instrument": "violin",
       "length": 0.7869,
       "occurrences": [
         {
@@ -1620,7 +1593,7 @@ exports[`conformance: starter Pachelbel Canon in D > matches the normalised dist
         },
       ],
       "properties": {},
-      "stress": 0.84,
+      "stress": 0.72,
     },
     {
       "freq": 587.33,
