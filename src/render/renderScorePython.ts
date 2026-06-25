@@ -80,6 +80,32 @@ function stripInstrumentBody(instrument: Instrument): string {
   return jsyaml.dump(stripped)
 }
 
+/**
+ * Sanitise a score body before handing it to the Python `play()` function.
+ *
+ * Python understands RFC-defined YAML structure only. Strip or neutralise
+ * everything that is sompyler-web-only:
+ *  - `tuning_config:` in the head doc (CLI option, not a score field)
+ *  - voice entries whose value is `false` (sompyler-web silence extension;
+ *    Python crashes — absent voice = silent is the RFC-equivalent)
+ */
+function stripScoreBodyForPython(scoreBody: string): string {
+  const docs = jsyaml.loadAll(scoreBody) as unknown[]
+  const parts = docs.map((doc, i) => {
+    if (!doc || typeof doc !== 'object') return jsyaml.dump(doc)
+    const obj = { ...(doc as Record<string, unknown>) }
+    if (i === 0) {
+      delete obj['tuning_config']
+    } else {
+      for (const k of Object.keys(obj)) {
+        if (obj[k] === false) delete obj[k]
+      }
+    }
+    return jsyaml.dump(obj)
+  })
+  return parts.join('---\n')
+}
+
 let _jobCounter = 0
 
 export async function renderScorePython(
@@ -90,9 +116,7 @@ export async function renderScorePython(
     log('python-core', 'warn', 'stripped freeverb room (unsupported in python core) — rendering dry')
   }
 
-  const strippedScore = scoreBody
-    .replace(/^tuning_config:.*$/m, '')
-    .replace(/^\s*ticks_per_measure:.*$/gm, '')
+  const strippedScore = stripScoreBodyForPython(scoreBody)
   const instruments = [...opts.instruments.values()].map((inst) => ({
     name: inst.name,
     body: stripInstrumentBody(inst),
