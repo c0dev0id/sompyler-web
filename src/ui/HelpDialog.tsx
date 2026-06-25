@@ -69,7 +69,7 @@ stage:
       text: 'A voice block maps tick offsets to pitches. Names: C D E F G A B. Sharps: C# D# F# G# A#. Flats: Db Eb Gb Ab Bb. Octave 4 = middle C (≈262 Hz); each +1 octave doubles the frequency.',
       params: [
         { key: 'tick: pitch dur', desc: 'Basic note entry. Duration is in ticks.' },
-        { key: 'damp=N', desc: 'Extend the release by N extra ticks — the note rings past the score window.' },
+        { key: 'o,N', desc: 'Extend the release by N extra ticks — the note rings past the score window.' },
         { key: '3,5: pitch dur', desc: 'Comma list — place the same note at multiple tick positions.' },
         { key: '0+2*4: pitch dur', desc: 'Range — start + step × count, producing ticks 0, 2, 4, 6.' },
         { key: 'voice: true', desc: 'Inherit the full content of this voice from the previous measure.' },
@@ -78,7 +78,7 @@ stage:
       code: `voice:
   0:  C4  3
   3:  Bb3 2
-  0:  G3  2  damp=2
+  0:  G3  2  o,2
   3,5: E4 1
   0+2*4: C5 1`,
     },

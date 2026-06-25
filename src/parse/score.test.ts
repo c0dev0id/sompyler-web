@@ -60,14 +60,14 @@ describe('walkMeasures', () => {
     expect(() => [...walkMeasures(head, measures)]).toThrow(/Voice 'unknown'/)
   })
 
-  it('parses trailing damp=N tokens as a per-note attribute (S51a10)', () => {
+  it('parses RFC chain overlength o,N as per-note damp (S51a10)', () => {
     const body = `
 title: damped
 stage:
   piano: 1|1 0 dev/piano
 ---
 piano:
-  0: C4 1 100 damp=2
+  0: C4 1 100 o,2
   1: C4 1
 `
     const { head, measures } = parseScore(body)

@@ -130,7 +130,7 @@ function parseStage(stage: unknown): Record<string, StageVoice> {
 }
 
 const NOTE_RX =
-  /^(\S+)(?:\s+(\d+(?:\.\d+)?))?(?:\s+(\d+))?((?:\s+[a-zA-Z_]\w*=\S+)*)\s*(?:#.*)?$/
+  /^(\S+)(?:\s+(\d+(?:\.\d+)?))?(?:\s+(\d+))?((?:\s+[a-zA-Z_]\w*=\S+)*)(?:\s+\w,(\d+))?\s*(?:#.*)?$/
 
 interface ParsedNoteShort {
   pitch: string
@@ -171,7 +171,7 @@ function parseShortNote(raw: string): ParsedNoteShort {
   const trimmed = raw.replace(/#.*$/, '').trim()
   const m = NOTE_RX.exec(trimmed)
   if (!m) throw new ScoreError(`Cannot parse note: '${raw}'`)
-  const [, pitchRaw, lenStr, weightStr, attrStr] = m
+  const [, pitchRaw, lenStr, weightStr, attrStr, dampStr] = m
   let pitch = pitchRaw!
   let offScale: '?' | '!' | null = null
   const tail = pitch.slice(-1)
@@ -179,7 +179,7 @@ function parseShortNote(raw: string): ParsedNoteShort {
     offScale = tail
     pitch = pitch.slice(0, -1)
   }
-  let damp = 0
+  const damp = dampStr ? parseFloat(dampStr) : 0
   const staticArticles: Record<string, string | number | boolean> = {}
   const shapeArticles: Record<string, string> = {}
   const continuumArticles: Record<string, { start: number; end: number }> = {}
@@ -190,11 +190,6 @@ function parseShortNote(raw: string): ParsedNoteShort {
       if (eq < 0) continue
       const k = tok.slice(0, eq)
       const v = tok.slice(eq + 1)
-      if (k === 'damp') {
-        const n = parseFloat(v)
-        if (!Number.isNaN(n)) damp = n
-        continue
-      }
       const cls = classifyAttrValue(v)
       if (cls.kind === 'shape') shapeArticles[k] = cls.value
       else if (cls.kind === 'continuum') continuumArticles[k] = { start: cls.start, end: cls.end }

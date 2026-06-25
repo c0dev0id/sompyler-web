@@ -66,17 +66,17 @@ _meta:
   lower_stress_bound: 72
   upper_stress_bound: 96
 cello:
-  0: D3 2 damp=1
-  2: A2 2 damp=1
-  4: B2 2 damp=1
-  6: F#2 2 damp=1
+  0: D3 2 o,1
+  2: A2 2 o,1
+  4: B2 2 o,1
+  6: F#2 2 o,1
 ---
 # m2 — cello phrase B: G D G A
 cello:
-  0: G2 2 damp=1
-  2: D2 2 damp=1
-  4: G2 2 damp=1
-  6: A2 2 damp=1
+  0: G2 2 o,1
+  2: D2 2 o,1
+  4: G2 2 o,1
+  6: A2 2 o,1
 ---
 # m3 — violin1 enters with melody M1 over cello A
 cello: true
@@ -92,10 +92,10 @@ violin1:
 ---
 # m4 — violin1 phrase M2 over cello B
 cello:
-  0: G2 2 damp=1
-  2: D2 2 damp=1
-  4: G2 2 damp=1
-  6: A2 2 damp=1
+  0: G2 2 o,1
+  2: D2 2 o,1
+  4: G2 2 o,1
+  6: A2 2 o,1
 violin1:
   0: D5 1
   1: C#5 1
@@ -108,10 +108,10 @@ violin1:
 ---
 # m5 — violin1 climax M3, violin2 enters with M1 (canon stagger = 2 bars)
 cello:
-  0: D3 2 damp=1
-  2: A2 2 damp=1
-  4: B2 2 damp=1
-  6: F#2 2 damp=1
+  0: D3 2 o,1
+  2: A2 2 o,1
+  4: B2 2 o,1
+  6: F#2 2 o,1
 violin1:
   0: F#5 1 vibrato=1:0,0;1,1
   1: D5 1
@@ -133,10 +133,10 @@ violin2:
 ---
 # m6 — violin1 back to M1, violin2 M2 (canon)
 cello:
-  0: G2 2 damp=1
-  2: D2 2 damp=1
-  4: G2 2 damp=1
-  6: A2 2 damp=1
+  0: G2 2 o,1
+  2: D2 2 o,1
+  4: G2 2 o,1
+  6: A2 2 o,1
 violin1:
   0: F#5 1
   1: E5 1
@@ -158,10 +158,10 @@ violin2:
 ---
 # m7 — violin3 enters; full canonic texture
 cello:
-  0: D3 2 damp=1
-  2: A2 2 damp=1
-  4: B2 2 damp=1
-  6: F#2 2 damp=1
+  0: D3 2 o,1
+  2: A2 2 o,1
+  4: B2 2 o,1
+  6: F#2 2 o,1
 violin1:
   0: D5 1
   1: C#5 1
@@ -192,10 +192,10 @@ violin3:
 ---
 # m8 — full canon, rotation continues
 cello:
-  0: G2 2 damp=1
-  2: D2 2 damp=1
-  4: G2 2 damp=1
-  6: A2 2 damp=1
+  0: G2 2 o,1
+  2: D2 2 o,1
+  4: G2 2 o,1
+  6: A2 2 o,1
 violin1:
   0: F#5 1 vibrato=1:0,0;1,1
   1: D5 1
@@ -226,10 +226,10 @@ violin3:
 ---
 # m9 — same cello A, rotated violins; D#? passing tone shows the ?-flag snap
 cello:
-  0: D3 2 damp=1
-  2: A2 2 damp=1
-  4: B2 2 damp=1
-  6: F#2 2 damp=1
+  0: D3 2 o,1
+  2: A2 2 o,1
+  4: B2 2 o,1
+  6: F#2 2 o,1
 violin1:
   0: F#5 1
   1: E5 1
@@ -260,10 +260,10 @@ violin3:
 ---
 # m10 — last full-tempo measure
 cello:
-  0: G2 2 damp=1
-  2: D2 2 damp=1
-  4: G2 2 damp=1
-  6: A2 2 damp=1
+  0: G2 2 o,1
+  2: D2 2 o,1
+  4: G2 2 o,1
+  6: A2 2 o,1
 violin1:
   0: D5 1
   1: C#5 1
@@ -296,10 +296,10 @@ violin3:
 _meta:
   tempo: "8:120;8,70"
 cello:
-  0: D3 2 damp=1
-  2: A2 2 damp=1
-  4: B2 2 damp=1
-  6: F#2 2 damp=1
+  0: D3 2 o,1
+  2: A2 2 o,1
+  4: B2 2 o,1
+  6: F#2 2 o,1
 violin1:
   0: F#5 1 vibrato=1:0,0;1,1
   1: D5 1
@@ -332,7 +332,7 @@ violin3:
 _meta:
   tempo: "8:70;8,55"
 cello:
-  0: D3 8 damp=2
+  0: D3 8 o,2
 violin1:
   0: A4 8 vibrato=1:0,0;1,1
 violin2:
@@ -358,7 +358,7 @@ _meta:
   lower_stress_bound: 70
   upper_stress_bound: 96
 piano:
-  0: D3 8 damp=2
+  0: D3 8 o,2
   0: F#5 1
   1: E5 1
   2: D5 1
@@ -369,7 +369,7 @@ piano:
   7: C#5 1
 ---
 piano:
-  0: G2 8 damp=2
+  0: G2 8 o,2
   0: D5 1
   1: C#5 1
   2: B4 1
@@ -380,7 +380,7 @@ piano:
   7: A4 1
 ---
 piano:
-  0: D3 8 damp=2
+  0: D3 8 o,2
   0: F#5 1 vibrato=1:0,0;1,1
   1: D5 1
   2: A4 1
@@ -393,7 +393,7 @@ piano:
 _meta:
   tempo: "8:120;8,60"
 piano:
-  0: D2 8 damp=3
+  0: D2 8 o,3
   0: D5 4
   4: A4 4
 `
@@ -1157,7 +1157,7 @@ _meta:
   lower_stress_bound: 70
   upper_stress_bound: 90
 seashore:
-  0: C4 12 damp=24
+  0: C4 12 o,24
 strings1: false
 strings2: false
 revcymbal: false

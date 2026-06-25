@@ -382,7 +382,7 @@ _meta:
   lower_stress_bound: 100
   upper_stress_bound: 100
 piano:
-  0: A4 4 damp=4
+  0: A4 4 o,4
 ---
 piano:
   0: B4 1
