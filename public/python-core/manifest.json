@@ -2,6 +2,7 @@
   "files": [
     "render_note.py",
     "render_score.py",
+    "lib/tones_euro_de+en.splt",
     "Sompyler/__init__.py",
     "Sompyler/intonation.py",
     "Sompyler/limits.py",
