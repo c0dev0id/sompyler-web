@@ -118,7 +118,7 @@ class Variation():
             if isinstance(profile_item, ProfileItem):
                 profile.append(profile_item)
                 return
-            if isinstance(profile_item, (int, float)):
+            if isinstance(profile_item, int):
                 profile_item = {'V': profile_item}
             if isinstance(profile_item.get("match"), int):
                 pt = profile_item["orig_match"] = profile_item.pop("match")

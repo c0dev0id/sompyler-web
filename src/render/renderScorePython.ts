@@ -12,6 +12,13 @@ export interface RenderScorePythonOptions {
 
 const WEB_ONLY_CHARACTER_KEYS = ['LFO', 'VCF', 'UNISON'] as const
 
+function normalizeProfile(profile: unknown): unknown {
+  if (!Array.isArray(profile)) return profile
+  return profile.map((item) =>
+    typeof item === 'number' && !Number.isInteger(item) ? Math.round(item) : item,
+  )
+}
+
 type WorkerMsg =
   | { type: 'ready' }
   | { type: 'init_error'; error: string }
@@ -57,6 +64,7 @@ function stripInstrumentBody(instrument: Instrument): string {
         delete char[key]
       }
     }
+    if ('PROFILE' in char) char['PROFILE'] = normalizeProfile(char['PROFILE'])
     stripped['character'] = char
   } else {
     // Flat-key format: oscillator/envelope keys live at top-level
@@ -66,6 +74,7 @@ function stripInstrumentBody(instrument: Instrument): string {
         delete stripped[key]
       }
     }
+    if ('PROFILE' in stripped) stripped['PROFILE'] = normalizeProfile(stripped['PROFILE'])
   }
 
   return jsyaml.dump(stripped)
