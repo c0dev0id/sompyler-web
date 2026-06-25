@@ -335,10 +335,11 @@ piano:
     expect(plan.notes.some((n) => n.properties.offScale === undefined)).toBe(true)
   })
 
-  it('ticks_per_measure caps bar length — overflow notes do not delay the next bar', async () => {
+  it('overflow notes do not delay the next bar', async () => {
     // Bar 1: note at tick 11, length 7 → overflows into tick 18 (6 ticks past bar end).
     // Bar 2: note at tick 0, length 1.
-    // With ticks_per_measure=12 at 60 tpm bar 1 is exactly 12 s.
+    // stress_pattern "12" → cumlen=12, sub_cumlen=1.
+    // At beats_per_minute=60: ticks_per_minute=60, 1 tick = 1 s, bar = 12 s.
     // Bar 2 note must start at 12 s, NOT at 18 s.
     const TWO_BAR = `
 title: overflow-bar
@@ -347,8 +348,7 @@ stage:
 ---
 _meta:
   beats_per_minute: 60
-  ticks_per_measure: 12
-  stress_pattern: "1"
+  stress_pattern: "12"
   lower_stress_bound: 100
   upper_stress_bound: 100
 piano:
