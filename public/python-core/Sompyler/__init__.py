@@ -20,7 +20,7 @@ class Progress:
     def new_note(self, note_id, length_s, position, description): pass
     def rendered_note(self, note_id, length_s): pass
     def reuse_note(self, note_id): pass
-    def retune_notes(self, htonic): pass
+    def retune_notes(self, offset, htonic): pass
     def reuse_former_note(self, note_id): pass
     def delete_orphan_notes(self, count): pass
     def next_measure(self, number, cumlength): pass
