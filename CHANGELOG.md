@@ -27,6 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Stressor bare-integer expansion now matches Python.** A bare integer N in a stress pattern (e.g. the `4` in `"2,1,0;4"`) is expanded to N equal sub-beats of weight 1 — `[1,1,1,1]` — giving a cycle period of N. JS was parsing it as a single element `[4]` (period 1), producing wrong stress values for all patterns using a bare integer at any level.
+
 - **Stressor hierarchical levels now match Python.** `buildStressor()` was flat-concatenating `;`-separated stress levels and cycling over the combined array. The correct behaviour (matching `Sompyler/score/stressor.py`) multiplies normalised weights per level: stress at tick t = ∏(level[i][t_at_i] / max[i]). For `2,0,1,0;1,0`, tick 2 (beat weight = 0, sub-beat weight = 1): JS wrongly computed 0.925; Python correctly gives 0.85.
 
 - **S46192 `cut` semantics now correct in the distinct-notes renderer.** Positive `cut` shifts all note offsets left by the cut amount and shortens bar duration by `abs(cut)`; negative `cut` shortens bar duration only (no offset shift). The prior implementation used `barTicks - cut` for bar length, doubling the bar for negative cuts, and did not subtract the positive-cut offset from note positions.

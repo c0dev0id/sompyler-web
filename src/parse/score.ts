@@ -274,7 +274,12 @@ function buildStressor(meta: MeasureMeta): (tick: number) => number {
   const hi = meta.upperStressBound
   if (!meta.stressPattern) return () => hi / 100
 
-  const levels = meta.stressPattern.split(';').map((g) => g.split(',').map(Number))
+  // Python stressor: comma-separated → explicit weights; bare integer N → N equal weights of 1.
+  const levels = meta.stressPattern.split(';').map((g) => {
+    if (g.includes(',')) return g.split(',').map(Number)
+    const n = parseInt(g.trim(), 10)
+    return Number.isFinite(n) && n > 0 ? new Array<number>(n).fill(1) : [1]
+  })
   if (levels.length === 0 || levels[0]!.length === 0) return () => hi / 100
 
   // innerLen[i] = product of group lengths from level i+1 to the end.
