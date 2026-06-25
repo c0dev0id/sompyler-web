@@ -90,7 +90,9 @@ export async function renderScorePython(
     log('python-core', 'warn', 'stripped freeverb room (unsupported in python core) — rendering dry')
   }
 
-  const strippedScore = scoreBody.replace(/^tuning_config:.*$/m, '')
+  const strippedScore = scoreBody
+    .replace(/^tuning_config:.*$/m, '')
+    .replace(/^\s*ticks_per_measure:.*$/gm, '')
   const instruments = [...opts.instruments.values()].map((inst) => ({
     name: inst.name,
     body: stripInstrumentBody(inst),
