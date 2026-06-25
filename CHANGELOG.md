@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **`scripts/validate-score.ts` cross-validation tool.** Run `node_modules/.bin/vite-node scripts/validate-score.ts <score.spls>` to compare note events (pitch Hz, offset seconds, length seconds, stress) between the JS parser and the Python sompyler reference. Uses `scripts/extract-notes.py` for fast first-pass extraction (no audio render). Caught the stressor bug below.
+- **`scripts/validate-score.ts` cross-validation tool.** Run `node_modules/.bin/vite-node scripts/validate-score.ts <score.spls>` to compare note events (pitch Hz, offset seconds, length seconds, stress) between the JS parser and the Python sompyler reference. Uses `scripts/extract-notes.py` for fast first-pass extraction (no audio render). Classifies four categories of known Python first-pass limitations (deferred-note offset, deferred-note stress, voice deduplication, and combined) so only genuine JS bugs fail the check. Add `scripts/dump-score.ts` to dump built-in score seeds to a file for use with the validator. Caught the stressor bugs below.
 
 - **AM modulation (RFC §S32116).** `AM:` key in the `character:` block applies amplitude modulation to each partial's oscillator output before the envelope. Uses the same `FREQ[@OSC][SHAPE];MOD:BASE[+PHASE]` format as FM.
 
