@@ -6,6 +6,7 @@ export type LogCategory =
   | 'player'
   | 'session'
   | 'worker'
+  | 'python-core'
 
 export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error'
 

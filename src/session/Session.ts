@@ -14,6 +14,7 @@ import { parseRoom, parseFreeverbRoom, type RoomBody, type FreeverbBody } from '
 import { parseTuning } from '../parse/tuning'
 import { Player } from '../player/Player'
 import { renderAllPython } from '../render/renderAllPython'
+import { renderScorePython } from '../render/renderScorePython'
 
 /**
  * Phase 6 / R3: thin coordinator that owns the three pieces of cross-domain
@@ -97,53 +98,66 @@ export class Session {
 
     try {
       await flushEditors?.()
-      const { scoreFile, projectFiles, instruments, room, core } = await loadProject()
+      const { scoreFile, projectFiles, instruments, room, rawRoomBody, roomIsFreeverb, core } = await loadProject()
 
       const tuner = new Tuner()
       const plan = await buildDistinctNotes(scoreFile.body, { tuner, instruments })
-      this.setStatus({
-        state: 'rendering',
-        progress: { done: 0, total: plan.notes.length, cacheHits: 0 },
-      })
 
-      const onProgress = (p: { done: number; total: number; cacheHits: number; lastKey?: string }) => {
+      let mix: MixResult
+      if (core === 'python') {
         this.setStatus({
           state: 'rendering',
-          progress: { done: p.done, total: p.total, cacheHits: p.cacheHits, lastKey: p.lastKey },
+          progress: { done: 0, total: 1, cacheHits: 0, lastKey: 'python-core' },
         })
-      }
-
-      const renderResult = core === 'python'
-        ? await renderAllPython(plan, { instruments, signal: controller.signal, onProgress })
-        : await renderAll(plan, {
-            workerFactory: createSynthWorker,
-            instruments,
-            compileInstrument,
-            signal: controller.signal,
-            onProgress,
-          })
-
-      if (controller.signal.aborted) {
-        log('session', 'info', 'Render aborted by user; keeping previous buffer')
-        return
-      }
-
-      if (renderResult.diagnostics.length > 0) {
-        // R6: keep the previous buffer looping; surface inline diagnostics.
-        this.setDiagnostics(renderResult.diagnostics)
-        const first = renderResult.diagnostics[0]!
+        mix = await renderScorePython(scoreFile.body, {
+          instruments,
+          rawRoomBody,
+          roomIsFreeverb,
+          signal: controller.signal,
+        })
+      } else {
         this.setStatus({
-          ...IDLE_STATUS,
-          state: 'error',
-          errorMessage: `${renderResult.diagnostics.length} note(s) failed to render — ${first.message}`,
+          state: 'rendering',
+          progress: { done: 0, total: plan.notes.length, cacheHits: 0 },
         })
-        log('session', 'warn', `Render produced ${renderResult.diagnostics.length} diagnostics; buffer unchanged`)
-        return
-      }
 
-      this.setStatus({ ...this.renderStatus(), state: 'mixing' })
-      const { head } = parseScore(scoreFile.body)
-      const mix = await mixOnly(plan, head, { room })
+        const onProgress = (p: { done: number; total: number; cacheHits: number; lastKey?: string }) => {
+          this.setStatus({
+            state: 'rendering',
+            progress: { done: p.done, total: p.total, cacheHits: p.cacheHits, lastKey: p.lastKey },
+          })
+        }
+
+        const renderResult = await renderAll(plan, {
+          workerFactory: createSynthWorker,
+          instruments,
+          compileInstrument,
+          signal: controller.signal,
+          onProgress,
+        })
+
+        if (controller.signal.aborted) {
+          log('session', 'info', 'Render aborted by user; keeping previous buffer')
+          return
+        }
+
+        if (renderResult.diagnostics.length > 0) {
+          // R6: keep the previous buffer looping; surface inline diagnostics.
+          this.setDiagnostics(renderResult.diagnostics)
+          const first = renderResult.diagnostics[0]!
+          this.setStatus({
+            ...IDLE_STATUS,
+            state: 'error',
+            errorMessage: `${renderResult.diagnostics.length} note(s) failed to render — ${first.message}`,
+          })
+          log('session', 'warn', `Render produced ${renderResult.diagnostics.length} diagnostics; buffer unchanged`)
+          return
+        }
+
+        this.setStatus({ ...this.renderStatus(), state: 'mixing' })
+        const { head } = parseScore(scoreFile.body)
+        mix = await mixOnly(plan, head, { room })
+      }
 
       if (scoreFile.id !== this.lastScoreId) {
         this.player.resetLoopPoints()
@@ -343,6 +357,8 @@ interface LoadedProject {
   projectFiles: StoredFile[]
   instruments: Map<string, Awaited<ReturnType<typeof loadInstrument>>>
   room: RoomBody | FreeverbBody | null
+  rawRoomBody: string | null
+  roomIsFreeverb: boolean
   core?: 'python'
 }
 
@@ -361,9 +377,14 @@ async function loadProject(): Promise<LoadedProject> {
   // First in-project room file wins; absent → free-field.
   // Try tap model first (has `levels:`), then freeverb (`type: freeverb`).
   const roomFile = projectFiles.find((f) => f.ext === 'splr')
-  const room = roomFile ? (parseRoom(roomFile.body) ?? parseFreeverbRoom(roomFile.body)) : null
+  const tapRoom = roomFile ? parseRoom(roomFile.body) : null
+  const freeverbRoom = roomFile && !tapRoom ? parseFreeverbRoom(roomFile.body) : null
+  const room = tapRoom ?? freeverbRoom
+  // rawRoomBody: only the RFC tap-room body is forwarded to Python; freeverb is JS-only.
+  const rawRoomBody = tapRoom !== null ? roomFile!.body : null
+  const roomIsFreeverb = roomFile !== undefined && tapRoom === null
   // Optional tuning file — if absent, defaults apply and core stays JS.
   const tuningFile = projectFiles.find((f) => f.ext === 'splt')
   const core = tuningFile ? parseTuning(tuningFile.body).core : undefined
-  return { scoreFile, projectFiles, instruments, room, core }
+  return { scoreFile, projectFiles, instruments, room, rawRoomBody, roomIsFreeverb, core }
 }
