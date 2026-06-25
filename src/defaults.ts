@@ -1166,18 +1166,26 @@ applause: {}
 # bar 2 — kalimba fade-in begins (very quiet)
 _meta:
   repeat_unmentioned_voices: true
-kalimba: ".4 C4_0,2 . C4_0,2 . C4_0,2 . C4_0,2"
+kalimba:
+  4: "C4 1"
+  6: "C4 1"
+  8: "C4 1"
+  10: "C4 1"
 ---
 # bar 3 — kalimba fading in
 _meta:
   repeat_unmentioned_voices: true
-kalimba: "C4_0,2 . C4_0,2 . C4_0,2"
+kalimba:
+  0: "C4 1"
+  2: "C4 1"
+  4: "C4 1"
 ---
 # bar 4 — bass pickup note (G1 at t=11)
 _meta:
   repeat_unmentioned_voices: true
 kalimba: {}
-bass: ".11 G1"
+bass:
+  11: "G1 1"
 revcymbal:
   9: C4 21
 applause:
@@ -1186,42 +1194,108 @@ applause:
 # bar 5 — drums + bass + kalimba enter; Cm pattern A
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-tambourine: "C4 *9 . C4 *2"
-hi-hat: ".2 C4"
-guiro: ".9 C4"
-castanet: ".3 C4 .5 C4"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+tambourine:
+  0: "C4 1"
+  1: "C4 1"
+  2: "C4 1"
+  3: "C4 1"
+  4: "C4 1"
+  5: "C4 1"
+  6: "C4 1"
+  7: "C4 1"
+  8: "C4 1"
+  10: "C4 1"
+  11: "C4 1"
+hi-hat:
+  2: "C4 1"
+guiro:
+  9: "C4 1"
+castanet:
+  3: "C4 1"
+  9: "C4 1"
 revcymbal: {}
 applause: {}
-kick: "C1_ .4 C1_"
+kick:
+  0: "C1 2"
+  6: "C1 2"
 ---
 # bar 6 — Cm pattern B
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 ---
 # bar 7 — Cm pattern A
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
 ---
 # bar 8 — Cm pattern B
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 ---
 # bar 9 — Cm pattern A
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
 ---
 # bar 10 — SynBrass + Strings enter; Cm pattern B
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-synbrass: "C5_2 .2 G4 Eb4_ G4_ . C4_6"
-strings: "Eb3_23; G3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
+synbrass:
+  0: "C5 3"
+  5: "G4 1"
+  6: "Eb4 2"
+  8: "G4 2"
+  11: "C4 7"
+strings:
+  0: "Eb3 24"
+  0: "G3 24"
+  0: "C3 24"
 ensemble:
   0: C5 5
   5: G4 1
@@ -1232,7 +1306,13 @@ ensemble:
 # bar 11 — Cm A; SynBrass silent this bar; strings hold
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
 synbrass: {}
 strings: {}
 ensemble: {}
@@ -1240,9 +1320,23 @@ ensemble: {}
 # bar 12 — Cm B; SynBrass repeats
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-synbrass: "C5_2 .2 G4 Eb4_ G4_ . C4_6"
-strings: "Eb3_23; G3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
+synbrass:
+  0: "C5 3"
+  5: "G4 1"
+  6: "Eb4 2"
+  8: "G4 2"
+  11: "C4 7"
+strings:
+  0: "Eb3 24"
+  0: "G3 24"
+  0: "C3 24"
 ensemble:
   0: C5 5
   5: G4 2
@@ -1253,19 +1347,49 @@ ensemble:
 # bar 13 — Cm A; SynBrass off
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
 synbrass: {}
 strings: {}
 ensemble: {}
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
 ---
 # bar 14 — Gm pattern; SynBrass Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
-synbrass: "Bb4_2 .2 A4 G4_ A4_ . D4_6"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+kalimba:
+  2: "D4 1"
+  4: "D4 1"
+  6: "D4 1"
+  9: "D4 1"
+  11: "D4 1"
+synbrass:
+  0: "Bb4 3"
+  5: "A4 1"
+  6: "G4 2"
+  8: "A4 2"
+  11: "D4 7"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: Bb4 5
   5: A4 2
@@ -1276,7 +1400,13 @@ ensemble:
 # bar 15 — Gm A; SynBrass off
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1_"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 2"
 synbrass: {}
 strings: {}
 ensemble: {}
@@ -1284,10 +1414,27 @@ ensemble: {}
 # bar 16 — Fm transition; SynBrass Fm run + SYNSTRING1 enters
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_ C2_"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-synbrass: "A4 . G4 F4 . C4_5"
-strings: "F3_23; A3_23"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+  11: "C2 2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+synbrass:
+  0: "A4 1"
+  2: "G4 1"
+  3: "F4 1"
+  5: "C4 6"
+strings:
+  0: "F3 24"
+  0: "A3 24"
 ensemble:
   0: A4 2
   2: G4 2
@@ -1309,7 +1456,10 @@ bass:
   8: C2 1
   9: Eb2 2
   11: C2 1
-synbrass: ".2 G4 F4 . C4_4"
+synbrass:
+  2: "G4 1"
+  3: "F4 1"
+  5: "C4 5"
 strings: {}
 ensemble:
   0: A4 2
@@ -1325,10 +1475,29 @@ strings1:
 # bar 18 — Cm A; 8-bar cycle starts
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-synbrass: "C5_2 .2 G4 Eb4_ G4_ . C4_6"
-strings: "Eb3_23; G3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+synbrass:
+  0: "C5 3"
+  5: "G4 1"
+  6: "Eb4 2"
+  8: "G4 2"
+  11: "C4 7"
+strings:
+  0: "Eb3 24"
+  0: "G3 24"
+  0: "C3 24"
 ensemble:
   0: C5 5
   5: G4 1
@@ -1349,7 +1518,14 @@ applause:
 # bar 19 — Cm B variant
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1 G1 Bb1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 1"
+  10: "G1 1"
+  11: "Bb1 1"
 synbrass: {}
 strings: {}
 ensemble: {}
@@ -1360,9 +1536,22 @@ applause: {}
 # bar 20 — Cm A
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-synbrass: "C5_2 .2 G4 Eb4_ G4_ . C4_6"
-strings: "Eb3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+synbrass:
+  0: "C5 3"
+  5: "G4 1"
+  6: "Eb4 2"
+  8: "G4 2"
+  11: "C4 7"
+strings:
+  0: "Eb3 24"
+  0: "C3 24"
 ensemble:
   0: C5 5
   5: G4 2
@@ -1383,7 +1572,13 @@ applause:
 # bar 21 — Cm B
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 synbrass: {}
 strings: {}
 ensemble: {}
@@ -1394,10 +1589,29 @@ applause: {}
 # bar 22 — Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
-synbrass: "Bb4_2 .2 A4 G4_ A4_ . D4_6"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+kalimba:
+  2: "D4 1"
+  4: "D4 1"
+  6: "D4 1"
+  9: "D4 1"
+  11: "D4 1"
+synbrass:
+  0: "Bb4 3"
+  5: "A4 1"
+  6: "G4 2"
+  8: "A4 2"
+  11: "D4 7"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: Bb4 5
   5: A4 2
@@ -1418,7 +1632,13 @@ applause:
 # bar 23 — Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
 synbrass: {}
 strings: {}
 ensemble: {}
@@ -1429,10 +1649,27 @@ applause: {}
 # bar 24 — Fm; SynBrass Fm run
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_ C2_"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-synbrass: "A4 . G4 F4 . C4_5"
-strings: "F3_23; A3_23"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+  11: "C2 2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+synbrass:
+  0: "A4 1"
+  2: "G4 1"
+  3: "F4 1"
+  5: "C4 6"
+strings:
+  0: "F3 24"
+  0: "A3 24"
 ensemble:
   0: A4 2
   2: G4 2
@@ -1462,7 +1699,10 @@ bass:
   9: Bb1 1
   10: G1 1
   11: Bb1 1
-synbrass: ".2 G4 F4 . C4_4"
+synbrass:
+  2: "G4 1"
+  3: "F4 1"
+  5: "C4 5"
 strings: {}
 ensemble:
   0: A4 2
@@ -1480,10 +1720,29 @@ applause: {}
 # bar 26 — Cm A
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-synbrass: "C5_2 .2 G4 Eb4_ G4_ . C4_6"
-strings: "Eb3_23; G3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+synbrass:
+  0: "C5 3"
+  5: "G4 1"
+  6: "Eb4 2"
+  8: "G4 2"
+  11: "C4 7"
+strings:
+  0: "Eb3 24"
+  0: "G3 24"
+  0: "C3 24"
 ensemble:
   0: C5 5
   5: G4 1
@@ -1504,7 +1763,13 @@ applause:
 # bar 27 — Cm B
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 synbrass: {}
 strings: {}
 ensemble: {}
@@ -1515,9 +1780,22 @@ applause: {}
 # bar 28 — Cm A
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-synbrass: "C5_2 .2 G4 Eb4_ G4_ . C4_6"
-strings: "Eb3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+synbrass:
+  0: "C5 3"
+  5: "G4 1"
+  6: "Eb4 2"
+  8: "G4 2"
+  11: "C4 7"
+strings:
+  0: "Eb3 24"
+  0: "C3 24"
 ensemble:
   0: C5 5
   5: G4 2
@@ -1538,7 +1816,13 @@ applause:
 # bar 29 — Cm B
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 synbrass: {}
 strings: {}
 ensemble: {}
@@ -1549,10 +1833,29 @@ applause: {}
 # bar 30 — Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
-synbrass: "Bb4_2 .2 A4 G4_ A4_ . D4_6"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+kalimba:
+  2: "D4 1"
+  4: "D4 1"
+  6: "D4 1"
+  9: "D4 1"
+  11: "D4 1"
+synbrass:
+  0: "Bb4 3"
+  5: "A4 1"
+  6: "G4 2"
+  8: "A4 2"
+  11: "D4 7"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: Bb4 5
   5: A4 2
@@ -1573,7 +1876,13 @@ applause:
 # bar 31 — Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
 synbrass: {}
 strings: {}
 ensemble: {}
@@ -1584,10 +1893,26 @@ applause: {}
 # bar 32 — Fm; SynBrass Fm
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-synbrass: "A4 . G4 F4 . C4_5"
-strings: "F3_23; A3_23"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+synbrass:
+  0: "A4 1"
+  2: "G4 1"
+  3: "F4 1"
+  5: "C4 6"
+strings:
+  0: "F3 24"
+  0: "A3 24"
 ensemble:
   0: A4 2
   2: G4 2
@@ -1618,7 +1943,10 @@ bass:
   9: Bb1 1
   10: G1 1
   11: Bb1 1
-synbrass: ".2 G4 F4 . C4_4"
+synbrass:
+  2: "G4 1"
+  3: "F4 1"
+  5: "C4 5"
 strings: {}
 ensemble:
   0: A4 2
@@ -1636,10 +1964,18 @@ applause: {}
 # bar 34 — BowedPad + SynString2-B enter; Cm; Kalimba silent
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
 kalimba: {}
 synbrass: {}
-strings: "Eb3_23; C3_23"
+strings:
+  0: "Eb3 24"
+  0: "C3 24"
 ensemble:
   0: C5 1
   1: G5 1
@@ -1660,7 +1996,13 @@ bowedpad:
 # bar 35 — Cm; repeat high strings
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 strings: {}
 ensemble:
   0: C5 1
@@ -1679,8 +2021,17 @@ bowedpad: {}
 # bar 36 — Gm; BowedPad Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_ . D2 C2_ A1"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 2"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -1701,7 +2052,13 @@ bowedpad:
 # bar 37 — Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
 strings: {}
 ensemble:
   0: D5 1
@@ -1720,8 +2077,17 @@ bowedpad: {}
 # bar 38 — Fm; BowedPad Fm
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_ C2_"
-strings: "F3_23; A3_23; F4_23"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+  11: "C2 2"
+strings:
+  0: "F3 24"
+  0: "A3 24"
+  0: "F4 24"
 ensemble:
   0: F5 1
   1: C6 1
@@ -1767,9 +2133,22 @@ bowedpad: {}
 # bar 40 — Melody enters; Cm A; Kalimba resumes
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "Eb3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "Eb3 24"
+  0: "C3 24"
 ensemble:
   0: C5 1
   1: G5 1
@@ -1787,12 +2166,23 @@ strings2:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb4;6 D4 Eb4 C4_ G3_6"
+melody:
+  0: "Eb4 1"
+  1: "D4 1"
+  2: "Eb4 1"
+  3: "C4 2"
+  5: "G3 7"
 ---
 # bar 41 — Cm B; melody repeats
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 strings: {}
 ensemble:
   0: C5 1
@@ -1809,14 +2199,33 @@ strings2:
   4: C5 1
   5: G5 7
 bowedpad: {}
-melody: "Eb4;6 D4 Eb4 C4_ G3_6"
+melody:
+  0: "Eb4 1"
+  1: "D4 1"
+  2: "Eb4 1"
+  3: "C4 2"
+  5: "G3 7"
 ---
 # bar 42 — Gm; melody Gm phrase
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_ . D2 C2_ A1"
-kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 2"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+kalimba:
+  2: "D4 1"
+  4: "D4 1"
+  6: "D4 1"
+  9: "D4 1"
+  11: "D4 1"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -1835,12 +2244,23 @@ bowedpad:
   0: G3 1
   3: Bb3 21
   6: D4 18
-melody: "Bb3;6 A3 Bb3 G3_ D3_6"
+melody:
+  0: "Bb3 1"
+  1: "A3 1"
+  2: "Bb3 1"
+  3: "G3 2"
+  5: "D3 7"
 ---
 # bar 43 — Gm; melody repeats
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
 strings: {}
 ensemble:
   0: D5 1
@@ -1857,14 +2277,32 @@ strings2:
   4: D5 1
   5: Bb5 7
 bowedpad: {}
-melody: "Bb3;6 A3 Bb3 G3_ D3_6"
+melody:
+  0: "Bb3 1"
+  1: "A3 1"
+  2: "Bb3 1"
+  3: "G3 2"
+  5: "D3 7"
 ---
 # bar 44 — Fm; melody Fm phrase
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "F3_23; A3_23; F4_23"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "F3 24"
+  0: "A3 24"
+  0: "F4 24"
 ensemble:
   0: F5 1
   1: C6 1
@@ -1883,7 +2321,12 @@ bowedpad:
   0: A3 24
   3: C4 21
   6: F4 18
-melody: "A3;6 G3 F3 F3_ C4_6"
+melody:
+  0: "A3 1"
+  1: "G3 1"
+  2: "F3 1"
+  3: "F3 2"
+  5: "C4 7"
 ---
 # bar 45 — Fm descending run; melody variant
 _meta:
@@ -1932,9 +2375,22 @@ applause:
 # bar 46 — Cm A; 6-bar cycle repeats
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "Eb3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "Eb3 24"
+  0: "C3 24"
 ensemble:
   0: C5 1
   1: G5 1
@@ -1952,14 +2408,25 @@ strings2:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb4;6 D4 Eb4 C4_ G3_6"
+melody:
+  0: "Eb4 1"
+  1: "D4 1"
+  2: "Eb4 1"
+  3: "C4 2"
+  5: "G3 7"
 revcymbal: {}
 applause: {}
 ---
 # bar 47 — Cm B; melody repeats
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 strings: {}
 ensemble:
   0: C5 1
@@ -1976,14 +2443,33 @@ strings2:
   4: C5 1
   5: G5 7
 bowedpad: {}
-melody: "Eb4;6 D4 Eb4 C4_ G3_6"
+melody:
+  0: "Eb4 1"
+  1: "D4 1"
+  2: "Eb4 1"
+  3: "C4 2"
+  5: "G3 7"
 ---
 # bar 48 — Gm; melody Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_ . D2 C2_ A1"
-kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 2"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+kalimba:
+  2: "D4 1"
+  4: "D4 1"
+  6: "D4 1"
+  9: "D4 1"
+  11: "D4 1"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -2002,12 +2488,23 @@ bowedpad:
   0: G3 1
   3: Bb3 21
   6: D4 18
-melody: "Bb3;6 A3 Bb3 G3_ D3_6"
+melody:
+  0: "Bb3 1"
+  1: "A3 1"
+  2: "Bb3 1"
+  3: "G3 2"
+  5: "D3 7"
 ---
 # bar 49 — Gm; melody repeats
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
 strings: {}
 ensemble:
   0: D5 1
@@ -2024,14 +2521,32 @@ strings2:
   4: D5 1
   5: Bb5 7
 bowedpad: {}
-melody: "Bb3;6 A3 Bb3 G3_ D3_6"
+melody:
+  0: "Bb3 1"
+  1: "A3 1"
+  2: "Bb3 1"
+  3: "G3 2"
+  5: "D3 7"
 ---
 # bar 50 — Fm; melody Fm
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "F3_23; A3_23; F4_23"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "F3 24"
+  0: "A3 24"
+  0: "F4 24"
 ensemble:
   0: F5 1
   1: C6 1
@@ -2050,7 +2565,12 @@ bowedpad:
   0: A3 24
   3: C4 24
   6: F4 24
-melody: "A3;6 G3 F3 F3_ C4_6"
+melody:
+  0: "A3 1"
+  1: "G3 1"
+  2: "F3 1"
+  3: "F3 2"
+  5: "C4 7"
 ---
 # bar 51 — Fm descending; melody variant
 _meta:
@@ -2092,9 +2612,23 @@ melody:
 # bar 52 — Cm A; melody silent bars 52-81; Kalimba continues; SynString2-B silent
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "Eb3_23; G3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "Eb3 24"
+  0: "G3 24"
+  0: "C3 24"
 ensemble:
   0: C5 5
   5: G4 1
@@ -2108,15 +2642,29 @@ melody: {}
 # bar 53 — Cm A
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
 strings: {}
 ensemble: {}
 ---
 # bar 54 — Cm B; ensemble plays
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-strings: "Eb3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
+strings:
+  0: "Eb3 24"
+  0: "C3 24"
 ensemble:
   0: C5 5
   5: G4 2
@@ -2127,16 +2675,36 @@ ensemble:
 # bar 55 — Cm A
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
 strings: {}
 ensemble: {}
 ---
 # bar 56 — Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+kalimba:
+  2: "D4 1"
+  4: "D4 1"
+  6: "D4 1"
+  9: "D4 1"
+  11: "D4 1"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: Bb4 5
   5: A4 2
@@ -2147,16 +2715,35 @@ ensemble:
 # bar 57 — Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1_"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 2"
 strings: {}
 ensemble: {}
 ---
 # bar 58 — Fm; SynString1 enters (same as SynString2-A Fm)
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_ C2_"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "F3_23; A3_23"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+  11: "C2 2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "F3 24"
+  0: "A3 24"
 ensemble:
   0: A4 2
   2: G4 2
@@ -2193,9 +2780,23 @@ strings1:
 # bar 60 — Cm A
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "Eb3_23; G3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "Eb3 24"
+  0: "G3 24"
+  0: "C3 24"
 ensemble:
   0: C5 5
   5: G4 1
@@ -2216,7 +2817,14 @@ applause:
 # bar 61 — Cm B variant
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1 G1 Bb1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 1"
+  10: "G1 1"
+  11: "Bb1 1"
 strings: {}
 ensemble: {}
 strings1: {}
@@ -2226,8 +2834,16 @@ applause: {}
 # bar 62 — Cm A
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-strings: "Eb3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+strings:
+  0: "Eb3 24"
+  0: "C3 24"
 ensemble:
   0: C5 5
   5: G4 2
@@ -2248,7 +2864,13 @@ applause:
 # bar 63 — Cm B
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 strings: {}
 ensemble: {}
 strings1: {}
@@ -2258,9 +2880,23 @@ applause: {}
 # bar 64 — Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+kalimba:
+  2: "D4 1"
+  4: "D4 1"
+  6: "D4 1"
+  9: "D4 1"
+  11: "D4 1"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: Bb4 5
   5: A4 2
@@ -2281,7 +2917,13 @@ applause:
 # bar 65 — Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
 strings: {}
 ensemble: {}
 strings1: {}
@@ -2291,9 +2933,22 @@ applause: {}
 # bar 66 — Fm
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_ C2_"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "F3_23; A3_23"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+  11: "C2 2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "F3 24"
+  0: "A3 24"
 ensemble:
   0: A4 2
   2: G4 2
@@ -2340,9 +2995,23 @@ applause: {}
 # bar 68 — Cm A
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "Eb3_23; G3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "Eb3 24"
+  0: "G3 24"
+  0: "C3 24"
 ensemble:
   0: C5 5
   5: G4 1
@@ -2363,7 +3032,13 @@ applause:
 # bar 69 — Cm B
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 strings: {}
 ensemble: {}
 strings1: {}
@@ -2373,8 +3048,17 @@ applause: {}
 # bar 70 — Cm B variant
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1 G1 Bb1"
-strings: "Eb3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 1"
+  10: "G1 1"
+  11: "Bb1 1"
+strings:
+  0: "Eb3 24"
+  0: "C3 24"
 ensemble:
   0: C5 5
   5: G4 2
@@ -2395,7 +3079,13 @@ applause:
 # bar 71 — Cm B
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 strings: {}
 ensemble: {}
 strings1: {}
@@ -2405,9 +3095,23 @@ applause: {}
 # bar 72 — Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+kalimba:
+  2: "D4 1"
+  4: "D4 1"
+  6: "D4 1"
+  9: "D4 1"
+  11: "D4 1"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: Bb4 5
   5: A4 2
@@ -2428,7 +3132,13 @@ applause:
 # bar 73 — Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
 strings: {}
 ensemble: {}
 strings1: {}
@@ -2438,9 +3148,21 @@ applause: {}
 # bar 74 — Fm
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "F3_23; A3_23"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "F3 24"
+  0: "A3 24"
 ensemble:
   0: A4 2
   2: G4 2
@@ -2488,9 +3210,22 @@ applause: {}
 # bar 76 — SynString2-B high arpeggios resume; BowedPad resumes; Cm
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "Eb3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "Eb3 24"
+  0: "C3 24"
 ensemble:
   0: C5 1
   1: G5 1
@@ -2510,7 +3245,13 @@ bowedpad:
 # bar 77 — Cm
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 strings: {}
 ensemble:
   0: C5 1
@@ -2529,9 +3270,23 @@ bowedpad: {}
 # bar 78 — Gm; BowedPad Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_ . D2 C2_ A1"
-kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 2"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+kalimba:
+  2: "D4 1"
+  4: "D4 1"
+  6: "D4 1"
+  9: "D4 1"
+  11: "D4 1"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -2552,7 +3307,13 @@ bowedpad:
 # bar 79 — Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
 strings: {}
 ensemble:
   0: D5 1
@@ -2571,9 +3332,23 @@ bowedpad: {}
 # bar 80 — Fm; BowedPad Fm
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_ C2_"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "F3_23; A3_23; F4_23"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+  11: "C2 2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "F3 24"
+  0: "A3 24"
+  0: "F4 24"
 ensemble:
   0: F5 1
   1: C6 1
@@ -2619,9 +3394,22 @@ bowedpad: {}
 # bar 82 — Melody returns with elaborate variations; Cm A
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "Eb3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "Eb3 24"
+  0: "C3 24"
 ensemble:
   0: C5 1
   1: G5 1
@@ -2639,12 +3427,23 @@ strings2:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb4;6 D4 Eb4 C4_ G3_6"
+melody:
+  0: "Eb4 1"
+  1: "D4 1"
+  2: "Eb4 1"
+  3: "C4 2"
+  5: "G3 7"
 ---
 # bar 83 — Cm B; melody repeats
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 strings: {}
 ensemble:
   0: C5 1
@@ -2661,14 +3460,33 @@ strings2:
   4: C5 1
   5: G5 7
 bowedpad: {}
-melody: "Eb4;6 D4 Eb4 C4_ G3_6"
+melody:
+  0: "Eb4 1"
+  1: "D4 1"
+  2: "Eb4 1"
+  3: "C4 2"
+  5: "G3 7"
 ---
 # bar 84 — Gm; melody Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_ . D2 C2_ A1"
-kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 2"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+kalimba:
+  2: "D4 1"
+  4: "D4 1"
+  6: "D4 1"
+  9: "D4 1"
+  11: "D4 1"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -2687,12 +3505,23 @@ bowedpad:
   0: G3 1
   3: Bb3 21
   6: D4 18
-melody: "Bb3;6 A3 Bb3 G3_ D3_6"
+melody:
+  0: "Bb3 1"
+  1: "A3 1"
+  2: "Bb3 1"
+  3: "G3 2"
+  5: "D3 7"
 ---
 # bar 85 — Gm; melody repeats
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
 strings: {}
 ensemble:
   0: D5 1
@@ -2709,14 +3538,32 @@ strings2:
   4: D5 1
   5: Bb5 7
 bowedpad: {}
-melody: "Bb3;6 A3 Bb3 G3_ D3_6"
+melody:
+  0: "Bb3 1"
+  1: "A3 1"
+  2: "Bb3 1"
+  3: "G3 2"
+  5: "D3 7"
 ---
 # bar 86 — Fm; melody Fm
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "F3_23; A3_23; F4_23"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "F3 24"
+  0: "A3 24"
+  0: "F4 24"
 ensemble:
   0: F5 1
   1: C6 1
@@ -2735,7 +3582,12 @@ bowedpad:
   0: A3 24
   3: C4 21
   6: F4 18
-melody: "A3;6 G3 F3 F3_ C4_6"
+melody:
+  0: "A3 1"
+  1: "G3 1"
+  2: "F3 1"
+  3: "F3 2"
+  5: "C4 7"
 ---
 # bar 87 — Fm descending; melody extended variant
 _meta:
@@ -2784,9 +3636,22 @@ applause:
 # bar 88 — Cm A; melody with fill at t=8
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "Eb3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "Eb3 24"
+  0: "C3 24"
 ensemble:
   0: C5 1
   1: G5 1
@@ -2804,14 +3669,27 @@ strings2:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb4;6 D4 Eb4 C4_ G3_2 Eb4_2 G3"
+melody:
+  0: "Eb4 1"
+  1: "D4 1"
+  2: "Eb4 1"
+  3: "C4 2"
+  5: "G3 3"
+  8: "Eb4 3"
+  11: "G3 1"
 revcymbal: {}
 applause: {}
 ---
 # bar 89 — Cm B; melody with ornaments
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 strings: {}
 ensemble:
   0: C5 1
@@ -2841,9 +3719,23 @@ melody:
 # bar 90 — Gm; melody elaborate Gm variation
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_ . D2 C2_ A1"
-kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 2"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+kalimba:
+  2: "D4 1"
+  4: "D4 1"
+  6: "D4 1"
+  9: "D4 1"
+  11: "D4 1"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -2876,7 +3768,13 @@ melody:
 # bar 91 — Gm; melody variant
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
 strings: {}
 ensemble:
   0: D5 1
@@ -2906,9 +3804,23 @@ melody:
 # bar 92 — Fm; melody ascending run
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_ C2_"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "F3_23; A3_23; F4_23"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+  11: "C2 2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "F3 24"
+  0: "A3 24"
+  0: "F4 24"
 ensemble:
   0: F5 1
   1: C6 1
@@ -2927,7 +3839,13 @@ bowedpad:
   0: A3 24
   3: C4 21
   6: F4 18
-melody: "A3_;6 F3_ A3_ C4_ A3_ C4_"
+melody:
+  0: "A3 2"
+  2: "F3 2"
+  4: "A3 2"
+  6: "C4 2"
+  8: "A3 2"
+  10: "C4 2"
 ---
 # bar 93 — Fm; melody high run
 _meta:
@@ -2969,9 +3887,22 @@ applause:
 # bar 94 — Cm; melody high Cm phrase
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "Eb3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "Eb3 24"
+  0: "C3 24"
 ensemble:
   0: C5 1
   1: G5 1
@@ -2989,14 +3920,27 @@ strings2:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb5;6 D5 Eb5 C5_ G4_2 Eb5_2 G4"
+melody:
+  0: "Eb5 1"
+  1: "D5 1"
+  2: "Eb5 1"
+  3: "C5 2"
+  5: "G4 3"
+  8: "Eb5 3"
+  11: "G4 1"
 revcymbal: {}
 applause: {}
 ---
 # bar 95 — Cm; melody ornament
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 strings: {}
 ensemble:
   0: C5 1
@@ -3013,14 +3957,33 @@ strings2:
   4: C5 1
   5: G5 7
 bowedpad: {}
-melody: "Eb5_;6 G4 D5_ C5_2 G4_3"
+melody:
+  0: "Eb5 2"
+  2: "G4 1"
+  3: "D5 2"
+  5: "C5 3"
+  8: "G4 4"
 ---
 # bar 96 — Gm; melody high Gm phrase
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_ . D2 C2_ A1"
-kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 2"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+kalimba:
+  2: "D4 1"
+  4: "D4 1"
+  6: "D4 1"
+  9: "D4 1"
+  11: "D4 1"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -3051,7 +4014,13 @@ melody:
 # bar 97 — Gm; melody elaborate
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
 strings: {}
 ensemble:
   0: D5 1
@@ -3081,9 +4050,22 @@ melody:
 # bar 98 — Fm; melody Fm
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "F3_23; A3_23; F4_23"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "F3 24"
+  0: "A3 24"
+  0: "F4 24"
 ensemble:
   0: F5 1
   1: C6 1
@@ -3102,7 +4084,14 @@ bowedpad:
   0: A3 24
   3: C4 21
   6: F4 18
-melody: "A4;6 G4 F4 F4_ C5_2 F4_2 F4"
+melody:
+  0: "A4 1"
+  1: "G4 1"
+  2: "F4 1"
+  3: "F4 2"
+  5: "C5 3"
+  8: "F4 3"
+  11: "F4 1"
 ---
 # bar 99 — Fm descending; melody
 _meta:
@@ -3135,7 +4124,12 @@ strings2:
   4: F5 1
   5: C6 7
 bowedpad: {}
-melody: "A4_;6 G4 F4_ C5_2 F4_3"
+melody:
+  0: "A4 2"
+  2: "G4 1"
+  3: "F4 2"
+  5: "C5 3"
+  8: "F4 4"
 revcymbal:
   9: C4 21
 applause:
@@ -3144,9 +4138,22 @@ applause:
 # bar 100 — Cm; melody high Cm
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "Eb3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "Eb3 24"
+  0: "C3 24"
 ensemble:
   0: C5 1
   1: G5 1
@@ -3164,14 +4171,27 @@ strings2:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb5;6 D5 Eb5 C5_ G4_2 Eb5_2 G4"
+melody:
+  0: "Eb5 1"
+  1: "D5 1"
+  2: "Eb5 1"
+  3: "C5 2"
+  5: "G4 3"
+  8: "Eb5 3"
+  11: "G4 1"
 revcymbal: {}
 applause: {}
 ---
 # bar 101 — Cm; melody ornament
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 strings: {}
 ensemble:
   0: C5 1
@@ -3188,14 +4208,34 @@ strings2:
   4: C5 1
   5: G5 7
 bowedpad: {}
-melody: "Eb5_;6 G4 D5_ C5_2 G4_2 G4"
+melody:
+  0: "Eb5 2"
+  2: "G4 1"
+  3: "D5 2"
+  5: "C5 3"
+  8: "G4 3"
+  11: "G4 1"
 ---
 # bar 102 — Gm; melody elaborate Gm variation
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_ . D2 C2_ A1"
-kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 2"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+kalimba:
+  2: "D4 1"
+  4: "D4 1"
+  6: "D4 1"
+  9: "D4 1"
+  11: "D4 1"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -3214,12 +4254,27 @@ bowedpad:
   0: G3 1
   3: Bb3 21
   6: D4 18
-melody: "D5;6 C5 Bb4 D5 C5 Bb4 D5_ G4_2 G4"
+melody:
+  0: "D5 1"
+  1: "C5 1"
+  2: "Bb4 1"
+  3: "D5 1"
+  4: "C5 1"
+  5: "Bb4 1"
+  6: "D5 2"
+  8: "G4 3"
+  11: "G4 1"
 ---
 # bar 103 — Gm; melody variation
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
 strings: {}
 ensemble:
   0: D5 1
@@ -3236,14 +4291,36 @@ strings2:
   4: D5 1
   5: Bb5 7
 bowedpad: {}
-melody: "D5;6 C5 D5 Bb4_ G4_2 D5 C5_ Bb4"
+melody:
+  0: "D5 1"
+  1: "C5 1"
+  2: "D5 1"
+  3: "Bb4 2"
+  5: "G4 3"
+  8: "D5 1"
+  9: "C5 2"
+  11: "Bb4 1"
 ---
 # bar 104 — Fm; melody Fm
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_ C2_"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "F3_23; A3_23; F4_23"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+  11: "C2 2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "F3 24"
+  0: "A3 24"
+  0: "F4 24"
 ensemble:
   0: F5 1
   1: C6 1
@@ -3262,7 +4339,13 @@ bowedpad:
   0: A3 24
   3: C4 21
   6: F4 18
-melody: "A4_;6 G4 F4_ C5_2 F4_2 F4"
+melody:
+  0: "A4 2"
+  2: "G4 1"
+  3: "F4 2"
+  5: "C5 3"
+  8: "F4 3"
+  11: "F4 1"
 ---
 # bar 105 — Fm; melody ornament
 _meta:
@@ -3290,7 +4373,13 @@ strings2:
   4: F5 1
   5: C6 7
 bowedpad: {}
-melody: "A4;6 G4 A4 F4_ C5_2 F4_3"
+melody:
+  0: "A4 1"
+  1: "G4 1"
+  2: "A4 1"
+  3: "F4 2"
+  5: "C5 3"
+  8: "F4 4"
 revcymbal:
   9: C4 21
 applause:
@@ -3299,9 +4388,22 @@ applause:
 # bar 106 — Cm; melody Cm with fill
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "Eb3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "Eb3 24"
+  0: "C3 24"
 ensemble:
   0: C5 1
   1: G5 1
@@ -3319,14 +4421,27 @@ strings2:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb4;6 D4 Eb4 C4_ G3_2 Eb4_2 G3"
+melody:
+  0: "Eb4 1"
+  1: "D4 1"
+  2: "Eb4 1"
+  3: "C4 2"
+  5: "G3 3"
+  8: "Eb4 3"
+  11: "G3 1"
 revcymbal: {}
 applause: {}
 ---
 # bar 107 — Cm; melody ornament run
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 strings: {}
 ensemble:
   0: C5 1
@@ -3343,14 +4458,37 @@ strings2:
   4: C5 1
   5: G5 7
 bowedpad: {}
-melody: "Eb4;6 D4 C4 Eb4 D4 C4 Eb4_ G3_2 G3"
+melody:
+  0: "Eb4 1"
+  1: "D4 1"
+  2: "C4 1"
+  3: "Eb4 1"
+  4: "D4 1"
+  5: "C4 1"
+  6: "Eb4 2"
+  8: "G3 3"
+  11: "G3 1"
 ---
 # bar 108 — Gm; melody Gm with fill
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_ . D2 C2_ A1"
-kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 2"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+kalimba:
+  2: "D4 1"
+  4: "D4 1"
+  6: "D4 1"
+  9: "D4 1"
+  11: "D4 1"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -3381,7 +4519,13 @@ melody:
 # bar 109 — Gm; melody variation
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
 strings: {}
 ensemble:
   0: D5 1
@@ -3411,9 +4555,22 @@ melody:
 # bar 110 — Fm; melody Fm
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "F3_23; A3_23; F4_23"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "F3 24"
+  0: "A3 24"
+  0: "F4 24"
 ensemble:
   0: F5 1
   1: C6 1
@@ -3432,7 +4589,14 @@ bowedpad:
   0: A3 24
   3: C4 21
   6: F4 18
-melody: "A3;6 G3 F3 F3_ C4_2 F3_2 F3"
+melody:
+  0: "A3 1"
+  1: "G3 1"
+  2: "F3 1"
+  3: "F3 2"
+  5: "C4 3"
+  8: "F3 3"
+  11: "F3 1"
 ---
 # bar 111 — Fm; melody extended run
 _meta:
@@ -3482,9 +4646,22 @@ applause:
 # bar 112 — Cm; melody high Cm phrase (last cycle)
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "Eb3_23; C3_23"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "G1 1"
+  9: "Bb1 2"
+  11: "G1 1"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "Eb3 24"
+  0: "C3 24"
 ensemble:
   0: C5 1
   1: G5 1
@@ -3502,14 +4679,27 @@ strings2:
 bowedpad:
   3: C4 21
   6: Eb4 18
-melody: "Eb5;6 D5 Eb5 C5_ G4_2 Eb5_2 G4"
+melody:
+  0: "Eb5 1"
+  1: "D5 1"
+  2: "Eb5 1"
+  3: "C5 2"
+  5: "G4 3"
+  8: "Eb5 3"
+  11: "G4 1"
 revcymbal: {}
 applause: {}
 ---
 # bar 113 — Cm; melody ornament
 _meta:
   repeat_unmentioned_voices: true
-bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
+bass:
+  0: "C2 3"
+  3: "Bb1 2"
+  5: "C2 3"
+  8: "C2 1"
+  9: "Bb1 2"
+  11: "G1 1"
 strings: {}
 ensemble:
   0: C5 1
@@ -3526,14 +4716,34 @@ strings2:
   4: C5 1
   5: G5 7
 bowedpad: {}
-melody: "Eb5_;6 G4 D5_ C5_2 G4_2 G4"
+melody:
+  0: "Eb5 2"
+  2: "G4 1"
+  3: "D5 2"
+  5: "C5 3"
+  8: "G4 3"
+  11: "G4 1"
 ---
 # bar 114 — Gm; melody Gm
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_ . D2 C2_ A1"
-kalimba: ".2 D4_0,2 . D4_0,2 . D4_0,2 .2 D4_0,2 . D4_0,2"
-strings: "D3_23; Bb3_23; D4_23"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 2"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
+kalimba:
+  2: "D4 1"
+  4: "D4 1"
+  6: "D4 1"
+  9: "D4 1"
+  11: "D4 1"
+strings:
+  0: "D3 24"
+  0: "Bb3 24"
+  0: "D4 24"
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -3552,12 +4762,27 @@ bowedpad:
   0: G3 1
   3: Bb3 21
   6: D4 18
-melody: "D5;6 C5 Bb4 D5 C5 Bb4 D5_ G4_2 G4"
+melody:
+  0: "D5 1"
+  1: "C5 1"
+  2: "Bb4 1"
+  3: "D5 1"
+  4: "C5 1"
+  5: "Bb4 1"
+  6: "D5 2"
+  8: "G4 3"
+  11: "G4 1"
 ---
 # bar 115 — Gm; melody variation
 _meta:
   repeat_unmentioned_voices: true
-bass: "D2_2 C2_ D2_2 D2 C2_ A1"
+bass:
+  0: "D2 3"
+  3: "C2 2"
+  5: "D2 3"
+  8: "D2 1"
+  9: "C2 2"
+  11: "A1 1"
 strings: {}
 ensemble:
   0: D5 1
@@ -3574,14 +4799,35 @@ strings2:
   4: D5 1
   5: Bb5 7
 bowedpad: {}
-melody: "D5;6 C5 D5 Bb4_ G4_2 D5 C5_ Bb4"
+melody:
+  0: "D5 1"
+  1: "C5 1"
+  2: "D5 1"
+  3: "Bb4 2"
+  5: "G4 3"
+  8: "D5 1"
+  9: "C5 2"
+  11: "Bb4 1"
 ---
 # bar 116 — Fm; fade out begins; melody Fm final
 _meta:
   repeat_unmentioned_voices: true
-bass: "F2_2 Eb2_ C2_2 F2 Eb2_"
-kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
-strings: "F3_11; A3_11; F4_11"
+bass:
+  0: "F2 3"
+  3: "Eb2 2"
+  5: "C2 3"
+  8: "F2 1"
+  9: "Eb2 2"
+kalimba:
+  2: "C4 1"
+  4: "C4 1"
+  6: "C4 1"
+  9: "C4 1"
+  11: "C4 1"
+strings:
+  0: "F3 12"
+  0: "A3 12"
+  0: "F4 12"
 ensemble:
   0: F5 1
   1: C6 1
@@ -3599,7 +4845,13 @@ strings2:
 bowedpad:
   3: C4 9
   6: F4 6
-melody: "A4_;6 G4 F4_ C5_2 F4_2 F4"
+melody:
+  0: "A4 2"
+  2: "G4 1"
+  3: "F4 2"
+  5: "C5 3"
+  8: "F4 3"
+  11: "F4 1"
 ---
 # bar 117 — fade to silence
 _meta:

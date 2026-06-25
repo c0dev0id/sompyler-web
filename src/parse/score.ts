@@ -3,7 +3,6 @@ import { ScoreError } from '../errors'
 import { log } from '../debug'
 import { PositionStack } from './position'
 import { expandMultiMeasures } from './multimeasure'
-import { expandChainString } from './chain'
 import { Tuner } from './tuning'
 
 /**
@@ -381,9 +380,7 @@ export function firstInstrumentPitchHz(scoreBody: string, instrumentName: string
         if (!content) continue
 
         let pitchStr: string | null = null
-        if (typeof content === 'string') {
-          pitchStr = FIRST_PITCH_RX.exec(content)?.[1] ?? null
-        } else if (typeof content === 'object' && !Array.isArray(content)) {
+        if (typeof content === 'object' && !Array.isArray(content)) {
           for (const val of Object.values(content as Record<string, unknown>)) {
             if (typeof val === 'string') { pitchStr = val.trim().split(/\s+/)[0] ?? null; break }
           }
@@ -424,8 +421,7 @@ export function* walkMeasures(
   positions: PositionStack = new PositionStack(),
 ): Generator<RawNote> {
   let activeMeta: MeasureMeta = DEFAULT_META
-  // Voice content can be an offset-key mapping (Record) or a chain string.
-  const previousVoices: Map<string, Record<string, unknown> | string> = new Map()
+  const previousVoices: Map<string, Record<string, unknown>> = new Map()
   for (let i = 0; i < measures.length; i++) {
     const measure = measures[i]
     if (!measure || typeof measure !== 'object') {
@@ -452,7 +448,7 @@ export function* walkMeasures(
 
     const repeatUnmentioned = !!(meta && meta.repeat_unmentioned_voices === true)
 
-    const resolvedVoices: Record<string, Record<string, unknown> | string> = {}
+    const resolvedVoices: Record<string, Record<string, unknown>> = {}
     for (const [voice, content] of Object.entries(m)) {
       if (voice.startsWith('_')) continue
       if (content === true) {
@@ -465,13 +461,8 @@ export function* walkMeasures(
         resolvedVoices[voice] = prev
         continue
       }
-      // S53000 chain syntax: a plain string value triggers the chain parser.
-      if (typeof content === 'string') {
-        resolvedVoices[voice] = content
-        continue
-      }
       if (!content || typeof content !== 'object') {
-        throw new ScoreError(`Voice '${voice}' content must be a mapping or chain string`)
+        throw new ScoreError(`Voice '${voice}' content must be a mapping`)
       }
       resolvedVoices[voice] = content as Record<string, unknown>
     }
@@ -489,33 +480,7 @@ export function* walkMeasures(
         }
         positions.push({ voice })
         try {
-          // S53000: chain string voice — no explicit offset keys.
-          if (typeof content === 'string') {
-            const chainNotes = expandChainString(content)
-            for (const cn of chainNotes) {
-              if (cut > 0 && cn.offsetTicks < cut) continue
-              positions.push({ offset: cn.offsetTicks })
-              try {
-                yield {
-                  voice,
-                  offsetTicks: cn.offsetTicks,
-                  pitch: cn.pitch,
-                  offScale: cn.offScale,
-                  lengthTicks: cn.lengthTicks,
-                  stress: stressOf(cn.offsetTicks),
-                  damp: cn.dampTicks,
-                  staticArticles: {},
-                  shapeArticles: {},
-                  continuumArticles: {},
-                  measureIndex: i,
-                  measureName,
-                }
-              } finally {
-                positions.pop()
-              }
-            }
-          } else {
-          for (const [offsetKey, raw] of Object.entries(content as Record<string, unknown>)) {
+          for (const [offsetKey, raw] of Object.entries(content)) {
             // S46232: offset keys can be composite ("0,4,8" or "0+2*3").
             const expandedOffsets = expandOffsetKey(offsetKey)
             if (expandedOffsets.length === 0) {
@@ -555,7 +520,6 @@ export function* walkMeasures(
               }
             }
           }
-          } // end offset-key else branch
         } finally {
           positions.pop()
         }
