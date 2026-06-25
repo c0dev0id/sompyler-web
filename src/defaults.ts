@@ -1158,10 +1158,10 @@ _meta:
   upper_stress_bound: 90
 seashore:
   0: C4 12 o,24
-strings1: false
-strings2: false
-revcymbal: false
-applause: false
+strings1: {}
+strings2: {}
+revcymbal: {}
+applause: {}
 ---
 # bar 2 — kalimba fade-in begins (very quiet)
 _meta:
@@ -1176,7 +1176,7 @@ kalimba: "C4_0,2 . C4_0,2 . C4_0,2"
 # bar 4 — bass pickup note (G1 at t=11)
 _meta:
   repeat_unmentioned_voices: true
-kalimba: false
+kalimba: {}
 bass: ".11 G1"
 revcymbal:
   9: C4 21
@@ -1192,8 +1192,8 @@ tambourine: "C4 *9 . C4 *2"
 hi-hat: ".2 C4"
 guiro: ".9 C4"
 castanet: ".3 C4 .5 C4"
-revcymbal: false
-applause: false
+revcymbal: {}
+applause: {}
 kick: "C1_ .4 C1_"
 ---
 # bar 6 — Cm pattern B
@@ -1233,9 +1233,9 @@ ensemble:
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-synbrass: false
-strings: false
-ensemble: false
+synbrass: {}
+strings: {}
+ensemble: {}
 ---
 # bar 12 — Cm B; SynBrass repeats
 _meta:
@@ -1254,9 +1254,9 @@ ensemble:
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-synbrass: false
-strings: false
-ensemble: false
+synbrass: {}
+strings: {}
+ensemble: {}
 kalimba: ".2 C4_0,2 . C4_0,2 . C4_0,2 .2 C4_0,2 . C4_0,2"
 ---
 # bar 14 — Gm pattern; SynBrass Gm
@@ -1277,9 +1277,9 @@ ensemble:
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1_"
-synbrass: false
-strings: false
-ensemble: false
+synbrass: {}
+strings: {}
+ensemble: {}
 ---
 # bar 16 — Fm transition; SynBrass Fm run + SYNSTRING1 enters
 _meta:
@@ -1310,7 +1310,7 @@ bass:
   9: Eb2 2
   11: C2 1
 synbrass: ".2 G4 F4 . C4_4"
-strings: false
+strings: {}
 ensemble:
   0: A4 2
   2: G4 2
@@ -1350,12 +1350,12 @@ applause:
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1 G1 Bb1"
-synbrass: false
-strings: false
-ensemble: false
-strings1: false
-revcymbal: false
-applause: false
+synbrass: {}
+strings: {}
+ensemble: {}
+strings1: {}
+revcymbal: {}
+applause: {}
 ---
 # bar 20 — Cm A
 _meta:
@@ -1384,12 +1384,12 @@ applause:
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-synbrass: false
-strings: false
-ensemble: false
-strings1: false
-revcymbal: false
-applause: false
+synbrass: {}
+strings: {}
+ensemble: {}
+strings1: {}
+revcymbal: {}
+applause: {}
 ---
 # bar 22 — Gm
 _meta:
@@ -1419,12 +1419,12 @@ applause:
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-synbrass: false
-strings: false
-ensemble: false
-strings1: false
-revcymbal: false
-applause: false
+synbrass: {}
+strings: {}
+ensemble: {}
+strings1: {}
+revcymbal: {}
+applause: {}
 ---
 # bar 24 — Fm; SynBrass Fm run
 _meta:
@@ -1463,7 +1463,7 @@ bass:
   10: G1 1
   11: Bb1 1
 synbrass: ".2 G4 F4 . C4_4"
-strings: false
+strings: {}
 ensemble:
   0: A4 2
   2: G4 2
@@ -1474,8 +1474,8 @@ strings1:
   2: G4 2
   3: F4 2
   5: C4 8
-revcymbal: false
-applause: false
+revcymbal: {}
+applause: {}
 ---
 # bar 26 — Cm A
 _meta:
@@ -1505,12 +1505,12 @@ applause:
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-synbrass: false
-strings: false
-ensemble: false
-strings1: false
-revcymbal: false
-applause: false
+synbrass: {}
+strings: {}
+ensemble: {}
+strings1: {}
+revcymbal: {}
+applause: {}
 ---
 # bar 28 — Cm A
 _meta:
@@ -1539,12 +1539,12 @@ applause:
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-synbrass: false
-strings: false
-ensemble: false
-strings1: false
-revcymbal: false
-applause: false
+synbrass: {}
+strings: {}
+ensemble: {}
+strings1: {}
+revcymbal: {}
+applause: {}
 ---
 # bar 30 — Gm
 _meta:
@@ -1574,12 +1574,12 @@ applause:
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-synbrass: false
-strings: false
-ensemble: false
-strings1: false
-revcymbal: false
-applause: false
+synbrass: {}
+strings: {}
+ensemble: {}
+strings1: {}
+revcymbal: {}
+applause: {}
 ---
 # bar 32 — Fm; SynBrass Fm
 _meta:
@@ -1619,7 +1619,7 @@ bass:
   10: G1 1
   11: Bb1 1
 synbrass: ".2 G4 F4 . C4_4"
-strings: false
+strings: {}
 ensemble:
   0: A4 2
   2: G4 2
@@ -1630,15 +1630,15 @@ strings1:
   2: G4 2
   3: F4 2
   5: C4 7
-revcymbal: false
-applause: false
+revcymbal: {}
+applause: {}
 ---
 # bar 34 — BowedPad + SynString2-B enter; Cm; Kalimba silent
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-kalimba: false
-synbrass: false
+kalimba: {}
+synbrass: {}
 strings: "Eb3_23; C3_23"
 ensemble:
   0: C5 1
@@ -1647,7 +1647,7 @@ ensemble:
   3: G5 1
   4: C5 1
   5: G5 7
-strings1: false
+strings1: {}
 strings2:
   0: C5 1
   1: G5 1
@@ -1661,7 +1661,7 @@ bowedpad:
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-strings: false
+strings: {}
 ensemble:
   0: C5 1
   1: G5 1
@@ -1674,7 +1674,7 @@ strings2:
   1: G5 1
   2: C5 1
   3: G5 8
-bowedpad: false
+bowedpad: {}
 ---
 # bar 36 — Gm; BowedPad Gm
 _meta:
@@ -1702,7 +1702,7 @@ bowedpad:
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-strings: false
+strings: {}
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -1715,7 +1715,7 @@ strings2:
   1: Bb5 1
   2: D5 1
   3: Bb5 8
-bowedpad: false
+bowedpad: {}
 ---
 # bar 38 — Fm; BowedPad Fm
 _meta:
@@ -1749,7 +1749,7 @@ bass:
   8: C2 1
   9: Eb2 2
   11: C2 1
-strings: false
+strings: {}
 ensemble:
   0: F5 1
   1: C6 1
@@ -1762,7 +1762,7 @@ strings2:
   1: C6 1
   2: F5 1
   3: C6 8
-bowedpad: false
+bowedpad: {}
 ---
 # bar 40 — Melody enters; Cm A; Kalimba resumes
 _meta:
@@ -1793,7 +1793,7 @@ melody: "Eb4;6 D4 Eb4 C4_ G3_6"
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-strings: false
+strings: {}
 ensemble:
   0: C5 1
   1: G5 1
@@ -1808,7 +1808,7 @@ strings2:
   3: G5 1
   4: C5 1
   5: G5 7
-bowedpad: false
+bowedpad: {}
 melody: "Eb4;6 D4 Eb4 C4_ G3_6"
 ---
 # bar 42 — Gm; melody Gm phrase
@@ -1841,7 +1841,7 @@ melody: "Bb3;6 A3 Bb3 G3_ D3_6"
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-strings: false
+strings: {}
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -1856,7 +1856,7 @@ strings2:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
-bowedpad: false
+bowedpad: {}
 melody: "Bb3;6 A3 Bb3 G3_ D3_6"
 ---
 # bar 44 — Fm; melody Fm phrase
@@ -1900,7 +1900,7 @@ bass:
   9: Bb1 1
   10: G1 1
   11: Bb1 1
-strings: false
+strings: {}
 ensemble:
   0: F5 1
   1: C6 1
@@ -1915,7 +1915,7 @@ strings2:
   3: C6 1
   4: F5 1
   5: C6 7
-bowedpad: false
+bowedpad: {}
 melody:
   0: A3 1
   1: G3 1
@@ -1953,14 +1953,14 @@ bowedpad:
   3: C4 21
   6: Eb4 18
 melody: "Eb4;6 D4 Eb4 C4_ G3_6"
-revcymbal: false
-applause: false
+revcymbal: {}
+applause: {}
 ---
 # bar 47 — Cm B; melody repeats
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-strings: false
+strings: {}
 ensemble:
   0: C5 1
   1: G5 1
@@ -1975,7 +1975,7 @@ strings2:
   3: G5 1
   4: C5 1
   5: G5 7
-bowedpad: false
+bowedpad: {}
 melody: "Eb4;6 D4 Eb4 C4_ G3_6"
 ---
 # bar 48 — Gm; melody Gm
@@ -2008,7 +2008,7 @@ melody: "Bb3;6 A3 Bb3 G3_ D3_6"
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-strings: false
+strings: {}
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -2023,7 +2023,7 @@ strings2:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
-bowedpad: false
+bowedpad: {}
 melody: "Bb3;6 A3 Bb3 G3_ D3_6"
 ---
 # bar 50 — Fm; melody Fm
@@ -2067,7 +2067,7 @@ bass:
   9: Bb1 1
   10: G1 1
   11: Bb1 1
-strings: false
+strings: {}
 ensemble:
   0: F5 1
   1: C6 1
@@ -2082,7 +2082,7 @@ strings2:
   3: C6 1
   4: F5 1
   5: C6 7
-bowedpad: false
+bowedpad: {}
 melody:
   0: A3 2
   2: G3 3
@@ -2101,16 +2101,16 @@ ensemble:
   6: Eb4 3
   8: G4 4
   11: C4 12
-strings2: false
-bowedpad: false
-melody: false
+strings2: {}
+bowedpad: {}
+melody: {}
 ---
 # bar 53 — Cm A
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-strings: false
-ensemble: false
+strings: {}
+ensemble: {}
 ---
 # bar 54 — Cm B; ensemble plays
 _meta:
@@ -2128,8 +2128,8 @@ ensemble:
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 G1 Bb1_ G1"
-strings: false
-ensemble: false
+strings: {}
+ensemble: {}
 ---
 # bar 56 — Gm
 _meta:
@@ -2148,8 +2148,8 @@ ensemble:
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1_"
-strings: false
-ensemble: false
+strings: {}
+ensemble: {}
 ---
 # bar 58 — Fm; SynString1 enters (same as SynString2-A Fm)
 _meta:
@@ -2178,7 +2178,7 @@ bass:
   8: C2 1
   9: Eb2 2
   11: C2 1
-strings: false
+strings: {}
 ensemble:
   0: A4 2
   2: G4 2
@@ -2217,11 +2217,11 @@ applause:
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1 G1 Bb1"
-strings: false
-ensemble: false
-strings1: false
-revcymbal: false
-applause: false
+strings: {}
+ensemble: {}
+strings1: {}
+revcymbal: {}
+applause: {}
 ---
 # bar 62 — Cm A
 _meta:
@@ -2249,11 +2249,11 @@ applause:
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-strings: false
-ensemble: false
-strings1: false
-revcymbal: false
-applause: false
+strings: {}
+ensemble: {}
+strings1: {}
+revcymbal: {}
+applause: {}
 ---
 # bar 64 — Gm
 _meta:
@@ -2282,11 +2282,11 @@ applause:
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-strings: false
-ensemble: false
-strings1: false
-revcymbal: false
-applause: false
+strings: {}
+ensemble: {}
+strings1: {}
+revcymbal: {}
+applause: {}
 ---
 # bar 66 — Fm
 _meta:
@@ -2323,7 +2323,7 @@ bass:
   9: Bb1 1
   10: G1 1
   11: Bb1 1
-strings: false
+strings: {}
 ensemble:
   0: A4 2
   2: G4 2
@@ -2334,8 +2334,8 @@ strings1:
   2: G4 2
   3: F4 2
   5: C4 8
-revcymbal: false
-applause: false
+revcymbal: {}
+applause: {}
 ---
 # bar 68 — Cm A
 _meta:
@@ -2364,11 +2364,11 @@ applause:
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-strings: false
-ensemble: false
-strings1: false
-revcymbal: false
-applause: false
+strings: {}
+ensemble: {}
+strings1: {}
+revcymbal: {}
+applause: {}
 ---
 # bar 70 — Cm B variant
 _meta:
@@ -2396,11 +2396,11 @@ applause:
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-strings: false
-ensemble: false
-strings1: false
-revcymbal: false
-applause: false
+strings: {}
+ensemble: {}
+strings1: {}
+revcymbal: {}
+applause: {}
 ---
 # bar 72 — Gm
 _meta:
@@ -2429,11 +2429,11 @@ applause:
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-strings: false
-ensemble: false
-strings1: false
-revcymbal: false
-applause: false
+strings: {}
+ensemble: {}
+strings1: {}
+revcymbal: {}
+applause: {}
 ---
 # bar 74 — Fm
 _meta:
@@ -2471,7 +2471,7 @@ bass:
   9: Bb1 1
   10: G1 1
   11: Bb1 1
-strings: false
+strings: {}
 ensemble:
   0: A4 2
   2: G4 2
@@ -2482,8 +2482,8 @@ strings1:
   2: G4 2
   3: F4 2
   5: C4 7
-revcymbal: false
-applause: false
+revcymbal: {}
+applause: {}
 ---
 # bar 76 — SynString2-B high arpeggios resume; BowedPad resumes; Cm
 _meta:
@@ -2511,7 +2511,7 @@ bowedpad:
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-strings: false
+strings: {}
 ensemble:
   0: C5 1
   1: G5 1
@@ -2524,7 +2524,7 @@ strings2:
   1: G5 1
   2: C5 1
   3: G5 8
-bowedpad: false
+bowedpad: {}
 ---
 # bar 78 — Gm; BowedPad Gm
 _meta:
@@ -2553,7 +2553,7 @@ bowedpad:
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-strings: false
+strings: {}
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -2566,7 +2566,7 @@ strings2:
   1: Bb5 1
   2: D5 1
   3: Bb5 8
-bowedpad: false
+bowedpad: {}
 ---
 # bar 80 — Fm; BowedPad Fm
 _meta:
@@ -2601,7 +2601,7 @@ bass:
   8: C2 1
   9: Eb2 2
   11: C2 1
-strings: false
+strings: {}
 ensemble:
   0: F5 1
   1: C6 1
@@ -2614,7 +2614,7 @@ strings2:
   1: C6 1
   2: F5 1
   3: C6 8
-bowedpad: false
+bowedpad: {}
 ---
 # bar 82 — Melody returns with elaborate variations; Cm A
 _meta:
@@ -2645,7 +2645,7 @@ melody: "Eb4;6 D4 Eb4 C4_ G3_6"
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-strings: false
+strings: {}
 ensemble:
   0: C5 1
   1: G5 1
@@ -2660,7 +2660,7 @@ strings2:
   3: G5 1
   4: C5 1
   5: G5 7
-bowedpad: false
+bowedpad: {}
 melody: "Eb4;6 D4 Eb4 C4_ G3_6"
 ---
 # bar 84 — Gm; melody Gm
@@ -2693,7 +2693,7 @@ melody: "Bb3;6 A3 Bb3 G3_ D3_6"
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-strings: false
+strings: {}
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -2708,7 +2708,7 @@ strings2:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
-bowedpad: false
+bowedpad: {}
 melody: "Bb3;6 A3 Bb3 G3_ D3_6"
 ---
 # bar 86 — Fm; melody Fm
@@ -2752,7 +2752,7 @@ bass:
   9: Bb1 1
   10: G1 1
   11: Bb1 1
-strings: false
+strings: {}
 ensemble:
   0: F5 1
   1: C6 1
@@ -2767,7 +2767,7 @@ strings2:
   3: C6 1
   4: F5 1
   5: C6 7
-bowedpad: false
+bowedpad: {}
 melody:
   0: A3 1
   1: G3 1
@@ -2805,14 +2805,14 @@ bowedpad:
   3: C4 21
   6: Eb4 18
 melody: "Eb4;6 D4 Eb4 C4_ G3_2 Eb4_2 G3"
-revcymbal: false
-applause: false
+revcymbal: {}
+applause: {}
 ---
 # bar 89 — Cm B; melody with ornaments
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-strings: false
+strings: {}
 ensemble:
   0: C5 1
   1: G5 1
@@ -2827,7 +2827,7 @@ strings2:
   3: G5 1
   4: C5 1
   5: G5 7
-bowedpad: false
+bowedpad: {}
 melody:
   0: Eb4 1
   1: D4 1
@@ -2877,7 +2877,7 @@ melody:
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-strings: false
+strings: {}
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -2892,7 +2892,7 @@ strings2:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
-bowedpad: false
+bowedpad: {}
 melody:
   0: Bb3 1
   1: A3 1
@@ -2939,7 +2939,7 @@ bass:
   8: C2 1
   9: Eb2 2
   11: C2 1
-strings: false
+strings: {}
 ensemble:
   0: F5 1
   1: C6 1
@@ -2954,7 +2954,7 @@ strings2:
   3: C6 1
   4: F5 1
   5: C6 7
-bowedpad: false
+bowedpad: {}
 melody:
   0: F4 2
   2: C4 3
@@ -2990,14 +2990,14 @@ bowedpad:
   3: C4 21
   6: Eb4 18
 melody: "Eb5;6 D5 Eb5 C5_ G4_2 Eb5_2 G4"
-revcymbal: false
-applause: false
+revcymbal: {}
+applause: {}
 ---
 # bar 95 — Cm; melody ornament
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-strings: false
+strings: {}
 ensemble:
   0: C5 1
   1: G5 1
@@ -3012,7 +3012,7 @@ strings2:
   3: G5 1
   4: C5 1
   5: G5 7
-bowedpad: false
+bowedpad: {}
 melody: "Eb5_;6 G4 D5_ C5_2 G4_3"
 ---
 # bar 96 — Gm; melody high Gm phrase
@@ -3052,7 +3052,7 @@ melody:
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-strings: false
+strings: {}
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -3067,7 +3067,7 @@ strings2:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
-bowedpad: false
+bowedpad: {}
 melody:
   0: Bb4 1
   1: A4 1
@@ -3119,7 +3119,7 @@ bass:
   9: Bb1 1
   10: G1 1
   11: Bb1 1
-strings: false
+strings: {}
 ensemble:
   0: F5 1
   1: C6 1
@@ -3134,7 +3134,7 @@ strings2:
   3: C6 1
   4: F5 1
   5: C6 7
-bowedpad: false
+bowedpad: {}
 melody: "A4_;6 G4 F4_ C5_2 F4_3"
 revcymbal:
   9: C4 21
@@ -3165,14 +3165,14 @@ bowedpad:
   3: C4 21
   6: Eb4 18
 melody: "Eb5;6 D5 Eb5 C5_ G4_2 Eb5_2 G4"
-revcymbal: false
-applause: false
+revcymbal: {}
+applause: {}
 ---
 # bar 101 — Cm; melody ornament
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-strings: false
+strings: {}
 ensemble:
   0: C5 1
   1: G5 1
@@ -3187,7 +3187,7 @@ strings2:
   3: G5 1
   4: C5 1
   5: G5 7
-bowedpad: false
+bowedpad: {}
 melody: "Eb5_;6 G4 D5_ C5_2 G4_2 G4"
 ---
 # bar 102 — Gm; melody elaborate Gm variation
@@ -3220,7 +3220,7 @@ melody: "D5;6 C5 Bb4 D5 C5 Bb4 D5_ G4_2 G4"
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-strings: false
+strings: {}
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -3235,7 +3235,7 @@ strings2:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
-bowedpad: false
+bowedpad: {}
 melody: "D5;6 C5 D5 Bb4_ G4_2 D5 C5_ Bb4"
 ---
 # bar 104 — Fm; melody Fm
@@ -3274,7 +3274,7 @@ bass:
   8: C2 1
   9: Eb2 2
   11: C2 1
-strings: false
+strings: {}
 ensemble:
   0: F5 1
   1: C6 1
@@ -3289,7 +3289,7 @@ strings2:
   3: C6 1
   4: F5 1
   5: C6 7
-bowedpad: false
+bowedpad: {}
 melody: "A4;6 G4 A4 F4_ C5_2 F4_3"
 revcymbal:
   9: C4 21
@@ -3320,14 +3320,14 @@ bowedpad:
   3: C4 21
   6: Eb4 18
 melody: "Eb4;6 D4 Eb4 C4_ G3_2 Eb4_2 G3"
-revcymbal: false
-applause: false
+revcymbal: {}
+applause: {}
 ---
 # bar 107 — Cm; melody ornament run
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-strings: false
+strings: {}
 ensemble:
   0: C5 1
   1: G5 1
@@ -3342,7 +3342,7 @@ strings2:
   3: G5 1
   4: C5 1
   5: G5 7
-bowedpad: false
+bowedpad: {}
 melody: "Eb4;6 D4 C4 Eb4 D4 C4 Eb4_ G3_2 G3"
 ---
 # bar 108 — Gm; melody Gm with fill
@@ -3382,7 +3382,7 @@ melody:
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-strings: false
+strings: {}
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -3397,7 +3397,7 @@ strings2:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
-bowedpad: false
+bowedpad: {}
 melody:
   0: D4 1
   1: C4 1
@@ -3449,7 +3449,7 @@ bass:
   9: Bb1 1
   10: G1 1
   11: Bb1 1
-strings: false
+strings: {}
 ensemble:
   0: F5 1
   1: C6 1
@@ -3464,7 +3464,7 @@ strings2:
   3: C6 1
   4: F5 1
   5: C6 7
-bowedpad: false
+bowedpad: {}
 melody:
   0: A3 1
   1: G3 1
@@ -3503,14 +3503,14 @@ bowedpad:
   3: C4 21
   6: Eb4 18
 melody: "Eb5;6 D5 Eb5 C5_ G4_2 Eb5_2 G4"
-revcymbal: false
-applause: false
+revcymbal: {}
+applause: {}
 ---
 # bar 113 — Cm; melody ornament
 _meta:
   repeat_unmentioned_voices: true
 bass: "C2_2 Bb1_ C2_2 C2 Bb1_ G1"
-strings: false
+strings: {}
 ensemble:
   0: C5 1
   1: G5 1
@@ -3525,7 +3525,7 @@ strings2:
   3: G5 1
   4: C5 1
   5: G5 7
-bowedpad: false
+bowedpad: {}
 melody: "Eb5_;6 G4 D5_ C5_2 G4_2 G4"
 ---
 # bar 114 — Gm; melody Gm
@@ -3558,7 +3558,7 @@ melody: "D5;6 C5 Bb4 D5 C5 Bb4 D5_ G4_2 G4"
 _meta:
   repeat_unmentioned_voices: true
 bass: "D2_2 C2_ D2_2 D2 C2_ A1"
-strings: false
+strings: {}
 ensemble:
   0: D5 1
   1: Bb5 1
@@ -3573,7 +3573,7 @@ strings2:
   3: Bb5 1
   4: D5 1
   5: Bb5 7
-bowedpad: false
+bowedpad: {}
 melody: "D5;6 C5 D5 Bb4_ G4_2 D5 C5_ Bb4"
 ---
 # bar 116 — Fm; fade out begins; melody Fm final
@@ -3616,8 +3616,8 @@ bass:
   9: Bb1 1
   10: G1 1
   11: Bb1 1
-kalimba: false
-strings: false
+kalimba: {}
+strings: {}
 ensemble:
   0: F5 1
   1: C6 1
@@ -3636,8 +3636,8 @@ bowedpad:
   0: A3 1
   3: C4 8
   6: F4 4
-tambourine: false
-kick: false
+tambourine: {}
+kick: {}
 melody: "A4;6 G4 A4 F4_ C5_2 F4_3"`
 
 // =====================================================================

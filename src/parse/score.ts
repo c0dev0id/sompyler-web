@@ -378,7 +378,7 @@ export function firstInstrumentPitchHz(scoreBody: string, instrumentName: string
       const doc = measure as Record<string, unknown>
       for (const voice of voices) {
         const content = doc[voice]
-        if (!content || content === false) continue
+        if (!content) continue
 
         let pitchStr: string | null = null
         if (typeof content === 'string') {
@@ -463,10 +463,6 @@ export function* walkMeasures(
           )
         }
         resolvedVoices[voice] = prev
-        continue
-      }
-      if (content === false) {
-        previousVoices.delete(voice)
         continue
       }
       // S53000 chain syntax: a plain string value triggers the chain parser.

@@ -86,8 +86,6 @@ function stripInstrumentBody(instrument: Instrument): string {
  * Python understands RFC-defined YAML structure only. Strip or neutralise
  * everything that is sompyler-web-only:
  *  - `tuning_config:` in the head doc (CLI option, not a score field)
- *  - voice entries whose value is `false` (sompyler-web silence extension;
- *    Python crashes — absent voice = silent is the RFC-equivalent)
  */
 function stripScoreBodyForPython(scoreBody: string): string {
   const docs = jsyaml.loadAll(scoreBody) as unknown[]
@@ -96,10 +94,6 @@ function stripScoreBodyForPython(scoreBody: string): string {
     const obj = { ...(doc as Record<string, unknown>) }
     if (i === 0) {
       delete obj['tuning_config']
-    } else {
-      for (const k of Object.keys(obj)) {
-        if (obj[k] === false) delete obj[k]
-      }
     }
     return jsyaml.dump(obj)
   })
