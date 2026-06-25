@@ -16,14 +16,14 @@ soundfile is not imported — the numpy array is returned directly to JS.
 """
 
 from Sompyler.orchestra import play as _play
-from Sompyler import synthesizer as _synthesizer
+from Sompyler import synthesizer as _synthesizer, Progress as _Progress
 from Sompyler.synthesizer import normalize_amplitude as _normalize
 
 _synthesizer.SAMPLING_RATE = _samplerate
 
 _samples = _play(
     _score_path,
-    None,                        # monitor — not needed
+    _Progress(),                 # no-op monitor (play() requires a monitor object)
     lambda n: True,              # measure_is_in — render all measures
     workers=1,                   # avoid multiprocessing.Pool (not available in Pyodide)
     substitute_instruments={},
